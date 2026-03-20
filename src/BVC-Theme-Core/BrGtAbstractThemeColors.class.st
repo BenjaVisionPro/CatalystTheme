@@ -45,9 +45,9 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	sidebarTextColor := self syntaxCommentDocumentationKeywordColor.
 
 	self toolbarBackgroundColor: self consoleBackgroundColor.
-	self tabBackgroundColor: (self sourceCurrentLineHighlightColor alpha: 0.78).
-	self tabSelectedBackgroundColor: (self markupBackgroundColor alpha: 0.96).
-	self tabTextColor: (self secondaryTextColor alpha: 0.95).
+	self tabBackgroundColor: (self sourceBackgroundColor alpha: 0.96).
+	self tabSelectedBackgroundColor: (self sourceCurrentLineHighlightColor alpha: 0.96).
+	self tabTextColor: (self primaryTextColor alpha: 0.72).
 	self tabSelectedTextColor: self primaryTextColor.
 
 	self borderColor: self markupBorderColor.
@@ -73,21 +73,21 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	self headerBackgroundColor: self toolbarBackgroundColor.
 	self headerSecondaryBackgroundColor: self tabBackgroundColor.
 	self headerTextColor: self primaryTextColor.
-	self headerDisabledTextColor: (self secondaryTextColor alpha: 0.70).
+	self headerDisabledTextColor: (self primaryTextColor alpha: 0.60).
 	self headerTextMarkupColor: self secondaryTextColor.
-	self buttonDefaultBackgroundColor: self tabSelectedBackgroundColor.
-	self buttonDisabledBackgroundColor: (self sourceCurrentLineHighlightColor alpha: 0.6).
-	self buttonDefaultBorderColor: self borderColor.
-	self buttonDisabledBorderColor: self subtleBorderColor.
+	self buttonDefaultBackgroundColor: self tabBackgroundColor.
+	self buttonDisabledBackgroundColor: (self sourceBackgroundColor alpha: 0.88).
+	self buttonDefaultBorderColor: (self markupBorderColor alpha: 0.35).
+	self buttonDisabledBorderColor: (self markupBorderColor alpha: 0.20).
 	self buttonPressedBorderColor: self focusBorderColor.
-	self buttonHoveredBorderColor: self strongBorderColor.
-	self buttonDefaultTextColor: self primaryTextColor.
-	self buttonDisabledTextColor: self disabledTextColor.
+	self buttonHoveredBorderColor: (self markupBorderColor alpha: 0.55).
+	self buttonDefaultTextColor: (self primaryTextColor alpha: 0.78).
+	self buttonDisabledTextColor: (self primaryTextColor alpha: 0.45).
 	self buttonPressedTextColor: self primaryTextColor.
 	self buttonHoveredTextColor: self primaryTextColor.
 	self buttonTextHighlightColor: self syntaxURLColor.
-	self buttonFadedBackgroundColor: (self sourceCurrentLineHighlightColor alpha: 0.55).
-	self buttonFocusedFadedBackgroundColor: self sourceCurrentLineHighlightColor.
+	self buttonFadedBackgroundColor: self tabBackgroundColor.
+	self buttonFocusedFadedBackgroundColor: self tabSelectedBackgroundColor.
 	self defaultShadowColor: (self sourceSelectionColor alpha: 0.08).
 	self primaryBorderColor: self borderColor.
 	self darkBorderColor: self strongBorderColor.
