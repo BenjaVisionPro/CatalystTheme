@@ -14,5 +14,6 @@ BaselineOfCatalystTheme >> baseline: spec [
 				package: 'BVC-Theme-Core';
 				package: 'BVC-Theme-Dark';
 				package: 'BVC-Theme-DarkHighContrast';
-				package: 'BVC-Theme-Light' ]
+				package: 'BVC-Theme-Light';
+				package: 'BVC-Theme-Debug' ]
 ]
