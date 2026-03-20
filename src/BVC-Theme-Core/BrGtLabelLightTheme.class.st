@@ -21,6 +21,6 @@ BrGtLabelLightTheme >> initializeThemeable [
 			source: [ :aTheme | aTheme label summaryTextForeground ].
 
 	navigationTextForeground := self
-			color: [ :aTheme | aTheme colors tabTextColor ]
+			color: [ :aTheme | aTheme colors primaryTextColor ]
 			source: [ :aTheme | aTheme label navigationTextForeground ]
 ]

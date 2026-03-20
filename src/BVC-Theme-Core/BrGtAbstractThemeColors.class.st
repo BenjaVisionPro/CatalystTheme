@@ -73,19 +73,19 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	self editorBorderColor: self borderColor.
 	self focusedEditorBorderColor: self focusBorderColor.
 	self headerTextColor: self syntaxPlainTextColor.
-	self headerDisabledTextColor: self syntaxCommentDocumentationKeywordColor.
-	self headerTextMarkupColor: self syntaxCommentDocumentationKeywordColor.
+	self headerDisabledTextColor: self syntaxCommentColor.
+	self headerTextMarkupColor: self syntaxPlainTextColor.
 	self buttonDefaultBackgroundColor: self markupBackgroundColor.
 	self buttonDisabledBackgroundColor: self sourceBackgroundColor.
 	self buttonDefaultBorderColor: self markupBorderColor.
 	self buttonDisabledBorderColor: self markupBorderColor.
 	self buttonPressedBorderColor: self sourceSelectionColor.
 	self buttonHoveredBorderColor: self sourceSelectionColor.
-	self buttonDefaultTextColor: self syntaxCommentDocumentationKeywordColor.
+	self buttonDefaultTextColor: self syntaxPlainTextColor.
 	self buttonDisabledTextColor: self syntaxCommentColor.
 	self buttonPressedTextColor: self syntaxPlainTextColor.
 	self buttonHoveredTextColor: self syntaxPlainTextColor.
-	self buttonTextHighlightColor: self syntaxURLColor.
+	self buttonTextHighlightColor: self syntaxPlainTextColor.
 	self buttonFadedBackgroundColor: self markupBackgroundColor.
 	self buttonFocusedFadedBackgroundColor: self sourceCurrentLineHighlightColor.
 	self defaultShadowColor: self markupBorderColor.
