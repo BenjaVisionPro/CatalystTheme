@@ -34,9 +34,3 @@ BrGtDarkThemeHighContrast class >> headerThemeClass [
 BrGtDarkThemeHighContrast class >> itemThemeClass [
 	^ BrGtItemDarkTheme
 ]
-
-
-{ #category : #'class defaults' }
-BrGtDarkThemeHighContrast class >> labelThemeClass [
-	^ BrGtLabelDarkTheme
-]
