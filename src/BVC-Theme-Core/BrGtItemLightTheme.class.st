@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #'instance creation' }
-#BrGtItemLightTheme class >> colors: aColors theme: aTheme [
+BrGtItemLightTheme class >> colors: aColors theme: aTheme [
 	^ self basicNew
 		colors: aColors;
 		theme: aTheme;
@@ -18,27 +18,27 @@ Class {
 ]
 
 { #category : #accessing }
-#BrGtItemLightTheme >> colors [
+BrGtItemLightTheme >> colors [
 	^ colors
 ]
 
 { #category : #accessing }
-#BrGtItemLightTheme >> colors: aColors [
+BrGtItemLightTheme >> colors: aColors [
 	colors := aColors
 ]
 
 { #category : #accessing }
-#BrGtItemLightTheme >> theme [
+BrGtItemLightTheme >> theme [
 	^ theme
 ]
 
 { #category : #accessing }
-#BrGtItemLightTheme >> theme: aTheme [
+BrGtItemLightTheme >> theme: aTheme [
 	theme := aTheme
 ]
 
 { #category : #initialization }
-#BrGtItemLightTheme >> initializeFromColors [
+BrGtItemLightTheme >> initializeFromColors [
 	selectedColor := colors itemSelectedBackgroundColor.
 	deselectedColor := colors itemDeselectedBackgroundColor.
 	hoveredColor := colors itemHoveredBackgroundColor.
