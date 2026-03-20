@@ -1,10 +1,11 @@
 Class {
-	#name : #BrGtDarkThemeDebug,
-	#superclass : #BrGtDarkTheme,
-	#category : #'BVC-Theme-Debug'
+	#name : 'BrGtDarkThemeDebug',
+	#superclass : 'BrGtDarkTheme',
+	#category : 'BVC-Theme-Debug',
+	#package : 'BVC-Theme-Debug'
 }
 
-{ #category : #'class defaults' }
+{ #category : 'class defaults' }
 BrGtDarkThemeDebug class >> colorsClass [
 	^ BrGtDarkThemeColorsDebug
 ]

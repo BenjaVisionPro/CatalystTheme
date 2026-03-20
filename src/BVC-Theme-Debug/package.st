@@ -1,1 +1,1 @@
-Package { #name : #'BVC-Theme-Debug' }
+Package { #name : 'BVC-Theme-Debug' }

@@ -1,10 +1,11 @@
 Class {
-	#name : #BrGtDarkThemeColorsDebug,
-	#superclass : #BrGtDarkThemeColors,
-	#category : #'BVC-Theme-Debug'
+	#name : 'BrGtDarkThemeColorsDebug',
+	#superclass : 'BrGtDarkThemeColors',
+	#category : 'BVC-Theme-Debug',
+	#package : 'BVC-Theme-Debug'
 }
 
-{ #category : #'class utilities' }
+{ #category : 'class utilities' }
 BrGtDarkThemeColorsDebug class >> debugLegend [
 	^ {
 		#primaryTextColor -> 'yellow'.
@@ -44,7 +45,7 @@ BrGtDarkThemeColorsDebug class >> debugLegend [
 		#errorMarkerColor -> 'red' }
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 BrGtDarkThemeColorsDebug >> initialize [
 	super initialize.
 
@@ -86,7 +87,7 @@ BrGtDarkThemeColorsDebug >> initialize [
 	self tabTextColor: (Color r: 1 g: 0.85 b: 0).
 	self tabSelectedTextColor: Color white.
 	self borderColor: Color white.
-	self subtleBorderColor: (Color r: 1 g: 0 g: 1).
+	self subtleBorderColor: (Color r: 1 g: 0 b: 1).
 	self strongBorderColor: (Color r: 0 g: 1 b: 0).
 	self dividerColor: (Color r: 1 g: 1 b: 1).
 	self focusBorderColor: (Color r: 1 g: 0.4 b: 0).
