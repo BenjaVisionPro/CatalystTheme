@@ -8,7 +8,11 @@ Class {
 { #category : 'baseline' }
 BaselineOfCatalystTheme >> baseline: spec [
 	<baseline>
-		^ spec for: #common do: [
-			spec package: 'BVC-Theme'
-		]
+	^ spec
+		for: #common
+		do: [ spec
+				package: 'BVC-Theme-Core';
+				package: 'BVC-Theme-Dark';
+				package: 'BVC-Theme-DarkHighContrast';
+				package: 'BVC-Theme-Light' ]
 ]
