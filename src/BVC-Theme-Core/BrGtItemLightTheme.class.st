@@ -2,17 +2,29 @@ Class {
 	#name : #BrGtItemLightTheme,
 	#superclass : #BrGlamorousItemTheme,
 	#instVars : [
-		'theme'
+		'theme',
+		'colors'
 	],
 	#category : #'BVC-Theme-Core'
 }
 
 { #category : #'instance creation' }
-BrGtItemLightTheme class >> theme: aTheme [
+BrGtItemLightTheme class >> colors: aColors theme: aTheme [
 	^ self basicNew
+		colors: aColors;
 		theme: aTheme;
-		initializeFromTheme;
+		initializeFromColors;
 		yourself
+]
+
+{ #category : #accessing }
+BrGtItemLightTheme >> colors [
+	^ colors
+]
+
+{ #category : #accessing }
+BrGtItemLightTheme >> colors: aColors [
+	colors := aColors
 ]
 
 { #category : #accessing }
@@ -26,11 +38,11 @@ BrGtItemLightTheme >> theme: aTheme [
 ]
 
 { #category : #initialization }
-BrGtItemLightTheme >> initializeFromTheme [
-	selectedColor := theme colors sourceSelectionColor.
-	deselectedColor := theme colors sidebarBackgroundColor.
-	hoveredColor := theme colors sourceCurrentLineHighlightColor.
-	defaultColor := theme colors sidebarBackgroundColor.
-	focusedBorderColor := theme colors focusedEditorBorderColor.
-	pressedColor := theme colors sourceSelectionColor
+BrGtItemLightTheme >> initializeFromColors [
+	selectedColor := colors sourceSelectionColor.
+	deselectedColor := colors sidebarBackgroundColor.
+	hoveredColor := colors sourceCurrentLineHighlightColor.
+	defaultColor := colors sidebarBackgroundColor.
+	focusedBorderColor := colors focusedEditorBorderColor.
+	pressedColor := colors sourceSelectionColor
 ]
