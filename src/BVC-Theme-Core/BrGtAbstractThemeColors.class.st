@@ -35,32 +35,32 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 		ifFalse: [ Color white ].
 
 	appBackgroundColor := self consoleBackgroundColor.
-	backdropBackgroundColor := self sourceBackgroundColor.
-	backdropEmphasisBackgroundColor := self sourceSelectionColor.
+	backdropBackgroundColor := self consoleBackgroundColor.
+	backdropEmphasisBackgroundColor := self sourceSelectionColor alpha: 0.35.
 	sidebarBackgroundColor := self sourceBackgroundColor.
-	contentBackgroundColor := self sourceCurrentLineHighlightColor.
-	groupBackgroundColor := self markupBackgroundColor.
-	raisedBackgroundColor := self markupBackgroundColor.
+	contentBackgroundColor := self sourceBackgroundColor.
+	groupBackgroundColor := self sourceCurrentLineHighlightColor alpha: 0.85.
+	raisedBackgroundColor := self sourceCurrentLineHighlightColor alpha: 0.85.
 	floatBackgroundColor := self markupBackgroundColor.
-	sidebarTextColor := self secondaryTextColor.
+	sidebarTextColor := self primaryTextColor.
 
-	self toolbarBackgroundColor: self consoleBackgroundColor.
-	self tabBackgroundColor: self markupBackgroundColor.
-	self tabSelectedBackgroundColor: self sourceCurrentLineHighlightColor.
+	self toolbarBackgroundColor: self sourceBackgroundColor.
+	self tabBackgroundColor: self sourceBackgroundColor.
+	self tabSelectedBackgroundColor: self markupBackgroundColor.
 	self tabTextColor: self secondaryTextColor.
 	self tabSelectedTextColor: self primaryTextColor.
 
 	self borderColor: self markupBorderColor.
-	self subtleBorderColor: self sourceInvisiblesColor.
-	self strongBorderColor: self sourceSelectionColor.
-	self dividerColor: self markupBorderColor.
+	self subtleBorderColor: (self markupBorderColor alpha: 0.45).
+	self strongBorderColor: (self sourceSelectionColor alpha: 0.65).
+	self dividerColor: (self markupBorderColor alpha: 0.65).
 	self focusBorderColor: self sourceSelectionColor.
 
-	self itemBackgroundColor: self sourceBackgroundColor.
-	self itemDeselectedBackgroundColor: self sourceBackgroundColor.
-	self itemSelectedBackgroundColor: self sourceSelectionColor.
-	self itemHoveredBackgroundColor: self sourceCurrentLineHighlightColor.
-	self itemPressedBackgroundColor: self sourceSelectionColor.
+	self itemBackgroundColor: Color transparent.
+	self itemDeselectedBackgroundColor: Color transparent.
+	self itemSelectedBackgroundColor: (self sourceSelectionColor alpha: 0.45).
+	self itemHoveredBackgroundColor: (self sourceCurrentLineHighlightColor alpha: 0.75).
+	self itemPressedBackgroundColor: (self sourceSelectionColor alpha: 0.60).
 	self itemFocusedBorderColor: self sourceSelectionColor.
 	self itemTextColor: self primaryTextColor.
 	self itemSelectedTextColor: self primaryTextColor.
@@ -76,7 +76,7 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	self headerDisabledTextColor: self tertiaryTextColor.
 	self headerTextMarkupColor: self secondaryTextColor.
 	self buttonDefaultBackgroundColor: self tabSelectedBackgroundColor.
-	self buttonDisabledBackgroundColor: self groupBackgroundColor.
+	self buttonDisabledBackgroundColor: (self sourceCurrentLineHighlightColor alpha: 0.6).
 	self buttonDefaultBorderColor: self borderColor.
 	self buttonDisabledBorderColor: self subtleBorderColor.
 	self buttonPressedBorderColor: self focusBorderColor.
@@ -86,16 +86,17 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	self buttonPressedTextColor: self primaryTextColor.
 	self buttonHoveredTextColor: self primaryTextColor.
 	self buttonTextHighlightColor: self syntaxURLColor.
-	self buttonFadedBackgroundColor: self groupBackgroundColor.
-	self buttonFocusedFadedBackgroundColor: self tabSelectedBackgroundColor.
-	self defaultShadowColor: (self sourceSelectionColor alpha: 0.12).
+	self buttonFadedBackgroundColor: (self sourceCurrentLineHighlightColor alpha: 0.55).
+	self buttonFocusedFadedBackgroundColor: self sourceCurrentLineHighlightColor.
+	self defaultShadowColor: (self sourceSelectionColor alpha: 0.08).
 	self primaryBorderColor: self borderColor.
 	self darkBorderColor: self strongBorderColor.
 	self lightBorderColor: self subtleBorderColor.
-	self shadowColor: (self sourceSelectionColor alpha: 0.12).
-	self newsBackgroundColor: self markupBackgroundColor.
+	self shadowColor: (self sourceSelectionColor alpha: 0.08).
+	self newsBackgroundColor: self sourceCurrentLineHighlightColor.
 	self expandCollapseTriangleBackgroundColor: self sourceCurrentLineHighlightColor
 ]
+
 
 { #category : #'private - helpers' }
 BrGtAbstractThemeColors >> isDark [

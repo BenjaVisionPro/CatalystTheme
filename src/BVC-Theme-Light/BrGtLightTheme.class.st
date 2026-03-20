@@ -39,3 +39,9 @@ BrGtLightTheme class >> headerThemeClass [
 BrGtLightTheme class >> itemThemeClass [
 	^ BrGtItemLightTheme
 ]
+
+
+{ #category : #'class defaults' }
+BrGtLightTheme class >> labelThemeClass [
+	^ BrGtLabelLightTheme
+]
