@@ -36,18 +36,18 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 
 	appBackgroundColor := self consoleBackgroundColor.
 	backdropBackgroundColor := self consoleBackgroundColor.
-	backdropEmphasisBackgroundColor := self sourceSelectionColor alpha: 0.35.
+	backdropEmphasisBackgroundColor := self sourceSelectionColor alpha: 0.30.
 	sidebarBackgroundColor := self sourceBackgroundColor.
 	contentBackgroundColor := self sourceBackgroundColor.
-	groupBackgroundColor := self sourceCurrentLineHighlightColor alpha: 0.85.
-	raisedBackgroundColor := self sourceCurrentLineHighlightColor alpha: 0.85.
+	groupBackgroundColor := self sourceCurrentLineHighlightColor alpha: 0.82.
+	raisedBackgroundColor := self sourceCurrentLineHighlightColor alpha: 0.82.
 	floatBackgroundColor := self markupBackgroundColor.
-	sidebarTextColor := self primaryTextColor.
+	sidebarTextColor := self syntaxCommentDocumentationKeywordColor.
 
-	self toolbarBackgroundColor: self sourceBackgroundColor.
-	self tabBackgroundColor: self sourceBackgroundColor.
-	self tabSelectedBackgroundColor: self markupBackgroundColor.
-	self tabTextColor: self secondaryTextColor.
+	self toolbarBackgroundColor: self consoleBackgroundColor.
+	self tabBackgroundColor: (self sourceCurrentLineHighlightColor alpha: 0.78).
+	self tabSelectedBackgroundColor: (self markupBackgroundColor alpha: 0.96).
+	self tabTextColor: (self secondaryTextColor alpha: 0.95).
 	self tabSelectedTextColor: self primaryTextColor.
 
 	self borderColor: self markupBorderColor.
@@ -72,8 +72,8 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	self focusedEditorBorderColor: self focusBorderColor.
 	self headerBackgroundColor: self toolbarBackgroundColor.
 	self headerSecondaryBackgroundColor: self tabBackgroundColor.
-	self headerTextColor: self tabTextColor.
-	self headerDisabledTextColor: self tertiaryTextColor.
+	self headerTextColor: self primaryTextColor.
+	self headerDisabledTextColor: (self secondaryTextColor alpha: 0.70).
 	self headerTextMarkupColor: self secondaryTextColor.
 	self buttonDefaultBackgroundColor: self tabSelectedBackgroundColor.
 	self buttonDisabledBackgroundColor: (self sourceCurrentLineHighlightColor alpha: 0.6).

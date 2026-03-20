@@ -27,6 +27,6 @@ BrGtLabelDarkTheme >> initializeThemeable [
 			source: [ :aTheme | aTheme label summaryTextForeground ].
 
 	navigationTextForeground := self
-			color: [ :aTheme | aTheme colors sidebarTextColor ]
+			color: [ :aTheme | aTheme colors primaryTextColor ]
 			source: [ :aTheme | aTheme label navigationTextForeground ]
 ]
