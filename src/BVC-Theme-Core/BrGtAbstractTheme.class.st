@@ -34,6 +34,12 @@ BrGtAbstractTheme class >> itemThemeClass [
 	self subclassResponsibility
 ]
 
+{ #category : #'class defaults' }
+BrGtAbstractTheme class >> labelThemeClass [
+	self subclassResponsibility
+]
+
+
 { #category : #initialization }
 BrGtAbstractTheme >> initialize [
 	super initialize.
@@ -52,6 +58,6 @@ BrGtAbstractTheme >> initialize [
 		theme: self.
 	header := self class headerThemeClass theme: self.
 	header initializeThemeable.
-	label := BrGlamorousLabelTheme theme: self.
+	label := self class labelThemeClass theme: self.
 	label initializeThemeable
 ]
