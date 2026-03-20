@@ -8,9 +8,3 @@ Class {
 BrGtDarkThemeDebug class >> colorsClass [
 	^ BrGtDarkThemeColorsDebug
 ]
-
-
-{ #category : #'class defaults' }
-BrGtDarkThemeDebug class >> labelThemeClass [
-	^ BrGtLabelDarkTheme
-]

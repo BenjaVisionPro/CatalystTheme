@@ -39,6 +39,7 @@ BrGtAbstractTheme class >> labelThemeClass [
 	self subclassResponsibility
 ]
 
+
 { #category : #initialization }
 BrGtAbstractTheme >> initialize [
 	super initialize.

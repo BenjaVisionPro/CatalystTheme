@@ -5,12 +5,6 @@ Class {
 }
 
 { #category : #initialization }
-BrGtLabelLightTheme >> initializeConstants [
-	super initializeConstants.
-	self constantAt: #defaultTextForeground put: self theme colors primaryTextColor
-]
-
-{ #category : #initialization }
 BrGtLabelLightTheme >> initializeThemeable [
 	super initializeThemeable.
 
