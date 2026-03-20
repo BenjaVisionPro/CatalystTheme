@@ -1,25 +1,8 @@
 Class {
 	#name : #BrGtButtonDarkTheme,
-	#superclass : #BrGlamorousButtonTheme,
+	#superclass : #BrGlamorousButtonDarkTheme,
 	#category : #'BVC-Theme-Core'
 }
-
-{ #category : #initialization }
-BrGtButtonDarkTheme >> initialize [
-	super initialize.
-	disabledBackgroundColor := Color transparent.
-	disabledTextColor := Color transparent.
-	disabledBorderColor := Color transparent.
-	defaultBorderColor := Color transparent.
-	defaultTextColor := Color transparent.
-	pressedBorderColor := Color transparent.
-	hoveredBorderColor := Color transparent.
-	pressedTextColor := Color transparent.
-	hoveredTextColor := Color transparent.
-	textHighlightColor := Color transparent.
-	fadedBackgroundColor := Color transparent.
-	focusedFadedBackgroundColor := Color transparent
-]
 
 { #category : #initialization }
 BrGtButtonDarkTheme >> initializeThemeable [

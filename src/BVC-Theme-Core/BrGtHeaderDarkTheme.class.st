@@ -1,18 +1,8 @@
 Class {
 	#name : #BrGtHeaderDarkTheme,
-	#superclass : #BrGlamorousHeaderTheme,
+	#superclass : #BrGlamorousHeaderDarkTheme,
 	#category : #'BVC-Theme-Core'
 }
-
-{ #category : #initialization }
-BrGtHeaderDarkTheme >> initialize [
-	super initialize.
-	textMarkupColor := Color transparent.
-	defaultBackgroundColor := Color transparent.
-	disabledTextColor := Color transparent.
-	defaultTextColor := Color transparent.
-	secondaryBackgroundColor := Color transparent
-]
 
 { #category : #initialization }
 BrGtHeaderDarkTheme >> initializeThemeable [

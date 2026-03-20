@@ -1,6 +1,6 @@
 Class {
 	#name : #BrGtDefaultLightTheme,
-	#superclass : #BrGlamorousDefaultTheme,
+	#superclass : #BrGlamorousDefaultLightTheme,
 	#category : #'BVC-Theme-Core'
 }
 
