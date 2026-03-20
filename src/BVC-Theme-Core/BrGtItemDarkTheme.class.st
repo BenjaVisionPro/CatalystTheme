@@ -39,10 +39,10 @@ BrGtItemDarkTheme >> theme: aTheme [
 
 { #category : #initialization }
 BrGtItemDarkTheme >> initializeFromColors [
-	selectedColor := colors sourceSelectionColor.
-	deselectedColor := colors sidebarBackgroundColor.
-	hoveredColor := colors sourceCurrentLineHighlightColor.
-	defaultColor := colors sidebarBackgroundColor.
-	focusedBorderColor := colors focusedEditorBorderColor.
-	pressedColor := colors sourceSelectionColor
+	selectedColor := colors itemSelectedBackgroundColor.
+	deselectedColor := colors itemDeselectedBackgroundColor.
+	hoveredColor := colors itemHoveredBackgroundColor.
+	defaultColor := colors itemBackgroundColor.
+	focusedBorderColor := colors itemFocusedBorderColor.
+	pressedColor := colors itemPressedBackgroundColor
 ]

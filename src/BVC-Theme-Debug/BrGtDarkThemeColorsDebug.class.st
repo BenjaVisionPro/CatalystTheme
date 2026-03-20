@@ -28,6 +28,13 @@ BrGtDarkThemeColorsDebug class >> debugLegend [
 		#buttonDisabledBackgroundColor -> 'green'.
 		#buttonDefaultBorderColor -> 'yellow'.
 		#buttonPressedBorderColor -> 'red'.
+		#toolbarBackgroundColor -> 'navy'.
+		#tabBackgroundColor -> 'brown'.
+		#tabSelectedBackgroundColor -> 'bright blue'.
+		#itemBackgroundColor -> 'violet'.
+		#itemSelectedBackgroundColor -> 'blue'.
+		#itemHoveredBackgroundColor -> 'cyan'.
+		#itemPressedBackgroundColor -> 'red'.
 		#syntaxKeywordColor -> 'hot pink'.
 		#syntaxStringColor -> 'orange'.
 		#syntaxNumberColor -> 'acid green'.
@@ -72,6 +79,28 @@ BrGtDarkThemeColorsDebug >> initialize [
 
 	self appBackgroundColor: (Color r: 0 g: 0 b: 0.5).
 	self contentBackgroundColor: (Color r: 0.45 g: 0 b: 0).
+
+	self toolbarBackgroundColor: (Color r: 0 g: 0 b: 0.5).
+	self tabBackgroundColor: (Color r: 0.55 g: 0.25 b: 0).
+	self tabSelectedBackgroundColor: (Color r: 0 g: 0.25 b: 0.95).
+	self tabTextColor: (Color r: 1 g: 0.85 b: 0).
+	self tabSelectedTextColor: Color white.
+	self borderColor: Color white.
+	self subtleBorderColor: (Color r: 1 g: 0 g: 1).
+	self strongBorderColor: (Color r: 0 g: 1 b: 0).
+	self dividerColor: (Color r: 1 g: 1 b: 1).
+	self focusBorderColor: (Color r: 1 g: 0.4 b: 0).
+	self itemBackgroundColor: (Color r: 0.25 g: 0 b: 0.4).
+	self itemDeselectedBackgroundColor: (Color r: 0.25 g: 0 b: 0.4).
+	self itemSelectedBackgroundColor: (Color r: 0 g: 0 b: 1).
+	self itemHoveredBackgroundColor: (Color r: 0 g: 0.7 b: 0.7).
+	self itemPressedBackgroundColor: (Color r: 1 g: 0 b: 0).
+	self itemFocusedBorderColor: (Color r: 1 g: 1 b: 0).
+	self itemTextColor: (Color r: 1 g: 0.6 b: 0).
+	self itemSelectedTextColor: Color white.
+	self itemHoveredTextColor: Color black.
+	self itemPressedTextColor: Color white.
+	self itemDisabledTextColor: (Color r: 0.2 g: 1 b: 0.2).
 	self sidebarBackgroundColor: (Color r: 0.35 g: 0 b: 0.45).
 	self backdropBackgroundColor: (Color r: 0.35 g: 0.2 b: 0).
 	self backdropEmphasisBackgroundColor: (Color r: 0.5 g: 1 b: 0).

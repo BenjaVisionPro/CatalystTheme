@@ -33,8 +33,9 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	invertedTextColor := self isDark
 		ifTrue: [ Color black alpha: 0.9 ]
 		ifFalse: [ Color white ].
-	appBackgroundColor := self sourceBackgroundColor.
-	backdropBackgroundColor := self consoleBackgroundColor.
+
+	appBackgroundColor := self consoleBackgroundColor.
+	backdropBackgroundColor := self sourceBackgroundColor.
 	backdropEmphasisBackgroundColor := self sourceSelectionColor.
 	sidebarBackgroundColor := self sourceBackgroundColor.
 	contentBackgroundColor := self sourceCurrentLineHighlightColor.
@@ -42,31 +43,56 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	raisedBackgroundColor := self markupBackgroundColor.
 	floatBackgroundColor := self markupBackgroundColor.
 	sidebarTextColor := self secondaryTextColor.
-	self editorBorderColor: self markupBorderColor.
-	self focusedEditorBorderColor: self sourceSelectionColor.
-	self headerBackgroundColor: self sourceBackgroundColor.
-	self headerSecondaryBackgroundColor: self sourceCurrentLineHighlightColor.
-	self headerTextColor: self primaryTextColor.
+
+	self toolbarBackgroundColor: self consoleBackgroundColor.
+	self tabBackgroundColor: self markupBackgroundColor.
+	self tabSelectedBackgroundColor: self sourceCurrentLineHighlightColor.
+	self tabTextColor: self secondaryTextColor.
+	self tabSelectedTextColor: self primaryTextColor.
+
+	self borderColor: self markupBorderColor.
+	self subtleBorderColor: self sourceInvisiblesColor.
+	self strongBorderColor: self sourceSelectionColor.
+	self dividerColor: self markupBorderColor.
+	self focusBorderColor: self sourceSelectionColor.
+
+	self itemBackgroundColor: self sourceBackgroundColor.
+	self itemDeselectedBackgroundColor: self sourceBackgroundColor.
+	self itemSelectedBackgroundColor: self sourceSelectionColor.
+	self itemHoveredBackgroundColor: self sourceCurrentLineHighlightColor.
+	self itemPressedBackgroundColor: self sourceSelectionColor.
+	self itemFocusedBorderColor: self sourceSelectionColor.
+	self itemTextColor: self primaryTextColor.
+	self itemSelectedTextColor: self primaryTextColor.
+	self itemHoveredTextColor: self primaryTextColor.
+	self itemPressedTextColor: self primaryTextColor.
+	self itemDisabledTextColor: self disabledTextColor.
+
+	self editorBorderColor: self borderColor.
+	self focusedEditorBorderColor: self focusBorderColor.
+	self headerBackgroundColor: self toolbarBackgroundColor.
+	self headerSecondaryBackgroundColor: self tabBackgroundColor.
+	self headerTextColor: self tabTextColor.
 	self headerDisabledTextColor: self tertiaryTextColor.
 	self headerTextMarkupColor: self secondaryTextColor.
-	self buttonDefaultBackgroundColor: self sourceCurrentLineHighlightColor.
-	self buttonDisabledBackgroundColor: self markupBackgroundColor.
-	self buttonDefaultBorderColor: self markupBorderColor.
-	self buttonDisabledBorderColor: self tertiaryTextColor.
-	self buttonPressedBorderColor: self sourceSelectionColor.
-	self buttonHoveredBorderColor: self sourceSelectionColor.
+	self buttonDefaultBackgroundColor: self tabSelectedBackgroundColor.
+	self buttonDisabledBackgroundColor: self groupBackgroundColor.
+	self buttonDefaultBorderColor: self borderColor.
+	self buttonDisabledBorderColor: self subtleBorderColor.
+	self buttonPressedBorderColor: self focusBorderColor.
+	self buttonHoveredBorderColor: self strongBorderColor.
 	self buttonDefaultTextColor: self primaryTextColor.
 	self buttonDisabledTextColor: self disabledTextColor.
 	self buttonPressedTextColor: self primaryTextColor.
 	self buttonHoveredTextColor: self primaryTextColor.
-	self buttonTextHighlightColor: self sourceSelectionColor.
-	self buttonFadedBackgroundColor: self sourceCurrentLineHighlightColor.
-	self buttonFocusedFadedBackgroundColor: self sourceSelectionColor.
-	self defaultShadowColor: (self sourceSelectionColor alpha: 0.15).
-	self primaryBorderColor: self markupBorderColor.
-	self darkBorderColor: self markupBorderColor.
-	self lightBorderColor: self sourceCurrentLineHighlightColor.
-	self shadowColor: (self sourceSelectionColor alpha: 0.15).
+	self buttonTextHighlightColor: self syntaxURLColor.
+	self buttonFadedBackgroundColor: self groupBackgroundColor.
+	self buttonFocusedFadedBackgroundColor: self tabSelectedBackgroundColor.
+	self defaultShadowColor: (self sourceSelectionColor alpha: 0.12).
+	self primaryBorderColor: self borderColor.
+	self darkBorderColor: self strongBorderColor.
+	self lightBorderColor: self subtleBorderColor.
+	self shadowColor: (self sourceSelectionColor alpha: 0.12).
 	self newsBackgroundColor: self markupBackgroundColor.
 	self expandCollapseTriangleBackgroundColor: self sourceCurrentLineHighlightColor
 ]

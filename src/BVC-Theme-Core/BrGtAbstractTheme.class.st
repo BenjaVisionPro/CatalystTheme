@@ -47,7 +47,9 @@ BrGtAbstractTheme >> initialize [
 	editor initializeThemeable.
 	button := self class buttonThemeClass theme: self.
 	button initializeThemeable.
-	item := self class itemThemeClass colors: colors theme: self.
+	item := self class itemThemeClass
+		colors: colors
+		theme: self.
 	header := self class headerThemeClass theme: self.
 	header initializeThemeable.
 	label := BrGlamorousLabelTheme theme: self.
