@@ -1,5 +1,5 @@
 Class {
-	#name : ##BrGtItemLightTheme,
+	#name : #BrGtItemLightTheme,
 	#superclass : #BrGlamorousItemTheme,
 	#instVars : [
 		'theme',
