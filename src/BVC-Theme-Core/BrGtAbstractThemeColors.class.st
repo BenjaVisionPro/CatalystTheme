@@ -45,9 +45,9 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	sidebarTextColor := self syntaxCommentDocumentationKeywordColor.
 
 	self toolbarBackgroundColor: self consoleBackgroundColor.
-	self tabBackgroundColor: (self sourceBackgroundColor alpha: 0.96).
-	self tabSelectedBackgroundColor: (self sourceCurrentLineHighlightColor alpha: 0.96).
-	self tabTextColor: (self primaryTextColor alpha: 0.72).
+	self tabBackgroundColor: self markupBackgroundColor.
+	self tabSelectedBackgroundColor: self sourceCurrentLineHighlightColor.
+	self tabTextColor: (self primaryTextColor alpha: 0.82).
 	self tabSelectedTextColor: self primaryTextColor.
 
 	self borderColor: self markupBorderColor.
@@ -73,16 +73,16 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	self headerBackgroundColor: self toolbarBackgroundColor.
 	self headerSecondaryBackgroundColor: self tabBackgroundColor.
 	self headerTextColor: self primaryTextColor.
-	self headerDisabledTextColor: (self primaryTextColor alpha: 0.60).
-	self headerTextMarkupColor: self secondaryTextColor.
+	self headerDisabledTextColor: (self primaryTextColor alpha: 0.68).
+	self headerTextMarkupColor: (self secondaryTextColor alpha: 0.88).
 	self buttonDefaultBackgroundColor: self tabBackgroundColor.
 	self buttonDisabledBackgroundColor: (self sourceBackgroundColor alpha: 0.88).
 	self buttonDefaultBorderColor: (self markupBorderColor alpha: 0.35).
 	self buttonDisabledBorderColor: (self markupBorderColor alpha: 0.20).
 	self buttonPressedBorderColor: self focusBorderColor.
 	self buttonHoveredBorderColor: (self markupBorderColor alpha: 0.55).
-	self buttonDefaultTextColor: (self primaryTextColor alpha: 0.78).
-	self buttonDisabledTextColor: (self primaryTextColor alpha: 0.45).
+	self buttonDefaultTextColor: (self primaryTextColor alpha: 0.86).
+	self buttonDisabledTextColor: (self primaryTextColor alpha: 0.52).
 	self buttonPressedTextColor: self primaryTextColor.
 	self buttonHoveredTextColor: self primaryTextColor.
 	self buttonTextHighlightColor: self syntaxURLColor.
