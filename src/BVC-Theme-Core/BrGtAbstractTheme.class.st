@@ -21,7 +21,7 @@ BrGtAbstractTheme class >> defaultThemeClass [
 
 { #category : #'class defaults' }
 BrGtAbstractTheme class >> editorThemeClass [
-	^ BrGtEditorTheme
+	self subclassResponsibility
 ]
 
 { #category : #'class defaults' }

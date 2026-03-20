@@ -1,18 +1,18 @@
 Class {
-	#name : #BrGtEditorTheme,
-	#superclass : #BrGlamorousEditorTheme,
+	#name : #BrGtEditorLightTheme,
+	#superclass : #BrGlamorousEditorLightTheme,
 	#category : #'BVC-Theme-Core'
 }
 
 { #category : #initialization }
-BrGtEditorTheme >> initialize [
+BrGtEditorLightTheme >> initialize [
 	super initialize.
 	borderColor := Color transparent.
 	focusedBorderColor := Color transparent
 ]
 
 { #category : #initialization }
-BrGtEditorTheme >> initializeThemeable [
+BrGtEditorLightTheme >> initializeThemeable [
 	super initializeThemeable.
 
 	borderColor := self

@@ -20,6 +20,11 @@ BrGtDarkTheme class >> defaultThemeClass [
 ]
 
 { #category : #'class defaults' }
+BrGtDarkTheme class >> editorThemeClass [
+	^ BrGtEditorDarkTheme
+]
+
+{ #category : #'class defaults' }
 BrGtDarkTheme class >> headerThemeClass [
 	^ BrGtHeaderDarkTheme
 ]
