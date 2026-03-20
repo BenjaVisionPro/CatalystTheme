@@ -1012,6 +1012,10 @@ BrGtAbstractThemeColors >> syntaxURLColor: aColor [
 	self semanticColorAt: #syntaxURLColor put: aColor
 ]
 
+{ #category : #'private - helpers' }
+BrGtAbstractThemeColors >> semanticColorAt: aSymbol ifAbsent: aBlock [
+	^ semanticColors at: aSymbol ifAbsent: aBlock
+]
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> toolbarBackgroundColor [
@@ -1020,7 +1024,7 @@ BrGtAbstractThemeColors >> toolbarBackgroundColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> toolbarBackgroundColor: aColor [
-	self semanticColorAt: #toolbarBackgroundColor put: aColor
+	^ self semanticColorAt: #toolbarBackgroundColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1030,7 +1034,7 @@ BrGtAbstractThemeColors >> tabBackgroundColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> tabBackgroundColor: aColor [
-	self semanticColorAt: #tabBackgroundColor put: aColor
+	^ self semanticColorAt: #tabBackgroundColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1040,7 +1044,7 @@ BrGtAbstractThemeColors >> tabSelectedBackgroundColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> tabSelectedBackgroundColor: aColor [
-	self semanticColorAt: #tabSelectedBackgroundColor put: aColor
+	^ self semanticColorAt: #tabSelectedBackgroundColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1050,7 +1054,7 @@ BrGtAbstractThemeColors >> tabTextColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> tabTextColor: aColor [
-	self semanticColorAt: #tabTextColor put: aColor
+	^ self semanticColorAt: #tabTextColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1060,7 +1064,7 @@ BrGtAbstractThemeColors >> tabSelectedTextColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> tabSelectedTextColor: aColor [
-	self semanticColorAt: #tabSelectedTextColor put: aColor
+	^ self semanticColorAt: #tabSelectedTextColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1070,7 +1074,7 @@ BrGtAbstractThemeColors >> borderColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> borderColor: aColor [
-	self semanticColorAt: #borderColor put: aColor
+	^ self semanticColorAt: #borderColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1080,7 +1084,7 @@ BrGtAbstractThemeColors >> subtleBorderColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> subtleBorderColor: aColor [
-	self semanticColorAt: #subtleBorderColor put: aColor
+	^ self semanticColorAt: #subtleBorderColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1090,7 +1094,7 @@ BrGtAbstractThemeColors >> strongBorderColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> strongBorderColor: aColor [
-	self semanticColorAt: #strongBorderColor put: aColor
+	^ self semanticColorAt: #strongBorderColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1100,7 +1104,7 @@ BrGtAbstractThemeColors >> dividerColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> dividerColor: aColor [
-	self semanticColorAt: #dividerColor put: aColor
+	^ self semanticColorAt: #dividerColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1110,7 +1114,7 @@ BrGtAbstractThemeColors >> focusBorderColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> focusBorderColor: aColor [
-	self semanticColorAt: #focusBorderColor put: aColor
+	^ self semanticColorAt: #focusBorderColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1120,7 +1124,7 @@ BrGtAbstractThemeColors >> itemBackgroundColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> itemBackgroundColor: aColor [
-	self semanticColorAt: #itemBackgroundColor put: aColor
+	^ self semanticColorAt: #itemBackgroundColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1130,7 +1134,7 @@ BrGtAbstractThemeColors >> itemDeselectedBackgroundColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> itemDeselectedBackgroundColor: aColor [
-	self semanticColorAt: #itemDeselectedBackgroundColor put: aColor
+	^ self semanticColorAt: #itemDeselectedBackgroundColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1140,7 +1144,7 @@ BrGtAbstractThemeColors >> itemSelectedBackgroundColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> itemSelectedBackgroundColor: aColor [
-	self semanticColorAt: #itemSelectedBackgroundColor put: aColor
+	^ self semanticColorAt: #itemSelectedBackgroundColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1150,7 +1154,7 @@ BrGtAbstractThemeColors >> itemHoveredBackgroundColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> itemHoveredBackgroundColor: aColor [
-	self semanticColorAt: #itemHoveredBackgroundColor put: aColor
+	^ self semanticColorAt: #itemHoveredBackgroundColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1160,7 +1164,7 @@ BrGtAbstractThemeColors >> itemPressedBackgroundColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> itemPressedBackgroundColor: aColor [
-	self semanticColorAt: #itemPressedBackgroundColor put: aColor
+	^ self semanticColorAt: #itemPressedBackgroundColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1170,7 +1174,7 @@ BrGtAbstractThemeColors >> itemFocusedBorderColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> itemFocusedBorderColor: aColor [
-	self semanticColorAt: #itemFocusedBorderColor put: aColor
+	^ self semanticColorAt: #itemFocusedBorderColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1180,7 +1184,7 @@ BrGtAbstractThemeColors >> itemTextColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> itemTextColor: aColor [
-	self semanticColorAt: #itemTextColor put: aColor
+	^ self semanticColorAt: #itemTextColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1190,7 +1194,7 @@ BrGtAbstractThemeColors >> itemSelectedTextColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> itemSelectedTextColor: aColor [
-	self semanticColorAt: #itemSelectedTextColor put: aColor
+	^ self semanticColorAt: #itemSelectedTextColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1200,7 +1204,7 @@ BrGtAbstractThemeColors >> itemHoveredTextColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> itemHoveredTextColor: aColor [
-	self semanticColorAt: #itemHoveredTextColor put: aColor
+	^ self semanticColorAt: #itemHoveredTextColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1210,7 +1214,7 @@ BrGtAbstractThemeColors >> itemPressedTextColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> itemPressedTextColor: aColor [
-	self semanticColorAt: #itemPressedTextColor put: aColor
+	^ self semanticColorAt: #itemPressedTextColor put: aColor
 ]
 
 { #category : #accessing }
@@ -1220,5 +1224,5 @@ BrGtAbstractThemeColors >> itemDisabledTextColor [
 
 { #category : #accessing }
 BrGtAbstractThemeColors >> itemDisabledTextColor: aColor [
-	self semanticColorAt: #itemDisabledTextColor put: aColor
+	^ self semanticColorAt: #itemDisabledTextColor put: aColor
 ]
