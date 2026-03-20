@@ -27,33 +27,32 @@ BrGtAbstractThemeColors >> colorFromXcodeString: aString [
 { #category : #'private - helpers' }
 BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	primaryTextColor := self syntaxPlainTextColor.
-	secondaryTextColor := self syntaxCommentColor.
-	tertiaryTextColor := self syntaxCommentDocumentationKeywordColor.
-	disabledTextColor := self syntaxCommentColor.
+	secondaryTextColor := self syntaxCommentDocumentationKeywordColor.
+	tertiaryTextColor := self syntaxCommentColor.
+	disabledTextColor := self tertiaryTextColor alpha: 0.65.
 	invertedTextColor := self isDark
 		ifTrue: [ Color black alpha: 0.9 ]
 		ifFalse: [ Color white ].
 
 	appBackgroundColor := self consoleBackgroundColor.
-	backdropBackgroundColor := self consoleBackgroundColor.
+	backdropBackgroundColor := self sourceBackgroundColor.
 	backdropEmphasisBackgroundColor := self sourceSelectionColor.
 	sidebarBackgroundColor := self sourceBackgroundColor.
-	contentBackgroundColor := self sourceBackgroundColor.
-	groupBackgroundColor := self sourceCurrentLineHighlightColor.
+	contentBackgroundColor := self sourceCurrentLineHighlightColor.
+	groupBackgroundColor := self markupBackgroundColor.
 	raisedBackgroundColor := self markupBackgroundColor.
 	floatBackgroundColor := self markupBackgroundColor.
-	sidebarTextColor := self syntaxPlainTextColor.
+	sidebarTextColor := self secondaryTextColor.
 
 	self toolbarBackgroundColor: self consoleBackgroundColor.
-	self headerBackgroundColor: self sourceBackgroundColor.
-	self headerSecondaryBackgroundColor: self sourceBackgroundColor.
+	"Top document tabs visibly follow the tab background family in GT."
 	self tabBackgroundColor: self markupBackgroundColor.
 	self tabSelectedBackgroundColor: self sourceCurrentLineHighlightColor.
 	self tabTextColor: self syntaxCommentDocumentationKeywordColor.
 	self tabSelectedTextColor: self syntaxPlainTextColor.
 
 	self borderColor: self markupBorderColor.
-	self subtleBorderColor: self markupBorderColor.
+	self subtleBorderColor: self sourceInvisiblesColor.
 	self strongBorderColor: self sourceSelectionColor.
 	self dividerColor: self markupBorderColor.
 	self focusBorderColor: self sourceSelectionColor.
@@ -64,38 +63,40 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	self itemHoveredBackgroundColor: self sourceCurrentLineHighlightColor.
 	self itemPressedBackgroundColor: self sourceSelectionColor.
 	self itemFocusedBorderColor: self sourceSelectionColor.
-	self itemTextColor: self syntaxPlainTextColor.
-	self itemSelectedTextColor: self syntaxPlainTextColor.
-	self itemHoveredTextColor: self syntaxPlainTextColor.
-	self itemPressedTextColor: self syntaxPlainTextColor.
-	self itemDisabledTextColor: self syntaxCommentColor.
+	self itemTextColor: self primaryTextColor.
+	self itemSelectedTextColor: self primaryTextColor.
+	self itemHoveredTextColor: self primaryTextColor.
+	self itemPressedTextColor: self primaryTextColor.
+	self itemDisabledTextColor: self disabledTextColor.
 
 	self editorBorderColor: self borderColor.
 	self focusedEditorBorderColor: self focusBorderColor.
+	self headerBackgroundColor: self toolbarBackgroundColor.
+	self headerSecondaryBackgroundColor: self tabBackgroundColor.
 	self headerTextColor: self syntaxPlainTextColor.
 	self headerDisabledTextColor: self syntaxCommentColor.
-	self headerTextMarkupColor: self syntaxPlainTextColor.
-	self buttonDefaultBackgroundColor: self markupBackgroundColor.
-	self buttonDisabledBackgroundColor: self sourceBackgroundColor.
-	self buttonDefaultBorderColor: self markupBorderColor.
-	self buttonDisabledBorderColor: self markupBorderColor.
-	self buttonPressedBorderColor: self sourceSelectionColor.
-	self buttonHoveredBorderColor: self sourceSelectionColor.
-	self buttonDefaultTextColor: self syntaxPlainTextColor.
-	self buttonDisabledTextColor: self syntaxCommentColor.
+	self headerTextMarkupColor: self syntaxCommentDocumentationKeywordColor.
+	"GT top tabs/buttons are currently consuming the button background path more than the selected-tab path."
+	self buttonDefaultBackgroundColor: self tabBackgroundColor.
+	self buttonDisabledBackgroundColor: self groupBackgroundColor.
+	self buttonDefaultBorderColor: self borderColor.
+	self buttonDisabledBorderColor: self subtleBorderColor.
+	self buttonPressedBorderColor: self focusBorderColor.
+	self buttonHoveredBorderColor: self strongBorderColor.
+	self buttonDefaultTextColor: self syntaxCommentDocumentationKeywordColor.
+	self buttonDisabledTextColor: self disabledTextColor.
 	self buttonPressedTextColor: self syntaxPlainTextColor.
 	self buttonHoveredTextColor: self syntaxPlainTextColor.
-	self buttonTextHighlightColor: self syntaxPlainTextColor.
-	self buttonFadedBackgroundColor: self markupBackgroundColor.
-	self buttonFocusedFadedBackgroundColor: self sourceCurrentLineHighlightColor.
-	self defaultShadowColor: self markupBorderColor.
-	self primaryBorderColor: self markupBorderColor.
-	self darkBorderColor: self sourceSelectionColor.
-	self lightBorderColor: self markupBorderColor.
-	self shadowColor: self markupBorderColor.
+	self buttonTextHighlightColor: self syntaxURLColor.
+	self buttonFadedBackgroundColor: self groupBackgroundColor.
+	self buttonFocusedFadedBackgroundColor: self tabSelectedBackgroundColor.
+	self defaultShadowColor: (self sourceSelectionColor alpha: 0.12).
+	self primaryBorderColor: self borderColor.
+	self darkBorderColor: self strongBorderColor.
+	self lightBorderColor: self subtleBorderColor.
+	self shadowColor: (self sourceSelectionColor alpha: 0.12).
 	self newsBackgroundColor: self markupBackgroundColor.
 	self expandCollapseTriangleBackgroundColor: self sourceCurrentLineHighlightColor
-
 ]
 
 { #category : #'private - helpers' }
@@ -1011,220 +1012,4 @@ BrGtAbstractThemeColors >> syntaxURLColor [
 { #category : #accessing }
 BrGtAbstractThemeColors >> syntaxURLColor: aColor [
 	self semanticColorAt: #syntaxURLColor put: aColor
-]
-
-
-{ #category : #'private - helpers' }
-BrGtAbstractThemeColors >> semanticColorAt: aSymbol ifAbsent: aBlock [
-	^ semanticColors at: aSymbol ifAbsent: aBlock
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> toolbarBackgroundColor [
-	^ self semanticColorAt: #toolbarBackgroundColor ifAbsent: [ self consoleBackgroundColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> toolbarBackgroundColor: aColor [
-	self semanticColorAt: #toolbarBackgroundColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> tabBackgroundColor [
-	^ self semanticColorAt: #tabBackgroundColor ifAbsent: [ self markupBackgroundColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> tabBackgroundColor: aColor [
-	self semanticColorAt: #tabBackgroundColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> tabSelectedBackgroundColor [
-	^ self semanticColorAt: #tabSelectedBackgroundColor ifAbsent: [ self sourceCurrentLineHighlightColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> tabSelectedBackgroundColor: aColor [
-	self semanticColorAt: #tabSelectedBackgroundColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> tabTextColor [
-	^ self semanticColorAt: #tabTextColor ifAbsent: [ self secondaryTextColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> tabTextColor: aColor [
-	self semanticColorAt: #tabTextColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> tabSelectedTextColor [
-	^ self semanticColorAt: #tabSelectedTextColor ifAbsent: [ self primaryTextColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> tabSelectedTextColor: aColor [
-	self semanticColorAt: #tabSelectedTextColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> borderColor [
-	^ self semanticColorAt: #borderColor ifAbsent: [ self markupBorderColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> borderColor: aColor [
-	self semanticColorAt: #borderColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> subtleBorderColor [
-	^ self semanticColorAt: #subtleBorderColor ifAbsent: [ self markupBorderColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> subtleBorderColor: aColor [
-	self semanticColorAt: #subtleBorderColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> strongBorderColor [
-	^ self semanticColorAt: #strongBorderColor ifAbsent: [ self sourceSelectionColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> strongBorderColor: aColor [
-	self semanticColorAt: #strongBorderColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> dividerColor [
-	^ self semanticColorAt: #dividerColor ifAbsent: [ self markupBorderColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> dividerColor: aColor [
-	self semanticColorAt: #dividerColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> focusBorderColor [
-	^ self semanticColorAt: #focusBorderColor ifAbsent: [ self sourceSelectionColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> focusBorderColor: aColor [
-	self semanticColorAt: #focusBorderColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemBackgroundColor [
-	^ self semanticColorAt: #itemBackgroundColor ifAbsent: [ Color transparent ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemBackgroundColor: aColor [
-	self semanticColorAt: #itemBackgroundColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemDeselectedBackgroundColor [
-	^ self semanticColorAt: #itemDeselectedBackgroundColor ifAbsent: [ self itemBackgroundColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemDeselectedBackgroundColor: aColor [
-	self semanticColorAt: #itemDeselectedBackgroundColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemSelectedBackgroundColor [
-	^ self semanticColorAt: #itemSelectedBackgroundColor ifAbsent: [ self sourceSelectionColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemSelectedBackgroundColor: aColor [
-	self semanticColorAt: #itemSelectedBackgroundColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemHoveredBackgroundColor [
-	^ self semanticColorAt: #itemHoveredBackgroundColor ifAbsent: [ self sourceCurrentLineHighlightColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemHoveredBackgroundColor: aColor [
-	self semanticColorAt: #itemHoveredBackgroundColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemPressedBackgroundColor [
-	^ self semanticColorAt: #itemPressedBackgroundColor ifAbsent: [ self itemSelectedBackgroundColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemPressedBackgroundColor: aColor [
-	self semanticColorAt: #itemPressedBackgroundColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemFocusedBorderColor [
-	^ self semanticColorAt: #itemFocusedBorderColor ifAbsent: [ self focusBorderColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemFocusedBorderColor: aColor [
-	self semanticColorAt: #itemFocusedBorderColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemTextColor [
-	^ self semanticColorAt: #itemTextColor ifAbsent: [ self primaryTextColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemTextColor: aColor [
-	self semanticColorAt: #itemTextColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemSelectedTextColor [
-	^ self semanticColorAt: #itemSelectedTextColor ifAbsent: [ self primaryTextColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemSelectedTextColor: aColor [
-	self semanticColorAt: #itemSelectedTextColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemHoveredTextColor [
-	^ self semanticColorAt: #itemHoveredTextColor ifAbsent: [ self primaryTextColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemHoveredTextColor: aColor [
-	self semanticColorAt: #itemHoveredTextColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemPressedTextColor [
-	^ self semanticColorAt: #itemPressedTextColor ifAbsent: [ self primaryTextColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemPressedTextColor: aColor [
-	self semanticColorAt: #itemPressedTextColor put: aColor
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemDisabledTextColor [
-	^ self semanticColorAt: #itemDisabledTextColor ifAbsent: [ self disabledTextColor ]
-]
-
-{ #category : #accessing }
-BrGtAbstractThemeColors >> itemDisabledTextColor: aColor [
-	self semanticColorAt: #itemDisabledTextColor put: aColor
 ]
