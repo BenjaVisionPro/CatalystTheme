@@ -33,3 +33,9 @@ BrGtLightTheme class >> editorThemeClass [
 BrGtLightTheme class >> headerThemeClass [
 	^ BrGtHeaderLightTheme
 ]
+
+
+{ #category : #'class defaults' }
+BrGtLightTheme class >> itemThemeClass [
+	^ BrGtItemLightTheme
+]

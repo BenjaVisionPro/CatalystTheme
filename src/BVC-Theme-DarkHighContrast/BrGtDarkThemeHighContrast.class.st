@@ -28,3 +28,9 @@ BrGtDarkThemeHighContrast class >> editorThemeClass [
 BrGtDarkThemeHighContrast class >> headerThemeClass [
 	^ BrGtHeaderDarkTheme
 ]
+
+
+{ #category : #'class defaults' }
+BrGtDarkThemeHighContrast class >> itemThemeClass [
+	^ BrGtItemDarkTheme
+]

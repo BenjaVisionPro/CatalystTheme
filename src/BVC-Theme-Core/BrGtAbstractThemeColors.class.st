@@ -29,44 +29,44 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	primaryTextColor := self syntaxPlainTextColor.
 	secondaryTextColor := self syntaxCommentDocumentationKeywordColor.
 	tertiaryTextColor := self syntaxCommentColor.
-	disabledTextColor := self syntaxCommentColor alpha: ((self syntaxCommentColor alpha ifNil: [ 1 ]) * 0.75).
+	disabledTextColor := self tertiaryTextColor alpha: 0.65.
 	invertedTextColor := self isDark
 		ifTrue: [ Color black alpha: 0.9 ]
 		ifFalse: [ Color white ].
-	appBackgroundColor := self consoleBackgroundColor.
-	backdropBackgroundColor := self markupBackgroundColor.
+	appBackgroundColor := self sourceBackgroundColor.
+	backdropBackgroundColor := self consoleBackgroundColor.
 	backdropEmphasisBackgroundColor := self sourceSelectionColor.
-	sidebarBackgroundColor := self markupBackgroundColor.
-	contentBackgroundColor := self sourceBackgroundColor.
-	groupBackgroundColor := self sourceCurrentLineHighlightColor.
-	raisedBackgroundColor := self sourceCurrentLineHighlightColor.
+	sidebarBackgroundColor := self sourceBackgroundColor.
+	contentBackgroundColor := self sourceCurrentLineHighlightColor.
+	groupBackgroundColor := self markupBackgroundColor.
+	raisedBackgroundColor := self markupBackgroundColor.
 	floatBackgroundColor := self markupBackgroundColor.
-	sidebarTextColor := self syntaxPlainTextColor.
+	sidebarTextColor := self secondaryTextColor.
 	self editorBorderColor: self markupBorderColor.
-	self focusedEditorBorderColor: self syntaxURLColor.
-	self headerBackgroundColor: self markupBackgroundColor.
-	self headerSecondaryBackgroundColor: self appBackgroundColor.
+	self focusedEditorBorderColor: self sourceSelectionColor.
+	self headerBackgroundColor: self sourceBackgroundColor.
+	self headerSecondaryBackgroundColor: self sourceCurrentLineHighlightColor.
 	self headerTextColor: self primaryTextColor.
 	self headerDisabledTextColor: self tertiaryTextColor.
-	self headerTextMarkupColor: self markupOtherHeadingColor.
+	self headerTextMarkupColor: self secondaryTextColor.
 	self buttonDefaultBackgroundColor: self sourceCurrentLineHighlightColor.
-	self buttonDisabledBackgroundColor: self sourceBlockDimBackgroundColor.
+	self buttonDisabledBackgroundColor: self markupBackgroundColor.
 	self buttonDefaultBorderColor: self markupBorderColor.
 	self buttonDisabledBorderColor: self tertiaryTextColor.
-	self buttonPressedBorderColor: self syntaxURLColor.
-	self buttonHoveredBorderColor: self syntaxURLColor.
+	self buttonPressedBorderColor: self sourceSelectionColor.
+	self buttonHoveredBorderColor: self sourceSelectionColor.
 	self buttonDefaultTextColor: self primaryTextColor.
 	self buttonDisabledTextColor: self disabledTextColor.
 	self buttonPressedTextColor: self primaryTextColor.
 	self buttonHoveredTextColor: self primaryTextColor.
 	self buttonTextHighlightColor: self sourceSelectionColor.
-	self buttonFadedBackgroundColor: self markupBackgroundColor.
+	self buttonFadedBackgroundColor: self sourceCurrentLineHighlightColor.
 	self buttonFocusedFadedBackgroundColor: self sourceSelectionColor.
-	self defaultShadowColor: (self sourceSelectionColor alpha: 0.25).
+	self defaultShadowColor: (self sourceSelectionColor alpha: 0.15).
 	self primaryBorderColor: self markupBorderColor.
 	self darkBorderColor: self markupBorderColor.
-	self lightBorderColor: self markupBorderColor.
-	self shadowColor: (self sourceSelectionColor alpha: 0.25).
+	self lightBorderColor: self sourceCurrentLineHighlightColor.
+	self shadowColor: (self sourceSelectionColor alpha: 0.15).
 	self newsBackgroundColor: self markupBackgroundColor.
 	self expandCollapseTriangleBackgroundColor: self sourceCurrentLineHighlightColor
 ]

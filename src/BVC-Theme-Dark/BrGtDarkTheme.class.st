@@ -28,3 +28,9 @@ BrGtDarkTheme class >> editorThemeClass [
 BrGtDarkTheme class >> headerThemeClass [
 	^ BrGtHeaderDarkTheme
 ]
+
+
+{ #category : #'class defaults' }
+BrGtDarkTheme class >> itemThemeClass [
+	^ BrGtItemDarkTheme
+]
