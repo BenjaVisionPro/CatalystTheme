@@ -45,7 +45,7 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	sidebarTextColor := self syntaxPlainTextColor.
 
 	self toolbarBackgroundColor: self consoleBackgroundColor.
-	self headerBackgroundColor: self consoleBackgroundColor.
+	self headerBackgroundColor: self sourceBackgroundColor.
 	self headerSecondaryBackgroundColor: self sourceBackgroundColor.
 	self tabBackgroundColor: self markupBackgroundColor.
 	self tabSelectedBackgroundColor: self sourceCurrentLineHighlightColor.
@@ -73,7 +73,7 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	self editorBorderColor: self borderColor.
 	self focusedEditorBorderColor: self focusBorderColor.
 	self headerTextColor: self syntaxPlainTextColor.
-	self headerDisabledTextColor: self syntaxCommentColor.
+	self headerDisabledTextColor: self syntaxCommentDocumentationKeywordColor.
 	self headerTextMarkupColor: self syntaxCommentDocumentationKeywordColor.
 	self buttonDefaultBackgroundColor: self markupBackgroundColor.
 	self buttonDisabledBackgroundColor: self sourceBackgroundColor.
@@ -81,7 +81,7 @@ BrGtAbstractThemeColors >> initializeGlamorousMappings [
 	self buttonDisabledBorderColor: self markupBorderColor.
 	self buttonPressedBorderColor: self sourceSelectionColor.
 	self buttonHoveredBorderColor: self sourceSelectionColor.
-	self buttonDefaultTextColor: self syntaxPlainTextColor.
+	self buttonDefaultTextColor: self syntaxCommentDocumentationKeywordColor.
 	self buttonDisabledTextColor: self syntaxCommentColor.
 	self buttonPressedTextColor: self syntaxPlainTextColor.
 	self buttonHoveredTextColor: self syntaxPlainTextColor.
