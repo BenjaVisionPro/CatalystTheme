@@ -13,7 +13,7 @@ CgtSemanticRoleRegistry class >> phaseOneDefault [
     registry := self new.
 
     registry registerRoles: {
-        (CgtSemanticRole named: #surfaceWorldBackground domain: #ui kind: #color).
+        (CgtSemanticRole named: #surfaceWorldBackground domain: #ui kind: #background).
         (CgtSemanticRole named: #surfaceChromePrimary domain: #ui kind: #color).
         (CgtSemanticRole named: #surfaceChromeSecondary domain: #ui kind: #color).
         (CgtSemanticRole named: #surfaceTabBarBackground domain: #ui kind: #color).

@@ -26,6 +26,11 @@ CgtLightThemeExamples class >> worldSurfaceBackgroundColor [
 ]
 
 { #category : #examples }
+CgtLightThemeExamples class >> worldSurfaceBackgroundValue [
+    ^ self theme bindings valueForConsumerSelector: #appBackground fromPalette: self theme uiPalette
+]
+
+{ #category : #examples }
 CgtLightThemeExamples class >> theme [
     ^ CgtLightTheme new
 ]

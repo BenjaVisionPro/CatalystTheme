@@ -14,6 +14,15 @@ CgtTransparentThemeExamples class >> openThemeEditor [
     ^ GtBlocThemeEditorElement new editTheme: self theme
 ]
 
+{ #category : #examples }
+CgtTransparentThemeExamples class >> openThemeEditorOrangeTealSpace [
+    ^ GtBlocThemeEditorElement new editTheme: self themeOrangeTealSpace
+]
+
+{ #category : #examples }
+CgtTransparentThemeExamples class >> openThemeEditorPurpleSpace [
+    ^ GtBlocThemeEditorElement new editTheme: self themePurpleSpace
+]
 
 { #category : #examples }
 CgtTransparentThemeExamples class >> worldSurfaceBackground [
@@ -26,6 +35,37 @@ CgtTransparentThemeExamples class >> worldSurfaceBackgroundColor [
 ]
 
 { #category : #examples }
+CgtTransparentThemeExamples class >> worldSurfaceBackgroundValue [
+    ^ self theme bindings valueForConsumerSelector: #appBackground fromPalette: self theme uiPalette
+]
+
+{ #category : #examples }
+CgtTransparentThemeExamples class >> worldSurfaceBackgroundValueOrangeTealSpace [
+    ^ self themeOrangeTealSpace bindings valueForConsumerSelector: #appBackground fromPalette: self themeOrangeTealSpace uiPalette
+]
+
+{ #category : #examples }
+CgtTransparentThemeExamples class >> worldSurfaceBackgroundValuePurpleSpace [
+    ^ self themePurpleSpace bindings valueForConsumerSelector: #appBackground fromPalette: self themePurpleSpace uiPalette
+]
+
+{ #category : #examples }
 CgtTransparentThemeExamples class >> theme [
-    ^ CgtTransparentTheme new
+    ^ self themeOrangeTealSpace
+]
+
+{ #category : #examples }
+CgtTransparentThemeExamples class >> themeOrangeTealSpace [
+    | theme |
+    theme := CgtTransparentTheme new.
+    theme useOrangeTealSpaceWorldBackground.
+    ^ theme
+]
+
+{ #category : #examples }
+CgtTransparentThemeExamples class >> themePurpleSpace [
+    | theme |
+    theme := CgtTransparentTheme new.
+    theme usePurpleSpaceWorldBackground.
+    ^ theme
 ]

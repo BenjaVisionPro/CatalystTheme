@@ -1,17 +1,17 @@
 Class {
-	#name : #CgtDarkThemeExamples,
-	#superclass : #Object,
-	#category : #'BVC-Theme-Dark'
+    #name : #CgtDarkThemeExamples,
+    #superclass : #Object,
+    #category : #'BVC-Theme-Dark'
 }
 
 { #category : #examples }
 CgtDarkThemeExamples class >> inspectTheme [
-	^ self theme inspect
+    ^ self theme inspect
 ]
 
 { #category : #examples }
 CgtDarkThemeExamples class >> openThemeEditor [
-	^ GtBlocThemeEditorElement new editTheme: self theme
+    ^ GtBlocThemeEditorElement new editTheme: self theme
 ]
 
 { #category : #examples }
@@ -38,6 +38,11 @@ CgtDarkThemeExamples class >> worldSurfaceBackgroundColor [
 ]
 
 { #category : #examples }
+CgtDarkThemeExamples class >> worldSurfaceBackgroundValue [
+    ^ self theme bindings valueForConsumerSelector: #appBackground fromPalette: self theme uiPalette
+]
+
+{ #category : #examples }
 CgtDarkThemeExamples class >> theme [
-	^ CgtDarkTheme new
+    ^ CgtDarkTheme new
 ]

@@ -38,7 +38,7 @@ CgtTransparentTheme class >> itemThemeClass [
 CgtTransparentTheme >> initializeBindings [
     super initializeBindings.
     bindings addBindings: {
-        (CgtAbstractBinding roleNamed: #surfaceWorldBackground consumerSelector: #appBackgroundColor).
+        (CgtAbstractBinding roleNamed: #surfaceWorldBackground consumerSelector: #appBackground).
         (CgtAbstractBinding roleNamed: #surfaceTabBarBackground consumerSelector: #backdropBackgroundColor).
         (CgtAbstractBinding roleNamed: #surfaceTabContentBackground consumerSelector: #contentBackgroundColor).
         (CgtAbstractBinding roleNamed: #surfaceChromePrimary consumerSelector: #appBackgroundColor).
@@ -54,4 +54,16 @@ CgtTransparentTheme >> initializeBindings [
 CgtTransparentTheme >> initializePalettes [
     uiPalette := CgtTransparentUIPalette new.
     codePalette := CgtTransparentCodePalette new
+]
+
+{ #category : #backgrounds }
+CgtTransparentTheme >> useOrangeTealSpaceWorldBackground [
+    self uiPalette useOrangeTealSpaceWorldBackground.
+    self onThemeModified
+]
+
+{ #category : #backgrounds }
+CgtTransparentTheme >> usePurpleSpaceWorldBackground [
+    self uiPalette usePurpleSpaceWorldBackground.
+    self onThemeModified
 ]

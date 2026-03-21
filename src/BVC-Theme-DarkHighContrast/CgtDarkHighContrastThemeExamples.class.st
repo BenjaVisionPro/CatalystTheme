@@ -26,6 +26,11 @@ CgtDarkHighContrastThemeExamples class >> worldSurfaceBackgroundColor [
 ]
 
 { #category : #examples }
+CgtDarkHighContrastThemeExamples class >> worldSurfaceBackgroundValue [
+    ^ self theme bindings valueForConsumerSelector: #appBackground fromPalette: self theme uiPalette
+]
+
+{ #category : #examples }
 CgtDarkHighContrastThemeExamples class >> theme [
     ^ CgtDarkHighContrastTheme new
 ]

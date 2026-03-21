@@ -38,7 +38,7 @@ CgtDarkHighContrastTheme class >> itemThemeClass [
 CgtDarkHighContrastTheme >> initializeBindings [
     super initializeBindings.
     bindings addBindings: {
-        (CgtAbstractBinding roleNamed: #surfaceWorldBackground consumerSelector: #appBackgroundColor).
+        (CgtAbstractBinding roleNamed: #surfaceWorldBackground consumerSelector: #appBackground).
         (CgtAbstractBinding roleNamed: #surfaceTabBarBackground consumerSelector: #backdropBackgroundColor).
         (CgtAbstractBinding roleNamed: #surfaceTabContentBackground consumerSelector: #contentBackgroundColor).
         (CgtAbstractBinding roleNamed: #surfaceChromePrimary consumerSelector: #appBackgroundColor).
