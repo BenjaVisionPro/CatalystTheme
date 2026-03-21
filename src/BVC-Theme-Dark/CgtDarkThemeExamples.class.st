@@ -26,6 +26,17 @@ CgtDarkThemeExamples class >> proofChecklist [
 	}
 ]
 
+
+{ #category : #examples }
+CgtDarkThemeExamples class >> worldSurfaceBackground [
+    ^ self theme default appBackground
+]
+
+{ #category : #examples }
+CgtDarkThemeExamples class >> worldSurfaceBackgroundColor [
+    ^ self theme colors appBackgroundColor
+]
+
 { #category : #examples }
 CgtDarkThemeExamples class >> theme [
 	^ CgtDarkTheme new

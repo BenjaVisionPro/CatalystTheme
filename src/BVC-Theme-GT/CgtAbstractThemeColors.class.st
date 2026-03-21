@@ -6,28 +6,22 @@ Class {
 
 { #category : #accessing }
 CgtAbstractThemeColors >> appBackgroundColor [
-    ^ self
-        uiColorRoleNamedAnyOf: #(surfaceWorldBackground surfaceChromePrimary)
-        fallback: [ super appBackgroundColor ]
+    ^ self uiColorForConsumerSelector: #appBackgroundColor fallback: [ super appBackgroundColor ]
 ]
 
 { #category : #accessing }
 CgtAbstractThemeColors >> backdropBackgroundColor [
-    ^ self
-        uiColorRoleNamedAnyOf: #(surfaceTabBarBackground surfaceChromeSecondary)
-        fallback: [ super backdropBackgroundColor ]
+    ^ self uiColorForConsumerSelector: #backdropBackgroundColor fallback: [ super backdropBackgroundColor ]
 ]
 
 { #category : #accessing }
 CgtAbstractThemeColors >> backdropEmphasisBackgroundColor [
-    ^ self uiColorRoleNamed: #tabBackgroundActive fallback: [ super backdropEmphasisBackgroundColor ]
+    ^ self uiColorForConsumerSelector: #backdropEmphasisBackgroundColor fallback: [ super backdropEmphasisBackgroundColor ]
 ]
 
 { #category : #accessing }
 CgtAbstractThemeColors >> contentBackgroundColor [
-    ^ self
-        uiColorRoleNamedAnyOf: #(surfaceTabContentBackground surfaceContentPrimary)
-        fallback: [ super contentBackgroundColor ]
+    ^ self uiColorForConsumerSelector: #contentBackgroundColor fallback: [ super contentBackgroundColor ]
 ]
 
 { #category : #accessing }
@@ -52,7 +46,7 @@ CgtAbstractThemeColors >> invertedTextColor [
 
 { #category : #accessing }
 CgtAbstractThemeColors >> primaryTextColor [
-    ^ self uiColorRoleNamed: #textPrimary fallback: [ super primaryTextColor ]
+    ^ self uiColorForConsumerSelector: #primaryTextColor fallback: [ super primaryTextColor ]
 ]
 
 { #category : #accessing }
@@ -78,6 +72,13 @@ CgtAbstractThemeColors >> sidebarTextColor [
 { #category : #accessing }
 CgtAbstractThemeColors >> tertiaryTextColor [
     ^ self uiColorRoleNamed: #textMuted fallback: [ super tertiaryTextColor ]
+]
+
+{ #category : #private }
+CgtAbstractThemeColors >> uiColorForConsumerSelector: aSelector fallback: aBlock [
+    (theme notNil and: [ theme bindings notNil and: [ theme uiPalette notNil and: [ theme bindings hasBindingForConsumerSelector: aSelector ] ] ])
+        ifTrue: [ ^ theme bindings valueForConsumerSelector: aSelector fromPalette: theme uiPalette ].
+    ^ aBlock value
 ]
 
 { #category : #private }

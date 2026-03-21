@@ -14,6 +14,17 @@ CgtLightThemeExamples class >> openThemeEditor [
     ^ GtBlocThemeEditorElement new editTheme: self theme
 ]
 
+
+{ #category : #examples }
+CgtLightThemeExamples class >> worldSurfaceBackground [
+    ^ self theme default appBackground
+]
+
+{ #category : #examples }
+CgtLightThemeExamples class >> worldSurfaceBackgroundColor [
+    ^ self theme colors appBackgroundColor
+]
+
 { #category : #examples }
 CgtLightThemeExamples class >> theme [
     ^ CgtLightTheme new
