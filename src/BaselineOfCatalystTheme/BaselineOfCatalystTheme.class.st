@@ -10,10 +10,11 @@ BaselineOfCatalystTheme >> baseline: spec [
 	<baseline>
 	^ spec
 		for: #common
-		do: [ spec
+		do: [
+			spec
 				package: 'BVC-Theme-Core';
-				package: 'BVC-Theme-Dark';
-				package: 'BVC-Theme-DarkHighContrast';
-				package: 'BVC-Theme-Light';
-				package: 'BVC-Theme-Debug' ]
+				package: 'BVC-Theme-GT' with: [
+					spec requires: #('BVC-Theme-Core') ];
+				package: 'BVC-Theme-Palettes-Core' with: [
+					spec requires: #('BVC-Theme-Core') ] ]
 ]
