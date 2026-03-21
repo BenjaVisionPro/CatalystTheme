@@ -1,41 +1,41 @@
 Class {
-    #name : #CgtDarkTheme,
+    #name : #CgtDarkHighContrastTheme,
     #superclass : #CgtAbstractTheme,
-    #category : #'BVC-Theme-Dark'
+    #category : #'BVC-Theme-DarkHighContrast'
 }
 
 { #category : #'class defaults' }
-CgtDarkTheme class >> buttonThemeClass [
+CgtDarkHighContrastTheme class >> buttonThemeClass [
     ^ BrGlamorousButtonDarkTheme
 ]
 
 { #category : #'class defaults' }
-CgtDarkTheme class >> colorsClass [
-    ^ CgtDarkThemeColors
+CgtDarkHighContrastTheme class >> colorsClass [
+    ^ CgtDarkHighContrastThemeColors
 ]
 
 { #category : #'class defaults' }
-CgtDarkTheme class >> defaultThemeClass [
-    ^ CgtDarkDefaultTheme
+CgtDarkHighContrastTheme class >> defaultThemeClass [
+    ^ CgtDarkHighContrastDefaultTheme
 ]
 
 { #category : #'class defaults' }
-CgtDarkTheme class >> editorThemeClass [
-    ^ CgtDarkEditorTheme
+CgtDarkHighContrastTheme class >> editorThemeClass [
+    ^ CgtDarkHighContrastEditorTheme
 ]
 
 { #category : #'class defaults' }
-CgtDarkTheme class >> headerThemeClass [
-    ^ CgtDarkHeaderTheme
+CgtDarkHighContrastTheme class >> headerThemeClass [
+    ^ CgtDarkHighContrastHeaderTheme
 ]
 
 { #category : #'class defaults' }
-CgtDarkTheme class >> itemThemeClass [
-    ^ CgtDarkItemTheme
+CgtDarkHighContrastTheme class >> itemThemeClass [
+    ^ CgtDarkHighContrastItemTheme
 ]
 
 { #category : #initialization }
-CgtDarkTheme >> initializeBindings [
+CgtDarkHighContrastTheme >> initializeBindings [
     super initializeBindings.
     bindings addBindings: {
         (CgtAbstractBinding roleNamed: #surfaceWorldBackground consumerSelector: #appBackgroundColor).
@@ -51,7 +51,7 @@ CgtDarkTheme >> initializeBindings [
 ]
 
 { #category : #initialization }
-CgtDarkTheme >> initializePalettes [
-    uiPalette := CgtDarkUIPalette new.
-    codePalette := CgtDarkCodePalette new
+CgtDarkHighContrastTheme >> initializePalettes [
+    uiPalette := CgtDarkHighContrastUIPalette new.
+    codePalette := CgtDarkHighContrastCodePalette new
 ]

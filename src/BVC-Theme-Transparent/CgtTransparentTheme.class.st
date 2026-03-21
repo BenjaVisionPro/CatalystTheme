@@ -1,41 +1,41 @@
 Class {
-    #name : #CgtDarkTheme,
+    #name : #CgtTransparentTheme,
     #superclass : #CgtAbstractTheme,
-    #category : #'BVC-Theme-Dark'
+    #category : #'BVC-Theme-Transparent'
 }
 
 { #category : #'class defaults' }
-CgtDarkTheme class >> buttonThemeClass [
+CgtTransparentTheme class >> buttonThemeClass [
     ^ BrGlamorousButtonDarkTheme
 ]
 
 { #category : #'class defaults' }
-CgtDarkTheme class >> colorsClass [
-    ^ CgtDarkThemeColors
+CgtTransparentTheme class >> colorsClass [
+    ^ CgtTransparentThemeColors
 ]
 
 { #category : #'class defaults' }
-CgtDarkTheme class >> defaultThemeClass [
-    ^ CgtDarkDefaultTheme
+CgtTransparentTheme class >> defaultThemeClass [
+    ^ CgtTransparentDefaultTheme
 ]
 
 { #category : #'class defaults' }
-CgtDarkTheme class >> editorThemeClass [
-    ^ CgtDarkEditorTheme
+CgtTransparentTheme class >> editorThemeClass [
+    ^ CgtTransparentEditorTheme
 ]
 
 { #category : #'class defaults' }
-CgtDarkTheme class >> headerThemeClass [
-    ^ CgtDarkHeaderTheme
+CgtTransparentTheme class >> headerThemeClass [
+    ^ CgtTransparentHeaderTheme
 ]
 
 { #category : #'class defaults' }
-CgtDarkTheme class >> itemThemeClass [
-    ^ CgtDarkItemTheme
+CgtTransparentTheme class >> itemThemeClass [
+    ^ CgtTransparentItemTheme
 ]
 
 { #category : #initialization }
-CgtDarkTheme >> initializeBindings [
+CgtTransparentTheme >> initializeBindings [
     super initializeBindings.
     bindings addBindings: {
         (CgtAbstractBinding roleNamed: #surfaceWorldBackground consumerSelector: #appBackgroundColor).
@@ -51,7 +51,7 @@ CgtDarkTheme >> initializeBindings [
 ]
 
 { #category : #initialization }
-CgtDarkTheme >> initializePalettes [
-    uiPalette := CgtDarkUIPalette new.
-    codePalette := CgtDarkCodePalette new
+CgtTransparentTheme >> initializePalettes [
+    uiPalette := CgtTransparentUIPalette new.
+    codePalette := CgtTransparentCodePalette new
 ]
