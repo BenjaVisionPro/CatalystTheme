@@ -1,1 +1,1 @@
-Package { #name : 'BaselineOfCatalystTheme' }
+Package { #name : #'BaselineOfCatalystTheme' }
