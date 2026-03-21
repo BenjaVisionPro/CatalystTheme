@@ -6,21 +6,25 @@ Class {
 
 { #category : #initialization }
 CgtTransparentDefaultTheme >> initializeThemeable [
-    super initializeThemeable.
+super initializeThemeable.
 
-    primaryBorderColor := self
-            color: [ :aTheme | aTheme uiPalette valueForRoleNamed: #borderDefault ]
-            source: [ :aTheme | aTheme default primaryBorderColor ].
+primaryBorderColor := self
+        color: [ :aTheme | aTheme uiPalette valueForRoleNamed: #borderDefault ]
+        source: [ :aTheme | aTheme default primaryBorderColor ].
 
-    darkBorderColor := self
-            color: [ :aTheme | aTheme uiPalette valueForRoleNamed: #borderDefault ]
-            source: [ :aTheme | aTheme default darkBorderColor ].
+darkBorderColor := self
+        color: [ :aTheme | aTheme uiPalette valueForRoleNamed: #borderDefault ]
+        source: [ :aTheme | aTheme default darkBorderColor ].
 
-    appBackground := self
-            background: [ :aTheme | aTheme bindings valueForConsumerSelector: #appBackground fromPalette: aTheme uiPalette ]
-            source: [ :aTheme | aTheme default appBackground ].
+newsBackgroundColor := self
+        color: [ :aTheme | aTheme uiPalette valueForRoleNamed: #surfaceContentSecondary ]
+        source: [ :aTheme | aTheme default newsBackgroundColor ]
+]
 
-    newsBackgroundColor := self
-            color: [ :aTheme | aTheme uiPalette valueForRoleNamed: #surfaceContentSecondary ]
-            source: [ :aTheme | aTheme default newsBackgroundColor ]
+
+{ #category : #accessing }
+CgtTransparentDefaultTheme >> appBackground [
+    (theme notNil and: [ theme bindings notNil and: [ theme uiPalette notNil and: [ theme bindings hasBindingForConsumerSelector: #appBackground ] ] ])
+        ifTrue: [ ^ theme bindings valueForConsumerSelector: #appBackground fromPalette: theme uiPalette ].
+    ^ super appBackground
 ]
