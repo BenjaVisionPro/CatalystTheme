@@ -53,12 +53,12 @@ CgtTransparentUIPalette >> loadImageFormFrom: aPathString [
 CgtTransparentUIPalette >> useOrangeTealSpaceWorldBackground [
     self
         valueAtRoleNamed: #surfaceWorldBackground
-        put: (self loadImageFormFrom: self orangeTealSpaceImagePath)
+        put: ((self loadImageFormFrom: self orangeTealSpaceImagePath) asBlBackground)
 ]
 
 { #category : #backgrounds }
 CgtTransparentUIPalette >> usePurpleSpaceWorldBackground [
     self
         valueAtRoleNamed: #surfaceWorldBackground
-        put: (self loadImageFormFrom: self purpleSpaceImagePath)
+        put: ((self loadImageFormFrom: self purpleSpaceImagePath) asBlBackground)
 ]
