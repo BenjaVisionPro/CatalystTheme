@@ -11,7 +11,6 @@ Class {
 CgtAbstractItemTheme class >> theme: aTheme [
 	^ self new
 		theme: aTheme;
-		initializeThemeable;
 		yourself
 ]
 
@@ -45,7 +44,7 @@ CgtAbstractItemTheme >> initialize [
 
 { #category : #initialization }
 CgtAbstractItemTheme >> initializeThemeable [
-	"Phase 1 hook. Kept explicit so item participates in theme refresh."
+	"Phase 1/2 hook. Kept explicit so item participates in theme refresh."
 ]
 
 { #category : #accessing }

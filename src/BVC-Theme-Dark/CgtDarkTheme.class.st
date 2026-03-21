@@ -16,7 +16,7 @@ CgtDarkTheme class >> colorsClass [
 
 { #category : #'class defaults' }
 CgtDarkTheme class >> defaultThemeClass [
-	^ BrGlamorousDefaultDarkTheme
+	^ CgtDarkDefaultTheme
 ]
 
 { #category : #'class defaults' }
@@ -26,12 +26,25 @@ CgtDarkTheme class >> editorThemeClass [
 
 { #category : #'class defaults' }
 CgtDarkTheme class >> headerThemeClass [
-	^ BrGlamorousHeaderDarkTheme
+	^ CgtDarkHeaderTheme
 ]
 
 { #category : #'class defaults' }
 CgtDarkTheme class >> itemThemeClass [
 	^ CgtDarkItemTheme
+]
+
+{ #category : #initialization }
+CgtDarkTheme >> initializeBindings [
+	super initializeBindings.
+	bindings addBindings: {
+		(CgtAbstractBinding roleNamed: #surfaceChromePrimary consumerSelector: #appBackgroundColor).
+		(CgtAbstractBinding roleNamed: #surfaceChromeSecondary consumerSelector: #backdropBackgroundColor).
+		(CgtAbstractBinding roleNamed: #surfaceContentPrimary consumerSelector: #contentBackgroundColor).
+		(CgtAbstractBinding roleNamed: #textPrimary consumerSelector: #primaryTextColor).
+		(CgtAbstractBinding roleNamed: #borderDefault consumerSelector: #borderColor).
+		(CgtAbstractBinding roleNamed: #codeTextKeyword consumerSelector: #pharoPragmaForeground)
+	}
 ]
 
 { #category : #initialization }
