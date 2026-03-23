@@ -16,3 +16,8 @@ CgtThemeEditorOverlayEventHandler >> overlay [
 CgtThemeEditorOverlayEventHandler >> overlay: anOverlay [
 	overlay := anOverlay
 ]
+
+{ #category : #'api - accessing' }
+CgtThemeEditorOverlayEventHandler >> eventsToHandle [
+	^ #()
+]
