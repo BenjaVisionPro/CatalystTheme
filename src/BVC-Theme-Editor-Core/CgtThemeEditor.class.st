@@ -11,11 +11,48 @@ Class {
 }
 
 { #category : #'instance creation' }
+CgtThemeEditor class >> closeOn: anElement [
+	| anEditor |
+	anEditor := self editorOn: anElement.
+	anEditor ifNil: [ ^ nil ].
+	anEditor close.
+	anElement userData removeKey: self userDataKey ifAbsent: [ ].
+	^ nil
+]
+
+{ #category : #'instance creation' }
+CgtThemeEditor class >> editorOn: anElement [
+	^ anElement userData at: self userDataKey ifAbsent: [ nil ]
+]
+
+{ #category : #'instance creation' }
 CgtThemeEditor class >> on: anElement [
 	^ self new
 		targetElement: anElement;
 		open;
 		yourself
+]
+
+{ #category : #'instance creation' }
+CgtThemeEditor class >> openOn: anElement [
+	| anEditor |
+	anEditor := self editorOn: anElement.
+	anEditor ifNotNil: [ ^ anEditor ].
+	anEditor := self on: anElement.
+	anElement userData at: self userDataKey put: anEditor.
+	^ anEditor
+]
+
+{ #category : #'instance creation' }
+CgtThemeEditor class >> toggleOn: anElement [
+	^ (self editorOn: anElement)
+		ifNil: [ self openOn: anElement ]
+		ifNotNil: [ self closeOn: anElement ]
+]
+
+{ #category : #'instance creation' }
+CgtThemeEditor class >> userDataKey [
+	^ #cgtThemeEditor
 ]
 
 { #category : #closing }
@@ -67,11 +104,4 @@ CgtThemeEditor >> targetElement [
 { #category : #accessing }
 CgtThemeEditor >> targetElement: anElement [
 	targetElement := anElement
-]
-
-{ #category : #toggling }
-CgtThemeEditor >> toggle [
-	self isOpen
-		ifTrue: [ self close ]
-		ifFalse: [ self open ]
 ]
