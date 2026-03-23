@@ -1,6 +1,6 @@
 Class {
-	#name : #CgtThemeEditorOverlay,
-	#superclass : #BlElement,
+	#name : 'CgtThemeEditorOverlay',
+	#superclass : 'BlElement',
 	#instVars : [
 		'targetElement',
 		'highlight',
@@ -9,10 +9,11 @@ Class {
 		'elementToSelect',
 		'eventHandler'
 	],
-	#category : #'BVC-Theme-Editor-Core'
+	#category : 'BVC-Theme-Editor-Core',
+	#package : 'BVC-Theme-Editor-Core'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CgtThemeEditorOverlay class >> on: anElement [
 	^ self new
 		targetElement: anElement;
@@ -20,25 +21,25 @@ CgtThemeEditorOverlay class >> on: anElement [
 		yourself
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 CgtThemeEditorOverlay >> addEventHandlerToElementToHighlightOrSelect: anElement [
 	((elementToSelect = anElement or: [ elementToHighlight = anElement ])
 		and: [ (anElement hasEventHandler: eventHandler) not ])
 		ifTrue: [ anElement addEventHandler: eventHandler ]
 ]
 
-{ #category : #attaching }
+{ #category : 'attaching' }
 CgtThemeEditorOverlay >> attach [
 	targetElement ifNotNil: [
 		targetElement addChild: self ]
 ]
 
-{ #category : #attaching }
+{ #category : 'attaching' }
 CgtThemeEditorOverlay >> detach [
 	self removeFromParent
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtThemeEditorOverlay >> hideElement: anElement [
 	(elementToHighlight = anElement or: [ elementToHighlight isNil ])
 		ifTrue: [ highlight visibility: BlVisibility gone ].
@@ -46,7 +47,7 @@ CgtThemeEditorOverlay >> hideElement: anElement [
 		ifTrue: [ selection visibility: BlVisibility gone ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtThemeEditorOverlay >> highlightElement: anElementOrNil [
 	| aPreviousElementToHighlight |
 	aPreviousElementToHighlight := elementToHighlight.
@@ -60,7 +61,7 @@ CgtThemeEditorOverlay >> highlightElement: anElementOrNil [
 			highlight visibility: BlVisibility visible ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CgtThemeEditorOverlay >> initialize [
 	super initialize.
 	self constraintsDo: [ :c |
@@ -79,27 +80,27 @@ CgtThemeEditorOverlay >> initialize [
 	self addChild: selection
 ]
 
-{ #category : #'hooks - children' }
+{ #category : 'hooks - children' }
 CgtThemeEditorOverlay >> onAddedToSceneGraph [
 	super onAddedToSceneGraph.
 	elementToHighlight ifNotNil: [ :anElement | self addEventHandlerToElementToHighlightOrSelect: anElement ].
 	elementToSelect ifNotNil: [ :anElement | self addEventHandlerToElementToHighlightOrSelect: anElement ]
 ]
 
-{ #category : #'hooks - geometry' }
+{ #category : 'hooks - geometry' }
 CgtThemeEditorOverlay >> onExtentChanged [
 	super onExtentChanged.
 	self updatePositions
 ]
 
-{ #category : #'hooks - children' }
+{ #category : 'hooks - children' }
 CgtThemeEditorOverlay >> onRemovedFromSceneGraph [
 	super onRemovedFromSceneGraph.
 	elementToHighlight ifNotNil: [ :anElement | anElement removeEventHandler: eventHandler ].
 	elementToSelect ifNotNil: [ :anElement | anElement removeEventHandler: eventHandler ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 CgtThemeEditorOverlay >> removeEventHandlerFromElementToHighlightOrSelect: anElement [
 	(elementToSelect ~= anElement
 		and: [ elementToHighlight ~= anElement
@@ -107,7 +108,7 @@ CgtThemeEditorOverlay >> removeEventHandlerFromElementToHighlightOrSelect: anEle
 		ifTrue: [ anElement removeEventHandler: eventHandler ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtThemeEditorOverlay >> selectElement: anElementOrNil [
 	| aPreviousElementToSelect |
 	aPreviousElementToSelect := elementToSelect.
@@ -121,7 +122,7 @@ CgtThemeEditorOverlay >> selectElement: anElementOrNil [
 			selection visibility: BlVisibility visible ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtThemeEditorOverlay >> showElement: anElement [
 	(elementToHighlight = anElement)
 		ifTrue: [ highlight visibility: BlVisibility visible ].
@@ -131,17 +132,17 @@ CgtThemeEditorOverlay >> showElement: anElement [
 	elementToSelect ifNil: [ selection visibility: BlVisibility gone ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtThemeEditorOverlay >> targetElement [
 	^ targetElement
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtThemeEditorOverlay >> targetElement: anElement [
 	targetElement := anElement
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 CgtThemeEditorOverlay >> updateOverlayElement: anOverlayElement toMatch: anOverlayedElement [
 	| theAnchorPositions |
 	theAnchorPositions := anOverlayedElement bounds inLocal bounds corners
@@ -149,7 +150,7 @@ CgtThemeEditorOverlay >> updateOverlayElement: anOverlayElement toMatch: anOverl
 	anOverlayElement vertices: theAnchorPositions
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 CgtThemeEditorOverlay >> updatePositions [
 	elementToSelect ifNotNil: [ :anOverlayedElement |
 		self updateOverlayElement: selection toMatch: anOverlayedElement ].

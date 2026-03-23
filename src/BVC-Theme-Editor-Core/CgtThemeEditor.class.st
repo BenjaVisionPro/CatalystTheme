@@ -1,16 +1,17 @@
 Class {
-	#name : #CgtThemeEditor,
-	#superclass : #Object,
+	#name : 'CgtThemeEditor',
+	#superclass : 'Object',
 	#instVars : [
 		'targetElement',
 		'overlay',
 		'eventHandler',
 		'isOpen'
 	],
-	#category : #'BVC-Theme-Editor-Core'
+	#category : 'BVC-Theme-Editor-Core',
+	#package : 'BVC-Theme-Editor-Core'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CgtThemeEditor class >> closeOn: anElement [
 	| anEditor |
 	anEditor := self editorOn: anElement.
@@ -20,12 +21,12 @@ CgtThemeEditor class >> closeOn: anElement [
 	^ nil
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CgtThemeEditor class >> editorOn: anElement [
 	^ anElement userData at: self userDataKey ifAbsent: [ nil ]
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CgtThemeEditor class >> on: anElement [
 	^ self new
 		targetElement: anElement;
@@ -33,7 +34,7 @@ CgtThemeEditor class >> on: anElement [
 		yourself
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CgtThemeEditor class >> openOn: anElement [
 	| anEditor |
 	anEditor := self editorOn: anElement.
@@ -43,19 +44,19 @@ CgtThemeEditor class >> openOn: anElement [
 	^ anEditor
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CgtThemeEditor class >> toggleOn: anElement [
 	^ (self editorOn: anElement)
 		ifNil: [ self openOn: anElement ]
 		ifNotNil: [ self closeOn: anElement ]
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CgtThemeEditor class >> userDataKey [
 	^ #cgtThemeEditor
 ]
 
-{ #category : #closing }
+{ #category : 'closing' }
 CgtThemeEditor >> close [
 	self isOpen ifFalse: [ ^ self ].
 	overlay ifNotNil: [ overlay detach ].
@@ -65,23 +66,23 @@ CgtThemeEditor >> close [
 	isOpen := false
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtThemeEditor >> eventHandler [
 	^ eventHandler
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CgtThemeEditor >> initialize [
 	super initialize.
 	isOpen := false
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtThemeEditor >> isOpen [
 	^ isOpen = true
 ]
 
-{ #category : #opening }
+{ #category : 'opening' }
 CgtThemeEditor >> open [
 	self isOpen ifTrue: [ ^ self ].
 	overlay := CgtThemeEditorOverlay on: targetElement.
@@ -91,17 +92,17 @@ CgtThemeEditor >> open [
 	isOpen := true
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtThemeEditor >> overlay [
 	^ overlay
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtThemeEditor >> targetElement [
 	^ targetElement
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtThemeEditor >> targetElement: anElement [
 	targetElement := anElement
 ]
