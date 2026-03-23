@@ -75,14 +75,6 @@ CgtThemeEditor >> eventHandler [
 	^ eventHandler
 ]
 
-{ #category : 'initialization' }
-CgtThemeEditor >> initialize [
-	super initialize.
-	isOpen := false.
-	highlightedElement := nil.
-	selectedElement := nil
-]
-
 { #category : 'accessing' }
 CgtThemeEditor >> highlightedElement [
 	^ highlightedElement
@@ -94,15 +86,12 @@ CgtThemeEditor >> highlightedElement: anElementOrNil [
 	overlay ifNotNil: [ overlay highlightElement: anElementOrNil ]
 ]
 
-{ #category : 'accessing' }
-CgtThemeEditor >> selectedElement [
-	^ selectedElement
-]
-
-{ #category : 'accessing' }
-CgtThemeEditor >> selectedElement: anElementOrNil [
-	selectedElement := anElementOrNil.
-	overlay ifNotNil: [ overlay selectElement: anElementOrNil ]
+{ #category : 'initialization' }
+CgtThemeEditor >> initialize [
+	super initialize.
+	isOpen := false.
+	highlightedElement := nil.
+	selectedElement := nil
 ]
 
 { #category : 'accessing' }
@@ -123,6 +112,17 @@ CgtThemeEditor >> open [
 { #category : 'accessing' }
 CgtThemeEditor >> overlay [
 	^ overlay
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> selectedElement [
+	^ selectedElement
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> selectedElement: anElementOrNil [
+	selectedElement := anElementOrNil.
+	overlay ifNotNil: [ overlay selectElement: anElementOrNil ]
 ]
 
 { #category : 'accessing' }
