@@ -64,12 +64,12 @@ CgtThemeEditorOverlay >> highlightElement: anElementOrNil [
 { #category : 'initialization' }
 CgtThemeEditorOverlay >> initialize [
 	super initialize.
+	self id: CgtThemeEditorOverlayElementId.
 	self constraintsDo: [ :c |
 		c ignoreByLayout.
 		c horizontal matchParent.
 		c vertical matchParent ].
-	self beInSeparateCompositionLayer;
-		allowMeAndChildrenMouseEvents.
+	self beInSeparateCompositionLayer.
 	eventHandler := CgtThemeEditorOverlayEventHandler new overlay: self.
 	highlight := BlPolygonElement new
 		background: (Color r: 1.0 g: 0.8396871945259042 b: 0.3998044965786901 alpha: 0.2);

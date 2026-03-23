@@ -36,7 +36,6 @@ GtWorldElement >> gtWorldThemeEditorActionFor: anAction [
 			isActive := self cgtHasThemeEditor.
 
 			button := BrButton new
-				elementId: #'cgt-theme-editor-toggle';
 				aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
 				label: 'Theme Editor';
 				icon: BrGlamorousVectorIcons edit;
