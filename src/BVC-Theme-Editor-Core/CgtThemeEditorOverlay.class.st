@@ -21,7 +21,11 @@ CgtThemeEditorOverlay class >> on: anElement [
 { #category : #initialization }
 CgtThemeEditorOverlay >> initialize [
 	super initialize.
-	self beIgnoreByLayout.
+	self constraintsDo: [ :c |
+		c ignoreByLayout.
+		c horizontal matchParent.
+		c vertical matchParent ].
+	self beInSeparateCompositionLayer.
 	self preventChildrenMouseEvents.
 	eventHandler := CgtThemeEditorOverlayEventHandler new
 ]
@@ -30,13 +34,15 @@ CgtThemeEditorOverlay >> initialize [
 CgtThemeEditorOverlay >> attach [
 	"Framework shell only. The concrete composition-layer attachment will be refined later."
 	targetElement ifNotNil: [
+		targetElement addChild: self.
 		targetElement addEventHandler: eventHandler ]
 ]
 
 { #category : #attaching }
 CgtThemeEditorOverlay >> detach [
 	targetElement ifNotNil: [
-		targetElement removeEventHandler: eventHandler ifAbsent: [ ] ]
+		targetElement removeEventHandler: eventHandler ifAbsent: [ ].
+		self removeFromParent ]
 ]
 
 { #category : #accessing }
