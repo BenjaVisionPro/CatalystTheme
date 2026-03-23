@@ -7,7 +7,8 @@ Class {
 		'eventHandler',
 		'isOpen',
 		'highlightedElement',
-		'selectedElement'
+		'selectedElement',
+		'viewHierarchyWidget'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -65,6 +66,7 @@ CgtThemeEditor >> close [
 	eventHandler ifNotNil: [ targetElement removeEventHandler: eventHandler ].
 	overlay := nil.
 	eventHandler := nil.
+	viewHierarchyWidget := nil.
 	highlightedElement := nil.
 	selectedElement := nil.
 	isOpen := false
@@ -82,6 +84,7 @@ CgtThemeEditor >> highlightedElement [
 
 { #category : 'accessing' }
 CgtThemeEditor >> highlightedElement: anElementOrNil [
+	highlightedElement == anElementOrNil ifTrue: [ ^ self ].
 	highlightedElement := anElementOrNil.
 	overlay ifNotNil: [ overlay highlightElement: anElementOrNil ]
 ]
@@ -91,7 +94,8 @@ CgtThemeEditor >> initialize [
 	super initialize.
 	isOpen := false.
 	highlightedElement := nil.
-	selectedElement := nil
+	selectedElement := nil.
+	viewHierarchyWidget := nil
 ]
 
 { #category : 'accessing' }
@@ -103,6 +107,7 @@ CgtThemeEditor >> isOpen [
 CgtThemeEditor >> open [
 	self isOpen ifTrue: [ ^ self ].
 	overlay := CgtThemeEditorOverlay on: targetElement.
+	viewHierarchyWidget := CgtThemeEditorViewHierarchyWidget on: self.
 	eventHandler := CgtThemeEditorEventHandler new.
 	eventHandler editor: self.
 	targetElement addEventHandler: eventHandler.
@@ -121,8 +126,10 @@ CgtThemeEditor >> selectedElement [
 
 { #category : 'accessing' }
 CgtThemeEditor >> selectedElement: anElementOrNil [
+	selectedElement == anElementOrNil ifTrue: [ ^ self ].
 	selectedElement := anElementOrNil.
-	overlay ifNotNil: [ overlay selectElement: anElementOrNil ]
+	overlay ifNotNil: [ overlay selectElement: anElementOrNil ].
+	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget selectElement: anElementOrNil ]
 ]
 
 { #category : 'accessing' }
@@ -133,4 +140,9 @@ CgtThemeEditor >> targetElement [
 { #category : 'accessing' }
 CgtThemeEditor >> targetElement: anElement [
 	targetElement := anElement
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> viewHierarchyWidget [
+	^ viewHierarchyWidget
 ]
