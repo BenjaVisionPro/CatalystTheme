@@ -75,6 +75,14 @@ CgtThemeEditor >> eventHandler [
 	^ eventHandler
 ]
 
+{ #category : 'initialization' }
+CgtThemeEditor >> initialize [
+	super initialize.
+	isOpen := false.
+	highlightedElement := nil.
+	selectedElement := nil
+]
+
 { #category : 'accessing' }
 CgtThemeEditor >> highlightedElement [
 	^ highlightedElement
@@ -86,10 +94,15 @@ CgtThemeEditor >> highlightedElement: anElementOrNil [
 	overlay ifNotNil: [ overlay highlightElement: anElementOrNil ]
 ]
 
-{ #category : 'initialization' }
-CgtThemeEditor >> initialize [
-	super initialize.
-	isOpen := false
+{ #category : 'accessing' }
+CgtThemeEditor >> selectedElement [
+	^ selectedElement
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> selectedElement: anElementOrNil [
+	selectedElement := anElementOrNil.
+	overlay ifNotNil: [ overlay selectElement: anElementOrNil ]
 ]
 
 { #category : 'accessing' }
@@ -100,11 +113,7 @@ CgtThemeEditor >> isOpen [
 { #category : 'opening' }
 CgtThemeEditor >> open [
 	self isOpen ifTrue: [ ^ self ].
-	overlay := CgtThemeEditorOverlay new
-		id: CgtThemeEditorOverlayElementId uniqueInstance;
-		targetElement: targetElement;
-		attach;
-		yourself.
+	overlay := CgtThemeEditorOverlay on: targetElement.
 	eventHandler := CgtThemeEditorEventHandler new.
 	eventHandler editor: self.
 	targetElement addEventHandler: eventHandler.
@@ -114,17 +123,6 @@ CgtThemeEditor >> open [
 { #category : 'accessing' }
 CgtThemeEditor >> overlay [
 	^ overlay
-]
-
-{ #category : 'accessing' }
-CgtThemeEditor >> selectedElement [
-	^ selectedElement
-]
-
-{ #category : 'accessing' }
-CgtThemeEditor >> selectedElement: anElementOrNil [
-	selectedElement := anElementOrNil.
-	overlay ifNotNil: [ overlay selectElement: anElementOrNil ]
 ]
 
 { #category : 'accessing' }

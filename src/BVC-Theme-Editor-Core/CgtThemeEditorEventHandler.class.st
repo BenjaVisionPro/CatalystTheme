@@ -12,6 +12,8 @@ Class {
 CgtThemeEditorEventHandler >> childToEditAt: aPoint in: aTargetElement ifFound: aFoundBlock ifNone: aNoneBlock [
 	| theChildrenAt |
 	theChildrenAt := aTargetElement withAllLeafChildrenAt: aPoint.
+	(theChildrenAt anySatisfy: [ :each | self isToolingElement: each ])
+		ifTrue: [ ^ aNoneBlock value ].
 	editor overlay ifNotNil: [ :anOverlay |
 		theChildrenAt := theChildrenAt copyWithout: anOverlay ].
 	theChildrenAt := (theChildrenAt reject: [ :each | self isToolingElement: each ])
@@ -53,7 +55,7 @@ CgtThemeEditorEventHandler >> isToolingElement: anElement [
 	| current |
 	current := anElement.
 	[ current notNil ] whileTrue: [
-		(current == editor overlay or: [ current elementId = CgtThemeEditorToggleElementId uniqueInstance ])
+		(current == editor overlay or: [ current id = CgtThemeEditorToggleElementId uniqueInstance ])
 			ifTrue: [ ^ true ].
 		current := current parent ].
 	^ false

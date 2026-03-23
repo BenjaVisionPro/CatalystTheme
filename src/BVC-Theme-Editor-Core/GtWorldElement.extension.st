@@ -45,7 +45,9 @@ GtWorldElement >> gtWorldThemeEditorActionFor: anAction [
 
 			isActive ifTrue: [
 				button background: (BlPaintBackground paint: (Color blue alpha: 0.2)).
-				button border: (BlBorder paint: Color blue width: 1) ].
+				button border: (BlBorder paint: Color blue width: 1)
+			].
 
-			button ]
+			button
+		]
 ]
