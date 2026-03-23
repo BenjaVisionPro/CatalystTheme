@@ -20,6 +20,16 @@ CgtThemeEditorEventHandler >> childToStyleAt: aPoint in: aTargetElement ifFound:
 	^ aFoundBlock value: theChildrenAt first
 ]
 
+{ #category : 'private - testing' }
+CgtThemeEditorEventHandler >> isThemeEditorToolingElement: anElement [
+	| current |
+	current := anElement.
+	[current notNil] whileTrue: [
+		(current elementId = #'cgt-theme-editor-toggle') ifTrue: [ ^ true ].
+		current := current parent ].
+	^ false
+]
+
 { #category : 'event handling' }
 CgtThemeEditorEventHandler >> clickEvent: aClickEvent [
 	| anElement |
@@ -29,6 +39,7 @@ CgtThemeEditorEventHandler >> clickEvent: aClickEvent [
 		ifFound: #yourself
 		ifNone: [ nil ].
 	anElement ifNil: [ ^ self ].
+	(self isThemeEditorToolingElement: anElement) ifTrue: [ ^ self ].
 	editor selectedElement: anElement.
 	aClickEvent consumed: true
 ]
@@ -58,5 +69,7 @@ CgtThemeEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 		in: editor targetElement
 		ifFound: #yourself
 		ifNone: [ nil ].
-	editor highlightedElement: anElement
+	(self isThemeEditorToolingElement: anElement)
+		ifTrue: [ editor highlightedElement: nil ]
+		ifFalse: [ editor highlightedElement: anElement ]
 ]
