@@ -5,7 +5,9 @@ Class {
 		'targetElement',
 		'overlay',
 		'eventHandler',
-		'isOpen'
+		'isOpen',
+		'highlightedElement',
+		'selectedElement'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -63,12 +65,25 @@ CgtThemeEditor >> close [
 	eventHandler ifNotNil: [ targetElement removeEventHandler: eventHandler ].
 	overlay := nil.
 	eventHandler := nil.
+	highlightedElement := nil.
+	selectedElement := nil.
 	isOpen := false
 ]
 
 { #category : 'accessing' }
 CgtThemeEditor >> eventHandler [
 	^ eventHandler
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> highlightedElement [
+	^ highlightedElement
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> highlightedElement: anElementOrNil [
+	highlightedElement := anElementOrNil.
+	overlay ifNotNil: [ overlay highlightElement: anElementOrNil ]
 ]
 
 { #category : 'initialization' }
@@ -85,7 +100,11 @@ CgtThemeEditor >> isOpen [
 { #category : 'opening' }
 CgtThemeEditor >> open [
 	self isOpen ifTrue: [ ^ self ].
-	overlay := CgtThemeEditorOverlay on: targetElement.
+	overlay := CgtThemeEditorOverlay new
+		id: CgtThemeEditorOverlayElementId uniqueInstance;
+		targetElement: targetElement;
+		attach;
+		yourself.
 	eventHandler := CgtThemeEditorEventHandler new.
 	eventHandler editor: self.
 	targetElement addEventHandler: eventHandler.
@@ -95,6 +114,17 @@ CgtThemeEditor >> open [
 { #category : 'accessing' }
 CgtThemeEditor >> overlay [
 	^ overlay
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> selectedElement [
+	^ selectedElement
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> selectedElement: anElementOrNil [
+	selectedElement := anElementOrNil.
+	overlay ifNotNil: [ overlay selectElement: anElementOrNil ]
 ]
 
 { #category : 'accessing' }

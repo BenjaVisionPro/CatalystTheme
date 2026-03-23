@@ -36,6 +36,7 @@ GtWorldElement >> gtWorldThemeEditorActionFor: anAction [
 			isActive := self cgtHasThemeEditor.
 
 			button := BrButton new
+				id: CgtThemeEditorToggleElementId uniqueInstance;
 				aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
 				label: 'Theme Editor';
 				icon: BrGlamorousVectorIcons edit;
@@ -44,9 +45,7 @@ GtWorldElement >> gtWorldThemeEditorActionFor: anAction [
 
 			isActive ifTrue: [
 				button background: (BlPaintBackground paint: (Color blue alpha: 0.2)).
-				button border: (BlBorder paint: Color blue width: 1)
-			].
+				button border: (BlBorder paint: Color blue width: 1) ].
 
-			button
-		]
+			button ]
 ]
