@@ -11,12 +11,6 @@ GtWorldElement >> cgtHasThemeEditor [
 ]
 
 { #category : '*BVC-Theme-Editor-Core' }
-GtWorldElement >> cgtInstallThemeEditorShortcut [
-	self addEventHandler: CgtThemeEditorShortcutEventHandler new.
-	^ self
-]
-
-{ #category : '*BVC-Theme-Editor-Core' }
 GtWorldElement >> cgtOpenThemeEditor [
 	^ CgtThemeEditor openOn: self
 ]
