@@ -3,6 +3,11 @@ Class {
 	#superclass : 'BlElement',
 	#instVars : [
 		'targetElement',
+		'fullDim',
+		'topDim',
+		'leftDim',
+		'rightDim',
+		'bottomDim',
 		'highlight',
 		'selection',
 		'elementToHighlight',
@@ -34,6 +39,35 @@ CgtThemeEditorOverlay >> attach [
 		targetElement addChild: self ]
 ]
 
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> boundsRectFor: anOverlayedElement [
+	| theAnchorPositions xs ys |
+	theAnchorPositions := anOverlayedElement bounds inLocal bounds corners
+		collect: [ :eachPoint | self globalPointToLocal: (anOverlayedElement localPointToGlobal: eachPoint) ].
+	xs := theAnchorPositions collect: #x.
+	ys := theAnchorPositions collect: #y.
+	^ ((xs min) @ (ys min)) corner: ((xs max) @ (ys max))
+]
+
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> rectangleVerticesFor: aRectangle [
+	^ {
+		aRectangle topLeft.
+		aRectangle topRight.
+		aRectangle bottomRight.
+		aRectangle bottomLeft }
+]
+
+{ #category : 'private - styling' }
+CgtThemeEditorOverlay >> dimColor [
+	^ Color black alpha: 0.45
+]
+
+{ #category : 'private - styling' }
+CgtThemeEditorOverlay >> hoverColor [
+	^ Color black alpha: 0.22
+]
+
 { #category : 'attaching' }
 CgtThemeEditorOverlay >> detach [
 	self removeFromParent
@@ -44,7 +78,8 @@ CgtThemeEditorOverlay >> hideElement: anElement [
 	(elementToHighlight = anElement or: [ elementToHighlight isNil ])
 		ifTrue: [ highlight visibility: BlVisibility gone ].
 	(elementToSelect = anElement or: [ elementToSelect isNil ])
-		ifTrue: [ selection visibility: BlVisibility gone ]
+		ifTrue: [ selection visibility: BlVisibility gone ].
+	self updatePositions
 ]
 
 { #category : 'accessing' }
@@ -58,27 +93,52 @@ CgtThemeEditorOverlay >> highlightElement: anElementOrNil [
 		ifNotNil: [ :anElement |
 			self addEventHandlerToElementToHighlightOrSelect: anElement.
 			self updateOverlayElement: highlight toMatch: anElement.
-			highlight visibility: BlVisibility visible ]
+			highlight visibility: BlVisibility visible ].
+	self updatePositions
 ]
 
 { #category : 'initialization' }
 CgtThemeEditorOverlay >> initialize [
 	super initialize.
-	self id: CgtThemeEditorOverlayElementId.
+	self id: CgtThemeEditorOverlayElementId uniqueInstance.
 	self constraintsDo: [ :c |
 		c ignoreByLayout.
 		c horizontal matchParent.
 		c vertical matchParent ].
 	self beInSeparateCompositionLayer.
+	self allowMeAndChildrenMouseEvents.
 	eventHandler := CgtThemeEditorOverlayEventHandler new overlay: self.
+	fullDim := BlPolygonElement new
+		background: self dimColor;
+		visibility: BlVisibility visible.
+	topDim := BlPolygonElement new
+		background: self dimColor;
+		visibility: BlVisibility gone.
+	leftDim := BlPolygonElement new
+		background: self dimColor;
+		visibility: BlVisibility gone.
+	rightDim := BlPolygonElement new
+		background: self dimColor;
+		visibility: BlVisibility gone.
+	bottomDim := BlPolygonElement new
+		background: self dimColor;
+		visibility: BlVisibility gone.
 	highlight := BlPolygonElement new
-		background: (Color r: 1.0 g: 0.8396871945259042 b: 0.3998044965786901 alpha: 0.2);
+		background: self hoverColor;
+		border: (BlBorder paint: (Color r: 0.9 g: 0.78 b: 0.28 alpha: 0.9) width: 2);
 		visibility: BlVisibility gone.
 	selection := BlPolygonElement new
-		background: (Color r: 0.2 g: 0.6 b: 1.0 alpha: 0.2);
+		background: Color transparent;
+		border: (BlBorder paint: (Color r: 0.65 g: 0.45 b: 1.0 alpha: 1.0) width: 2);
 		visibility: BlVisibility gone.
+	self addChild: fullDim.
+	self addChild: topDim.
+	self addChild: leftDim.
+	self addChild: rightDim.
+	self addChild: bottomDim.
 	self addChild: highlight.
-	self addChild: selection
+	self addChild: selection.
+	self updatePositions
 ]
 
 { #category : 'hooks - children' }
@@ -120,7 +180,8 @@ CgtThemeEditorOverlay >> selectElement: anElementOrNil [
 		ifNotNil: [ :anElement |
 			self addEventHandlerToElementToHighlightOrSelect: anElement.
 			self updateOverlayElement: selection toMatch: anElement.
-			selection visibility: BlVisibility visible ]
+			selection visibility: BlVisibility visible ].
+	self updatePositions
 ]
 
 { #category : 'accessing' }
@@ -130,7 +191,8 @@ CgtThemeEditorOverlay >> showElement: anElement [
 	elementToHighlight ifNil: [ highlight visibility: BlVisibility gone ].
 	(elementToSelect = anElement)
 		ifTrue: [ selection visibility: BlVisibility visible ].
-	elementToSelect ifNil: [ selection visibility: BlVisibility gone ]
+	elementToSelect ifNil: [ selection visibility: BlVisibility gone ].
+	self updatePositions
 ]
 
 { #category : 'accessing' }
@@ -144,6 +206,38 @@ CgtThemeEditorOverlay >> targetElement: anElement [
 ]
 
 { #category : 'private' }
+CgtThemeEditorOverlay >> updateDimmingForFocusRectangle: aRectangle [
+	| overlayRect topRect leftRect rightRect bottomRect |
+	overlayRect := (0 @ 0) corner: self extent.
+	aRectangle ifNil: [
+		fullDim vertices: (self rectangleVerticesFor: overlayRect).
+		fullDim visibility: BlVisibility visible.
+		topDim visibility: BlVisibility gone.
+		leftDim visibility: BlVisibility gone.
+		rightDim visibility: BlVisibility gone.
+		bottomDim visibility: BlVisibility gone.
+		^ self ].
+	fullDim visibility: BlVisibility gone.
+	topRect := overlayRect topLeft corner: (overlayRect right @ aRectangle top).
+	leftRect := (overlayRect left @ aRectangle top) corner: (aRectangle left @ aRectangle bottom).
+	rightRect := (aRectangle right @ aRectangle top) corner: overlayRect bottomRight x @ aRectangle bottom.
+	bottomRect := (overlayRect left @ aRectangle bottom) corner: overlayRect bottomRight.
+	self updateDimElement: topDim withRectangle: topRect.
+	self updateDimElement: leftDim withRectangle: leftRect.
+	self updateDimElement: rightDim withRectangle: rightRect.
+	self updateDimElement: bottomDim withRectangle: bottomRect
+]
+
+{ #category : 'private' }
+CgtThemeEditorOverlay >> updateDimElement: anElement withRectangle: aRectangle [
+	((aRectangle width <= 0) or: [ aRectangle height <= 0 ])
+		ifTrue: [ anElement visibility: BlVisibility gone ]
+		ifFalse: [
+			anElement vertices: (self rectangleVerticesFor: aRectangle).
+			anElement visibility: BlVisibility visible ]
+]
+
+{ #category : 'private' }
 CgtThemeEditorOverlay >> updateOverlayElement: anOverlayElement toMatch: anOverlayedElement [
 	| theAnchorPositions |
 	theAnchorPositions := anOverlayedElement bounds inLocal bounds corners
@@ -153,8 +247,18 @@ CgtThemeEditorOverlay >> updateOverlayElement: anOverlayElement toMatch: anOverl
 
 { #category : 'private' }
 CgtThemeEditorOverlay >> updatePositions [
+	| focusRect |
 	elementToSelect ifNotNil: [ :anOverlayedElement |
 		self updateOverlayElement: selection toMatch: anOverlayedElement ].
 	elementToHighlight ifNotNil: [ :anOverlayedElement |
-		self updateOverlayElement: highlight toMatch: anOverlayedElement ]
+		self updateOverlayElement: highlight toMatch: anOverlayedElement ].
+	focusRect := elementToSelect
+		ifNotNil: [ self boundsRectFor: elementToSelect ]
+		ifNil: [ elementToHighlight
+			ifNotNil: [ self boundsRectFor: elementToHighlight ]
+			ifNil: [ nil ] ].
+	self updateDimmingForFocusRectangle: focusRect.
+	(elementToSelect notNil and: [ elementToHighlight notNil and: [ elementToHighlight ~= elementToSelect ] ])
+		ifTrue: [ highlight background: Color transparent ]
+		ifFalse: [ highlight background: self hoverColor ]
 ]

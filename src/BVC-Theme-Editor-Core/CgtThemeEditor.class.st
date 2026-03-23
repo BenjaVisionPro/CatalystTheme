@@ -89,7 +89,9 @@ CgtThemeEditor >> highlightedElement: anElementOrNil [
 { #category : 'initialization' }
 CgtThemeEditor >> initialize [
 	super initialize.
-	isOpen := false
+	isOpen := false.
+	highlightedElement := nil.
+	selectedElement := nil
 ]
 
 { #category : 'accessing' }
@@ -100,11 +102,7 @@ CgtThemeEditor >> isOpen [
 { #category : 'opening' }
 CgtThemeEditor >> open [
 	self isOpen ifTrue: [ ^ self ].
-	overlay := CgtThemeEditorOverlay new
-		id: CgtThemeEditorOverlayElementId uniqueInstance;
-		targetElement: targetElement;
-		attach;
-		yourself.
+	overlay := CgtThemeEditorOverlay on: targetElement.
 	eventHandler := CgtThemeEditorEventHandler new.
 	eventHandler editor: self.
 	targetElement addEventHandler: eventHandler.

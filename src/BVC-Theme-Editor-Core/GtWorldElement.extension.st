@@ -29,5 +29,24 @@ GtWorldElement >> cgtToggleThemeEditor [
 GtWorldElement >> gtWorldThemeEditorActionFor: anAction [
 	<gtWorldAction>
 
-	^ anAction empty
+	^ anAction explicit
+		priority: 10;
+		stencil: [
+			| isActive button |
+			isActive := self cgtHasThemeEditor.
+
+			button := BrButton new
+				aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
+				label: 'Theme Editor';
+				icon: BrGlamorousVectorIcons edit;
+				action: [ self cgtToggleThemeEditor ];
+				yourself.
+
+			isActive ifTrue: [
+				button background: (BlPaintBackground paint: (Color blue alpha: 0.2)).
+				button border: (BlBorder paint: Color blue width: 1)
+			].
+
+			button
+		]
 ]
