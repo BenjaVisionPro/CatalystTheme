@@ -4,6 +4,7 @@ Class {
 	#instVars : [
 		'targetElement',
 		'overlay',
+		'eventHandler',
 		'isOpen'
 	],
 	#category : #'BVC-Theme-Editor-Core'
@@ -17,14 +18,19 @@ CgtThemeEditor class >> on: anElement [
 		yourself
 ]
 
-{ #category : #accessing }
-CgtThemeEditor >> isOpen [
-	^ isOpen = true
+{ #category : #closing }
+CgtThemeEditor >> close [
+	self isOpen ifFalse: [ ^ self ].
+	overlay ifNotNil: [ overlay detach ].
+	eventHandler ifNotNil: [ targetElement removeEventHandler: eventHandler ifAbsent: [ ] ].
+	overlay := nil.
+	eventHandler := nil.
+	isOpen := false
 ]
 
 { #category : #accessing }
-CgtThemeEditor >> overlay [
-	^ overlay
+CgtThemeEditor >> eventHandler [
+	^ eventHandler
 ]
 
 { #category : #initialization }
@@ -33,19 +39,24 @@ CgtThemeEditor >> initialize [
 	isOpen := false
 ]
 
+{ #category : #accessing }
+CgtThemeEditor >> isOpen [
+	^ isOpen = true
+]
+
 { #category : #opening }
 CgtThemeEditor >> open [
 	self isOpen ifTrue: [ ^ self ].
 	overlay := CgtThemeEditorOverlay on: targetElement.
+	eventHandler := CgtThemeEditorEventHandler new.
+	eventHandler editor: self.
+	targetElement addEventHandler: eventHandler.
 	isOpen := true
 ]
 
-{ #category : #closing }
-CgtThemeEditor >> close [
-	self isOpen ifFalse: [ ^ self ].
-	overlay ifNotNil: [ overlay detach ].
-	overlay := nil.
-	isOpen := false
+{ #category : #accessing }
+CgtThemeEditor >> overlay [
+	^ overlay
 ]
 
 { #category : #accessing }
