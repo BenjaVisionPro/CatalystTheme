@@ -22,7 +22,7 @@ CgtThemeEditor class >> on: anElement [
 CgtThemeEditor >> close [
 	self isOpen ifFalse: [ ^ self ].
 	overlay ifNotNil: [ overlay detach ].
-	eventHandler ifNotNil: [ targetElement removeEventHandler: eventHandler ifAbsent: [ ] ].
+	eventHandler ifNotNil: [ targetElement removeEventHandler: eventHandler ].
 	overlay := nil.
 	eventHandler := nil.
 	isOpen := false
