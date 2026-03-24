@@ -15,8 +15,9 @@ Class {
 		'isViewVisible',
 		'inspectorSpacer',
 		'originalContentChildren',
-		'brandButton',
-		'inspectorWidthAnimation'
+			'brandButton',
+		'inspectorWidthAnimation',
+		'eventTargetElement'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -87,7 +88,8 @@ CgtThemeEditor >> close [
 	self restoreOriginalContentChildren.
 	layoutContainer ifNotNil: [ layoutContainer removeFromParent ].
 	overlay ifNotNil: [ overlay detach ].
-	eventHandler ifNotNil: [ targetElement removeEventHandler: eventHandler ].
+	eventTargetElement ifNotNil: [ :anElement |
+		eventHandler ifNotNil: [ anElement removeEventHandler: eventHandler ] ].
 	overlay := nil.
 	eventHandler := nil.
 	viewHierarchyWidget := nil.
@@ -145,11 +147,14 @@ CgtThemeEditor >> animateInspectorWidthTo: aWidth [
 	animation := BlNumberTransition new
 		from: startWidth;
 		to: aWidth;
-		duration: 500;
+		duration: 500 milliseconds;
 		easing: CgtFastInSlowOutEasing new;
 		onStepDo: [ :value | self updateInspectorWidth: value rounded ];
 		onFinishedDo: [
 			self updateInspectorWidth: aWidth.
+			aWidth = 0 ifTrue: [
+				editorPane ifNotNil: [ editorPane removeFromParent ].
+				editorPane := nil ].
 			inspectorWidthAnimation := nil ];
 		yourself.
 	inspectorWidthAnimation := animation.
@@ -176,8 +181,6 @@ CgtThemeEditor >> inspectorWidth [
 { #category : 'private - pane' }
 CgtThemeEditor >> hideView [
 	isViewVisible ifFalse: [ ^ self ].
-	editorPane ifNotNil: [ editorPane removeFromParent ].
-	editorPane := nil.
 	isViewVisible := false.
 	self animateInspectorWidthTo: 0
 ]
@@ -243,7 +246,7 @@ CgtThemeEditor >> brandButtonMargin [
 
 { #category : 'private - ui' }
 CgtThemeEditor >> brandButtonRightMargin [
-	^ (isViewVisible ifTrue: [ 520 ] ifFalse: [ 0 ]) + 8
+	^ 8
 ]
 
 
@@ -260,11 +263,7 @@ CgtThemeEditor >> updateBrandButtonPosition [
 { #category : 'private - ui' }
 CgtThemeEditor >> newEditorPane [
 	^ BrVerticalPane new
-		constraintsDo: [ :c |
-			c ignoreByLayout.
-			c ignored horizontal alignRight.
-			c vertical matchParent ];
-		width: 520;
+		matchParent;
 		padding: (BlInsets top: 10 left: 10 bottom: 10 right: 10);
 		addAptitude: BrShadowAptitude new beLarge;
 		background: targetElement theme default backdropBackground;
@@ -290,9 +289,10 @@ CgtThemeEditor >> newLayoutContainer [
 
 { #category : 'private - ui' }
 CgtThemeEditor >> newInspectorSpacer [
-	^ (inspectorSpacer := BlElement new)
+	^ (inspectorSpacer := BrFrame new)
+		constraintsDo: [ :c |
+			c vertical matchParent ];
 		width: 0;
-		height: 1;
 		yourself
 ]
 
@@ -317,13 +317,14 @@ CgtThemeEditor >> open [
 	layoutContainer := self newLayoutContainer.
 	self addElements: originalContentChildren into: contentContainer.
 	targetElement addChild: layoutContainer.
-	overlay := CgtThemeEditorOverlay on: targetElement.
+	overlay := CgtThemeEditorOverlay on: contentContainer.
 	viewHierarchyWidget := CgtThemeEditorViewHierarchyWidget on: self.
 	overlay addChild: self newBrandButton.
 	self updateBrandButtonPosition.
 	eventHandler := CgtThemeEditorEventHandler new.
 	eventHandler editor: self.
-	targetElement addEventHandler: eventHandler.
+	eventTargetElement := contentContainer.
+	eventTargetElement addEventHandler: eventHandler.
 	isOpen := true
 ]
 
@@ -356,7 +357,7 @@ CgtThemeEditor >> showView [
 	isViewVisible ifTrue: [ ^ self ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget removeFromParent ].
 	editorPane := self newEditorPane.
-	overlay ifNotNil: [ overlay addChild: editorPane ].
+	inspectorSpacer ifNotNil: [ inspectorSpacer addChild: editorPane ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget refreshItems ].
 	selectedElement ifNotNil: [ viewHierarchyWidget selectElement: selectedElement ].
 	isViewVisible := true.
