@@ -229,6 +229,44 @@ CgtThemeEditorOverlay >> newDimPolygonElement [
 		yourself
 ]
 
+
+
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> topDimVerticesFor: overlayRect focusRect: aRectangle radius: aRadius [
+	| top left right |
+	top := aRectangle top.
+	left := aRectangle left.
+	right := aRectangle right.
+	^ OrderedCollection new
+		add: overlayRect topLeft;
+		add: overlayRect topRight;
+		add: (overlayRect right @ (top + aRadius));
+		add: (right @ (top + aRadius));
+		addAll: ((self arcVerticesCenter: ((right - aRadius) @ (top + aRadius)) radius: aRadius fromDegrees: 0 toDegrees: -90 segments: self roundedCornerSegments) allButFirst);
+		add: ((left + aRadius) @ top);
+		addAll: ((self arcVerticesCenter: ((left + aRadius) @ (top + aRadius)) radius: aRadius fromDegrees: -90 toDegrees: -180 segments: self roundedCornerSegments) allButFirst);
+		add: (overlayRect left @ (top + aRadius));
+		yourself
+]
+
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> bottomDimVerticesFor: overlayRect focusRect: aRectangle radius: aRadius [
+	| bottom left right |
+	bottom := aRectangle bottom.
+	left := aRectangle left.
+	right := aRectangle right.
+	^ OrderedCollection new
+		add: (overlayRect left @ (bottom - aRadius));
+		add: (left @ (bottom - aRadius));
+		addAll: ((self arcVerticesCenter: ((left + aRadius) @ (bottom - aRadius)) radius: aRadius fromDegrees: 180 toDegrees: 90 segments: self roundedCornerSegments) allButFirst);
+		add: ((right - aRadius) @ bottom);
+		addAll: ((self arcVerticesCenter: ((right - aRadius) @ (bottom - aRadius)) radius: aRadius fromDegrees: 90 toDegrees: 0 segments: self roundedCornerSegments) allButFirst);
+		add: (overlayRect right @ (bottom - aRadius));
+		add: overlayRect bottomRight;
+		add: overlayRect bottomLeft;
+		yourself
+]
+
 { #category : 'private - geometry' }
 CgtThemeEditorOverlay >> roundedCornerSegments [
 	^ 6
@@ -360,14 +398,14 @@ CgtThemeEditorOverlay >> updateDimmingForFocusRectangle: aRectangle [
 	leftRect := (overlayRect left @ (aRectangle top + radius)) corner: (aRectangle left @ (aRectangle bottom - radius)).
 	rightRect := (aRectangle right @ (aRectangle top + radius)) corner: (overlayRect right @ (aRectangle bottom - radius)).
 	bottomRect := (overlayRect left @ aRectangle bottom) corner: overlayRect bottomRight.
-	self updateDimElement: topDim withVertices: (self rectangleVerticesFor: topRect).
+	self updateDimElement: topDim withVertices: (self topDimVerticesFor: overlayRect focusRect: aRectangle radius: radius).
 	self updateDimElement: leftDim withVertices: (self rectangleVerticesFor: leftRect).
 	self updateDimElement: rightDim withVertices: (self rectangleVerticesFor: rightRect).
-	self updateDimElement: bottomDim withVertices: (self rectangleVerticesFor: bottomRect).
-	self updateDimElement: topLeftDim withVertices: (self topLeftDimVerticesFor: aRectangle radius: radius).
-	self updateDimElement: topRightDim withVertices: (self topRightDimVerticesFor: aRectangle radius: radius).
-	self updateDimElement: bottomRightDim withVertices: (self bottomRightDimVerticesFor: aRectangle radius: radius).
-	self updateDimElement: bottomLeftDim withVertices: (self bottomLeftDimVerticesFor: aRectangle radius: radius)
+	self updateDimElement: bottomDim withVertices: (self bottomDimVerticesFor: overlayRect focusRect: aRectangle radius: radius).
+	topLeftDim visibility: BlVisibility gone.
+	topRightDim visibility: BlVisibility gone.
+	bottomRightDim visibility: BlVisibility gone.
+	bottomLeftDim visibility: BlVisibility gone
 ]
 
 { #category : 'private' }
