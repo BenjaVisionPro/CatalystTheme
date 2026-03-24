@@ -167,12 +167,12 @@ CgtThemeEditor >> newBrandButton [
 		c horizontal matchParent.
 		c vertical matchParent ].
 	^ BrButton new
-		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
+		aptitude: BrGlamorousButtonExteriorAptitude;
 		width: 88;
 		height: 88;
-		padding: (BlInsets all: 4);
+		padding: (BlInsets all: 0);
 		label: '';
-		icon: [ iconElement ] asStencil;
+		addChild: iconElement;
 		constraintsDo: [ :c |
 			c ignoreByLayout.
 			c ignored horizontal alignRight.
