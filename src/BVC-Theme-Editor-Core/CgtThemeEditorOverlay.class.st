@@ -11,7 +11,9 @@ Class {
 		'elementToSelect',
 		'eventHandler',
 		'regions',
-		'visualLayer'
+		'visualLayer',
+		'hoverBoundsAnimation',
+		'animatedHoverRectangle'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -69,16 +71,19 @@ CgtThemeEditorOverlay >> hideElement: anElement [
 
 { #category : 'accessing' }
 CgtThemeEditorOverlay >> highlightElement: anElementOrNil [
-	| aPreviousElementToHighlight |
+	| aPreviousElementToHighlight targetRectangle |
 	aPreviousElementToHighlight := elementToHighlight.
 	elementToHighlight := anElementOrNil.
 	self removeEventHandlerFromElementToHighlightOrSelect: aPreviousElementToHighlight.
 	anElementOrNil
-		ifNil: [ highlight visibility: BlVisibility gone ]
+		ifNil: [
+			highlight visibility: BlVisibility gone.
+			self animateHoverRectangleTo: nil ]
 		ifNotNil: [ :anElement |
 			self addEventHandlerToElementToHighlightOrSelect: anElement.
-			self updateOverlayElement: highlight toMatch: anElement.
-			highlight visibility: BlVisibility visible ].
+			targetRectangle := self boundsRectFor: anElement.
+			highlight visibility: BlVisibility visible.
+			self animateHoverRectangleTo: targetRectangle ].
 	self updatePositions
 ]
 
@@ -98,6 +103,8 @@ CgtThemeEditorOverlay >> initialize [
 	self beInSeparateCompositionLayer.
 	self allowMeAndChildrenMouseEvents.
 	eventHandler := CgtThemeEditorOverlayEventHandler new overlay: self.
+	hoverBoundsAnimation := nil.
+	animatedHoverRectangle := nil.
 	regions := OrderedCollection new.
 	visualLayer := BlElement new
 		constraintsDo: [ :c |
@@ -132,6 +139,53 @@ CgtThemeEditorOverlay >> initialize [
 	visualLayer addChild: selection.
 	self addChild: visualLayer.
 	self updatePositions
+]
+
+
+{ #category : 'private - animation' }
+CgtThemeEditorOverlay >> animateHoverRectangleTo: aRectangle [
+	| startRectangle animation |
+	aRectangle ifNil: [
+		hoverBoundsAnimation ifNotNil: [ hoverBoundsAnimation stopIfRunning ].
+		animatedHoverRectangle := nil.
+		self updatePositions.
+		^ self ].
+	startRectangle := animatedHoverRectangle
+		ifNil: [
+			elementToHighlight
+				ifNotNil: [ self boundsRectFor: elementToHighlight ]
+				ifNil: [ aRectangle ] ].
+	hoverBoundsAnimation ifNotNil: [ hoverBoundsAnimation stopIfRunning ].
+	animation := BlNumberTransition new
+		from: 0.0;
+		to: 1.0;
+		duration: 120 milliseconds;
+		easing: CgtFastInSlowOutEasing new;
+		onStepDo: [ :progress |
+			animatedHoverRectangle := self
+				interpolateRectangle: startRectangle
+				to: aRectangle
+				at: progress asFloat.
+			self updatePositions ];
+		onFinishedDo: [
+			animatedHoverRectangle := aRectangle.
+			hoverBoundsAnimation := nil.
+			self updatePositions ];
+		yourself.
+	hoverBoundsAnimation := animation.
+	self addAnimation: animation
+]
+
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> interpolatedPointFrom: aPoint to: anotherPoint at: progress [
+	^ (aPoint x + ((anotherPoint x - aPoint x) * progress))
+		@ (aPoint y + ((anotherPoint y - aPoint y) * progress))
+]
+
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> interpolateRectangle: aRectangle to: anotherRectangle at: progress [
+	^ (self interpolatedPointFrom: aRectangle topLeft to: anotherRectangle topLeft at: progress)
+		corner: (self interpolatedPointFrom: aRectangle bottomRight to: anotherRectangle bottomRight at: progress)
 ]
 
 { #category : 'hooks - children' }
@@ -371,6 +425,11 @@ CgtThemeEditorOverlay >> updateOverlayElement: anOverlayElement toMatch: anOverl
 	aRadius := anOverlayElement == selection
 		ifTrue: [ self selectionRegion cornerRadius ]
 		ifFalse: [ self hoverRegion ifNil: [ 6 ] ifNotNil: [ self hoverRegion cornerRadius ] ].
+	self updateOverlayElement: anOverlayElement toMatchRectangle: aRectangle radius: aRadius
+]
+
+{ #category : 'private' }
+CgtThemeEditorOverlay >> updateOverlayElement: anOverlayElement toMatchRectangle: aRectangle radius: aRadius [
 	anOverlayElement
 		geometry: (BlRoundedRectangleGeometry cornerRadius: aRadius);
 		relocate: aRectangle origin;
@@ -382,7 +441,13 @@ CgtThemeEditorOverlay >> updatePositions [
 	elementToSelect ifNotNil: [ :anOverlayedElement |
 		self updateOverlayElement: selection toMatch: anOverlayedElement inset: self selectionInset ].
 	(elementToHighlight notNil and: [ elementToHighlight ~= elementToSelect ])
-		ifTrue: [ self updateOverlayElement: highlight toMatch: elementToHighlight ].
+		ifTrue: [
+			animatedHoverRectangle
+				ifNil: [ self updateOverlayElement: highlight toMatch: elementToHighlight ]
+				ifNotNil: [ self
+					updateOverlayElement: highlight
+					toMatchRectangle: animatedHoverRectangle
+					radius: self hoverRegion cornerRadius ] ].
 	(elementToHighlight isNil or: [ elementToHighlight = elementToSelect ])
 		ifTrue: [ highlight visibility: BlVisibility gone ]
 		ifFalse: [ highlight visibility: BlVisibility visible ].
