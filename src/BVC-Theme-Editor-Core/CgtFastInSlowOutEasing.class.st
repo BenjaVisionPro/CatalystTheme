@@ -17,5 +17,5 @@ CgtFastInSlowOutEasing >> interpolate: aProgress [
 	t <= 0 ifTrue: [ ^ 0.0 ].
 	t >= 1 ifTrue: [ ^ 1.0 ].
 	inverse := 1.0 - t.
-	^ 1.0 - (inverse * inverse * inverse)
+	^ 1.0 - (inverse * inverse * inverse * inverse * inverse)
 ]

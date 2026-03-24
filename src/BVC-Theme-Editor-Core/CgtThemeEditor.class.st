@@ -147,7 +147,7 @@ CgtThemeEditor >> animateInspectorWidthTo: aWidth [
 	animation := BlNumberTransition new
 		from: startWidth;
 		to: aWidth;
-		duration: 500 milliseconds;
+		duration: 400 milliseconds;
 		easing: CgtFastInSlowOutEasing new;
 		onStepDo: [ :value | self updateInspectorWidth: value rounded ];
 		onFinishedDo: [
