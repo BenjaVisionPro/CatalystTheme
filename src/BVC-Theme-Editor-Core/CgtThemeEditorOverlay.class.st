@@ -12,7 +12,8 @@ Class {
 		'selection',
 		'elementToHighlight',
 		'elementToSelect',
-		'eventHandler'
+		'eventHandler',
+		'dimAnimation'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -54,9 +55,32 @@ CgtThemeEditorOverlay >> detach [
 	self removeFromParent
 ]
 
+{ #category : 'animation' }
+CgtThemeEditorOverlay >> animateDimmingIn [
+	| animation |
+	dimAnimation ifNotNil: [ dimAnimation stopIfRunning ].
+	self setDimOpacity: 0.0.
+	animation := BlNumberTransition new
+		from: 0.0;
+		to: 0.45;
+		duration: 200 milliseconds;
+		onStepDo: [ :value | self setDimOpacity: value ];
+		onFinishedDo: [
+			self setDimOpacity: 0.45.
+			dimAnimation := nil ];
+		yourself.
+	dimAnimation := animation.
+	self addAnimation: animation
+]
+
 { #category : 'private - styling' }
 CgtThemeEditorOverlay >> dimColor [
-	^ Color black alpha: 0.45
+	^ self dimColorWithAlpha: 0.45
+]
+
+{ #category : 'private - styling' }
+CgtThemeEditorOverlay >> dimColorWithAlpha: anAlpha [
+	^ Color black alpha: anAlpha
 ]
 
 { #category : 'accessing' }
@@ -99,20 +123,21 @@ CgtThemeEditorOverlay >> initialize [
 	self beInSeparateCompositionLayer.
 	self allowMeAndChildrenMouseEvents.
 	eventHandler := CgtThemeEditorOverlayEventHandler new overlay: self.
+	dimAnimation := nil.
 	fullDim := BlPolygonElement new
-		background: self dimColor;
+		background: (self dimColorWithAlpha: 0.0);
 		visibility: BlVisibility visible.
 	topDim := BlPolygonElement new
-		background: self dimColor;
+		background: (self dimColorWithAlpha: 0.0);
 		visibility: BlVisibility gone.
 	leftDim := BlPolygonElement new
-		background: self dimColor;
+		background: (self dimColorWithAlpha: 0.0);
 		visibility: BlVisibility gone.
 	rightDim := BlPolygonElement new
-		background: self dimColor;
+		background: (self dimColorWithAlpha: 0.0);
 		visibility: BlVisibility gone.
 	bottomDim := BlPolygonElement new
-		background: self dimColor;
+		background: (self dimColorWithAlpha: 0.0);
 		visibility: BlVisibility gone.
 	highlight := BlPolygonElement new
 		background: self hoverColor;
@@ -167,6 +192,18 @@ CgtThemeEditorOverlay >> removeEventHandlerFromElementToHighlightOrSelect: anEle
 		and: [ elementToHighlight ~= anElement
 		and: [ anElement notNil ] ])
 		ifTrue: [ anElement removeEventHandler: eventHandler ]
+]
+
+
+{ #category : 'private - styling' }
+CgtThemeEditorOverlay >> setDimOpacity: anAlpha [
+	| aColor |
+	aColor := self dimColorWithAlpha: anAlpha.
+	fullDim background: aColor.
+	topDim background: aColor.
+	leftDim background: aColor.
+	rightDim background: aColor.
+	bottomDim background: aColor
 ]
 
 { #category : 'accessing' }

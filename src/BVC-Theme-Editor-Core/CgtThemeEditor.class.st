@@ -297,6 +297,7 @@ CgtThemeEditor >> open [
 	self addElements: originalContentChildren into: contentContainer.
 	targetElement addChild: layoutContainer.
 	overlay := CgtThemeEditorOverlay on: contentContainer.
+	overlay animateDimmingIn.
 	viewHierarchyWidget := CgtThemeEditorViewHierarchyWidget on: self.
 	overlay addChild: self newBrandButton.
 	self updateBrandButtonPosition.
