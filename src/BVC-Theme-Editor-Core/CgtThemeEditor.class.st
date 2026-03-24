@@ -135,16 +135,17 @@ CgtThemeEditor >> hierarchyRootChildren [
 
 { #category : 'private - animation' }
 CgtThemeEditor >> animateInspectorWidthTo: aWidth [
-	| startWidth animation |
+	| startWidth animation animationHost |
 	inspectorSpacer ifNil: [ ^ self ].
 	startWidth := self inspectorWidth.
 	startWidth = aWidth ifTrue: [
 		self updateInspectorWidth: aWidth.
 		^ self ].
+	inspectorWidthAnimation ifNotNil: [ inspectorWidthAnimation stopIfRunning ].
 	animation := BlNumberTransition new
 		from: startWidth;
 		to: aWidth;
-		duration: 500 milliSeconds;
+		duration: 500;
 		easing: CgtFastInSlowOutEasing new;
 		onStepDo: [ :value | self updateInspectorWidth: value rounded ];
 		onFinishedDo: [
@@ -152,7 +153,8 @@ CgtThemeEditor >> animateInspectorWidthTo: aWidth [
 			inspectorWidthAnimation := nil ];
 		yourself.
 	inspectorWidthAnimation := animation.
-	animation start
+	animationHost := layoutContainer ifNil: [ targetElement ].
+	animationHost addAnimation: animation
 ]
 
 { #category : 'private - ui' }
