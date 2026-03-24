@@ -84,7 +84,6 @@ CgtThemeEditor >> highlightedElement [
 
 { #category : 'accessing' }
 CgtThemeEditor >> highlightedElement: anElementOrNil [
-	highlightedElement == anElementOrNil ifTrue: [ ^ self ].
 	highlightedElement := anElementOrNil.
 	overlay ifNotNil: [ overlay highlightElement: anElementOrNil ]
 ]
@@ -126,10 +125,15 @@ CgtThemeEditor >> selectedElement [
 
 { #category : 'accessing' }
 CgtThemeEditor >> selectedElement: anElementOrNil [
-	selectedElement == anElementOrNil ifTrue: [ ^ self ].
 	selectedElement := anElementOrNil.
 	overlay ifNotNil: [ overlay selectElement: anElementOrNil ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget selectElement: anElementOrNil ]
+]
+
+
+{ #category : 'accessing' }
+CgtThemeEditor >> viewHierarchyWidget [
+	^ viewHierarchyWidget
 ]
 
 { #category : 'accessing' }
@@ -140,9 +144,4 @@ CgtThemeEditor >> targetElement [
 { #category : 'accessing' }
 CgtThemeEditor >> targetElement: anElement [
 	targetElement := anElement
-]
-
-{ #category : 'accessing' }
-CgtThemeEditor >> viewHierarchyWidget [
-	^ viewHierarchyWidget
 ]
