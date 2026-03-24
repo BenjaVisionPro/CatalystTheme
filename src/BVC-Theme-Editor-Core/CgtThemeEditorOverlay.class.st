@@ -238,6 +238,7 @@ CgtThemeEditorOverlay >> addDimElement: anElement [
 { #category : 'private - regions' }
 CgtThemeEditorOverlay >> hoverRegion [
 	elementToHighlight ifNil: [ ^ nil ].
+	elementToHighlight = elementToSelect ifTrue: [ ^ nil ].
 	^ CgtThemeEditorOverlayRegion new
 		element: elementToHighlight;
 		dimAlpha: 0.22;
@@ -339,7 +340,10 @@ CgtThemeEditorOverlay >> updateOverlayElement: anOverlayElement toMatch: anOverl
 CgtThemeEditorOverlay >> updatePositions [
 	elementToSelect ifNotNil: [ :anOverlayedElement |
 		self updateOverlayElement: selection toMatch: anOverlayedElement inset: self selectionInset ].
-	elementToHighlight ifNotNil: [ :anOverlayedElement |
-		self updateOverlayElement: highlight toMatch: anOverlayedElement ].
+	(elementToHighlight notNil and: [ elementToHighlight ~= elementToSelect ])
+		ifTrue: [ self updateOverlayElement: highlight toMatch: elementToHighlight ].
+	(elementToHighlight isNil or: [ elementToHighlight = elementToSelect ])
+		ifTrue: [ highlight visibility: BlVisibility gone ]
+		ifFalse: [ highlight visibility: BlVisibility visible ].
 	self updateDimming
 ]
