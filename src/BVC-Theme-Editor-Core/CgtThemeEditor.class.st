@@ -168,8 +168,10 @@ CgtThemeEditor >> newBrandButton [
 		c vertical matchParent ].
 	^ BrButton new
 		aptitude: BrGlamorousButtonExteriorAptitude;
-		width: 88;
-		height: 88;
+		background: Color transparent;
+		border: BlBorder empty;
+		width: 100;
+		height: 100;
 		padding: (BlInsets all: 0);
 		label: '';
 		addChild: iconElement;
@@ -177,7 +179,7 @@ CgtThemeEditor >> newBrandButton [
 			c ignoreByLayout.
 			c ignored horizontal alignRight.
 			c ignored vertical alignBottom.
-			c margin: (BlInsets bottom: 32 right: 16) ];
+			c margin: (BlInsets bottom: 2 right: 0) ];
 		action: [ self toggleView ];
 		yourself
 ]
