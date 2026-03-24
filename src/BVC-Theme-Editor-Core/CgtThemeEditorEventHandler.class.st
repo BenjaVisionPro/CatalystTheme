@@ -11,13 +11,22 @@ Class {
 { #category : 'private - accessing' }
 CgtThemeEditorEventHandler >> childToEditAt: aPoint in: aTargetElement ifFound: aFoundBlock ifNone: aNoneBlock [
 	| theChildrenAt |
-	theChildrenAt := aTargetElement withAllLeafChildrenAt: aPoint.
-	editor overlay ifNotNil: [ :anOverlay |
-		theChildrenAt := theChildrenAt copyWithout: anOverlay ].
-	theChildrenAt := (theChildrenAt reject: [ :each | self isToolingElement: each ])
-		sorted: [ :a :b | a compositionDepth > b compositionDepth ].
+	theChildrenAt := self leafChildrenToEditAt: aPoint in: aTargetElement.
 	theChildrenAt ifEmpty: [ ^ aNoneBlock value ].
 	^ aFoundBlock value: theChildrenAt first
+]
+
+{ #category : 'private - accessing' }
+CgtThemeEditorEventHandler >> leafChildrenToEditAt: aPoint in: aTargetElement [
+	| theChildrenAt |
+	theChildrenAt := OrderedCollection new.
+	aTargetElement children reversed do: [ :eachChild |
+		(self isToolingElement: eachChild) ifFalse: [
+			eachChild
+				withAllLeafChildrenAt: (eachChild parentPointToLocal: aPoint)
+				do: [ :eachLeaf |
+					(self isToolingElement: eachLeaf) ifFalse: [ theChildrenAt add: eachLeaf ] ] ] ].
+	^ theChildrenAt asArray sorted: [ :a :b | a compositionDepth > b compositionDepth ]
 ]
 
 { #category : 'event handling' }
