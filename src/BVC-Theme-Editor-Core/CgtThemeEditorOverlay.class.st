@@ -257,6 +257,96 @@ CgtThemeEditorOverlay >> cellAlphaFor: aRectangle default: aDefaultAlpha [
 	^ winningRegion dimAlpha
 ]
 
+
+
+{ #category : 'private - dimming' }
+CgtThemeEditorOverlay >> cellAlphaFor: aRectangle default: aDefaultAlpha excludingRegion: aRegionToExclude [
+	| cellCenter coveringRegions winningRegion |
+	cellCenter := aRectangle center.
+	coveringRegions := regions select: [ :eachRegion |
+		eachRegion == aRegionToExclude ifTrue: [ false ] ifFalse: [
+			| regionRectangle |
+			regionRectangle := eachRegion rectangleInOverlay: self.
+			regionRectangle notNil and: [ regionRectangle containsPoint: cellCenter ] ] ].
+	coveringRegions ifEmpty: [ ^ aDefaultAlpha ].
+	winningRegion := coveringRegions
+		inject: coveringRegions first
+		into: [ :best :each |
+			(self region: each isMoreSpecificThan: best)
+				ifTrue: [ each ]
+				ifFalse: [ best ] ].
+	^ winningRegion dimAlpha
+]
+
+{ #category : 'private - dimming' }
+CgtThemeEditorOverlay >> overlayAlphaFrom: currentAlpha toReach: targetAlpha [
+	currentAlpha >= targetAlpha ifTrue: [ ^ 0.0 ].
+	currentAlpha >= 1.0 ifTrue: [ ^ 0.0 ].
+	^ (targetAlpha - currentAlpha) / (1.0 - currentAlpha)
+]
+
+{ #category : 'private - dimming' }
+CgtThemeEditorOverlay >> cornerWedgePatchesForRegion: aRegion overlayRectangle: overlayRectangle defaultAlpha: defaultAlpha [
+	| aRectangle radius sampleInset patches |
+	aRectangle := self clampRegionRectangle: (aRegion rectangleInOverlay: self) to: overlayRectangle.
+	aRectangle ifNil: [ ^ #() ].
+	radius := (aRegion cornerRadius min: (aRectangle width / 2.0)) min: (aRectangle height / 2.0).
+	radius <= 0 ifTrue: [ ^ #() ].
+	sampleInset := (radius / 2.0) max: 1.0.
+	patches := OrderedCollection new.
+	self addCornerWedgePatchIfNeededTo: patches region: aRegion overlayRectangle: overlayRectangle rectangle: aRectangle radius: radius samplePoint: ((aRectangle left + (sampleInset / 2.0)) @ (aRectangle top + (sampleInset / 2.0))) vertices: (self topLeftCornerWedgeVerticesFor: aRectangle radius: radius) defaultAlpha: defaultAlpha.
+	self addCornerWedgePatchIfNeededTo: patches region: aRegion overlayRectangle: overlayRectangle rectangle: aRectangle radius: radius samplePoint: ((aRectangle right - (sampleInset / 2.0)) @ (aRectangle top + (sampleInset / 2.0))) vertices: (self topRightCornerWedgeVerticesFor: aRectangle radius: radius) defaultAlpha: defaultAlpha.
+	self addCornerWedgePatchIfNeededTo: patches region: aRegion overlayRectangle: overlayRectangle rectangle: aRectangle radius: radius samplePoint: ((aRectangle right - (sampleInset / 2.0)) @ (aRectangle bottom - (sampleInset / 2.0))) vertices: (self bottomRightCornerWedgeVerticesFor: aRectangle radius: radius) defaultAlpha: defaultAlpha.
+	self addCornerWedgePatchIfNeededTo: patches region: aRegion overlayRectangle: overlayRectangle rectangle: aRectangle radius: radius samplePoint: ((aRectangle left + (sampleInset / 2.0)) @ (aRectangle bottom - (sampleInset / 2.0))) vertices: (self bottomLeftCornerWedgeVerticesFor: aRectangle radius: radius) defaultAlpha: defaultAlpha.
+	^ patches
+]
+
+{ #category : 'private - dimming' }
+CgtThemeEditorOverlay >> addCornerWedgePatchIfNeededTo: patches region: aRegion overlayRectangle: overlayRectangle rectangle: aRectangle radius: radius samplePoint: samplePoint vertices: vertices defaultAlpha: defaultAlpha [
+	| sampleRectangle currentAlpha targetAlpha overlayAlpha |
+	sampleRectangle := samplePoint extent: 1 @ 1.
+	currentAlpha := self cellAlphaFor: sampleRectangle default: defaultAlpha.
+	targetAlpha := self cellAlphaFor: sampleRectangle default: defaultAlpha excludingRegion: aRegion.
+	overlayAlpha := self overlayAlphaFrom: currentAlpha toReach: targetAlpha.
+	overlayAlpha > 0 ifTrue: [ patches add: { vertices. overlayAlpha } ]
+]
+
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> topLeftCornerWedgeVerticesFor: aRectangle radius: radius [
+	| left top |
+	left := aRectangle left.
+	top := aRectangle top.
+	^ ({ left @ top. (left + radius) @ top } ,
+		((self arcVerticesCenter: (left + radius) @ (top + radius) radius: radius fromDegrees: -90 toDegrees: -180 segments: self roundedCornerSegments) allButFirst)) asArray
+]
+
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> topRightCornerWedgeVerticesFor: aRectangle radius: radius [
+	| right top |
+	right := aRectangle right.
+	top := aRectangle top.
+	^ ({ (right - radius) @ top. right @ top. right @ (top + radius) } ,
+		((self arcVerticesCenter: (right - radius) @ (top + radius) radius: radius fromDegrees: 0 toDegrees: -90 segments: self roundedCornerSegments) allButFirst)) asArray
+]
+
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> bottomRightCornerWedgeVerticesFor: aRectangle radius: radius [
+	| right bottom |
+	right := aRectangle right.
+	bottom := aRectangle bottom.
+	^ ({ right @ (bottom - radius). right @ bottom. (right - radius) @ bottom } ,
+		((self arcVerticesCenter: (right - radius) @ (bottom - radius) radius: radius fromDegrees: 90 toDegrees: 0 segments: self roundedCornerSegments) allButFirst)) asArray
+]
+
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> bottomLeftCornerWedgeVerticesFor: aRectangle radius: radius [
+	| left bottom |
+	left := aRectangle left.
+	bottom := aRectangle bottom.
+	^ ({ (left + radius) @ bottom. left @ bottom. left @ (bottom - radius) } ,
+		((self arcVerticesCenter: (left + radius) @ (bottom - radius) radius: radius fromDegrees: 180 toDegrees: 90 segments: self roundedCornerSegments) allButFirst)) asArray
+]
+
 { #category : 'private - dimming' }
 CgtThemeEditorOverlay >> region: aRegion isMoreSpecificThan: anotherRegion [
 	| aRectangle anotherRectangle aArea anotherArea |
@@ -376,18 +466,22 @@ CgtThemeEditorOverlay >> updateDimming [
 				corner: ((xBreaks at: xi + 1) @ (yBreaks at: yi + 1)).
 			((aRectangle width > 0) and: [ aRectangle height > 0 ]) ifTrue: [
 				alpha := self cellAlphaFor: aRectangle default: defaultAlpha.
-				alpha > 0 ifTrue: [ patches add: { aRectangle. alpha } ] ] ] ].
+				alpha > 0 ifTrue: [ patches add: { self rectangleVerticesFor: aRectangle. alpha } ] ] ] ].
+	regions do: [ :eachRegion |
+		patches addAll: (self cornerWedgePatchesForRegion: eachRegion overlayRectangle: overlayRectangle defaultAlpha: defaultAlpha) ].
 	self ensureDimElementCount: patches size.
 	patchIndex := 1.
 	patches do: [ :eachPatch |
-		| anElement aRectangle alpha |
+		| anElement vertices alpha |
 		anElement := dimElements at: patchIndex.
-		aRectangle := eachPatch first.
+		vertices := eachPatch first.
 		alpha := eachPatch second.
-		anElement vertices: (self rectangleVerticesFor: aRectangle).
+		anElement vertices: vertices.
 		anElement background: (self dimColorForAlpha: alpha).
 		anElement visibility: BlVisibility visible.
-		patchIndex := patchIndex + 1 ]
+		patchIndex := patchIndex + 1 ].
+	patchIndex to: dimElements size do: [ :index |
+		(dimElements at: index) visibility: BlVisibility gone ]
 ]
 
 { #category : 'private' }
