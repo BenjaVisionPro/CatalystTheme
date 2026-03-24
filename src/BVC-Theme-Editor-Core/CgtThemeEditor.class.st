@@ -165,14 +165,20 @@ CgtThemeEditor >> movableContentChildren [
 
 { #category : 'private - ui' }
 CgtThemeEditor >> newBrandButton [
-	| imageForm |
+	| imageForm iconElement |
 	imageForm := PNGReadWriter formFromFileNamed: self class brandImagePath.
+	iconElement := BlElement new
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical matchParent ];
+		background: imageForm asBlBackground;
+		yourself.
 	^ BrButton new
 		aptitude: BrGlamorousButtonFlatExteriorAptitude + BrGlamorousButtonLayoutAptitude;
-		icon: [ (BlElement new
-			width: imageForm width;
-			height: imageForm height;
-			background: imageForm asBlBackground) ] asStencil;
+		width: 44;
+		height: 44;
+		padding: (BlInsets all: 6);
+		icon: [ iconElement ] asStencil;
 		constraintsDo: [ :c |
 			c ignoreByLayout.
 			c ignored horizontal alignRight.
