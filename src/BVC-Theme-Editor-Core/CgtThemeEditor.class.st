@@ -12,7 +12,9 @@ Class {
 		'layoutContainer',
 		'contentContainer',
 		'editorPane',
-		'isViewVisible'
+		'isViewVisible',
+		'inspectorSpacer',
+		'originalContentChildren'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -69,16 +71,19 @@ CgtThemeEditor class >> userDataKey [
 ]
 
 { #category : 'private - pane' }
-CgtThemeEditor >> addContentChildrenInto: aContainer [
-	self movableContentChildren do: [ :each |
+CgtThemeEditor >> addElements: elements into: aContainer [
+	elements do: [ :each |
 		each removeFromParent.
 		aContainer addChild: each ]
 ]
+
 
 { #category : 'closing' }
 CgtThemeEditor >> close [
 	self isOpen ifFalse: [ ^ self ].
 	self hideView.
+	self restoreOriginalContentChildren.
+	layoutContainer ifNotNil: [ layoutContainer removeFromParent ].
 	overlay ifNotNil: [ overlay detach ].
 	eventHandler ifNotNil: [ targetElement removeEventHandler: eventHandler ].
 	overlay := nil.
@@ -87,6 +92,8 @@ CgtThemeEditor >> close [
 	editorPane := nil.
 	contentContainer := nil.
 	layoutContainer := nil.
+	inspectorSpacer := nil.
+	originalContentChildren := nil.
 	highlightedElement := nil.
 	selectedElement := nil.
 	isViewVisible := false.
@@ -126,11 +133,8 @@ CgtThemeEditor >> hierarchyRootChildren [
 CgtThemeEditor >> hideView [
 	isViewVisible ifFalse: [ ^ self ].
 	editorPane ifNotNil: [ editorPane removeFromParent ].
-	contentContainer ifNotNil: [ self addContentChildrenInto: targetElement ].
-	layoutContainer ifNotNil: [ layoutContainer removeFromParent ].
-	layoutContainer := nil.
-	contentContainer := nil.
 	editorPane := nil.
+	inspectorSpacer ifNotNil: [ inspectorSpacer width: 0 ].
 	isViewVisible := false
 ]
 
@@ -144,7 +148,9 @@ CgtThemeEditor >> initialize [
 	viewHierarchyWidget := nil.
 	editorPane := nil.
 	contentContainer := nil.
-	layoutContainer := nil
+	layoutContainer := nil.
+	inspectorSpacer := nil.
+	originalContentChildren := nil
 ]
 
 { #category : 'accessing' }
@@ -212,10 +218,15 @@ CgtThemeEditor >> newLayoutContainer [
 		matchParent;
 		addChildren: {
 			self newWorldContentContainer.
-			(BlElement new
-				width: 520;
-				height: 1;
-				yourself) }
+			self newInspectorSpacer }
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> newInspectorSpacer [
+	^ (inspectorSpacer := BlElement new)
+		width: 0;
+		height: 1;
+		yourself
 ]
 
 { #category : 'private - ui' }
@@ -235,6 +246,10 @@ CgtThemeEditor >> newWorldContentContainer [
 { #category : 'opening' }
 CgtThemeEditor >> open [
 	self isOpen ifTrue: [ ^ self ].
+	originalContentChildren := self movableContentChildren asArray.
+	layoutContainer := self newLayoutContainer.
+	self addElements: originalContentChildren into: contentContainer.
+	targetElement addChild: layoutContainer.
 	overlay := CgtThemeEditorOverlay on: targetElement.
 	viewHierarchyWidget := CgtThemeEditorViewHierarchyWidget on: self.
 	overlay addChild: self newBrandButton.
@@ -242,6 +257,12 @@ CgtThemeEditor >> open [
 	eventHandler editor: self.
 	targetElement addEventHandler: eventHandler.
 	isOpen := true
+]
+
+{ #category : 'private - pane' }
+CgtThemeEditor >> restoreOriginalContentChildren [
+	originalContentChildren ifNil: [ ^ self ].
+	self addElements: originalContentChildren into: targetElement
 ]
 
 { #category : 'accessing' }
@@ -266,9 +287,7 @@ CgtThemeEditor >> selectedElement: anElementOrNil [
 CgtThemeEditor >> showView [
 	isViewVisible ifTrue: [ ^ self ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget removeFromParent ].
-	layoutContainer := self newLayoutContainer.
-	self addContentChildrenInto: contentContainer.
-	targetElement addChild: layoutContainer.
+	inspectorSpacer ifNotNil: [ inspectorSpacer width: 520 ].
 	editorPane := self newEditorPane.
 	overlay ifNotNil: [ overlay addChild: editorPane ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget refreshItems ].
