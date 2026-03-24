@@ -15,7 +15,8 @@ Class {
 		'isViewVisible',
 		'inspectorSpacer',
 		'originalContentChildren',
-		'brandButton'
+		'brandButton',
+		'inspectorWidthAnimation'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -96,6 +97,7 @@ CgtThemeEditor >> close [
 	inspectorSpacer := nil.
 	originalContentChildren := nil.
 	brandButton := nil.
+	inspectorWidthAnimation := nil.
 	highlightedElement := nil.
 	selectedElement := nil.
 	isViewVisible := false.
@@ -131,14 +133,51 @@ CgtThemeEditor >> hierarchyRootChildren [
 		ifNotNil: [ contentContainer children ]
 ]
 
+{ #category : 'private - animation' }
+CgtThemeEditor >> animateInspectorWidthTo: aWidth [
+	| startWidth animation |
+	inspectorSpacer ifNil: [ ^ self ].
+	startWidth := self inspectorWidth.
+	startWidth = aWidth ifTrue: [
+		self updateInspectorWidth: aWidth.
+		^ self ].
+	animation := BlNumberTransition new
+		from: startWidth;
+		to: aWidth;
+		duration: 500 milliSeconds;
+		easing: CgtFastInSlowOutEasing new;
+		onStepDo: [ :value | self updateInspectorWidth: value rounded ];
+		onFinishedDo: [
+			self updateInspectorWidth: aWidth.
+			inspectorWidthAnimation := nil ];
+		yourself.
+	inspectorWidthAnimation := animation.
+	animation start
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> updateInspectorWidth: aWidth [
+	inspectorSpacer ifNil: [ ^ self ].
+	inspectorSpacer width: aWidth.
+	self updateBrandButtonPosition.
+	layoutContainer ifNotNil: [ layoutContainer requestLayout ].
+	overlay ifNotNil: [ overlay invalidate ]
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> inspectorWidth [
+	^ inspectorSpacer
+		ifNil: [ 0 ]
+		ifNotNil: [ inspectorSpacer width ]
+]
+
 { #category : 'private - pane' }
 CgtThemeEditor >> hideView [
 	isViewVisible ifFalse: [ ^ self ].
 	editorPane ifNotNil: [ editorPane removeFromParent ].
 	editorPane := nil.
-	inspectorSpacer ifNotNil: [ inspectorSpacer width: 0 ].
 	isViewVisible := false.
-	self updateBrandButtonPosition
+	self animateInspectorWidthTo: 0
 ]
 
 { #category : 'initialization' }
@@ -154,7 +193,8 @@ CgtThemeEditor >> initialize [
 	layoutContainer := nil.
 	inspectorSpacer := nil.
 	originalContentChildren := nil.
-	brandButton := nil
+	brandButton := nil.
+	inspectorWidthAnimation := nil
 ]
 
 { #category : 'accessing' }
@@ -313,13 +353,12 @@ CgtThemeEditor >> selectedElement: anElementOrNil [
 CgtThemeEditor >> showView [
 	isViewVisible ifTrue: [ ^ self ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget removeFromParent ].
-	inspectorSpacer ifNotNil: [ inspectorSpacer width: 520 ].
 	editorPane := self newEditorPane.
 	overlay ifNotNil: [ overlay addChild: editorPane ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget refreshItems ].
 	selectedElement ifNotNil: [ viewHierarchyWidget selectElement: selectedElement ].
 	isViewVisible := true.
-	self updateBrandButtonPosition
+	self animateInspectorWidthTo: 520
 ]
 
 { #category : 'accessing' }
