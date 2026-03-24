@@ -10,7 +10,8 @@ Class {
 		'elementToHighlight',
 		'elementToSelect',
 		'eventHandler',
-		'regions'
+		'regions',
+		'visualLayer'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -98,6 +99,13 @@ CgtThemeEditorOverlay >> initialize [
 	self allowMeAndChildrenMouseEvents.
 	eventHandler := CgtThemeEditorOverlayEventHandler new overlay: self.
 	regions := OrderedCollection new.
+	visualLayer := BlElement new
+		constraintsDo: [ :c |
+			c ignoreByLayout.
+			c horizontal matchParent.
+			c vertical matchParent ];
+		preventMeAndChildrenMouseEvents;
+		yourself.
 	dimElements := OrderedCollection new.
 	dimLayer := BlElement new
 		constraintsDo: [ :c |
@@ -115,9 +123,10 @@ CgtThemeEditorOverlay >> initialize [
 		background: Color transparent;
 		border: (BlBorder paint: (Color r: 0.65 g: 0.45 b: 1.0 alpha: 1.0) width: 2);
 		visibility: BlVisibility gone.
-	self addChild: dimLayer.
-	self addChild: highlight.
-	self addChild: selection.
+	visualLayer addChild: dimLayer.
+	visualLayer addChild: highlight.
+	visualLayer addChild: selection.
+	self addChild: visualLayer.
 	self updatePositions
 ]
 
@@ -371,9 +380,3 @@ CgtThemeEditorOverlay >> updatePositions [
 	self updateDimming
 ]
 
-
-{ #category : 'event handling' }
-CgtThemeEditorOverlay >> withAllLeafChildrenAt: aPoint do: aBlock [
-	"The overlay's decorative polygons should never participate in mouse target lookup."
-	^ false
-]
