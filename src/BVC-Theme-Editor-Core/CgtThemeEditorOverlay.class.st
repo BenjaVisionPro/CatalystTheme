@@ -106,7 +106,7 @@ CgtThemeEditorOverlay >> initialize [
 			c vertical matchParent ];
 		yourself.
 	highlight := BlPolygonElement new
-		background: self hoverColor;
+		background: Color transparent;
 		border: (BlBorder paint: (Color r: 0.9 g: 0.78 b: 0.28 alpha: 0.9) width: 2);
 		visibility: BlVisibility gone.
 	selection := BlPolygonElement new
