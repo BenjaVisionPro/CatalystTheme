@@ -117,13 +117,17 @@ CgtThemeEditor >> highlightedElement: anElementOrNil [
 
 { #category : 'accessing' }
 CgtThemeEditor >> hierarchyRootChildren [
-	^ self movableContentChildren
+	^ contentContainer
+		ifNil: [ self movableContentChildren ]
+		ifNotNil: [ contentContainer children ]
 ]
 
 { #category : 'private - pane' }
 CgtThemeEditor >> hideView [
 	isViewVisible ifFalse: [ ^ self ].
 	editorPane ifNotNil: [ editorPane removeFromParent ].
+	contentContainer ifNotNil: [ self addContentChildrenInto: targetElement ].
+	layoutContainer ifNotNil: [ layoutContainer removeFromParent ].
 	layoutContainer := nil.
 	contentContainer := nil.
 	editorPane := nil.
@@ -204,13 +208,14 @@ CgtThemeEditor >> newEditorPane [
 
 { #category : 'private - ui' }
 CgtThemeEditor >> newLayoutContainer [
-	| aContainer |
-	aContainer := BrHorizontalPane new
+	^ BrHorizontalPane new
 		matchParent;
 		addChildren: {
-			(self newWorldContentContainer).
-			(editorPane := self newEditorPane) }.
-	^ aContainer
+			self newWorldContentContainer.
+			(BlElement new
+				width: 520;
+				height: 1;
+				yourself) }
 ]
 
 { #category : 'private - ui' }
@@ -223,7 +228,7 @@ CgtThemeEditor >> newWorldContentContainer [
 	^ (contentContainer := BrVerticalPane new)
 		matchParent;
 		constraintsDo: [ :c |
-			c linear weight: 0.618 ];
+			c linear weight: 1 ];
 		yourself
 ]
 
@@ -261,6 +266,9 @@ CgtThemeEditor >> selectedElement: anElementOrNil [
 CgtThemeEditor >> showView [
 	isViewVisible ifTrue: [ ^ self ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget removeFromParent ].
+	layoutContainer := self newLayoutContainer.
+	self addContentChildrenInto: contentContainer.
+	targetElement addChild: layoutContainer.
 	editorPane := self newEditorPane.
 	overlay ifNotNil: [ overlay addChild: editorPane ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget refreshItems ].
