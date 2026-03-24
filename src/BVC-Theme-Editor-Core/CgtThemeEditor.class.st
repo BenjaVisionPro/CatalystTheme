@@ -15,7 +15,7 @@ Class {
 		'isViewVisible',
 		'inspectorSpacer',
 		'originalContentChildren',
-			'brandButton',
+		'brandButton',
 		'inspectorWidthAnimation',
 		'eventTargetElement'
 	],
@@ -80,6 +80,42 @@ CgtThemeEditor >> addElements: elements into: aContainer [
 		aContainer addChild: each ]
 ]
 
+{ #category : 'private - animation' }
+CgtThemeEditor >> animateInspectorWidthTo: aWidth [
+	| startWidth animation animationHost |
+	inspectorSpacer ifNil: [ ^ self ].
+	startWidth := self inspectorWidth.
+	startWidth = aWidth ifTrue: [
+		self updateInspectorWidth: aWidth.
+		^ self ].
+	inspectorWidthAnimation ifNotNil: [ inspectorWidthAnimation stopIfRunning ].
+	animation := BlNumberTransition new
+		from: startWidth;
+		to: aWidth;
+		duration: 1500 milliseconds;
+		easing: CgtFastInSlowOutEasing new;
+		onStepDo: [ :value | self updateInspectorWidth: value rounded ];
+		onFinishedDo: [
+			self updateInspectorWidth: aWidth.
+			aWidth = 0 ifTrue: [
+				editorPane ifNotNil: [ editorPane removeFromParent ].
+				editorPane := nil ].
+			inspectorWidthAnimation := nil ];
+		yourself.
+	inspectorWidthAnimation := animation.
+	animationHost := layoutContainer ifNil: [ targetElement ].
+	animationHost addAnimation: animation
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> brandButtonMargin [
+	^ BlInsets bottom: 18 right: self brandButtonRightMargin
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> brandButtonRightMargin [
+	^ 8
+]
 
 { #category : 'closing' }
 CgtThemeEditor >> close [
@@ -116,6 +152,20 @@ CgtThemeEditor >> eventHandler [
 	^ eventHandler
 ]
 
+{ #category : 'private - pane' }
+CgtThemeEditor >> hideView [
+	isViewVisible ifFalse: [ ^ self ].
+	isViewVisible := false.
+	self animateInspectorWidthTo: 0
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> hierarchyRootChildren [
+	^ contentContainer
+		ifNil: [ self movableContentChildren ]
+		ifNotNil: [ contentContainer children ]
+]
+
 { #category : 'accessing' }
 CgtThemeEditor >> highlightedElement [
 	^ highlightedElement
@@ -126,63 +176,6 @@ CgtThemeEditor >> highlightedElement: anElementOrNil [
 	highlightedElement == anElementOrNil ifTrue: [ ^ self ].
 	highlightedElement := anElementOrNil.
 	overlay ifNotNil: [ overlay highlightElement: anElementOrNil ]
-]
-
-{ #category : 'accessing' }
-CgtThemeEditor >> hierarchyRootChildren [
-	^ contentContainer
-		ifNil: [ self movableContentChildren ]
-		ifNotNil: [ contentContainer children ]
-]
-
-{ #category : 'private - animation' }
-CgtThemeEditor >> animateInspectorWidthTo: aWidth [
-	| startWidth animation animationHost |
-	inspectorSpacer ifNil: [ ^ self ].
-	startWidth := self inspectorWidth.
-	startWidth = aWidth ifTrue: [
-		self updateInspectorWidth: aWidth.
-		^ self ].
-	inspectorWidthAnimation ifNotNil: [ inspectorWidthAnimation stopIfRunning ].
-	animation := BlNumberTransition new
-		from: startWidth;
-		to: aWidth;
-		duration: 400 milliseconds;
-		easing: CgtFastInSlowOutEasing new;
-		onStepDo: [ :value | self updateInspectorWidth: value rounded ];
-		onFinishedDo: [
-			self updateInspectorWidth: aWidth.
-			aWidth = 0 ifTrue: [
-				editorPane ifNotNil: [ editorPane removeFromParent ].
-				editorPane := nil ].
-			inspectorWidthAnimation := nil ];
-		yourself.
-	inspectorWidthAnimation := animation.
-	animationHost := layoutContainer ifNil: [ targetElement ].
-	animationHost addAnimation: animation
-]
-
-{ #category : 'private - ui' }
-CgtThemeEditor >> updateInspectorWidth: aWidth [
-	inspectorSpacer ifNil: [ ^ self ].
-	inspectorSpacer width: aWidth.
-	self updateBrandButtonPosition.
-	layoutContainer ifNotNil: [ layoutContainer requestLayout ].
-	overlay ifNotNil: [ overlay invalidate ]
-]
-
-{ #category : 'accessing' }
-CgtThemeEditor >> inspectorWidth [
-	^ inspectorSpacer
-		ifNil: [ 0 ]
-		ifNotNil: [ inspectorSpacer width ]
-]
-
-{ #category : 'private - pane' }
-CgtThemeEditor >> hideView [
-	isViewVisible ifFalse: [ ^ self ].
-	isViewVisible := false.
-	self animateInspectorWidthTo: 0
 ]
 
 { #category : 'initialization' }
@@ -200,6 +193,13 @@ CgtThemeEditor >> initialize [
 	originalContentChildren := nil.
 	brandButton := nil.
 	inspectorWidthAnimation := nil
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> inspectorWidth [
+	^ inspectorSpacer
+		ifNil: [ 0 ]
+		ifNotNil: [ inspectorSpacer width ]
 ]
 
 { #category : 'accessing' }
@@ -240,27 +240,6 @@ CgtThemeEditor >> newBrandButton [
 ]
 
 { #category : 'private - ui' }
-CgtThemeEditor >> brandButtonMargin [
-	^ BlInsets bottom: 18 right: self brandButtonRightMargin
-]
-
-{ #category : 'private - ui' }
-CgtThemeEditor >> brandButtonRightMargin [
-	^ 8
-]
-
-
-{ #category : 'private - ui' }
-CgtThemeEditor >> updateBrandButtonPosition [
-	brandButton ifNil: [ ^ self ].
-	brandButton constraintsDo: [ :c |
-		c ignoreByLayout.
-		c ignored horizontal alignRight.
-		c ignored vertical alignBottom.
-		c margin: self brandButtonMargin ]
-]
-
-{ #category : 'private - ui' }
 CgtThemeEditor >> newEditorPane [
 	^ BrVerticalPane new
 		matchParent;
@@ -279,21 +258,21 @@ CgtThemeEditor >> newEditorPane [
 ]
 
 { #category : 'private - ui' }
-CgtThemeEditor >> newLayoutContainer [
-	^ BrHorizontalPane new
-		matchParent;
-		addChildren: {
-			self newWorldContentContainer.
-			self newInspectorSpacer }
-]
-
-{ #category : 'private - ui' }
 CgtThemeEditor >> newInspectorSpacer [
 	^ (inspectorSpacer := BrFrame new)
 		constraintsDo: [ :c |
 			c vertical matchParent ];
 		width: 0;
 		yourself
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> newLayoutContainer [
+	^ BrHorizontalPane new
+		matchParent;
+		addChildren: {
+			self newWorldContentContainer.
+			self newInspectorSpacer }
 ]
 
 { #category : 'private - ui' }
@@ -328,15 +307,15 @@ CgtThemeEditor >> open [
 	isOpen := true
 ]
 
+{ #category : 'accessing' }
+CgtThemeEditor >> overlay [
+	^ overlay
+]
+
 { #category : 'private - pane' }
 CgtThemeEditor >> restoreOriginalContentChildren [
 	originalContentChildren ifNil: [ ^ self ].
 	self addElements: originalContentChildren into: targetElement
-]
-
-{ #category : 'accessing' }
-CgtThemeEditor >> overlay [
-	^ overlay
 ]
 
 { #category : 'accessing' }
@@ -379,6 +358,25 @@ CgtThemeEditor >> toggleView [
 	self isViewVisible
 		ifTrue: [ self hideView ]
 		ifFalse: [ self showView ]
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> updateBrandButtonPosition [
+	brandButton ifNil: [ ^ self ].
+	brandButton constraintsDo: [ :c |
+		c ignoreByLayout.
+		c ignored horizontal alignRight.
+		c ignored vertical alignBottom.
+		c margin: self brandButtonMargin ]
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> updateInspectorWidth: aWidth [
+	inspectorSpacer ifNil: [ ^ self ].
+	inspectorSpacer width: aWidth.
+	self updateBrandButtonPosition.
+	layoutContainer ifNotNil: [ layoutContainer requestLayout ].
+	overlay ifNotNil: [ overlay invalidate ]
 ]
 
 { #category : 'accessing' }

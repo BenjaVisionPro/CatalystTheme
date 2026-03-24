@@ -49,28 +49,14 @@ CgtThemeEditorOverlay >> boundsRectFor: anOverlayedElement [
 	^ ((xs min) @ (ys min)) corner: ((xs max) @ (ys max))
 ]
 
-{ #category : 'private - geometry' }
-CgtThemeEditorOverlay >> rectangleVerticesFor: aRectangle [
-	^ {
-		aRectangle topLeft.
-		aRectangle topRight.
-		aRectangle bottomRight.
-		aRectangle bottomLeft }
+{ #category : 'attaching' }
+CgtThemeEditorOverlay >> detach [
+	self removeFromParent
 ]
 
 { #category : 'private - styling' }
 CgtThemeEditorOverlay >> dimColor [
 	^ Color black alpha: 0.45
-]
-
-{ #category : 'private - styling' }
-CgtThemeEditorOverlay >> hoverColor [
-	^ Color black alpha: 0.22
-]
-
-{ #category : 'attaching' }
-CgtThemeEditorOverlay >> detach [
-	self removeFromParent
 ]
 
 { #category : 'accessing' }
@@ -95,6 +81,11 @@ CgtThemeEditorOverlay >> highlightElement: anElementOrNil [
 			self updateOverlayElement: highlight toMatch: anElement.
 			highlight visibility: BlVisibility visible ].
 	self updatePositions
+]
+
+{ #category : 'private - styling' }
+CgtThemeEditorOverlay >> hoverColor [
+	^ Color black alpha: 0.22
 ]
 
 { #category : 'initialization' }
@@ -161,6 +152,15 @@ CgtThemeEditorOverlay >> onRemovedFromSceneGraph [
 	elementToSelect ifNotNil: [ :anElement | anElement removeEventHandler: eventHandler ]
 ]
 
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> rectangleVerticesFor: aRectangle [
+	^ {
+		aRectangle topLeft.
+		aRectangle topRight.
+		aRectangle bottomRight.
+		aRectangle bottomLeft }
+]
+
 { #category : 'private' }
 CgtThemeEditorOverlay >> removeEventHandlerFromElementToHighlightOrSelect: anElement [
 	(elementToSelect ~= anElement
@@ -206,6 +206,15 @@ CgtThemeEditorOverlay >> targetElement: anElement [
 ]
 
 { #category : 'private' }
+CgtThemeEditorOverlay >> updateDimElement: anElement withRectangle: aRectangle [
+	((aRectangle width <= 0) or: [ aRectangle height <= 0 ])
+		ifTrue: [ anElement visibility: BlVisibility gone ]
+		ifFalse: [
+			anElement vertices: (self rectangleVerticesFor: aRectangle).
+			anElement visibility: BlVisibility visible ]
+]
+
+{ #category : 'private' }
 CgtThemeEditorOverlay >> updateDimmingForFocusRectangle: aRectangle [
 	| overlayRect topRect leftRect rightRect bottomRect |
 	overlayRect := (0 @ 0) corner: self extent.
@@ -226,15 +235,6 @@ CgtThemeEditorOverlay >> updateDimmingForFocusRectangle: aRectangle [
 	self updateDimElement: leftDim withRectangle: leftRect.
 	self updateDimElement: rightDim withRectangle: rightRect.
 	self updateDimElement: bottomDim withRectangle: bottomRect
-]
-
-{ #category : 'private' }
-CgtThemeEditorOverlay >> updateDimElement: anElement withRectangle: aRectangle [
-	((aRectangle width <= 0) or: [ aRectangle height <= 0 ])
-		ifTrue: [ anElement visibility: BlVisibility gone ]
-		ifFalse: [
-			anElement vertices: (self rectangleVerticesFor: aRectangle).
-			anElement visibility: BlVisibility visible ]
 ]
 
 { #category : 'private' }
