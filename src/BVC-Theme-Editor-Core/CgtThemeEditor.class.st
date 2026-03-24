@@ -162,10 +162,7 @@ CgtThemeEditor >> movableContentChildren [
 CgtThemeEditor >> newBrandButton [
 	| imageForm iconElement |
 	imageForm := PNGReadWriter formFromFileNamed: self class brandImagePath.
-	iconElement := BlElement new
-		size: 24@24;
-		background: imageForm asBlBackground;
-		yourself.
+	iconElement := imageForm asElement asScalableElement.
 	^ BrButton new
 		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
 		beSmallSize;
@@ -186,7 +183,7 @@ CgtThemeEditor >> newEditorPane [
 		constraintsDo: [ :c |
 			c ignoreByLayout.
 			c ignored horizontal alignRight.
-			c ignored vertical matchParent ];
+			c vertical matchParent ];
 		width: 520;
 		padding: (BlInsets top: 10 left: 10 bottom: 10 right: 10);
 		addAptitude: BrShadowAptitude new beLarge;
