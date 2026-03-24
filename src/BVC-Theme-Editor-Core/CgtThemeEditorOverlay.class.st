@@ -238,7 +238,6 @@ CgtThemeEditorOverlay >> addDimElement: anElement [
 { #category : 'private - regions' }
 CgtThemeEditorOverlay >> hoverRegion [
 	elementToHighlight ifNil: [ ^ nil ].
-	elementToHighlight = elementToSelect ifTrue: [ ^ nil ].
 	^ CgtThemeEditorOverlayRegion new
 		element: elementToHighlight;
 		dimAlpha: 0.22;
