@@ -117,18 +117,13 @@ CgtThemeEditor >> highlightedElement: anElementOrNil [
 
 { #category : 'accessing' }
 CgtThemeEditor >> hierarchyRootChildren [
-	contentContainer ifNotNil: [ ^ contentContainer children ].
 	^ self movableContentChildren
 ]
 
 { #category : 'private - pane' }
 CgtThemeEditor >> hideView [
 	isViewVisible ifFalse: [ ^ self ].
-	contentContainer ifNotNil: [
-		contentContainer children copy do: [ :each |
-			each removeFromParent.
-			targetElement addChild: each ] ].
-	layoutContainer ifNotNil: [ layoutContainer removeFromParent ].
+	editorPane ifNotNil: [ editorPane removeFromParent ].
 	layoutContainer := nil.
 	contentContainer := nil.
 	editorPane := nil.
@@ -168,16 +163,13 @@ CgtThemeEditor >> newBrandButton [
 	| imageForm iconElement |
 	imageForm := PNGReadWriter formFromFileNamed: self class brandImagePath.
 	iconElement := BlElement new
-		constraintsDo: [ :c |
-			c horizontal matchParent.
-			c vertical matchParent ];
+		size: 24@24;
 		background: imageForm asBlBackground;
 		yourself.
 	^ BrButton new
-		aptitude: BrGlamorousButtonFlatExteriorAptitude + BrGlamorousButtonLayoutAptitude;
-		width: 44;
-		height: 44;
-		padding: (BlInsets all: 6);
+		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
+		beSmallSize;
+		label: '';
 		icon: [ iconElement ] asStencil;
 		constraintsDo: [ :c |
 			c ignoreByLayout.
@@ -191,9 +183,11 @@ CgtThemeEditor >> newBrandButton [
 { #category : 'private - ui' }
 CgtThemeEditor >> newEditorPane [
 	^ BrVerticalPane new
-		matchParent;
 		constraintsDo: [ :c |
-			c linear weight: 0.382 ];
+			c ignoreByLayout.
+			c ignored horizontal alignRight.
+			c ignored vertical matchParent ];
+		width: 520;
 		padding: (BlInsets top: 10 left: 10 bottom: 10 right: 10);
 		addAptitude: BrShadowAptitude new beLarge;
 		background: targetElement theme default backdropBackground;
@@ -266,11 +260,8 @@ CgtThemeEditor >> selectedElement: anElementOrNil [
 { #category : 'private - pane' }
 CgtThemeEditor >> showView [
 	isViewVisible ifTrue: [ ^ self ].
-	layoutContainer := self newLayoutContainer.
-	self addContentChildrenInto: contentContainer.
-	overlay ifNotNil: [ overlay removeFromParent ].
-	targetElement addChild: layoutContainer.
-	overlay ifNotNil: [ targetElement addChild: overlay ].
+	editorPane := self newEditorPane.
+	overlay ifNotNil: [ overlay addChild: editorPane ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget refreshItems ].
 	selectedElement ifNotNil: [ viewHierarchyWidget selectElement: selectedElement ].
 	isViewVisible := true
