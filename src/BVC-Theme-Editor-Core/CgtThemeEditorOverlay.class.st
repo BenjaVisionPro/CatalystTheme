@@ -3,19 +3,14 @@ Class {
 	#superclass : 'BlElement',
 	#instVars : [
 		'targetElement',
-		'fullDim',
-		'topDim',
-		'leftDim',
-		'rightDim',
-		'bottomDim',
+		'dimLayer',
+		'dimElements',
 		'highlight',
 		'selection',
 		'elementToHighlight',
 		'elementToSelect',
 		'eventHandler',
-		'dimAnimation',
-		'hoverBoundsAnimation',
-		'animatedHoverRectangle'
+		'regions'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -34,58 +29,6 @@ CgtThemeEditorOverlay >> addEventHandlerToElementToHighlightOrSelect: anElement 
 	((elementToSelect = anElement or: [ elementToHighlight = anElement ])
 		and: [ (anElement hasEventHandler: eventHandler) not ])
 		ifTrue: [ anElement addEventHandler: eventHandler ]
-]
-
-{ #category : 'animation' }
-CgtThemeEditorOverlay >> animateDimmingIn [
-	| animation |
-	dimAnimation ifNotNil: [ dimAnimation stopIfRunning ].
-	self setDimOpacity: 0.0.
-	animation := BlNumberTransition new
-		from: 0.0;
-		to: 0.45;
-		duration: 200 milliseconds;
-		onStepDo: [ :value | self setDimOpacity: value ];
-		onFinishedDo: [
-			self setDimOpacity: 0.45.
-			dimAnimation := nil ];
-		yourself.
-	dimAnimation := animation.
-	self addAnimation: animation
-]
-
-{ #category : 'private - animation' }
-CgtThemeEditorOverlay >> animateHoverRectangleTo: aRectangle [
-	| startRectangle animation |
-	aRectangle ifNil: [
-		hoverBoundsAnimation ifNotNil: [ hoverBoundsAnimation stopIfRunning ].
-		animatedHoverRectangle := nil.
-		self updatePositions.
-		^ self ].
-	startRectangle := animatedHoverRectangle
-		ifNil: [
-			elementToHighlight
-				ifNotNil: [ self boundsRectFor: elementToHighlight ]
-				ifNil: [ aRectangle ] ].
-	hoverBoundsAnimation ifNotNil: [ hoverBoundsAnimation stopIfRunning ].
-	animation := BlNumberTransition new
-		from: 0.0;
-		to: 1.0;
-		duration: 120 milliseconds;
-		easing: CgtFastInSlowOutEasing new;
-		onStepDo: [ :progress |
-			animatedHoverRectangle := self
-				interpolateRectangle: startRectangle
-				to: aRectangle
-				at: progress asFloat.
-			self updatePositions ];
-		onFinishedDo: [
-			animatedHoverRectangle := aRectangle.
-			hoverBoundsAnimation := nil.
-			self updatePositions ];
-		yourself.
-	hoverBoundsAnimation := animation.
-	self addAnimation: animation
 ]
 
 { #category : 'attaching' }
@@ -111,12 +54,7 @@ CgtThemeEditorOverlay >> detach [
 
 { #category : 'private - styling' }
 CgtThemeEditorOverlay >> dimColor [
-	^ self dimColorWithAlpha: 0.45
-]
-
-{ #category : 'private - styling' }
-CgtThemeEditorOverlay >> dimColorWithAlpha: anAlpha [
-	^ Color black alpha: anAlpha
+	^ Color black alpha: 0.45
 ]
 
 { #category : 'accessing' }
@@ -130,19 +68,16 @@ CgtThemeEditorOverlay >> hideElement: anElement [
 
 { #category : 'accessing' }
 CgtThemeEditorOverlay >> highlightElement: anElementOrNil [
-	| aPreviousElementToHighlight targetRectangle |
+	| aPreviousElementToHighlight |
 	aPreviousElementToHighlight := elementToHighlight.
 	elementToHighlight := anElementOrNil.
 	self removeEventHandlerFromElementToHighlightOrSelect: aPreviousElementToHighlight.
 	anElementOrNil
-		ifNil: [
-			highlight visibility: BlVisibility gone.
-			self animateHoverRectangleTo: nil ]
+		ifNil: [ highlight visibility: BlVisibility gone ]
 		ifNotNil: [ :anElement |
 			self addEventHandlerToElementToHighlightOrSelect: anElement.
-			targetRectangle := self boundsRectFor: anElement.
-			highlight visibility: BlVisibility visible.
-			self animateHoverRectangleTo: targetRectangle ].
+			self updateOverlayElement: highlight toMatch: anElement.
+			highlight visibility: BlVisibility visible ].
 	self updatePositions
 ]
 
@@ -162,24 +97,14 @@ CgtThemeEditorOverlay >> initialize [
 	self beInSeparateCompositionLayer.
 	self allowMeAndChildrenMouseEvents.
 	eventHandler := CgtThemeEditorOverlayEventHandler new overlay: self.
-	dimAnimation := nil.
-	hoverBoundsAnimation := nil.
-	animatedHoverRectangle := nil.
-	fullDim := BlPolygonElement new
-		background: (self dimColorWithAlpha: 0.0);
-		visibility: BlVisibility visible.
-	topDim := BlPolygonElement new
-		background: (self dimColorWithAlpha: 0.0);
-		visibility: BlVisibility gone.
-	leftDim := BlPolygonElement new
-		background: (self dimColorWithAlpha: 0.0);
-		visibility: BlVisibility gone.
-	rightDim := BlPolygonElement new
-		background: (self dimColorWithAlpha: 0.0);
-		visibility: BlVisibility gone.
-	bottomDim := BlPolygonElement new
-		background: (self dimColorWithAlpha: 0.0);
-		visibility: BlVisibility gone.
+	regions := OrderedCollection new.
+	dimElements := OrderedCollection new.
+	dimLayer := BlElement new
+		constraintsDo: [ :c |
+			c ignoreByLayout.
+			c horizontal matchParent.
+			c vertical matchParent ];
+		yourself.
 	highlight := BlPolygonElement new
 		background: self hoverColor;
 		border: (BlBorder paint: (Color r: 0.9 g: 0.78 b: 0.28 alpha: 0.9) width: 2);
@@ -188,26 +113,10 @@ CgtThemeEditorOverlay >> initialize [
 		background: Color transparent;
 		border: (BlBorder paint: (Color r: 0.65 g: 0.45 b: 1.0 alpha: 1.0) width: 2);
 		visibility: BlVisibility gone.
-	self addChild: fullDim.
-	self addChild: topDim.
-	self addChild: leftDim.
-	self addChild: rightDim.
-	self addChild: bottomDim.
+	self addChild: dimLayer.
 	self addChild: highlight.
 	self addChild: selection.
 	self updatePositions
-]
-
-{ #category : 'private - geometry' }
-CgtThemeEditorOverlay >> interpolatedPointFrom: aPoint to: anotherPoint at: progress [
-	^ (aPoint x + ((anotherPoint x - aPoint x) * progress))
-		@ (aPoint y + ((anotherPoint y - aPoint y) * progress))
-]
-
-{ #category : 'private - geometry' }
-CgtThemeEditorOverlay >> interpolateRectangle: aRectangle to: anotherRectangle at: progress [
-	^ (self interpolatedPointFrom: aRectangle topLeft to: anotherRectangle topLeft at: progress)
-		corner: (self interpolatedPointFrom: aRectangle bottomRight to: anotherRectangle bottomRight at: progress)
 ]
 
 { #category : 'hooks - children' }
@@ -247,17 +156,6 @@ CgtThemeEditorOverlay >> removeEventHandlerFromElementToHighlightOrSelect: anEle
 		ifTrue: [ anElement removeEventHandler: eventHandler ]
 ]
 
-{ #category : 'private - styling' }
-CgtThemeEditorOverlay >> setDimOpacity: anAlpha [
-	| aColor |
-	aColor := self dimColorWithAlpha: anAlpha.
-	fullDim background: aColor.
-	topDim background: aColor.
-	leftDim background: aColor.
-	rightDim background: aColor.
-	bottomDim background: aColor
-]
-
 { #category : 'accessing' }
 CgtThemeEditorOverlay >> selectElement: anElementOrNil [
 	| aPreviousElementToSelect |
@@ -268,7 +166,7 @@ CgtThemeEditorOverlay >> selectElement: anElementOrNil [
 		ifNil: [ selection visibility: BlVisibility gone ]
 		ifNotNil: [ :anElement |
 			self addEventHandlerToElementToHighlightOrSelect: anElement.
-			self updateOverlayElement: selection toMatch: anElement.
+			self updateOverlayElement: selection toMatch: anElement inset: self selectionInset.
 			selection visibility: BlVisibility visible ].
 	self updatePositions
 ]
@@ -294,65 +192,154 @@ CgtThemeEditorOverlay >> targetElement: anElement [
 	targetElement := anElement
 ]
 
-{ #category : 'private' }
-CgtThemeEditorOverlay >> updateDimElement: anElement withRectangle: aRectangle [
-	((aRectangle width <= 0) or: [ aRectangle height <= 0 ])
-		ifTrue: [ anElement visibility: BlVisibility gone ]
-		ifFalse: [
-			anElement vertices: (self rectangleVerticesFor: aRectangle).
-			anElement visibility: BlVisibility visible ]
+{ #category : 'private - dimming' }
+CgtThemeEditorOverlay >> cellAlphaFor: aRectangle default: aDefaultAlpha [
+	| cellCenter cellAlpha |
+	cellCenter := aRectangle center.
+	cellAlpha := aDefaultAlpha.
+	regions do: [ :eachRegion |
+		| regionRectangle |
+		regionRectangle := eachRegion rectangleInOverlay: self.
+		(regionRectangle notNil and: [ regionRectangle containsPoint: cellCenter ])
+			ifTrue: [ cellAlpha := cellAlpha min: eachRegion dimAlpha ] ].
+	^ cellAlpha
 ]
 
-{ #category : 'private' }
-CgtThemeEditorOverlay >> updateDimmingForFocusRectangle: aRectangle [
-	| overlayRect topRect leftRect rightRect bottomRect |
-	overlayRect := (0 @ 0) corner: self extent.
-	aRectangle ifNil: [
-		fullDim vertices: (self rectangleVerticesFor: overlayRect).
-		fullDim visibility: BlVisibility visible.
-		topDim visibility: BlVisibility gone.
-		leftDim visibility: BlVisibility gone.
-		rightDim visibility: BlVisibility gone.
-		bottomDim visibility: BlVisibility gone.
+{ #category : 'private - dimming' }
+CgtThemeEditorOverlay >> clampRegionRectangle: aRectangle to: overlayRectangle [
+	aRectangle ifNil: [ ^ nil ].
+	^ ((aRectangle left max: overlayRectangle left) @ (aRectangle top max: overlayRectangle top))
+		corner: ((aRectangle right min: overlayRectangle right) @ (aRectangle bottom min: overlayRectangle bottom))
+]
+
+{ #category : 'private - styling' }
+CgtThemeEditorOverlay >> dimColorForAlpha: aNumber [
+	^ Color black alpha: aNumber
+]
+
+{ #category : 'private - dimming' }
+CgtThemeEditorOverlay >> ensureDimElementCount: aCount [
+	[ dimElements size < aCount ] whileTrue: [
+		| anElement |
+		anElement := BlPolygonElement new visibility: BlVisibility gone.
+		self addDimElement: anElement ].
+	[ dimElements size > aCount ] whileTrue: [
+		| anElement |
+		anElement := dimElements removeLast.
+		anElement removeFromParent ]
+]
+
+{ #category : 'private - dimming' }
+CgtThemeEditorOverlay >> addDimElement: anElement [
+	dimLayer addChild: anElement.
+	dimElements add: anElement
+]
+
+{ #category : 'private - regions' }
+CgtThemeEditorOverlay >> hoverRegion [
+	elementToHighlight ifNil: [ ^ nil ].
+	^ CgtThemeEditorOverlayRegion new
+		element: elementToHighlight;
+		dimAlpha: 0.22;
+		inset: 0;
+		cornerRadius: 6;
+		priority: 10;
+		yourself
+]
+
+{ #category : 'private - regions' }
+CgtThemeEditorOverlay >> rebuildRegions [
+	regions := OrderedCollection new.
+	self hoverRegion ifNotNil: [ :aRegion | regions add: aRegion ].
+	self selectionRegion ifNotNil: [ :aRegion | regions add: aRegion ]
+]
+
+{ #category : 'private - dimming' }
+CgtThemeEditorOverlay >> sortedBreakpointsFrom: numbers start: aStart end: anEnd [
+	| filtered |
+	filtered := ((numbers select: [ :each | each >= aStart and: [ each <= anEnd ] ]) copyWith: aStart) copyWith: anEnd.
+	^ (filtered asSet asSortedCollection) asArray
+]
+
+{ #category : 'private - regions' }
+CgtThemeEditorOverlay >> selectionInset [
+	^ 4
+]
+
+{ #category : 'private - regions' }
+CgtThemeEditorOverlay >> selectionRegion [
+	elementToSelect ifNil: [ ^ nil ].
+	^ CgtThemeEditorOverlayRegion new
+		element: elementToSelect;
+		dimAlpha: 0.0;
+		inset: self selectionInset;
+		cornerRadius: 10;
+		priority: 20;
+		yourself
+]
+
+{ #category : 'private - dimming' }
+CgtThemeEditorOverlay >> updateDimming [
+	| overlayRectangle xBreaks yBreaks patches patchIndex defaultAlpha |
+	overlayRectangle := (0 @ 0) corner: self extent.
+	(self extent x <= 0 or: [ self extent y <= 0 ]) ifTrue: [
+		self ensureDimElementCount: 0.
 		^ self ].
-	fullDim visibility: BlVisibility gone.
-	topRect := overlayRect topLeft corner: (overlayRect right @ aRectangle top).
-	leftRect := (overlayRect left @ aRectangle top) corner: (aRectangle left @ aRectangle bottom).
-	rightRect := (aRectangle right @ aRectangle top) corner: overlayRect bottomRight x @ aRectangle bottom.
-	bottomRect := (overlayRect left @ aRectangle bottom) corner: overlayRect bottomRight.
-	self updateDimElement: topDim withRectangle: topRect.
-	self updateDimElement: leftDim withRectangle: leftRect.
-	self updateDimElement: rightDim withRectangle: rightRect.
-	self updateDimElement: bottomDim withRectangle: bottomRect
+	self rebuildRegions.
+	defaultAlpha := self dimColor alpha.
+	xBreaks := self sortedBreakpointsFrom: (regions flatCollect: [ :each |
+		| aRectangle |
+		aRectangle := self clampRegionRectangle: (each rectangleInOverlay: self) to: overlayRectangle.
+		aRectangle ifNil: [ #() ] ifNotNil: [ { aRectangle left. aRectangle right } ] ])
+		start: overlayRectangle left
+		end: overlayRectangle right.
+	yBreaks := self sortedBreakpointsFrom: (regions flatCollect: [ :each |
+		| aRectangle |
+		aRectangle := self clampRegionRectangle: (each rectangleInOverlay: self) to: overlayRectangle.
+		aRectangle ifNil: [ #() ] ifNotNil: [ { aRectangle top. aRectangle bottom } ] ])
+		start: overlayRectangle top
+		end: overlayRectangle bottom.
+	patches := OrderedCollection new.
+	1 to: xBreaks size - 1 do: [ :xi |
+		1 to: yBreaks size - 1 do: [ :yi |
+			| aRectangle alpha |
+			aRectangle := (xBreaks at: xi) @ (yBreaks at: yi)
+				corner: ((xBreaks at: xi + 1) @ (yBreaks at: yi + 1)).
+			((aRectangle width > 0) and: [ aRectangle height > 0 ]) ifTrue: [
+				alpha := self cellAlphaFor: aRectangle default: defaultAlpha.
+				alpha > 0 ifTrue: [ patches add: { aRectangle. alpha } ] ] ] ].
+	self ensureDimElementCount: patches size.
+	patchIndex := 1.
+	patches do: [ :eachPatch |
+		| anElement aRectangle alpha |
+		anElement := dimElements at: patchIndex.
+		aRectangle := eachPatch first.
+		alpha := eachPatch second.
+		anElement vertices: (self rectangleVerticesFor: aRectangle).
+		anElement background: (self dimColorForAlpha: alpha).
+		anElement visibility: BlVisibility visible.
+		patchIndex := patchIndex + 1 ]
 ]
 
 { #category : 'private' }
 CgtThemeEditorOverlay >> updateOverlayElement: anOverlayElement toMatch: anOverlayedElement [
-	| theAnchorPositions |
-	theAnchorPositions := anOverlayedElement bounds inLocal bounds corners
-		collect: [ :eachPoint | self globalPointToLocal: (anOverlayedElement localPointToGlobal: eachPoint) ].
-	anOverlayElement vertices: theAnchorPositions
+	self updateOverlayElement: anOverlayElement toMatch: anOverlayedElement inset: 0
+]
+
+{ #category : 'private' }
+CgtThemeEditorOverlay >> updateOverlayElement: anOverlayElement toMatch: anOverlayedElement inset: aNumber [
+	| aRectangle |
+	aRectangle := self boundsRectFor: anOverlayedElement.
+	aRectangle := ((aRectangle left - aNumber) @ (aRectangle top - aNumber))
+		corner: ((aRectangle right + aNumber) @ (aRectangle bottom + aNumber)).
+	anOverlayElement vertices: (self rectangleVerticesFor: aRectangle)
 ]
 
 { #category : 'private' }
 CgtThemeEditorOverlay >> updatePositions [
-	| focusRect |
 	elementToSelect ifNotNil: [ :anOverlayedElement |
-		self updateOverlayElement: selection toMatch: anOverlayedElement ].
-	animatedHoverRectangle
-		ifNotNil: [ highlight vertices: (self rectangleVerticesFor: animatedHoverRectangle) ]
-		ifNil: [
-			elementToHighlight ifNotNil: [ :anOverlayedElement |
-				self updateOverlayElement: highlight toMatch: anOverlayedElement ] ].
-	focusRect := elementToSelect
-		ifNotNil: [ self boundsRectFor: elementToSelect ]
-		ifNil: [ animatedHoverRectangle
-			ifNotNil: [ animatedHoverRectangle ]
-			ifNil: [ elementToHighlight
-				ifNotNil: [ self boundsRectFor: elementToHighlight ]
-				ifNil: [ nil ] ] ].
-	self updateDimmingForFocusRectangle: focusRect.
-	(elementToSelect notNil and: [ elementToHighlight notNil and: [ elementToHighlight ~= elementToSelect ] ])
-		ifTrue: [ highlight background: Color transparent ]
-		ifFalse: [ highlight background: self hoverColor ]
+		self updateOverlayElement: selection toMatch: anOverlayedElement inset: self selectionInset ].
+	elementToHighlight ifNotNil: [ :anOverlayedElement |
+		self updateOverlayElement: highlight toMatch: anOverlayedElement ].
+	self updateDimming
 ]
