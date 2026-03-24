@@ -163,9 +163,14 @@ CgtThemeEditor >> newBrandButton [
 	| imageForm iconElement |
 	imageForm := PNGReadWriter formFromFileNamed: self class brandImagePath.
 	iconElement := imageForm asElement asScalableElement.
+	iconElement constraintsDo: [ :c |
+		c horizontal matchParent.
+		c vertical matchParent ].
 	^ BrButton new
 		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
-		beSmallSize;
+		width: 44;
+		height: 44;
+		padding: (BlInsets all: 6);
 		label: '';
 		icon: [ iconElement ] asStencil;
 		constraintsDo: [ :c |
@@ -257,6 +262,7 @@ CgtThemeEditor >> selectedElement: anElementOrNil [
 { #category : 'private - pane' }
 CgtThemeEditor >> showView [
 	isViewVisible ifTrue: [ ^ self ].
+	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget removeFromParent ].
 	editorPane := self newEditorPane.
 	overlay ifNotNil: [ overlay addChild: editorPane ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget refreshItems ].
