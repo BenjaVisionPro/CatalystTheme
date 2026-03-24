@@ -106,10 +106,12 @@ CgtThemeEditorOverlay >> initialize [
 			c vertical matchParent ];
 		yourself.
 	highlight := BlPolygonElement new
+		vertices: (self rectangleVerticesFor: ((0 @ 0) corner: (0 @ 0)));
 		background: Color transparent;
 		border: (BlBorder paint: (Color r: 0.9 g: 0.78 b: 0.28 alpha: 0.9) width: 2);
 		visibility: BlVisibility gone.
 	selection := BlPolygonElement new
+		vertices: (self rectangleVerticesFor: ((0 @ 0) corner: (0 @ 0)));
 		background: Color transparent;
 		border: (BlBorder paint: (Color r: 0.65 g: 0.45 b: 1.0 alpha: 1.0) width: 2);
 		visibility: BlVisibility gone.
@@ -240,7 +242,9 @@ CgtThemeEditorOverlay >> dimColorForAlpha: aNumber [
 CgtThemeEditorOverlay >> ensureDimElementCount: aCount [
 	[ dimElements size < aCount ] whileTrue: [
 		| anElement |
-		anElement := BlPolygonElement new visibility: BlVisibility gone.
+		anElement := BlPolygonElement new
+		vertices: (self rectangleVerticesFor: ((0 @ 0) corner: (0 @ 0)));
+		visibility: BlVisibility gone.
 		self addDimElement: anElement ].
 	[ dimElements size > aCount ] whileTrue: [
 		| anElement |
