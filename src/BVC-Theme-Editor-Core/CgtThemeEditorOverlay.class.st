@@ -241,7 +241,7 @@ CgtThemeEditorOverlay >> roundedRectangleVerticesFor: aRectangle radius: aReques
 	top := aRectangle top.
 	right := aRectangle right.
 	bottom := aRectangle bottom.
-	radius := aRequestedRadius min: (aRectangle width / 2.0) min: (aRectangle height / 2.0).
+	radius := (aRequestedRadius min: (aRectangle width / 2.0)) min: (aRectangle height / 2.0).
 	radius <= 0 ifTrue: [ ^ self rectangleVerticesFor: aRectangle ].
 	points := OrderedCollection new.
 	points add: ((left + radius) @ top).
@@ -354,7 +354,7 @@ CgtThemeEditorOverlay >> updateDimmingForFocusRectangle: aRectangle [
 		bottomRightDim visibility: BlVisibility gone.
 		bottomLeftDim visibility: BlVisibility gone.
 		^ self ].
-	radius := self focusCornerRadius min: (aRectangle width / 2.0) min: (aRectangle height / 2.0).
+	radius := (self focusCornerRadius min: (aRectangle width / 2.0)) min: (aRectangle height / 2.0).
 	fullDim visibility: BlVisibility gone.
 	topRect := overlayRect topLeft corner: (overlayRect right @ aRectangle top).
 	leftRect := (overlayRect left @ (aRectangle top + radius)) corner: (aRectangle left @ (aRectangle bottom - radius)).
