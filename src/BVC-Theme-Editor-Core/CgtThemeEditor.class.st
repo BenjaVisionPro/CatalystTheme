@@ -14,7 +14,8 @@ Class {
 		'editorPane',
 		'isViewVisible',
 		'inspectorSpacer',
-		'originalContentChildren'
+		'originalContentChildren',
+		'brandButton'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -94,6 +95,7 @@ CgtThemeEditor >> close [
 	layoutContainer := nil.
 	inspectorSpacer := nil.
 	originalContentChildren := nil.
+	brandButton := nil.
 	highlightedElement := nil.
 	selectedElement := nil.
 	isViewVisible := false.
@@ -135,7 +137,8 @@ CgtThemeEditor >> hideView [
 	editorPane ifNotNil: [ editorPane removeFromParent ].
 	editorPane := nil.
 	inspectorSpacer ifNotNil: [ inspectorSpacer width: 0 ].
-	isViewVisible := false
+	isViewVisible := false.
+	self updateBrandButtonPosition
 ]
 
 { #category : 'initialization' }
@@ -150,7 +153,8 @@ CgtThemeEditor >> initialize [
 	contentContainer := nil.
 	layoutContainer := nil.
 	inspectorSpacer := nil.
-	originalContentChildren := nil
+	originalContentChildren := nil.
+	brandButton := nil
 ]
 
 { #category : 'accessing' }
@@ -172,7 +176,7 @@ CgtThemeEditor >> movableContentChildren [
 CgtThemeEditor >> newBrandButton [
 	| imageForm |
 	imageForm := PNGReadWriter formFromFileNamed: self class brandImagePath.
-	^ BrButton new
+	^ (brandButton := BrButton new)
 		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
 		background: Color transparent;
 		border: BlBorder empty;
@@ -185,9 +189,30 @@ CgtThemeEditor >> newBrandButton [
 			c ignoreByLayout.
 			c ignored horizontal alignRight.
 			c ignored vertical alignBottom.
-			c margin: (BlInsets bottom: 18 right: 8) ];
+			c margin: self brandButtonMargin ];
 		action: [ self toggleView ];
 		yourself
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> brandButtonMargin [
+	^ BlInsets bottom: 18 right: self brandButtonRightMargin
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> brandButtonRightMargin [
+	^ (isViewVisible ifTrue: [ 520 ] ifFalse: [ 0 ]) + 8
+]
+
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> updateBrandButtonPosition [
+	brandButton ifNil: [ ^ self ].
+	brandButton constraintsDo: [ :c |
+		c ignoreByLayout.
+		c ignored horizontal alignRight.
+		c ignored vertical alignBottom.
+		c margin: self brandButtonMargin ]
 ]
 
 { #category : 'private - ui' }
@@ -253,6 +278,7 @@ CgtThemeEditor >> open [
 	overlay := CgtThemeEditorOverlay on: targetElement.
 	viewHierarchyWidget := CgtThemeEditorViewHierarchyWidget on: self.
 	overlay addChild: self newBrandButton.
+	self updateBrandButtonPosition.
 	eventHandler := CgtThemeEditorEventHandler new.
 	eventHandler editor: self.
 	targetElement addEventHandler: eventHandler.
@@ -292,7 +318,8 @@ CgtThemeEditor >> showView [
 	overlay ifNotNil: [ overlay addChild: editorPane ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget refreshItems ].
 	selectedElement ifNotNil: [ viewHierarchyWidget selectElement: selectedElement ].
-	isViewVisible := true
+	isViewVisible := true.
+	self updateBrandButtonPosition
 ]
 
 { #category : 'accessing' }
