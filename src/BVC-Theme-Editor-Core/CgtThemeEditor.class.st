@@ -8,11 +8,20 @@ Class {
 		'isOpen',
 		'highlightedElement',
 		'selectedElement',
-		'viewHierarchyWidget'
+		'viewHierarchyWidget',
+		'layoutContainer',
+		'contentContainer',
+		'editorPane',
+		'isViewVisible'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
 }
+
+{ #category : 'instance creation' }
+CgtThemeEditor class >> brandImagePath [
+	^ '/opt/TestDevSetup/git_root/projects/CatalystTheme/resources/themeEditor.png'
+]
 
 { #category : 'instance creation' }
 CgtThemeEditor class >> closeOn: anElement [
@@ -59,17 +68,34 @@ CgtThemeEditor class >> userDataKey [
 	^ #cgtThemeEditor
 ]
 
+{ #category : 'private - pane' }
+CgtThemeEditor >> addContentChildrenInto: aContainer [
+	self movableContentChildren do: [ :each |
+		each removeFromParent.
+		aContainer addChild: each ]
+]
+
 { #category : 'closing' }
 CgtThemeEditor >> close [
 	self isOpen ifFalse: [ ^ self ].
+	self hideView.
 	overlay ifNotNil: [ overlay detach ].
 	eventHandler ifNotNil: [ targetElement removeEventHandler: eventHandler ].
 	overlay := nil.
 	eventHandler := nil.
 	viewHierarchyWidget := nil.
+	editorPane := nil.
+	contentContainer := nil.
+	layoutContainer := nil.
 	highlightedElement := nil.
 	selectedElement := nil.
+	isViewVisible := false.
 	isOpen := false
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> editorPane [
+	^ editorPane
 ]
 
 { #category : 'accessing' }
@@ -84,17 +110,42 @@ CgtThemeEditor >> highlightedElement [
 
 { #category : 'accessing' }
 CgtThemeEditor >> highlightedElement: anElementOrNil [
+	highlightedElement == anElementOrNil ifTrue: [ ^ self ].
 	highlightedElement := anElementOrNil.
 	overlay ifNotNil: [ overlay highlightElement: anElementOrNil ]
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> hierarchyRootChildren [
+	contentContainer ifNotNil: [ ^ contentContainer children ].
+	^ self movableContentChildren
+]
+
+{ #category : 'private - pane' }
+CgtThemeEditor >> hideView [
+	isViewVisible ifFalse: [ ^ self ].
+	contentContainer ifNotNil: [
+		contentContainer children copy do: [ :each |
+			each removeFromParent.
+			targetElement addChild: each ] ].
+	layoutContainer ifNotNil: [ layoutContainer removeFromParent ].
+	layoutContainer := nil.
+	contentContainer := nil.
+	editorPane := nil.
+	isViewVisible := false
 ]
 
 { #category : 'initialization' }
 CgtThemeEditor >> initialize [
 	super initialize.
 	isOpen := false.
+	isViewVisible := false.
 	highlightedElement := nil.
 	selectedElement := nil.
-	viewHierarchyWidget := nil
+	viewHierarchyWidget := nil.
+	editorPane := nil.
+	contentContainer := nil.
+	layoutContainer := nil
 ]
 
 { #category : 'accessing' }
@@ -102,11 +153,86 @@ CgtThemeEditor >> isOpen [
 	^ isOpen = true
 ]
 
+{ #category : 'accessing' }
+CgtThemeEditor >> isViewVisible [
+	^ isViewVisible = true
+]
+
+{ #category : 'private - pane' }
+CgtThemeEditor >> movableContentChildren [
+	^ targetElement children reject: [ :each | each == overlay or: [ each == layoutContainer ] ]
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> newBrandButton [
+	| imageForm |
+	imageForm := PNGReadWriter formFromFileNamed: self class brandImagePath.
+	^ BrButton new
+		aptitude: BrGlamorousButtonFlatExteriorAptitude + BrGlamorousButtonLayoutAptitude;
+		icon: [ (BlElement new
+			width: imageForm width;
+			height: imageForm height;
+			background: imageForm asBlBackground) ] asStencil;
+		constraintsDo: [ :c |
+			c ignoreByLayout.
+			c ignored horizontal alignRight.
+			c ignored vertical alignBottom.
+			c margin: (BlInsets right: 16 bottom: 16) ];
+		action: [ self toggleView ];
+		yourself
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> newEditorPane [
+	^ BrVerticalPane new
+		matchParent;
+		constraintsDo: [ :c |
+			c linear weight: 0.382 ];
+		padding: (BlInsets top: 10 left: 10 bottom: 10 right: 10);
+		addAptitude: BrShadowAptitude new beLarge;
+		background: targetElement theme default backdropBackground;
+		addChildren: {
+			(self newSectionLabel text: 'Theme Editor').
+			(BrLabel new
+				aptitude: BrGlamorousLabelAptitude;
+				hMatchParent;
+				padding: (BlInsets top: 10 right: 12 bottom: 10 left: 12);
+				background: targetElement theme header defaultBackgroundColor;
+				text: 'View Hierarchy').
+			viewHierarchyWidget }
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> newLayoutContainer [
+	| aContainer |
+	aContainer := BrHorizontalPane new
+		matchParent;
+		addChildren: {
+			(self newWorldContentContainer).
+			(editorPane := self newEditorPane) }.
+	^ aContainer
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> newSectionLabel [
+	^ BrLabel new aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray)
+]
+
+{ #category : 'private - ui' }
+CgtThemeEditor >> newWorldContentContainer [
+	^ (contentContainer := BrVerticalPane new)
+		matchParent;
+		constraintsDo: [ :c |
+			c linear weight: 0.618 ];
+		yourself
+]
+
 { #category : 'opening' }
 CgtThemeEditor >> open [
 	self isOpen ifTrue: [ ^ self ].
 	overlay := CgtThemeEditorOverlay on: targetElement.
 	viewHierarchyWidget := CgtThemeEditorViewHierarchyWidget on: self.
+	overlay addChild: self newBrandButton.
 	eventHandler := CgtThemeEditorEventHandler new.
 	eventHandler editor: self.
 	targetElement addEventHandler: eventHandler.
@@ -125,15 +251,23 @@ CgtThemeEditor >> selectedElement [
 
 { #category : 'accessing' }
 CgtThemeEditor >> selectedElement: anElementOrNil [
+	selectedElement == anElementOrNil ifTrue: [ ^ self ].
 	selectedElement := anElementOrNil.
 	overlay ifNotNil: [ overlay selectElement: anElementOrNil ].
 	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget selectElement: anElementOrNil ]
 ]
 
-
-{ #category : 'accessing' }
-CgtThemeEditor >> viewHierarchyWidget [
-	^ viewHierarchyWidget
+{ #category : 'private - pane' }
+CgtThemeEditor >> showView [
+	isViewVisible ifTrue: [ ^ self ].
+	layoutContainer := self newLayoutContainer.
+	self addContentChildrenInto: contentContainer.
+	overlay ifNotNil: [ overlay removeFromParent ].
+	targetElement addChild: layoutContainer.
+	overlay ifNotNil: [ targetElement addChild: overlay ].
+	viewHierarchyWidget ifNotNil: [ viewHierarchyWidget refreshItems ].
+	selectedElement ifNotNil: [ viewHierarchyWidget selectElement: selectedElement ].
+	isViewVisible := true
 ]
 
 { #category : 'accessing' }
@@ -144,4 +278,16 @@ CgtThemeEditor >> targetElement [
 { #category : 'accessing' }
 CgtThemeEditor >> targetElement: anElement [
 	targetElement := anElement
+]
+
+{ #category : 'actions' }
+CgtThemeEditor >> toggleView [
+	self isViewVisible
+		ifTrue: [ self hideView ]
+		ifFalse: [ self showView ]
+]
+
+{ #category : 'accessing' }
+CgtThemeEditor >> viewHierarchyWidget [
+	^ viewHierarchyWidget
 ]

@@ -103,7 +103,7 @@ CgtThemeEditorViewHierarchyWidget >> newTreeRowElement [
 
 { #category : 'accessing' }
 CgtThemeEditorViewHierarchyWidget >> refreshItems [
-	self items: editor targetElement children lazy: [ :each | each children ]
+	self items: editor hierarchyRootChildren lazy: [ :each | each children ]
 ]
 
 { #category : 'accessing' }
