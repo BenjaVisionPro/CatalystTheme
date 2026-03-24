@@ -370,3 +370,10 @@ CgtThemeEditorOverlay >> updatePositions [
 		ifFalse: [ highlight visibility: BlVisibility visible ].
 	self updateDimming
 ]
+
+
+{ #category : 'event handling' }
+CgtThemeEditorOverlay >> withAllLeafChildrenAt: aPoint do: aBlock [
+	"The overlay's decorative polygons should never participate in mouse target lookup."
+	^ self
+]
