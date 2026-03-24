@@ -183,7 +183,7 @@ CgtThemeEditor >> newBrandButton [
 			c ignoreByLayout.
 			c ignored horizontal alignRight.
 			c ignored vertical alignBottom.
-			c margin: (BlInsets right: 16 bottom: 16) ];
+			c margin: (BlInsets bottom: 16 right: 16) ];
 		action: [ self toggleView ];
 		yourself
 ]
