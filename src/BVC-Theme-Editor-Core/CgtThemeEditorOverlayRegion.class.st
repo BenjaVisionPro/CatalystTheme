@@ -6,7 +6,8 @@ Class {
 		'dimAlpha',
 		'inset',
 		'cornerRadius',
-		'priority'
+		'priority',
+		'explicitRectangle'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -62,11 +63,24 @@ CgtThemeEditorOverlayRegion >> priority: aNumber [
 	priority := aNumber
 ]
 
+
+
+{ #category : 'accessing' }
+CgtThemeEditorOverlayRegion >> explicitRectangle [
+	^ explicitRectangle
+]
+
+{ #category : 'accessing' }
+CgtThemeEditorOverlayRegion >> explicitRectangle: aRectangle [
+	explicitRectangle := aRectangle
+]
+
 { #category : 'geometry' }
 CgtThemeEditorOverlayRegion >> rectangleInOverlay: anOverlay [
 	| aRectangle delta |
-	element ifNil: [ ^ nil ].
-	aRectangle := anOverlay boundsRectFor: element.
+	aRectangle := explicitRectangle ifNotNil: [ explicitRectangle ] ifNil: [
+		element ifNil: [ ^ nil ].
+		anOverlay boundsRectFor: element ].
 	delta := self inset.
 	delta = 0 ifTrue: [ ^ aRectangle ].
 	^ ((aRectangle left - delta) @ (aRectangle top - delta))
