@@ -167,11 +167,11 @@ CgtThemeEditorOverlay >> roundedCornerSegments [
 
 { #category : 'private - geometry' }
 CgtThemeEditorOverlay >> arcVerticesCenter: aPoint radius: aRadius fromDegrees: startDegrees toDegrees: endDegrees segments: segmentCount [
-	| step |
+	| effectiveSegmentCount step |
 	aRadius <= 0 ifTrue: [ ^ Array with: aPoint ].
-	segmentCount <= 0 ifTrue: [ segmentCount := 1 ].
-	step := (endDegrees - startDegrees) asFloat / segmentCount asFloat.
-	^ (0 to: segmentCount) collect: [ :index |
+	effectiveSegmentCount := segmentCount max: 1.
+	step := (endDegrees - startDegrees) asFloat / effectiveSegmentCount asFloat.
+	^ (0 to: effectiveSegmentCount) collect: [ :index |
 		| angleRadians angleDegrees |
 		angleDegrees := startDegrees + (step * index).
 		angleRadians := angleDegrees degreesToRadians.
