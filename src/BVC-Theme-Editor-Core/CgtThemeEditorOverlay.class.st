@@ -13,7 +13,9 @@ Class {
 		'elementToHighlight',
 		'elementToSelect',
 		'eventHandler',
-		'dimAnimation'
+		'dimAnimation',
+		'hoverBoundsAnimation',
+		'animatedHoverRectangle'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -32,6 +34,58 @@ CgtThemeEditorOverlay >> addEventHandlerToElementToHighlightOrSelect: anElement 
 	((elementToSelect = anElement or: [ elementToHighlight = anElement ])
 		and: [ (anElement hasEventHandler: eventHandler) not ])
 		ifTrue: [ anElement addEventHandler: eventHandler ]
+]
+
+{ #category : 'animation' }
+CgtThemeEditorOverlay >> animateDimmingIn [
+	| animation |
+	dimAnimation ifNotNil: [ dimAnimation stopIfRunning ].
+	self setDimOpacity: 0.0.
+	animation := BlNumberTransition new
+		from: 0.0;
+		to: 0.45;
+		duration: 200 milliseconds;
+		onStepDo: [ :value | self setDimOpacity: value ];
+		onFinishedDo: [
+			self setDimOpacity: 0.45.
+			dimAnimation := nil ];
+		yourself.
+	dimAnimation := animation.
+	self addAnimation: animation
+]
+
+{ #category : 'private - animation' }
+CgtThemeEditorOverlay >> animateHoverRectangleTo: aRectangle [
+	| startRectangle animation |
+	aRectangle ifNil: [
+		hoverBoundsAnimation ifNotNil: [ hoverBoundsAnimation stopIfRunning ].
+		animatedHoverRectangle := nil.
+		self updatePositions.
+		^ self ].
+	startRectangle := animatedHoverRectangle
+		ifNil: [
+			elementToHighlight
+				ifNotNil: [ self boundsRectFor: elementToHighlight ]
+				ifNil: [ aRectangle ] ].
+	hoverBoundsAnimation ifNotNil: [ hoverBoundsAnimation stopIfRunning ].
+	animation := BlNumberTransition new
+		from: 0.0;
+		to: 1.0;
+		duration: 120 milliseconds;
+		easing: CgtFastInSlowOutEasing new;
+		onStepDo: [ :progress |
+			animatedHoverRectangle := self
+				interpolateRectangle: startRectangle
+				to: aRectangle
+				at: progress asFloat.
+			self updatePositions ];
+		onFinishedDo: [
+			animatedHoverRectangle := aRectangle.
+			hoverBoundsAnimation := nil.
+			self updatePositions ];
+		yourself.
+	hoverBoundsAnimation := animation.
+	self addAnimation: animation
 ]
 
 { #category : 'attaching' }
@@ -55,24 +109,6 @@ CgtThemeEditorOverlay >> detach [
 	self removeFromParent
 ]
 
-{ #category : 'animation' }
-CgtThemeEditorOverlay >> animateDimmingIn [
-	| animation |
-	dimAnimation ifNotNil: [ dimAnimation stopIfRunning ].
-	self setDimOpacity: 0.0.
-	animation := BlNumberTransition new
-		from: 0.0;
-		to: 0.45;
-		duration: 200 milliseconds;
-		onStepDo: [ :value | self setDimOpacity: value ];
-		onFinishedDo: [
-			self setDimOpacity: 0.45.
-			dimAnimation := nil ];
-		yourself.
-	dimAnimation := animation.
-	self addAnimation: animation
-]
-
 { #category : 'private - styling' }
 CgtThemeEditorOverlay >> dimColor [
 	^ self dimColorWithAlpha: 0.45
@@ -94,16 +130,19 @@ CgtThemeEditorOverlay >> hideElement: anElement [
 
 { #category : 'accessing' }
 CgtThemeEditorOverlay >> highlightElement: anElementOrNil [
-	| aPreviousElementToHighlight |
+	| aPreviousElementToHighlight targetRectangle |
 	aPreviousElementToHighlight := elementToHighlight.
 	elementToHighlight := anElementOrNil.
 	self removeEventHandlerFromElementToHighlightOrSelect: aPreviousElementToHighlight.
 	anElementOrNil
-		ifNil: [ highlight visibility: BlVisibility gone ]
+		ifNil: [
+			highlight visibility: BlVisibility gone.
+			self animateHoverRectangleTo: nil ]
 		ifNotNil: [ :anElement |
 			self addEventHandlerToElementToHighlightOrSelect: anElement.
-			self updateOverlayElement: highlight toMatch: anElement.
-			highlight visibility: BlVisibility visible ].
+			targetRectangle := self boundsRectFor: anElement.
+			highlight visibility: BlVisibility visible.
+			self animateHoverRectangleTo: targetRectangle ].
 	self updatePositions
 ]
 
@@ -124,6 +163,8 @@ CgtThemeEditorOverlay >> initialize [
 	self allowMeAndChildrenMouseEvents.
 	eventHandler := CgtThemeEditorOverlayEventHandler new overlay: self.
 	dimAnimation := nil.
+	hoverBoundsAnimation := nil.
+	animatedHoverRectangle := nil.
 	fullDim := BlPolygonElement new
 		background: (self dimColorWithAlpha: 0.0);
 		visibility: BlVisibility visible.
@@ -155,6 +196,18 @@ CgtThemeEditorOverlay >> initialize [
 	self addChild: highlight.
 	self addChild: selection.
 	self updatePositions
+]
+
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> interpolatedPointFrom: aPoint to: anotherPoint at: progress [
+	^ (aPoint x + ((anotherPoint x - aPoint x) * progress))
+		@ (aPoint y + ((anotherPoint y - aPoint y) * progress))
+]
+
+{ #category : 'private - geometry' }
+CgtThemeEditorOverlay >> interpolateRectangle: aRectangle to: anotherRectangle at: progress [
+	^ (self interpolatedPointFrom: aRectangle topLeft to: anotherRectangle topLeft at: progress)
+		corner: (self interpolatedPointFrom: aRectangle bottomRight to: anotherRectangle bottomRight at: progress)
 ]
 
 { #category : 'hooks - children' }
@@ -193,7 +246,6 @@ CgtThemeEditorOverlay >> removeEventHandlerFromElementToHighlightOrSelect: anEle
 		and: [ anElement notNil ] ])
 		ifTrue: [ anElement removeEventHandler: eventHandler ]
 ]
-
 
 { #category : 'private - styling' }
 CgtThemeEditorOverlay >> setDimOpacity: anAlpha [
@@ -287,13 +339,18 @@ CgtThemeEditorOverlay >> updatePositions [
 	| focusRect |
 	elementToSelect ifNotNil: [ :anOverlayedElement |
 		self updateOverlayElement: selection toMatch: anOverlayedElement ].
-	elementToHighlight ifNotNil: [ :anOverlayedElement |
-		self updateOverlayElement: highlight toMatch: anOverlayedElement ].
+	animatedHoverRectangle
+		ifNotNil: [ highlight vertices: (self rectangleVerticesFor: animatedHoverRectangle) ]
+		ifNil: [
+			elementToHighlight ifNotNil: [ :anOverlayedElement |
+				self updateOverlayElement: highlight toMatch: anOverlayedElement ] ].
 	focusRect := elementToSelect
 		ifNotNil: [ self boundsRectFor: elementToSelect ]
-		ifNil: [ elementToHighlight
-			ifNotNil: [ self boundsRectFor: elementToHighlight ]
-			ifNil: [ nil ] ].
+		ifNil: [ animatedHoverRectangle
+			ifNotNil: [ animatedHoverRectangle ]
+			ifNil: [ elementToHighlight
+				ifNotNil: [ self boundsRectFor: elementToHighlight ]
+				ifNil: [ nil ] ] ].
 	self updateDimmingForFocusRectangle: focusRect.
 	(elementToSelect notNil and: [ elementToHighlight notNil and: [ elementToHighlight ~= elementToSelect ] ])
 		ifTrue: [ highlight background: Color transparent ]
