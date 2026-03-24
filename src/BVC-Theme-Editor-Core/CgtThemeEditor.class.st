@@ -160,26 +160,22 @@ CgtThemeEditor >> movableContentChildren [
 
 { #category : 'private - ui' }
 CgtThemeEditor >> newBrandButton [
-	| imageForm iconElement |
+	| imageForm |
 	imageForm := PNGReadWriter formFromFileNamed: self class brandImagePath.
-	iconElement := imageForm asElement asScalableElement.
-	iconElement constraintsDo: [ :c |
-		c horizontal matchParent.
-		c vertical matchParent ].
 	^ BrButton new
-		aptitude: BrGlamorousButtonExteriorAptitude;
+		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
 		background: Color transparent;
 		border: BlBorder empty;
+		icon: imageForm;
+		label: 'Theme Inspector';
 		width: 100;
 		height: 100;
 		padding: (BlInsets all: 0);
-		label: '';
-		addChild: iconElement;
 		constraintsDo: [ :c |
 			c ignoreByLayout.
 			c ignored horizontal alignRight.
 			c ignored vertical alignBottom.
-			c margin: (BlInsets bottom: 2 right: 0) ];
+			c margin: (BlInsets bottom: 18 right: 8) ];
 		action: [ self toggleView ];
 		yourself
 ]
