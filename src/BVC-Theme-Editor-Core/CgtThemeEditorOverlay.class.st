@@ -194,15 +194,34 @@ CgtThemeEditorOverlay >> targetElement: anElement [
 
 { #category : 'private - dimming' }
 CgtThemeEditorOverlay >> cellAlphaFor: aRectangle default: aDefaultAlpha [
-	| cellCenter cellAlpha |
+	| cellCenter coveringRegions winningRegion |
 	cellCenter := aRectangle center.
-	cellAlpha := aDefaultAlpha.
-	regions do: [ :eachRegion |
+	coveringRegions := regions select: [ :eachRegion |
 		| regionRectangle |
 		regionRectangle := eachRegion rectangleInOverlay: self.
-		(regionRectangle notNil and: [ regionRectangle containsPoint: cellCenter ])
-			ifTrue: [ cellAlpha := cellAlpha min: eachRegion dimAlpha ] ].
-	^ cellAlpha
+		regionRectangle notNil and: [ regionRectangle containsPoint: cellCenter ] ].
+	coveringRegions ifEmpty: [ ^ aDefaultAlpha ].
+	winningRegion := coveringRegions
+		inject: coveringRegions first
+		into: [ :best :each |
+			(self region: each isMoreSpecificThan: best)
+				ifTrue: [ each ]
+				ifFalse: [ best ] ].
+	^ winningRegion dimAlpha
+]
+
+{ #category : 'private - dimming' }
+CgtThemeEditorOverlay >> region: aRegion isMoreSpecificThan: anotherRegion [
+	| aRectangle anotherRectangle aArea anotherArea |
+	aRectangle := aRegion rectangleInOverlay: self.
+	anotherRectangle := anotherRegion rectangleInOverlay: self.
+	aRectangle ifNil: [ ^ false ].
+	anotherRectangle ifNil: [ ^ true ].
+	aArea := aRectangle width * aRectangle height.
+	anotherArea := anotherRectangle width * anotherRectangle height.
+	aArea = anotherArea
+		ifTrue: [ ^ aRegion priority > anotherRegion priority ].
+	^ aArea < anotherArea
 ]
 
 { #category : 'private - dimming' }
