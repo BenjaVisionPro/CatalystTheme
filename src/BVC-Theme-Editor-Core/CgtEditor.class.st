@@ -199,6 +199,7 @@ CgtEditor >> animateDetailsOpen [
 		from: self detailsWeight;
 		to: self openedDetailsWeight;
 		duration: 200 milliSeconds;
+		easing: CgtFastInSlowOutEasing new;
 		onStepDo: [ :aWeight :anEditor | anEditor detailsWeight: aWeight ];
 		yourself))
 ]
@@ -211,11 +212,13 @@ CgtEditor >> animateOpen [
 		from: 0;
 		to: self previewPadding;
 		duration: 250 milliSeconds;
+		easing: CgtFastInSlowOutEasing new;
 		onStepDo: [ :aPadding :anEditor | anEditor scenePadding: aPadding ];
 		yourself.
 
 	aScaleAnimation := BlTransformAnimation scale: self previewScale.
 	aScaleAnimation duration: 250 milliSeconds.
+	aScaleAnimation easing: CgtFastInSlowOutEasing new.
 	aScaleAnimation onFinishedDo: [
 		isOpeningPreview := false ].
 
@@ -230,6 +233,7 @@ CgtEditor >> animateCloseOnFinishedDo: aBlock [
 		from: self detailsWeight;
 		to: 0.0;
 		duration: 250 milliSeconds;
+		easing: CgtFastInSlowOutEasing new;
 		onStepDo: [ :aWeight :anEditor | anEditor detailsWeight: aWeight ];
 		yourself.
 
@@ -237,11 +241,13 @@ CgtEditor >> animateCloseOnFinishedDo: aBlock [
 		from: self previewPadding;
 		to: 0;
 		duration: 250 milliSeconds;
+		easing: CgtFastInSlowOutEasing new;
 		onStepDo: [ :aPadding :anEditor | anEditor scenePadding: aPadding ];
 		yourself.
 
 	aScaleAnimation := BlTransformAnimation scale: 1.0 @ 1.0.
 	aScaleAnimation duration: 250 milliSeconds.
+	aScaleAnimation easing: CgtFastInSlowOutEasing new.
 	aScaleAnimation onFinishedDo: aBlock.
 
 	self addAnimation: aWeightAnimation.
