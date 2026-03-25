@@ -222,7 +222,9 @@ CgtEditor >> doesEventHandler: anEventHandler want: anEventClass [
 CgtEditor >> initialize [
 	super initialize.
 	self
-		matchParent;
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical matchParent ];
 		layout: BlLinearLayout horizontal;
 		background: self theme header defaultBackgroundColor
 ]
