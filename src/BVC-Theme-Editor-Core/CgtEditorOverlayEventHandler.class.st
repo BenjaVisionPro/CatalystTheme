@@ -1,34 +1,35 @@
 Class {
-	#name : #CgtEditorOverlayEventHandler,
-	#superclass : #BlCustomEventHandler,
+	#name : 'CgtEditorOverlayEventHandler',
+	#superclass : 'BlCustomEventHandler',
 	#instVars : [
 		'overlay'
 	],
-	#category : #'BVC-Theme-Editor-Core'
+	#category : 'BVC-Theme-Editor-Core',
+	#package : 'BVC-Theme-Editor-Core'
 }
 
-{ #category : #'element handlers' }
+{ #category : 'element handlers' }
 CgtEditorOverlayEventHandler >> elementAddedToSceneGraphEvent: anEvent [
 	self overlay showElement: anEvent currentTarget.
 	self overlay updatePositions
 ]
 
-{ #category : #'element handlers' }
+{ #category : 'element handlers' }
 CgtEditorOverlayEventHandler >> elementExtentChangedEvent: anEvent [
 	self overlay updatePositions
 ]
 
-{ #category : #'element handlers' }
+{ #category : 'element handlers' }
 CgtEditorOverlayEventHandler >> elementPositionInSpaceChangedEvent: anEvent [
 	self overlay updatePositions
 ]
 
-{ #category : #'element handlers' }
+{ #category : 'element handlers' }
 CgtEditorOverlayEventHandler >> elementRemovedFromSceneGraphEvent: anEvent [
 	self overlay hideElement: anEvent currentTarget
 ]
 
-{ #category : #'api - accessing' }
+{ #category : 'api - accessing' }
 CgtEditorOverlayEventHandler >> eventsToHandle [
 	^ {
 		BlElementPositionInSpaceChangedEvent.
@@ -38,12 +39,12 @@ CgtEditorOverlayEventHandler >> eventsToHandle [
 	}
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorOverlayEventHandler >> overlay [
 	^ overlay
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorOverlayEventHandler >> overlay: anObject [
 	overlay := anObject
 ]

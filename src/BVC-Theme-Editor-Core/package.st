@@ -1,1 +1,1 @@
-Package { #name : #'BVC-Theme-Editor-Core' }
+Package { #name : 'BVC-Theme-Editor-Core' }

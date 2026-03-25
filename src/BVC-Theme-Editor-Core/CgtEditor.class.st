@@ -1,6 +1,6 @@
 Class {
-	#name : #CgtEditor,
-	#superclass : #BrPager,
+	#name : 'CgtEditor',
+	#superclass : 'BrPager',
 	#instVars : [
 		'targetContainer',
 		'selectedElement',
@@ -12,10 +12,59 @@ Class {
 		'scenePreviewElement',
 		'sceneContainer'
 	],
-	#category : #'BVC-Theme-Editor-Core'
+	#category : 'BVC-Theme-Editor-Core',
+	#package : 'BVC-Theme-Editor-Core'
 }
 
-{ #category : #'private - tree' }
+{ #category : 'api - animation' }
+CgtEditor >> animateCloseOnFinishedDo: aBlock [
+	| aWeightAnimation aScaleAnimation |
+	aWeightAnimation := BlNumberTransition new
+		from: self detailsWeight;
+		to: 0.0;
+		duration: 800 milliSeconds;
+		easing: CgtFastInSlowOutEasing new;
+		onStepDo: [ :aWeight :anEditor | anEditor detailsWeight: aWeight ];
+		yourself.
+
+	aScaleAnimation := BlTransformAnimation scale: self previewScaleRecipricol.
+	aScaleAnimation duration: 1500 milliSeconds.
+	aScaleAnimation easing: CgtFastInSlowOutEasing new.
+	aScaleAnimation onFinishedDo: aBlock.
+
+	self addAnimation: aWeightAnimation.
+	scenePreviewElement addAnimation: aScaleAnimation
+]
+
+{ #category : 'api - animation' }
+CgtEditor >> animateDetailsOpen [
+	selectedElement ifNil: [ ^ self ].
+	self detailsWeight >= self openedDetailsWeight ifTrue: [ ^ self ].
+	self
+		addAnimation: (BlNumberTransition new
+				from: self detailsWeight;
+				to: self openedDetailsWeight;
+				duration: 1000 milliSeconds;
+				easing: CgtFastInSlowOutEasing new;
+				onStepDo: [ :aWeight :anEditor | anEditor detailsWeight: aWeight ];
+				yourself)
+]
+
+{ #category : 'api - animation' }
+CgtEditor >> animateOpen [
+	| aScaleAnimation |
+	isOpeningPreview := true.
+
+	aScaleAnimation := BlTransformAnimation scale: self previewScale.
+	aScaleAnimation duration: 1500 milliSeconds.
+	aScaleAnimation easing: CgtFastInSlowOutEasing new.
+	aScaleAnimation onFinishedDo: [
+		isOpeningPreview := false ].
+
+	scenePreviewElement addAnimation: aScaleAnimation
+]
+
+{ #category : 'private - tree' }
 CgtEditor >> bindElementTreeValue: eachElement toRowElement: aRowElement [	
 	aRowElement
 		childWithId: #elementLabel
@@ -54,7 +103,7 @@ CgtEditor >> bindElementTreeValue: eachElement toRowElement: aRowElement [
 	self bindElementTreeValueWhenAddedToSceneGraph: eachElement toRowElement: aRowElement
 ]
 
-{ #category : #'private - tree' }
+{ #category : 'private - tree' }
 CgtEditor >> bindElementTreeValuePhlowContext: eachElement toRowElement: aRowElement [ 
 	aRowElement
 		childWithId: #phlowContext
@@ -72,7 +121,7 @@ CgtEditor >> bindElementTreeValuePhlowContext: eachElement toRowElement: aRowEle
 		ifNone: [  ].
 ]
 
-{ #category : #'private - tree' }
+{ #category : 'private - tree' }
 CgtEditor >> bindElementTreeValueWhenAddedToSceneGraph: eachElement toRowElement: aRowElement [
 	aRowElement
 		childWithId: #whenAddedToSceneGraph
@@ -131,7 +180,32 @@ CgtEditor >> bindElementTreeValueWhenAddedToSceneGraph: eachElement toRowElement
 		ifNone: [  ].
 ]
 
-{ #category : #'private - tree' }
+{ #category : 'accessing' }
+CgtEditor >> detailsWeight [
+	^ 1.0 - self sceneWeight
+]
+
+{ #category : 'accessing' }
+CgtEditor >> detailsWeight: aWeight [
+	| aSceneWeight |
+	aSceneWeight := 1.0 - aWeight.
+
+	detailsPage visibility: (aWeight <= 0.0
+		ifTrue: [ BlVisibility gone ]
+		ifFalse: [ BlVisibility visible ]).
+
+	scenePage constraintsDo: [ :c |
+		c horizontal matchParent.
+		c vertical matchParent.
+		c linear weight: aSceneWeight ].
+
+	detailsPage constraintsDo: [ :c |
+		c horizontal matchParent.
+		c vertical matchParent.
+		c linear weight: aWeight ]
+]
+
+{ #category : 'private - tree' }
 CgtEditor >> doesEventHandler: anEventHandler want: anEventClass [
 	<return: #Boolean>
 
@@ -144,7 +218,7 @@ CgtEditor >> doesEventHandler: anEventHandler want: anEventClass [
 	^ false
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CgtEditor >> initialize [
 	super initialize.
 	self
@@ -153,7 +227,7 @@ CgtEditor >> initialize [
 		aptitude: BrProportionalHorizontalPagerAptitude new
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CgtEditor >> initializeWith: aTargetContainer [
 	targetContainer := aTargetContainer.
 
@@ -182,7 +256,7 @@ CgtEditor >> initializeWith: aTargetContainer [
 		self newCloseButtonFor: aTargetContainer }
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditor >> inspectElement: anElement [
 	selectedElement == anElement
 		ifTrue: [ ^ self ].
@@ -191,123 +265,7 @@ CgtEditor >> inspectElement: anElement [
 	elementsTree phlow spawnObject: selectedElement
 ]
 
-{ #category : #'api - animation' }
-CgtEditor >> animateDetailsOpen [
-	selectedElement ifNil: [ ^ self ].
-	detailsWeight >= self openedDetailsWeight ifTrue: [ ^ self ].
-	self addAnimation: ((BlNumberTransition new
-		from: self detailsWeight;
-		to: self openedDetailsWeight;
-		duration: 200 milliSeconds;
-		easing: CgtFastInSlowOutEasing new;
-		onStepDo: [ :aWeight :anEditor | anEditor detailsWeight: aWeight ];
-		yourself))
-]
-
-{ #category : #'api - animation' }
-CgtEditor >> animateOpen [
-	| aPaddingAnimation aScaleAnimation |
-	isOpeningPreview := true.
-	aPaddingAnimation := BlNumberTransition new
-		from: 0;
-		to: self previewPadding;
-		duration: 250 milliSeconds;
-		easing: CgtFastInSlowOutEasing new;
-		onStepDo: [ :aPadding :anEditor | anEditor scenePadding: aPadding ];
-		yourself.
-
-	aScaleAnimation := BlTransformAnimation scale: self previewScale.
-	aScaleAnimation duration: 250 milliSeconds.
-	aScaleAnimation easing: CgtFastInSlowOutEasing new.
-	aScaleAnimation onFinishedDo: [
-		isOpeningPreview := false ].
-
-	self addAnimation: aPaddingAnimation.
-	scenePreviewElement addAnimation: aScaleAnimation
-]
-
-{ #category : #'api - animation' }
-CgtEditor >> animateCloseOnFinishedDo: aBlock [
-	| aWeightAnimation aPaddingAnimation aScaleAnimation |
-	aWeightAnimation := BlNumberTransition new
-		from: self detailsWeight;
-		to: 0.0;
-		duration: 250 milliSeconds;
-		easing: CgtFastInSlowOutEasing new;
-		onStepDo: [ :aWeight :anEditor | anEditor detailsWeight: aWeight ];
-		yourself.
-
-	aPaddingAnimation := BlNumberTransition new
-		from: self previewPadding;
-		to: 0;
-		duration: 250 milliSeconds;
-		easing: CgtFastInSlowOutEasing new;
-		onStepDo: [ :aPadding :anEditor | anEditor scenePadding: aPadding ];
-		yourself.
-
-	aScaleAnimation := BlTransformAnimation scale: 1.0 @ 1.0.
-	aScaleAnimation duration: 250 milliSeconds.
-	aScaleAnimation easing: CgtFastInSlowOutEasing new.
-	aScaleAnimation onFinishedDo: aBlock.
-
-	self addAnimation: aWeightAnimation.
-	self addAnimation: aPaddingAnimation.
-	scenePreviewElement addAnimation: aScaleAnimation
-]
-
-{ #category : #accessing }
-CgtEditor >> detailsWeight [
-	^ 1.0 - self sceneWeight
-]
-
-{ #category : #accessing }
-CgtEditor >> detailsWeight: aWeight [
-	| aSceneWeight |
-	aSceneWeight := 1.0 - aWeight.
-
-	detailsPage visibility: (aWeight <= 0.0
-		ifTrue: [ BlVisibility gone ]
-		ifFalse: [ BlVisibility visible ]).
-
-	scenePage constraintsDo: [ :c |
-		c horizontal matchParent.
-		c vertical matchParent.
-		c linear weight: aSceneWeight ].
-
-	detailsPage constraintsDo: [ :c |
-		c horizontal matchParent.
-		c vertical matchParent.
-		c linear weight: aWeight ]
-]
-
-{ #category : #accessing }
-CgtEditor >> openedDetailsWeight [
-	^ 0.6
-]
-
-{ #category : #accessing }
-CgtEditor >> previewScale [
-	^ 0.96 @ 0.96
-]
-
-{ #category : #accessing }
-CgtEditor >> previewPadding [
-	^ 20
-]
-
-{ #category : #accessing }
-CgtEditor >> scenePadding: aNumber [
-	sceneContainer padding: (BlInsets all: aNumber)
-]
-
-{ #category : #accessing }
-CgtEditor >> sceneWeight [
-	| aLayoutConstraints |
-	aLayoutConstraints := scenePage constraints.
-	^ aLayoutConstraints linear weight
-]
-
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CgtEditor >> newCloseButtonFor: aTargetContainer [
 	^ BrButton new
 		aptitude: BrGlamorousButtonCircularAptitude + BrGlamorousButtonIconAptitude + BrGlamorousButtonFlatExteriorAptitude + BrGlamorousButtonLayoutAptitude;
@@ -324,7 +282,7 @@ CgtEditor >> newCloseButtonFor: aTargetContainer [
 		action: [ :e | e fireEvent: CgtEditorHideWish new ]
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CgtEditor >> newElementsTree [	
 	^ BrSimpleTree new
 		matchParent;
@@ -347,7 +305,7 @@ CgtEditor >> newElementsTree [
 		yourself
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CgtEditor >> newPagerFor: aTargetContainer [
 	^ BrVerticalPane new
 		matchParent;
@@ -377,7 +335,7 @@ CgtEditor >> newPagerFor: aTargetContainer [
 					id: '#bvc-themeEditor--pager'}
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CgtEditor >> newSceneContainerFor: aTargetContainer [
 	^ (sceneContainer := BrVerticalPane new)
 		hMatchParent;
@@ -398,13 +356,13 @@ CgtEditor >> newSceneContainerFor: aTargetContainer [
 				addChild: aTargetContainer)}
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CgtEditor >> newSectionLabel [
 	^ BrLabel new
 		aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray)
 ]
 
-{ #category : #'private - tree' }
+{ #category : 'private - tree' }
 CgtEditor >> newTreeRowElement [
 	^ BrHorizontalPane new
 		hMatchParent;
@@ -463,7 +421,29 @@ CgtEditor >> newTreeRowElement [
 				action: [ :aButtonElement | aButtonElement phlow spawnObject: aButtonElement model ] }
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
+CgtEditor >> openedDetailsWeight [
+	^ 0.3
+]
+
+{ #category : 'accessing' }
+CgtEditor >> previewScale [
+	^ 0.9 @ 0.9
+]
+
+{ #category : 'accessing' }
+CgtEditor >> previewScaleRecipricol [
+	^ 1 @ 1 / self previewScale
+]
+
+{ #category : 'accessing' }
+CgtEditor >> sceneWeight [
+	| aLayoutConstraints |
+	aLayoutConstraints := scenePage constraints.
+	^ aLayoutConstraints linear weight
+]
+
+{ #category : 'accessing' }
 CgtEditor >> selectElement: anElement [
 	| wasNil |
 	selectedElement == anElement
@@ -488,7 +468,7 @@ CgtEditor >> selectElement: anElement [
 			ifNone: [  ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditor >> targetContainer [
 	^ targetContainer
 ]

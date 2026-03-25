@@ -19,8 +19,8 @@ world
 
 "
 Class {
-	#name : #CgtEditorEventHandler,
-	#superclass : #BlCustomEventHandler,
+	#name : 'CgtEditorEventHandler',
+	#superclass : 'BlCustomEventHandler',
 	#instVars : [
 		'mousePosition',
 		'hasThemeEditor',
@@ -31,21 +31,22 @@ Class {
 		'originalTitle'
 	],
 	#classVars : [
+		'KeyCombination',
 		'ThemeEditorId',
-		'ThemeEditorOverlayId',
-		'KeyCombination'
+		'ThemeEditorOverlayId'
 	],
-	#category : #'BVC-Theme-Editor-Core'
+	#category : 'BVC-Theme-Editor-Core',
+	#package : 'BVC-Theme-Editor-Core'
 }
 
-{ #category : #'class initialization' }
+{ #category : 'class initialization' }
 CgtEditorEventHandler class >> initialize [
 	ThemeEditorId := #'bvc-themeEditor'.
 	ThemeEditorOverlayId := BlElementId named: #'bvc-themeEditor--preview'.
 	KeyCombination := BlKeyCombination builder control alt primary build
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CgtEditorEventHandler >> childToThemeAt: aPoint in: aTargetElement ifFound: aFoundBlock ifNone: aNoneBlock [
 	| theChildrenAt |
 	theChildrenAt := aTargetElement withAllLeafChildrenAt: aPoint.
@@ -62,7 +63,7 @@ CgtEditorEventHandler >> childToThemeAt: aPoint in: aTargetElement ifFound: aFou
 	^ aFoundBlock value: theChildrenAt first
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 CgtEditorEventHandler >> clickEvent: aClickEvent [
 	| aThemeEditorTarget anElementToSelect |
 
@@ -95,32 +96,7 @@ CgtEditorEventHandler >> clickEvent: aClickEvent [
 				do: [ :aThemeEditor | aThemeEditor selectElement: anElementToSelect ] ]
 ]
 
-{ #category : #'private - accessing' }
-CgtEditorEventHandler >> themeEditorIn: aTargetElement do: aBlock [
-	aTargetElement
-		childWithId: ThemeEditorId
-		ifFound: aBlock
-		ifNone: [  ]
-]
-
-{ #category : #'private - accessing' }
-CgtEditorEventHandler >> themeEditorOverlayIn: aRootElement do: aBlock [
-	aRootElement
-		childWithId: ThemeEditorOverlayId
-		ifFound: aBlock
-		ifNone: [  ]
-]
-
-{ #category : #'private - accessing' }
-CgtEditorEventHandler >> themeEditorTargetIn: aRootElement [
-	self
-		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | ^ aThemeEditor targetContainer ].
-		
-	^ aRootElement
-]
-
-{ #category : #'api - accessing' }
+{ #category : 'api - accessing' }
 CgtEditorEventHandler >> eventsToHandle [
 	^ {
 		CgtEditorShowWish.
@@ -135,50 +111,14 @@ CgtEditorEventHandler >> eventsToHandle [
 	}
 ]
 
-{ #category : #'api - themeEditor' }
-CgtEditorEventHandler >> hideThemeEditor: aRootElement [
-	hasThemeEditor
-		ifFalse: [ ^ self ].
-
-	aRootElement
-		childWithId: ThemeEditorId
-		ifFound: [ :aThemeEditor |
-			aThemeEditor animateCloseOnFinishedDo: [
-				| aTargetElementChildren |
-				self unlockOverlay.
-				self hideOverlayIn: aRootElement.
-				self selectElement: nil in: aRootElement.
-				self highlightElement: nil in: aRootElement.
-
-				hasThemeEditor := false.
-				(aRootElement isAttachedToSceneGraph and: [ originalTitle notNil ])
-					ifTrue: [ aRootElement space title: originalTitle ].
-
-				originalTitle := nil.
-
-				aTargetElementChildren := aThemeEditor targetContainer children asArray.
-				aThemeEditor targetContainer removeChildren.
-				aRootElement removeChildren.
-				aRootElement addChildren: aTargetElementChildren.
-				self flag: #TODO.
-				"https://github.com/feenkcom/gtoolkit/issues/1749".
-				aRootElement withAllChildrenBreadthFirstDo: [ :eachChild | eachChild boundsCache invalidateBoundsInSpace ] ] ]
-		ifNone: [ ^ self ]
-]
-
-{ #category : #'event handling' }
-CgtEditorEventHandler >> hideThemeEditorEvent: aHideThemeEditorEvent [
-	self hideThemeEditor: aHideThemeEditorEvent currentTarget
-]
-
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 CgtEditorEventHandler >> hideHighlightEvent: aHideHighlightEvent [
 	self
 		highlightElement: nil
 		in: aHideHighlightEvent currentTarget
 ]
 
-{ #category : #'api - overlay' }
+{ #category : 'api - overlay' }
 CgtEditorEventHandler >> hideOverlayIn: aRootElement [
 	hasOverlay
 		ifFalse: [ ^ self ].
@@ -187,7 +127,41 @@ CgtEditorEventHandler >> hideOverlayIn: aRootElement [
 	aRootElement removeChildNamed: ThemeEditorOverlayId
 ]
 
-{ #category : #'private - testing' }
+{ #category : 'api - themeEditor' }
+CgtEditorEventHandler >> hideThemeEditor: aRootElement [
+	hasThemeEditor ifFalse: [ ^ self ].
+	(aRootElement isAttachedToSceneGraph and: [ originalTitle notNil ])
+		ifTrue: [ aRootElement space title: originalTitle ].
+
+	originalTitle := nil.
+	
+	aRootElement
+		childWithId: ThemeEditorId
+		ifFound: [ :aThemeEditor | 
+			aThemeEditor
+				animateCloseOnFinishedDo: [ | aTargetElementChildren |
+					self unlockOverlay.
+					self hideOverlayIn: aRootElement.
+					self selectElement: nil in: aRootElement.
+					self highlightElement: nil in: aRootElement.
+
+					hasThemeEditor := false.
+
+					aTargetElementChildren := aThemeEditor targetContainer children asArray.
+					aThemeEditor targetContainer removeChildren.
+					aRootElement removeChildren.
+					aRootElement addChildren: aTargetElementChildren.
+					aRootElement
+						withAllChildrenBreadthFirstDo: [ :eachChild | eachChild boundsCache invalidateBoundsInSpace ] ] ]
+		ifNone: [ ^ self ]
+]
+
+{ #category : 'event handling' }
+CgtEditorEventHandler >> hideThemeEditorEvent: aHideThemeEditorEvent [
+	self hideThemeEditor: aHideThemeEditorEvent currentTarget
+]
+
+{ #category : 'private - testing' }
 CgtEditorEventHandler >> highlightCombinationMatchesIn: aRootElement [
 	<return: #Boolean>
 
@@ -197,14 +171,14 @@ CgtEditorEventHandler >> highlightCombinationMatchesIn: aRootElement [
 	^ KeyCombination matchesKeyBuffer: aRootElement space keyboardProcessor buffer
 ]
 
-{ #category : #'api - overlay' }
+{ #category : 'api - overlay' }
 CgtEditorEventHandler >> highlightElement: anElement in: aRootElement [
 	elementToHighlight := anElement.
 
 	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay highlightElement: anElement ]
 ]
 
-{ #category : #'api - overlay' }
+{ #category : 'api - overlay' }
 CgtEditorEventHandler >> highlightElementAt: aPoint in: aRootElement [
 	| aThemeEditorTarget |
 
@@ -228,14 +202,14 @@ CgtEditorEventHandler >> highlightElementAt: aPoint in: aRootElement [
 			ifNone: [ nil ]) ]
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 CgtEditorEventHandler >> highlightElementEvent: aHighlightElementEvent [
 	self
 		highlightElement: aHighlightElementEvent element
 		in: aHighlightElementEvent currentTarget
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CgtEditorEventHandler >> initialize [
 	super initialize.
 	
@@ -249,29 +223,29 @@ CgtEditorEventHandler >> initialize [
 	elementToSelect := nil
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 CgtEditorEventHandler >> keyDownEvent: aKeyDownEvent [
 	self keyEvent: aKeyDownEvent
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 CgtEditorEventHandler >> keyEvent: aKeyEvent [
 	(self highlightCombinationMatchesIn: aKeyEvent currentTarget)
 		ifTrue: [ self showOverlayIn: aKeyEvent currentTarget ]
 		ifFalse: [ self maybeHideOverlayIn: aKeyEvent currentTarget ]
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 CgtEditorEventHandler >> keyUpEvent: aKeyDownEvent [
 	self keyEvent: aKeyDownEvent
 ]
 
-{ #category : #'api - overlay' }
+{ #category : 'api - overlay' }
 CgtEditorEventHandler >> lockOverlay [
 	shouldLockOverlay := true
 ]
 
-{ #category : #'api - overlay' }
+{ #category : 'api - overlay' }
 CgtEditorEventHandler >> maybeHideOverlayIn: aRootElement [
 	hasOverlay
 		ifFalse: [ ^ self ].
@@ -291,7 +265,7 @@ CgtEditorEventHandler >> maybeHideOverlayIn: aRootElement [
 		ifFalse: [ self hideOverlayIn: aRootElement ]
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 	| aThemeEditorTarget |
 	
@@ -310,66 +284,21 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 		ifFalse: [ mousePosition := nil ] 
 ]
 
-{ #category : #'api - overlay' }
+{ #category : 'api - overlay' }
 CgtEditorEventHandler >> selectElement: anElement in: aRootElement [
 	elementToSelect := anElement.
 
 	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay selectElement: anElement ]
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 CgtEditorEventHandler >> selectElementEvent: aSelectElementEvent [
 	self
 		selectElement: aSelectElementEvent element
 		in: aSelectElementEvent currentTarget
 ]
 
-{ #category : #'api - themeEditor' }
-CgtEditorEventHandler >> showThemeEditor: aRootElement [
-	| aTargetElementChildren aTargetContainer |
-
-	hasThemeEditor
-		ifTrue: [ ^ self ].
-		
-	self lockOverlay.
-	
-	aRootElement isAttachedToSceneGraph
-		ifTrue: [
-			originalTitle := aRootElement space title.
-			aRootElement space title: 'Glamorous Scene ThemeEditor' ].
-
-	hasThemeEditor := true.
-
-	aTargetElementChildren := aRootElement children asArray.
-	aRootElement removeChildren.
-
-	aTargetContainer := BlElement new.
-	aTargetContainer size: aRootElement extent.
-	aTargetContainer addChildren: aTargetElementChildren.
-
-	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer) as: ThemeEditorId.
-	self
-		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | aThemeEditor animateOpen ]
-]
-
-{ #category : #'event handling' }
-CgtEditorEventHandler >> showThemeEditorEvent: aShowThemeEditorEvent [
-	aShowThemeEditorEvent consumed: true.
-
-	self showThemeEditor: aShowThemeEditorEvent currentTarget.
-	self
-		themeEditorIn: aShowThemeEditorEvent currentTarget
-		do: [ :aThemeEditor |
-			aShowThemeEditorEvent elementToSelect
-				ifNotNil: [
-					aThemeEditor selectElement: aShowThemeEditorEvent elementToSelect.
-					self showOverlayIn: aShowThemeEditorEvent currentTarget ].
-			aShowThemeEditorEvent sceneExtent
-				ifNotNil: [ aThemeEditor targetContainer size: aShowThemeEditorEvent sceneExtent ] ]
-]
-
-{ #category : #'api - overlay' }
+{ #category : 'api - overlay' }
 CgtEditorEventHandler >> showOverlayIn: aRootElement [
 	hasOverlay
 		ifTrue: [
@@ -392,7 +321,77 @@ CgtEditorEventHandler >> showOverlayIn: aRootElement [
 		ifTrue: [ self highlightElementAt: mousePosition in: aRootElement ]
 ]
 
-{ #category : #'api - overlay' }
+{ #category : 'api - themeEditor' }
+CgtEditorEventHandler >> showThemeEditor: aRootElement [
+	| aTargetElementChildren aTargetContainer |
+
+	hasThemeEditor
+		ifTrue: [ ^ self ].
+		
+	self lockOverlay.
+	
+	aRootElement isAttachedToSceneGraph
+		ifTrue: [
+			originalTitle := aRootElement space title.
+			aRootElement space title: 'Catalyst Theme Editor' ].
+
+	hasThemeEditor := true.
+
+	aTargetElementChildren := aRootElement children asArray.
+	aRootElement removeChildren.
+
+	aTargetContainer := BlElement new.
+	aTargetContainer size: aRootElement extent.
+	aTargetContainer addChildren: aTargetElementChildren.
+
+	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer) as: ThemeEditorId.
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor | aThemeEditor animateOpen ]
+]
+
+{ #category : 'event handling' }
+CgtEditorEventHandler >> showThemeEditorEvent: aShowThemeEditorEvent [
+	aShowThemeEditorEvent consumed: true.
+
+	self showThemeEditor: aShowThemeEditorEvent currentTarget.
+	self
+		themeEditorIn: aShowThemeEditorEvent currentTarget
+		do: [ :aThemeEditor |
+			aShowThemeEditorEvent elementToSelect
+				ifNotNil: [
+					aThemeEditor selectElement: aShowThemeEditorEvent elementToSelect.
+					self showOverlayIn: aShowThemeEditorEvent currentTarget ].
+			aShowThemeEditorEvent sceneExtent
+				ifNotNil: [ aThemeEditor targetContainer size: aShowThemeEditorEvent sceneExtent ] ]
+]
+
+{ #category : 'private - accessing' }
+CgtEditorEventHandler >> themeEditorIn: aTargetElement do: aBlock [
+	aTargetElement
+		childWithId: ThemeEditorId
+		ifFound: aBlock
+		ifNone: [  ]
+]
+
+{ #category : 'private - accessing' }
+CgtEditorEventHandler >> themeEditorOverlayIn: aRootElement do: aBlock [
+	aRootElement
+		childWithId: ThemeEditorOverlayId
+		ifFound: aBlock
+		ifNone: [  ]
+]
+
+{ #category : 'private - accessing' }
+CgtEditorEventHandler >> themeEditorTargetIn: aRootElement [
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor | ^ aThemeEditor targetContainer ].
+		
+	^ aRootElement
+]
+
+{ #category : 'api - overlay' }
 CgtEditorEventHandler >> unlockOverlay [
 	shouldLockOverlay := false
 ]

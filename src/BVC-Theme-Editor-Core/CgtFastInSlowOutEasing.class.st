@@ -17,6 +17,6 @@ CgtFastInSlowOutEasing >> interpolate: aProgress [
 	t <= 0 ifTrue: [ ^ 0.0 ].
 	t >= 1 ifTrue: [ ^ 1.0 ].
 
-	response := 15.0.	"higher = faster start, longer tail"
+	response := 10.0.	"higher = faster start, longer tail"
 	^ (1.0 - (response negated * t) exp) / (1.0 - response negated exp)
 ]

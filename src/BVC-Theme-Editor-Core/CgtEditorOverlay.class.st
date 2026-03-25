@@ -1,6 +1,6 @@
 Class {
-	#name : #CgtEditorOverlay,
-	#superclass : #BlElement,
+	#name : 'CgtEditorOverlay',
+	#superclass : 'BlElement',
 	#instVars : [
 		'highlight',
 		'selection',
@@ -8,16 +8,17 @@ Class {
 		'elementToSelect',
 		'eventHandler'
 	],
-	#category : #'BVC-Theme-Editor-Core'
+	#category : 'BVC-Theme-Editor-Core',
+	#package : 'BVC-Theme-Editor-Core'
 }
 
-{ #category : #private }
+{ #category : 'private' }
 CgtEditorOverlay >> addEventHandlerToElementToHighlightOrSelect: anElement [
 	((elementToSelect = anElement or: [ elementToHighlight = anElement ]) and: [ (anElement hasEventHandler: eventHandler) not ])
 		ifTrue: [ anElement addEventHandler: eventHandler ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorOverlay >> hideElement: anElement [
 	(elementToHighlight = anElement or: [ elementToHighlight isNil ])
 		ifTrue: [ highlight visibility: BlVisibility gone ].
@@ -26,7 +27,7 @@ CgtEditorOverlay >> hideElement: anElement [
 		ifTrue: [ selection visibility: BlVisibility gone ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorOverlay >> highlightElement: anElementOrNil [
 	| aPreviousElementToHighlight |
 	
@@ -43,7 +44,7 @@ CgtEditorOverlay >> highlightElement: anElementOrNil [
 			highlight visibility: BlVisibility visible ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CgtEditorOverlay >> initialize [
 	super initialize.
 	self
@@ -68,7 +69,7 @@ CgtEditorOverlay >> initialize [
 	self addChild: selection
 ]
 
-{ #category : #'hooks - children' }
+{ #category : 'hooks - children' }
 CgtEditorOverlay >> onAddedToSceneGraph [
 	super onAddedToSceneGraph.
 
@@ -76,14 +77,14 @@ CgtEditorOverlay >> onAddedToSceneGraph [
 	elementToSelect ifNotNil: [ :anElement | self addEventHandlerToElementToHighlightOrSelect: anElement ].
 ]
 
-{ #category : #'hooks - geometry' }
+{ #category : 'hooks - geometry' }
 CgtEditorOverlay >> onExtentChanged [
 	super onExtentChanged.
 	
 	self updatePositions
 ]
 
-{ #category : #'hooks - children' }
+{ #category : 'hooks - children' }
 CgtEditorOverlay >> onRemovedFromSceneGraph [
 	super onRemovedFromSceneGraph.
 	
@@ -91,7 +92,7 @@ CgtEditorOverlay >> onRemovedFromSceneGraph [
 	elementToSelect ifNotNil: [ :anElement | anElement removeEventHandler: eventHandler ].
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 CgtEditorOverlay >> removeEventHandlerFromElementToHighlightOrSelect: anElement [
 	"Only remove an event handler if an element is not to select and not to highlight"
 	
@@ -99,7 +100,7 @@ CgtEditorOverlay >> removeEventHandlerFromElementToHighlightOrSelect: anElement 
 		ifTrue: [ anElement removeEventHandler: eventHandler ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorOverlay >> selectElement: anElementOrNil [
 	| aPreviousElementToSelect |
 
@@ -116,7 +117,7 @@ CgtEditorOverlay >> selectElement: anElementOrNil [
 			selection visibility: BlVisibility visible ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorOverlay >> showElement: anElement [
 	(elementToHighlight = anElement)
 		ifTrue: [ highlight visibility: BlVisibility visible ].
@@ -127,7 +128,7 @@ CgtEditorOverlay >> showElement: anElement [
 	elementToSelect ifNil: [ selection visibility: BlVisibility gone ].	
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 CgtEditorOverlay >> updateOverlayElement: anOverlayElement toMatch: anOverlayedElement [
 	| theAnchorPositions |
 
@@ -137,7 +138,7 @@ CgtEditorOverlay >> updateOverlayElement: anOverlayElement toMatch: anOverlayedE
 	anOverlayElement vertices: theAnchorPositions
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 CgtEditorOverlay >> updatePositions [
 	elementToSelect ifNotNil: [ :anOverlayedElement | self updateOverlayElement: selection toMatch: anOverlayedElement ].
 	elementToHighlight ifNotNil: [ :anOverlayedElement | self updateOverlayElement: highlight toMatch: anOverlayedElement ].

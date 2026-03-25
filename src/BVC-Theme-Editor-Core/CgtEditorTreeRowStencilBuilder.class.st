@@ -1,41 +1,42 @@
 Class {
-	#name : #CgtEditorTreeRowStencilBuilder,
-	#superclass : #BrGlamorousSimpleTreeSelectableRowElementStencilBuilder,
+	#name : 'CgtEditorTreeRowStencilBuilder',
+	#superclass : 'BrGlamorousSimpleTreeSelectableRowElementStencilBuilder',
 	#instVars : [
 		'whenHovered',
 		'whenUnhovered'
 	],
-	#category : #'BVC-Theme-Editor-Core'
+	#category : 'BVC-Theme-Editor-Core',
+	#package : 'BVC-Theme-Editor-Core'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorTreeRowStencilBuilder class >> stencilProperties [
 	^ #(whenHovered whenUnhovered)
 ]
 
-{ #category : #'api - instantiation' }
+{ #category : 'api - instantiation' }
 CgtEditorTreeRowStencilBuilder >> buildDefault [
 	^ super buildDefault
 		when: BlElementHoveredEvent do: self whenHovered;
 		when: BlElementUnhoveredEvent do: self whenUnhovered
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorTreeRowStencilBuilder >> whenHovered [
 	^ whenHovered
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorTreeRowStencilBuilder >> whenHovered: anObject [
 	whenHovered := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorTreeRowStencilBuilder >> whenUnhovered [
 	^ whenUnhovered
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorTreeRowStencilBuilder >> whenUnhovered: anObject [
 	whenUnhovered := anObject
 ]

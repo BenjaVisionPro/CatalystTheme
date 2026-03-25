@@ -3,36 +3,37 @@ Fire the ""theme editor show wish"" from withing the graphical scene whose root 
 
 "
 Class {
-	#name : #CgtEditorShowWish,
-	#superclass : #BlEvent,
+	#name : 'CgtEditorShowWish',
+	#superclass : 'BlEvent',
 	#instVars : [
 		'elementToSelect',
 		'sceneExtent'
 	],
-	#category : #'BVC-Theme-Editor-Core'
+	#category : 'BVC-Theme-Editor-Core',
+	#package : 'BVC-Theme-Editor-Core'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorShowWish >> elementToSelect [
 	^ elementToSelect
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorShowWish >> elementToSelect: anObject [
 	elementToSelect := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorShowWish >> sceneExtent [
 	^ sceneExtent
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CgtEditorShowWish >> sceneExtent: anObject [
 	sceneExtent := anObject
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 CgtEditorShowWish >> sendTo: anObject [
 	anObject showThemeEditorEvent: self
 ]

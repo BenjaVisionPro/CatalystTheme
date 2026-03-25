@@ -1,10 +1,11 @@
 Class {
-	#name : #CgtEditorExamples,
-	#superclass : #Object,
-	#category : #'BVC-Theme-Editor-Core'
+	#name : 'CgtEditorExamples',
+	#superclass : 'Object',
+	#category : 'BVC-Theme-Editor-Core',
+	#package : 'BVC-Theme-Editor-Core'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 CgtEditorExamples >> themeEditorOnWorld [
 	<gtExample>
 	<noTest>
