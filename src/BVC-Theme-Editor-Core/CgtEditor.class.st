@@ -9,7 +9,8 @@ Class {
 		'scenePage',
 		'detailsPage',
 		'isOpeningPreview',
-		'scenePreviewElement'
+		'scenePreviewElement',
+		'sceneContainer'
 	],
 	#category : #'BVC-Theme-Editor-Core'
 }
@@ -167,6 +168,7 @@ CgtEditor >> initializeWith: aTargetContainer [
 
 	detailsPage := BlElement new
 		viewModel: BrPagerPageModel new;
+		visibility: BlVisibility gone;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical matchParent.
@@ -203,18 +205,27 @@ CgtEditor >> animateDetailsOpen [
 
 { #category : #'api - animation' }
 CgtEditor >> animateOpen [
-	| anAnimation |
+	| aPaddingAnimation aScaleAnimation |
 	isOpeningPreview := true.
-	anAnimation := BlTransformAnimation scale: self previewScale.
-	anAnimation duration: 250 milliSeconds.
-	anAnimation onFinishedDo: [
+	aPaddingAnimation := BlNumberTransition new
+		from: 0;
+		to: self previewPadding;
+		duration: 250 milliSeconds;
+		onStepDo: [ :aPadding :anEditor | anEditor scenePadding: aPadding ];
+		yourself.
+
+	aScaleAnimation := BlTransformAnimation scale: self previewScale.
+	aScaleAnimation duration: 250 milliSeconds.
+	aScaleAnimation onFinishedDo: [
 		isOpeningPreview := false ].
-	scenePreviewElement addAnimation: anAnimation
+
+	self addAnimation: aPaddingAnimation.
+	scenePreviewElement addAnimation: aScaleAnimation
 ]
 
 { #category : #'api - animation' }
 CgtEditor >> animateCloseOnFinishedDo: aBlock [
-	| aWeightAnimation aScaleAnimation |
+	| aWeightAnimation aPaddingAnimation aScaleAnimation |
 	aWeightAnimation := BlNumberTransition new
 		from: self detailsWeight;
 		to: 0.0;
@@ -222,11 +233,19 @@ CgtEditor >> animateCloseOnFinishedDo: aBlock [
 		onStepDo: [ :aWeight :anEditor | anEditor detailsWeight: aWeight ];
 		yourself.
 
+	aPaddingAnimation := BlNumberTransition new
+		from: self previewPadding;
+		to: 0;
+		duration: 250 milliSeconds;
+		onStepDo: [ :aPadding :anEditor | anEditor scenePadding: aPadding ];
+		yourself.
+
 	aScaleAnimation := BlTransformAnimation scale: 1.0 @ 1.0.
 	aScaleAnimation duration: 250 milliSeconds.
 	aScaleAnimation onFinishedDo: aBlock.
 
 	self addAnimation: aWeightAnimation.
+	self addAnimation: aPaddingAnimation.
 	scenePreviewElement addAnimation: aScaleAnimation
 ]
 
@@ -239,6 +258,10 @@ CgtEditor >> detailsWeight [
 CgtEditor >> detailsWeight: aWeight [
 	| aSceneWeight |
 	aSceneWeight := 1.0 - aWeight.
+
+	detailsPage visibility: (aWeight <= 0.0
+		ifTrue: [ BlVisibility gone ]
+		ifFalse: [ BlVisibility visible ]).
 
 	scenePage constraintsDo: [ :c |
 		c horizontal matchParent.
@@ -259,6 +282,16 @@ CgtEditor >> openedDetailsWeight [
 { #category : #accessing }
 CgtEditor >> previewScale [
 	^ 0.96 @ 0.96
+]
+
+{ #category : #accessing }
+CgtEditor >> previewPadding [
+	^ 20
+]
+
+{ #category : #accessing }
+CgtEditor >> scenePadding: aNumber [
+	sceneContainer padding: (BlInsets all: aNumber)
 ]
 
 { #category : #accessing }
@@ -340,11 +373,11 @@ CgtEditor >> newPagerFor: aTargetContainer [
 
 { #category : #'instance creation' }
 CgtEditor >> newSceneContainerFor: aTargetContainer [
-	^ BrVerticalPane new
+	^ (sceneContainer := BrVerticalPane new)
 		hMatchParent;
 		vFitContent;
 		constraintsDo: [ :c | c linear weight: 0.3 ];
-		padding: (BlInsets all: 20);
+		padding: (BlInsets all: 0);
 		addChildren:
 			{(self newSectionLabel text: 'Scene').
 			(BlElement new
