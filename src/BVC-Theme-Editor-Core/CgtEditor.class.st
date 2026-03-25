@@ -8,7 +8,8 @@ Class {
 		'elementsTree',
 		'scenePage',
 		'detailsPage',
-		'isOpeningPreview'
+		'isOpeningPreview',
+		'scenePreviewElement'
 	],
 	#category : #'BVC-Theme-Editor-Core'
 }
@@ -191,6 +192,7 @@ CgtEditor >> inspectElement: anElement [
 { #category : #'api - animation' }
 CgtEditor >> animateDetailsOpen [
 	selectedElement ifNil: [ ^ self ].
+	detailsWeight >= self openedDetailsWeight ifTrue: [ ^ self ].
 	self addAnimation: ((BlNumberTransition new
 		from: self detailsWeight;
 		to: self openedDetailsWeight;
@@ -206,14 +208,13 @@ CgtEditor >> animateOpen [
 	anAnimation := BlTransformAnimation scale: self previewScale.
 	anAnimation duration: 250 milliSeconds.
 	anAnimation onFinishedDo: [
-		isOpeningPreview := false.
-		self animateDetailsOpen ].
-	self addAnimation: anAnimation
+		isOpeningPreview := false ].
+	scenePreviewElement addAnimation: anAnimation
 ]
 
 { #category : #'api - animation' }
 CgtEditor >> animateCloseOnFinishedDo: aBlock [
-	| aWeightAnimation aScaleAnimation anAnimation |
+	| aWeightAnimation aScaleAnimation |
 	aWeightAnimation := BlNumberTransition new
 		from: self detailsWeight;
 		to: 0.0;
@@ -221,16 +222,12 @@ CgtEditor >> animateCloseOnFinishedDo: aBlock [
 		onStepDo: [ :aWeight :anEditor | anEditor detailsWeight: aWeight ];
 		yourself.
 
-	aScaleAnimation := BlTransformAnimation new
-		absolute;
-		duration: 250 milliSeconds;
-		yourself.
+	aScaleAnimation := BlTransformAnimation scale: 1.0 @ 1.0.
+	aScaleAnimation duration: 250 milliSeconds.
+	aScaleAnimation onFinishedDo: aBlock.
 
-	anAnimation := BlParallelAnimation with: {
-		aWeightAnimation.
-		aScaleAnimation }.
-	anAnimation onFinishedDo: aBlock.
-	self addAnimation: anAnimation
+	self addAnimation: aWeightAnimation.
+	scenePreviewElement addAnimation: aScaleAnimation
 ]
 
 { #category : #accessing }
@@ -353,7 +350,7 @@ CgtEditor >> newSceneContainerFor: aTargetContainer [
 			(BlElement new
 				height: 10;
 				width: 0).
-			(BlScalableElement new
+			(scenePreviewElement := BlScalableElement new
 				fitWidth;
 				constraintsDo: [ :c | 
 					c horizontal matchParent.
