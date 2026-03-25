@@ -379,11 +379,7 @@ CgtEditor >> newSceneContainerFor: aTargetContainer [
 		constraintsDo: [ :c | c linear weight: 0.3 ];
 		padding: (BlInsets all: 0);
 		addChildren:
-			{(self newSectionLabel text: 'Scene').
-			(BlElement new
-				height: 10;
-				width: 0).
-			(scenePreviewElement := BlScalableElement new
+			{(scenePreviewElement := BlScalableElement new
 				fitWidth;
 				constraintsDo: [ :c | 
 					c horizontal matchParent.
