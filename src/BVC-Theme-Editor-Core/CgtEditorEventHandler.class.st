@@ -137,31 +137,32 @@ CgtEditorEventHandler >> eventsToHandle [
 
 { #category : #'api - themeEditor' }
 CgtEditorEventHandler >> hideThemeEditor: aRootElement [
-	self unlockOverlay.
-	self hideOverlayIn: aRootElement.
-	self selectElement: nil in: aRootElement.
-	self highlightElement: nil in: aRootElement.
-
 	hasThemeEditor
 		ifFalse: [ ^ self ].
-
-	hasThemeEditor := false.
-	(aRootElement isAttachedToSceneGraph and: [ originalTitle notNil ])
-		ifTrue: [ aRootElement space title: originalTitle ].
-		
-	originalTitle := nil.
 
 	aRootElement
 		childWithId: ThemeEditorId
 		ifFound: [ :aThemeEditor |
-			| aTargetElementChildren |
-			aTargetElementChildren := aThemeEditor targetContainer children asArray.
-			aThemeEditor targetContainer removeChildren.
-			aRootElement removeChildren.
-			aRootElement addChildren: aTargetElementChildren.
-			self flag: #TODO.
-			"https://github.com/feenkcom/gtoolkit/issues/1749".
-			aRootElement withAllChildrenBreadthFirstDo: [ :eachChild | eachChild boundsCache invalidateBoundsInSpace ] ]
+			aThemeEditor animateCloseOnFinishedDo: [
+				| aTargetElementChildren |
+				self unlockOverlay.
+				self hideOverlayIn: aRootElement.
+				self selectElement: nil in: aRootElement.
+				self highlightElement: nil in: aRootElement.
+
+				hasThemeEditor := false.
+				(aRootElement isAttachedToSceneGraph and: [ originalTitle notNil ])
+					ifTrue: [ aRootElement space title: originalTitle ].
+
+				originalTitle := nil.
+
+				aTargetElementChildren := aThemeEditor targetContainer children asArray.
+				aThemeEditor targetContainer removeChildren.
+				aRootElement removeChildren.
+				aRootElement addChildren: aTargetElementChildren.
+				self flag: #TODO.
+				"https://github.com/feenkcom/gtoolkit/issues/1749".
+				aRootElement withAllChildrenBreadthFirstDo: [ :eachChild | eachChild boundsCache invalidateBoundsInSpace ] ] ]
 		ifNone: [ ^ self ]
 ]
 
@@ -346,7 +347,10 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 	aTargetContainer size: aRootElement extent.
 	aTargetContainer addChildren: aTargetElementChildren.
 
-	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer) as: ThemeEditorId
+	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer) as: ThemeEditorId.
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor | aThemeEditor animateOpen ]
 ]
 
 { #category : #'event handling' }

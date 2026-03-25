@@ -5,7 +5,10 @@ Class {
 		'targetContainer',
 		'selectedElement',
 		'inspector',
-		'elementsTree'
+		'elementsTree',
+		'scenePage',
+		'detailsPage',
+		'isOpeningPreview'
 	],
 	#category : #'BVC-Theme-Editor-Core'
 }
@@ -152,22 +155,25 @@ CgtEditor >> initialize [
 CgtEditor >> initializeWith: aTargetContainer [
 	targetContainer := aTargetContainer.
 
-	self addPage: (BlElement new
+	scenePage := BlElement new
 		viewModel: BrPagerPageModel new;
 		layout: BlLinearLayout vertical alignCenter;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical matchParent.
-			c linear weight: 0.4 ];
-		addChild: (self newSceneContainerFor: aTargetContainer)).
-		
-	self addPage: (BlElement new
+			c linear weight: 1.0 ];
+		addChild: (self newSceneContainerFor: aTargetContainer).
+
+	detailsPage := BlElement new
 		viewModel: BrPagerPageModel new;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical matchParent.
-			c linear weight: 0.6 ];
-		addChild: (self newPagerFor: aTargetContainer)).
+			c linear weight: 0.0 ];
+		addChild: (self newPagerFor: aTargetContainer).
+
+	self addPage: scenePage.
+	self addPage: detailsPage.
 
 	self addChildren: { 
 		self newCloseButtonFor: aTargetContainer }
@@ -180,6 +186,89 @@ CgtEditor >> inspectElement: anElement [
 
 	selectedElement := anElement.
 	elementsTree phlow spawnObject: selectedElement
+]
+
+{ #category : #'api - animation' }
+CgtEditor >> animateDetailsOpen [
+	selectedElement ifNil: [ ^ self ].
+	self addAnimation: ((BlNumberTransition new
+		from: self detailsWeight;
+		to: self openedDetailsWeight;
+		duration: 200 milliSeconds;
+		onStepDo: [ :aWeight :anEditor | anEditor detailsWeight: aWeight ];
+		yourself))
+]
+
+{ #category : #'api - animation' }
+CgtEditor >> animateOpen [
+	| anAnimation |
+	isOpeningPreview := true.
+	anAnimation := BlTransformAnimation scale: self previewScale.
+	anAnimation duration: 250 milliSeconds.
+	anAnimation onFinishedDo: [
+		isOpeningPreview := false.
+		self animateDetailsOpen ].
+	self addAnimation: anAnimation
+]
+
+{ #category : #'api - animation' }
+CgtEditor >> animateCloseOnFinishedDo: aBlock [
+	| aWeightAnimation aScaleAnimation anAnimation |
+	aWeightAnimation := BlNumberTransition new
+		from: self detailsWeight;
+		to: 0.0;
+		duration: 250 milliSeconds;
+		onStepDo: [ :aWeight :anEditor | anEditor detailsWeight: aWeight ];
+		yourself.
+
+	aScaleAnimation := BlTransformAnimation new
+		absolute;
+		duration: 250 milliSeconds;
+		yourself.
+
+	anAnimation := BlParallelAnimation with: {
+		aWeightAnimation.
+		aScaleAnimation }.
+	anAnimation onFinishedDo: aBlock.
+	self addAnimation: anAnimation
+]
+
+{ #category : #accessing }
+CgtEditor >> detailsWeight [
+	^ 1.0 - self sceneWeight
+]
+
+{ #category : #accessing }
+CgtEditor >> detailsWeight: aWeight [
+	| aSceneWeight |
+	aSceneWeight := 1.0 - aWeight.
+
+	scenePage constraintsDo: [ :c |
+		c horizontal matchParent.
+		c vertical matchParent.
+		c linear weight: aSceneWeight ].
+
+	detailsPage constraintsDo: [ :c |
+		c horizontal matchParent.
+		c vertical matchParent.
+		c linear weight: aWeight ]
+]
+
+{ #category : #accessing }
+CgtEditor >> openedDetailsWeight [
+	^ 0.6
+]
+
+{ #category : #accessing }
+CgtEditor >> previewScale [
+	^ 0.96 @ 0.96
+]
+
+{ #category : #accessing }
+CgtEditor >> sceneWeight [
+	| aLayoutConstraints |
+	aLayoutConstraints := scenePage constraints.
+	^ aLayoutConstraints linear weight
 ]
 
 { #category : #'instance creation' }
@@ -357,6 +446,7 @@ CgtEditor >> selectElement: anElement [
 	elementsTree phlow spawnObject: selectedElement.
 	
 	wasNil ifTrue: [
+		isOpeningPreview ifFalse: [ self animateDetailsOpen ].
 		self
 			childWithId: '#bvc-themeEditor--pager'
 			ifFound: [ :aPager |
