@@ -1,6 +1,6 @@
 Class {
 	#name : 'CgtEditor',
-	#superclass : 'BrPager',
+	#superclass : 'BlElement',
 	#instVars : [
 		'targetContainer',
 		'selectedElement',
@@ -223,8 +223,8 @@ CgtEditor >> initialize [
 	super initialize.
 	self
 		matchParent;
-		background: self theme header defaultBackgroundColor;
-		aptitude: BrProportionalHorizontalPagerAptitude new
+		layout: BlLinearLayout horizontal;
+		background: self theme header defaultBackgroundColor
 ]
 
 { #category : 'initialization' }
@@ -232,7 +232,6 @@ CgtEditor >> initializeWith: aTargetContainer [
 	targetContainer := aTargetContainer.
 
 	scenePage := BlElement new
-		viewModel: BrPagerPageModel new;
 		layout: BlLinearLayout vertical alignCenter;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -241,7 +240,6 @@ CgtEditor >> initializeWith: aTargetContainer [
 		addChild: (self newSceneContainerFor: aTargetContainer).
 
 	detailsPage := BlElement new
-		viewModel: BrPagerPageModel new;
 		visibility: BlVisibility gone;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -249,8 +247,7 @@ CgtEditor >> initializeWith: aTargetContainer [
 			c linear weight: 0.0 ];
 		addChild: (self newPagerFor: aTargetContainer).
 
-	self addPage: scenePage.
-	self addPage: detailsPage.
+	self addChildren: { scenePage. detailsPage }.
 
 	self addChildren: { 
 		self newCloseButtonFor: aTargetContainer }
