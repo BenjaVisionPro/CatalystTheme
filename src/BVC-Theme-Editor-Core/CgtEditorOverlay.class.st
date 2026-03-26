@@ -294,8 +294,7 @@ CgtEditorOverlay >> animateHoverTransition [
 	self addAnimation: (BlNumberTransition new
 			from: 0.0;
 			to: 1.0;
-			duration: 180 milliSeconds;
-			easing: CgtFastInSlowOutEasing new;
+			duration: 120 milliSeconds;
 			onStepDo: [ :aProgress :anOverlay |
 				anOverlay hoverAnimationToken = aToken ifTrue: [
 					anOverlay
