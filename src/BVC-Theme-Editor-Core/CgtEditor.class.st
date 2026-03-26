@@ -548,9 +548,7 @@ CgtEditor >> animatePreviewProgressTo: aPreviewProgress detailsWeightTo: aDetail
 
 { #category : 'accessing' }
 CgtEditor >> detailsTargetWeightForOpening [
-	^ selectedElement
-		ifNil: [ 0.0 ]
-		ifNotNil: [ self openedDetailsWeight ]
+	^ 0.0
 ]
 
 { #category : 'private - animation' }
