@@ -106,10 +106,12 @@ CgtEditorOverlay >> drawHoverOnSpartaCanvas: aCanvas [
 	aCanvas transform
 		by: [ :aTransform | aTransform translateBy: animatedHoverBounds origin ]
 		during: [
+				| aPath |
+			aPath := ((BlRoundedRectangleGeometry cornerRadius: animatedHoverCornerRadius)
+				matchExtent: animatedHoverBounds extent;
+				yourself) buildPathOnSpartaCanvas: aCanvas.
 			aCanvas fill
-				path: ((BlRoundedRectangleGeometry cornerRadius: animatedHoverCornerRadius)
-					matchExtent: animatedHoverBounds extent;
-					yourself) buildPathOnSpartaCanvas: aCanvas;
+				path: aPath;
 				paint: (Color white alpha: (animatedHoverAlpha * overlayOpacity));
 				composeDestOut;
 				draw ]
