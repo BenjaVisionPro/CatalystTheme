@@ -302,11 +302,36 @@ CgtEditorEventHandler >> nextTransitionToken [
 ]
 
 { #category : 'private - themeEditor' }
+CgtEditorEventHandler >> shouldStartClosingThemeEditorIn: aRootElement [
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor | ^ aThemeEditor isClosingPreview not ].
+
+	^ true
+]
+
+{ #category : 'private - themeEditor' }
+CgtEditorEventHandler >> shouldStartOpeningThemeEditorIn: aRootElement [
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor | ^ aThemeEditor isClosingPreview ].
+
+	^ true
+]
+
+{ #category : 'private - themeEditor' }
 CgtEditorEventHandler >> processRequestedThemeEditorStateIn: aRootElement [
 	self desiredThemeEditorOpenValue
-		ifTrue: [ hasThemeEditor ifFalse: [ ^ self showThemeEditor: aRootElement ]. ^ self ].
+		ifTrue: [
+			hasThemeEditor
+				ifFalse: [ ^ self showThemeEditor: aRootElement ].
+				(self shouldStartOpeningThemeEditorIn: aRootElement)
+					ifTrue: [ ^ self showThemeEditor: aRootElement ].
+				^ self ].
 	hasThemeEditor
-		ifTrue: [ ^ self hideThemeEditor: aRootElement ]
+		ifTrue: [
+			(self shouldStartClosingThemeEditorIn: aRootElement)
+				ifTrue: [ ^ self hideThemeEditor: aRootElement ] ]
 ]
 
 { #category : 'event handling' }
