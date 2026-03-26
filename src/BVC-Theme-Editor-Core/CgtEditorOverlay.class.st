@@ -6,7 +6,8 @@ Class {
 		'eventHandler',
 		'maskLayer',
 		'observedElements',
-		'overlayOpacity'
+		'overlayOpacity',
+		'fadeAnimationToken'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -32,26 +33,36 @@ CgtEditorOverlay >> childScopeElement [
 
 { #category : 'api - animation' }
 CgtEditorOverlay >> animateFadeIn [
-	overlayOpacity := 0.0.
+	| aToken aStartOpacity |
+	fadeAnimationToken := fadeAnimationToken + 1.
+	aToken := fadeAnimationToken.
+	aStartOpacity := overlayOpacity.
 	self updatePositions.
 	self addAnimation: (BlNumberTransition new
-			from: 0.0;
+			from: aStartOpacity;
 			to: 1.0;
 			duration: 400 milliSeconds;
 			easing: CgtFastInSlowOutEasing new;
-			onStepDo: [ :anOpacity :anOverlay | anOverlay overlayOpacity: anOpacity ];
+			onStepDo: [ :anOpacity :anOverlay |
+				anOverlay fadeAnimationToken = aToken
+					ifTrue: [ anOverlay overlayOpacity: anOpacity ] ];
 			yourself)
 ]
 
 { #category : 'api - animation' }
 CgtEditorOverlay >> animateFadeOutOnFinishedDo: aBlock [
+	| aToken |
+	fadeAnimationToken := fadeAnimationToken + 1.
+	aToken := fadeAnimationToken.
 	self addAnimation: (BlNumberTransition new
 			from: overlayOpacity;
 			to: 0.0;
 			duration: 400 milliSeconds;
 			easing: CgtFastInSlowOutEasing new;
-			onStepDo: [ :anOpacity :anOverlay | anOverlay overlayOpacity: anOpacity ];
-			onFinishedDo: aBlock;
+			onStepDo: [ :anOpacity :anOverlay |
+				anOverlay fadeAnimationToken = aToken
+					ifTrue: [ anOverlay overlayOpacity: anOpacity ] ];
+			onFinishedDo: [ self fadeAnimationToken = aToken ifTrue: [ aBlock value ] ];
 			yourself)
 ]
 
@@ -114,6 +125,12 @@ CgtEditorOverlay >> drawSelectionOnSpartaCanvas: aCanvas [
 	self cutOutElement: state childScopeElement alpha: 0.35 onSpartaCanvas: aCanvas
 ]
 
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> fadeAnimationToken [
+	^ fadeAnimationToken
+]
+
 { #category : 'accessing' }
 CgtEditorOverlay >> hideElement: anElement [
 	(self observedElements includes: anElement)
@@ -141,6 +158,7 @@ CgtEditorOverlay >> initialize [
 	super initialize.
 	state := CgtEditorOverlayState new.
 	overlayOpacity := 1.0.
+	fadeAnimationToken := 0.
 	observedElements := OrderedCollection new.
 	self
 		constraintsDo: [ :c |

@@ -29,7 +29,10 @@ Class {
 		'shouldLockOverlay',
 		'hasOverlay',
 		'originalTitle',
-		'overlayState'
+		'overlayState',
+		'transitionToken',
+		'desiredThemeEditorOpen',
+		'isTransitioningThemeEditor'
 	],
 	#classVars : [
 		'KeyCombination',
@@ -121,12 +124,21 @@ CgtEditorEventHandler >> hideOverlayIn: aRootElement [
 		themeEditorOverlayIn: aRootElement
 		do: [ :anOverlay |
 			anOverlay preventMeAndChildrenMouseEvents.
-			anOverlay animateFadeOutOnFinishedDo: [ aRootElement removeChildNamed: ThemeEditorOverlayId ] ]
+			anOverlay animateFadeOutOnFinishedDo: [
+				aRootElement
+					childWithId: ThemeEditorOverlayId
+					ifFound: [ :currentOverlay | currentOverlay == anOverlay ifTrue: [ aRootElement removeChild: currentOverlay ] ]
+					ifNone: [ ] ] ]
 ]
 
 { #category : 'api - themeEditor' }
 CgtEditorEventHandler >> hideThemeEditor: aRootElement [
+	| aToken |
 	hasThemeEditor ifFalse: [ ^ self ].
+	isTransitioningThemeEditor ifTrue: [ ^ self ].
+	isTransitioningThemeEditor := true.
+	desiredThemeEditorOpen := false.
+	aToken := self nextTransitionToken.
 	self hideOverlayIn: aRootElement.
 	(aRootElement isAttachedToSceneGraph and: [ originalTitle notNil ])
 		ifTrue: [ aRootElement space title: originalTitle ].
@@ -138,19 +150,22 @@ CgtEditorEventHandler >> hideThemeEditor: aRootElement [
 		ifFound: [ :aThemeEditor | 
 			aThemeEditor
 				animateCloseOnFinishedDo: [ | aTargetElementChildren |
-					self unlockOverlay.
-					self selectElement: nil in: aRootElement.
-					self highlightElement: nil in: aRootElement.
-
-					hasThemeEditor := false.
-
-					aTargetElementChildren := aThemeEditor targetContainer children asArray.
-					aThemeEditor targetContainer removeChildren.
-					aRootElement removeChildren.
-					aRootElement addChildren: aTargetElementChildren.
-					aRootElement
-						withAllChildrenBreadthFirstDo: [ :eachChild | eachChild boundsCache invalidateBoundsInSpace ] ] ]
-		ifNone: [ ^ self ]
+					transitionToken = aToken ifTrue: [
+						self unlockOverlay.
+						self selectElement: nil in: aRootElement.
+						self highlightElement: nil in: aRootElement.
+						hasThemeEditor := false.
+						aTargetElementChildren := aThemeEditor targetContainer children asArray.
+						aThemeEditor targetContainer removeChildren.
+						aRootElement removeChildren.
+						aRootElement addChildren: aTargetElementChildren.
+						aRootElement
+							withAllChildrenBreadthFirstDo: [ :eachChild | eachChild boundsCache invalidateBoundsInSpace ].
+						isTransitioningThemeEditor := false.
+						self processRequestedThemeEditorStateIn: aRootElement ] ] ]
+		ifNone: [
+			isTransitioningThemeEditor := false.
+			^ self ]
 ]
 
 { #category : 'event handling' }
@@ -216,7 +231,10 @@ CgtEditorEventHandler >> initialize [
 	shouldLockOverlay := false.
 	elementToHighlight := nil.
 	elementToSelect := nil.
-	overlayState := CgtEditorOverlayState new
+	overlayState := CgtEditorOverlayState new.
+	transitionToken := 0.
+	desiredThemeEditorOpen := false.
+	isTransitioningThemeEditor := false
 ]
 
 { #category : 'event handling' }
@@ -224,12 +242,8 @@ CgtEditorEventHandler >> keyDownEvent: aKeyDownEvent [
 	(self highlightCombinationMatchesIn: aKeyDownEvent currentTarget)
 		ifFalse: [ ^ self ].
 
-	hasThemeEditor
-		ifTrue: [ self hideThemeEditor: aKeyDownEvent currentTarget ]
-		ifFalse: [
-			self showThemeEditor: aKeyDownEvent currentTarget.
-			self showOverlayIn: aKeyDownEvent currentTarget ].
-
+	desiredThemeEditorOpen := desiredThemeEditorOpen not.
+	self processRequestedThemeEditorStateIn: aKeyDownEvent currentTarget.
 	aKeyDownEvent consumed: true
 ]
 
@@ -266,6 +280,22 @@ CgtEditorEventHandler >> maybeHideOverlayIn: aRootElement [
 	"only hide if the wrong combination is pressed"
 	(KeyCombination matchesKeyBuffer: aRootElement space keyboardProcessor buffer)
 		ifFalse: [ self hideOverlayIn: aRootElement ]
+]
+
+
+{ #category : 'private - themeEditor' }
+CgtEditorEventHandler >> nextTransitionToken [
+	transitionToken := transitionToken + 1.
+	^ transitionToken
+]
+
+{ #category : 'private - themeEditor' }
+CgtEditorEventHandler >> processRequestedThemeEditorStateIn: aRootElement [
+	isTransitioningThemeEditor ifTrue: [ ^ self ].
+	(desiredThemeEditorOpen and: [ hasThemeEditor not ])
+		ifTrue: [ ^ self showThemeEditor: aRootElement ].
+	(desiredThemeEditorOpen not and: [ hasThemeEditor ])
+		ifTrue: [ ^ self hideThemeEditor: aRootElement ]
 ]
 
 { #category : 'event handling' }
@@ -311,7 +341,9 @@ CgtEditorEventHandler >> showOverlayIn: aRootElement [
 			(elementToHighlight isNil and: [ mousePosition notNil ])
 				ifTrue: [ self highlightElementAt: mousePosition in: aRootElement ].
 				
-			self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay allowMeAndChildrenMouseEvents ].
+			self themeEditorOverlayIn: aRootElement do: [ :anOverlay |
+				anOverlay allowMeAndChildrenMouseEvents.
+				anOverlay animateFadeIn ].
 			^ self ].
 
 	hasOverlay := true.
@@ -333,11 +365,13 @@ CgtEditorEventHandler >> showOverlayIn: aRootElement [
 
 { #category : 'api - themeEditor' }
 CgtEditorEventHandler >> showThemeEditor: aRootElement [
-	| aTargetElementChildren aTargetContainer |
+	| aTargetElementChildren aTargetContainer aToken |
 
-	hasThemeEditor
-		ifTrue: [ ^ self ].
-		
+	hasThemeEditor ifTrue: [ ^ self ].
+	isTransitioningThemeEditor ifTrue: [ ^ self ].
+	isTransitioningThemeEditor := true.
+	desiredThemeEditorOpen := true.
+	aToken := self nextTransitionToken.
 	self lockOverlay.
 	
 	aRootElement isAttachedToSceneGraph
@@ -359,7 +393,11 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer) as: ThemeEditorId.
 	self
 		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | aThemeEditor animateOpen ]
+		do: [ :aThemeEditor |
+			aThemeEditor animateOpenOnFinishedDo: [
+				transitionToken = aToken ifTrue: [
+					isTransitioningThemeEditor := false.
+					self processRequestedThemeEditorStateIn: aRootElement ] ] ]
 ]
 
 { #category : 'event handling' }

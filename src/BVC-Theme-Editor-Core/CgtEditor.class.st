@@ -9,6 +9,7 @@ Class {
 		'scenePage',
 		'detailsPage',
 		'isOpeningPreview',
+		'isClosingPreview',
 		'scenePreviewElement',
 		'sceneContainer'
 	],
@@ -19,6 +20,8 @@ Class {
 { #category : 'api - animation' }
 CgtEditor >> animateCloseOnFinishedDo: aBlock [
 	| aWeightAnimation aScaleAnimation |
+	isClosingPreview := true.
+	isOpeningPreview := false.
 	aWeightAnimation := BlNumberTransition new
 		from: self detailsWeight;
 		to: 0.0;
@@ -30,7 +33,9 @@ CgtEditor >> animateCloseOnFinishedDo: aBlock [
 	aScaleAnimation := BlTransformAnimation scale: self previewScaleRecipricol.
 	aScaleAnimation duration: 1500 milliSeconds.
 	aScaleAnimation easing: CgtFastInSlowOutEasing new.
-	aScaleAnimation onFinishedDo: aBlock.
+	aScaleAnimation onFinishedDo: [
+		isClosingPreview := false.
+		aBlock value ].
 
 	self addAnimation: aWeightAnimation.
 	scenePreviewElement addAnimation: aScaleAnimation
@@ -52,14 +57,21 @@ CgtEditor >> animateDetailsOpen [
 
 { #category : 'api - animation' }
 CgtEditor >> animateOpen [
+	self animateOpenOnFinishedDo: [ ]
+]
+
+{ #category : 'api - animation' }
+CgtEditor >> animateOpenOnFinishedDo: aBlock [
 	| aScaleAnimation |
 	isOpeningPreview := true.
+	isClosingPreview := false.
 
 	aScaleAnimation := BlTransformAnimation scale: self previewScale.
 	aScaleAnimation duration: 1500 milliSeconds.
 	aScaleAnimation easing: CgtFastInSlowOutEasing new.
 	aScaleAnimation onFinishedDo: [
-		isOpeningPreview := false ].
+		isOpeningPreview := false.
+		aBlock value ].
 
 	scenePreviewElement addAnimation: aScaleAnimation
 ]
@@ -221,6 +233,8 @@ CgtEditor >> doesEventHandler: anEventHandler want: anEventClass [
 { #category : 'initialization' }
 CgtEditor >> initialize [
 	super initialize.
+	isOpeningPreview := false.
+	isClosingPreview := false.
 	self
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -454,6 +468,17 @@ CgtEditor >> selectElement: anElement [
 	elementsTree selectAndScrollTo: selectedElement.
 	elementsTree phlow spawnObject: selectedElement.
 	wasNil ifTrue: [ isOpeningPreview ifFalse: [ self animateDetailsOpen ] ]
+]
+
+
+{ #category : 'testing' }
+CgtEditor >> isAnimatingPreview [
+	^ isOpeningPreview or: [ isClosingPreview ]
+]
+
+{ #category : 'testing' }
+CgtEditor >> isClosingPreview [
+	^ isClosingPreview
 ]
 
 { #category : 'accessing' }
