@@ -111,22 +111,23 @@ CgtElementPath >> clearDownstreamNodes [
 
 { #category : 'actions' }
 CgtElementPath >> toggleUpstreamElement: anElement [
-	| ancestors ordered downstream anchor |
+	| ancestors ordered downstream anchor current includedUpstream |
 	anchor := self anchorElement.
 	anchor ifNil: [ ^ self ].
 	anElement ifNil: [ ^ self ].
 	ancestors := OrderedCollection new.
-	| current |
 	current := anchor parent.
 	[ current notNil ] whileTrue: [ ancestors add: current. current := current parent ].
 	(ancestors includes: anElement) ifFalse: [ ^ self ].
 	ordered := ancestors reversed.
 	downstream := self downstreamElements.
-	(self includesElement: anElement)
-		ifTrue: [ nodes := nodes reject: [ :each | each element == anElement ] ]
-		ifFalse: [ nodes add: (CgtElementPathNode on: anElement) ].
+	includedUpstream := self upstreamElements asOrderedCollection.
+	(includedUpstream includes: anElement)
+		ifTrue: [ includedUpstream remove: anElement ifAbsent: [ ] ]
+		ifFalse: [ includedUpstream add: anElement ].
 	nodes := OrderedCollection new.
-	(ordered select: [ :each | self includesElement: each ]) do: [ :each | nodes add: (CgtElementPathNode on: each) ].
+	(ordered select: [ :each | includedUpstream includes: each ])
+		do: [ :each | nodes add: (CgtElementPathNode on: each) ].
 	nodes add: (CgtElementPathNode on: anchor).
 	downstream do: [ :each | nodes add: (CgtElementPathNode on: each) ].
 	anchorIndex := nodes findFirst: [ :each | each element == anchor ]
