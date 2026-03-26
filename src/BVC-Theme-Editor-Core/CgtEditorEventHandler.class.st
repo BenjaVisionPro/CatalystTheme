@@ -117,12 +117,17 @@ CgtEditorEventHandler >> hideOverlayIn: aRootElement [
 		ifFalse: [ ^ self ].
 
 	hasOverlay := false.
-	aRootElement removeChildNamed: ThemeEditorOverlayId
+	self
+		themeEditorOverlayIn: aRootElement
+		do: [ :anOverlay |
+			anOverlay preventMeAndChildrenMouseEvents.
+			anOverlay animateFadeOutOnFinishedDo: [ aRootElement removeChildNamed: ThemeEditorOverlayId ] ]
 ]
 
 { #category : 'api - themeEditor' }
 CgtEditorEventHandler >> hideThemeEditor: aRootElement [
 	hasThemeEditor ifFalse: [ ^ self ].
+	self hideOverlayIn: aRootElement.
 	(aRootElement isAttachedToSceneGraph and: [ originalTitle notNil ])
 		ifTrue: [ aRootElement space title: originalTitle ].
 
@@ -134,7 +139,6 @@ CgtEditorEventHandler >> hideThemeEditor: aRootElement [
 			aThemeEditor
 				animateCloseOnFinishedDo: [ | aTargetElementChildren |
 					self unlockOverlay.
-					self hideOverlayIn: aRootElement.
 					self selectElement: nil in: aRootElement.
 					self highlightElement: nil in: aRootElement.
 
@@ -318,7 +322,10 @@ CgtEditorEventHandler >> showOverlayIn: aRootElement [
 			state: overlayState;
 			highlightElement: elementToHighlight;
 			selectElement: elementToSelect;
-			allowMeAndChildrenMouseEvents).
+			overlayOpacity: 0.0;
+			allowMeAndChildrenMouseEvents;
+			animateFadeIn;
+			yourself).
 
 	(elementToHighlight isNil and: [ mousePosition notNil ])
 		ifTrue: [ self highlightElementAt: mousePosition in: aRootElement ]
@@ -340,6 +347,7 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 
 	hasThemeEditor := true.
 	overlayState hoverElement: nil.
+	self showOverlayIn: aRootElement.
 
 	aTargetElementChildren := aRootElement children asArray.
 	aRootElement removeChildren.
@@ -359,7 +367,6 @@ CgtEditorEventHandler >> showThemeEditorEvent: aShowThemeEditorEvent [
 	aShowThemeEditorEvent consumed: true.
 
 	self showThemeEditor: aShowThemeEditorEvent currentTarget.
-	self showOverlayIn: aShowThemeEditorEvent currentTarget.
 	self
 		themeEditorIn: aShowThemeEditorEvent currentTarget
 		do: [ :aThemeEditor |

@@ -5,7 +5,8 @@ Class {
 		'state',
 		'eventHandler',
 		'maskLayer',
-		'observedElements'
+		'observedElements',
+		'overlayOpacity'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -28,6 +29,32 @@ CgtEditorOverlay >> childScopeElement [
 	^ state childScopeElement
 ]
 
+
+{ #category : 'api - animation' }
+CgtEditorOverlay >> animateFadeIn [
+	overlayOpacity := 0.0.
+	self updatePositions.
+	self addAnimation: (BlNumberTransition new
+			from: 0.0;
+			to: 1.0;
+			duration: 400 milliSeconds;
+			easing: CgtFastInSlowOutEasing new;
+			onStepDo: [ :anOpacity :anOverlay | anOverlay overlayOpacity: anOpacity ];
+			yourself)
+]
+
+{ #category : 'api - animation' }
+CgtEditorOverlay >> animateFadeOutOnFinishedDo: aBlock [
+	self addAnimation: (BlNumberTransition new
+			from: overlayOpacity;
+			to: 0.0;
+			duration: 400 milliSeconds;
+			easing: CgtFastInSlowOutEasing new;
+			onStepDo: [ :anOpacity :anOverlay | anOverlay overlayOpacity: anOpacity ];
+			onFinishedDo: aBlock;
+			yourself)
+]
+
 { #category : 'private - rendering' }
 CgtEditorOverlay >> cutOutElement: anElement alpha: anAlpha onSpartaCanvas: aCanvas [
 	| aBounds aGeometry |
@@ -40,7 +67,7 @@ CgtEditorOverlay >> cutOutElement: anElement alpha: anAlpha onSpartaCanvas: aCan
 		during: [
 			aCanvas fill
 				path: (aGeometry buildPathOnSpartaCanvas: aCanvas);
-				paint: (Color white alpha: anAlpha);
+				paint: (Color white alpha: (anAlpha * overlayOpacity));
 				composeDestOut;
 				draw ]
 ]
@@ -54,7 +81,7 @@ CgtEditorOverlay >> dimBounds [
 CgtEditorOverlay >> drawDimOnSpartaCanvas: aCanvas [
 	aCanvas fill
 		path: self dimBounds;
-		paint: (Color black alpha: state dimOpacity);
+		paint: (Color black alpha: (state dimOpacity * overlayOpacity));
 		draw
 ]
 
@@ -113,6 +140,7 @@ CgtEditorOverlay >> hoverElement: anElementOrNil [
 CgtEditorOverlay >> initialize [
 	super initialize.
 	state := CgtEditorOverlayState new.
+	overlayOpacity := 1.0.
 	observedElements := OrderedCollection new.
 	self
 		constraintsDo: [ :c |
@@ -198,6 +226,19 @@ CgtEditorOverlay >> roundedGeometryFor: anElement bounds: aRectangle [
 	^ (BlRoundedRectangleGeometry cornerRadius: aRadius)
 		matchExtent: aRectangle extent;
 		yourself
+]
+
+
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> overlayOpacity [
+	^ overlayOpacity
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> overlayOpacity: aNumber [
+	overlayOpacity := aNumber.
+	self updatePositions
 ]
 
 { #category : 'accessing' }
