@@ -237,12 +237,18 @@ CgtEditorEventHandler >> initialize [
 	isTransitioningThemeEditor := false
 ]
 
+
+{ #category : 'private - themeEditor' }
+CgtEditorEventHandler >> desiredThemeEditorOpenValue [
+	^ desiredThemeEditorOpen ifNil: [ false ]
+]
+
 { #category : 'event handling' }
 CgtEditorEventHandler >> keyDownEvent: aKeyDownEvent [
 	(self highlightCombinationMatchesIn: aKeyDownEvent currentTarget)
 		ifFalse: [ ^ self ].
 
-	desiredThemeEditorOpen := desiredThemeEditorOpen not.
+	desiredThemeEditorOpen := self desiredThemeEditorOpenValue not.
 	self processRequestedThemeEditorStateIn: aKeyDownEvent currentTarget.
 	aKeyDownEvent consumed: true
 ]
@@ -292,9 +298,9 @@ CgtEditorEventHandler >> nextTransitionToken [
 { #category : 'private - themeEditor' }
 CgtEditorEventHandler >> processRequestedThemeEditorStateIn: aRootElement [
 	isTransitioningThemeEditor ifTrue: [ ^ self ].
-	(desiredThemeEditorOpen and: [ hasThemeEditor not ])
+	(self desiredThemeEditorOpenValue and: [ hasThemeEditor not ])
 		ifTrue: [ ^ self showThemeEditor: aRootElement ].
-	(desiredThemeEditorOpen not and: [ hasThemeEditor ])
+	(self desiredThemeEditorOpenValue not and: [ hasThemeEditor ])
 		ifTrue: [ ^ self hideThemeEditor: aRootElement ]
 ]
 
