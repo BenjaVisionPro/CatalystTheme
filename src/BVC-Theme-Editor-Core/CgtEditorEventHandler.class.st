@@ -296,7 +296,7 @@ CgtEditorEventHandler >> maybeHideOverlayIn: aRootElement [
 
 { #category : 'private - themeEditor' }
 CgtEditorEventHandler >> nextTransitionToken [
-	transitionToken := transitionToken + 1.
+	transitionToken := (transitionToken ifNil: [ 0 ]) + 1.
 	^ transitionToken
 ]
 
