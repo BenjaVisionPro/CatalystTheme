@@ -59,7 +59,7 @@ CgtEditorEventHandler >> childToThemeAt: aPoint in: aTargetElement ifFound: aFou
 		ifTrue: [
 			self
 				themeEditorOverlayIn: aTargetElement
-				do: [ :aThemeEditorOverlay | theChildrenAt := theChildrenAt copyWithout: self ] ].
+				do: [ :aThemeEditorOverlay | theChildrenAt := theChildrenAt copyWithout: aThemeEditorOverlay ] ].
 
 	theChildrenAt := theChildrenAt sorted: [ :a :b | a compositionDepth > b compositionDepth ].
 	theChildrenAt ifEmpty: [ ^ aNoneBlock value ].
@@ -200,9 +200,6 @@ CgtEditorEventHandler >> highlightElementAt: aPoint in: aRootElement [
 	elementToHighlight := nil.
 
 	hasOverlay
-		ifFalse: [ ^ self ].
-
-	(self highlightCombinationMatchesIn: aRootElement)
 		ifFalse: [ ^ self ].
 
 	aThemeEditorTarget := self themeEditorTargetIn: aRootElement.
