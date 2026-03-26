@@ -22,16 +22,25 @@ Class {
 
 { #category : 'api - animation' }
 CgtEditor >> animateCloseOnFinishedDo: aBlock [
+	| aToken aScaleAnimation |
 	isClosingPreview := true.
 	isOpeningPreview := false.
+	aToken := (previewAnimationToken ifNil: [ 0 ]) + 1.
+	previewAnimationToken := aToken.
 	self
 		animateDetailsWeightTo: 0.0
 		onFinishedDo: [ ].
-	self
-		animatePreviewScaleTo: 1.0
-		onFinishedDo: [
+	scenePreviewElement ifNil: [
+		isClosingPreview := false.
+		^ aBlock value ].
+	aScaleAnimation := BlTransformAnimation scale: self previewScaleRecipricol.
+	aScaleAnimation duration: 1500 milliSeconds.
+	aScaleAnimation easing: CgtFastInSlowOutEasing new.
+	aScaleAnimation onFinishedDo: [
+		previewAnimationToken = aToken ifTrue: [
 			isClosingPreview := false.
-			aBlock value ]
+			aBlock value ] ].
+	scenePreviewElement addAnimation: aScaleAnimation
 ]
 
 { #category : 'api - animation' }
@@ -50,13 +59,22 @@ CgtEditor >> animateOpen [
 
 { #category : 'api - animation' }
 CgtEditor >> animateOpenOnFinishedDo: aBlock [
+	| aToken aScaleAnimation |
 	isOpeningPreview := true.
 	isClosingPreview := false.
-	self
-		animatePreviewScaleTo: self previewScale x
-		onFinishedDo: [
+	aToken := (previewAnimationToken ifNil: [ 0 ]) + 1.
+	previewAnimationToken := aToken.
+	scenePreviewElement ifNil: [
+		isOpeningPreview := false.
+		^ aBlock value ].
+	aScaleAnimation := BlTransformAnimation scale: self previewScale.
+	aScaleAnimation duration: 1500 milliSeconds.
+	aScaleAnimation easing: CgtFastInSlowOutEasing new.
+	aScaleAnimation onFinishedDo: [
+		previewAnimationToken = aToken ifTrue: [
 			isOpeningPreview := false.
-			aBlock value ].
+			aBlock value ] ].
+	scenePreviewElement addAnimation: aScaleAnimation.
 	(selectedElement notNil and: [ self detailsWeight > 0.0 ])
 		ifTrue: [ self
 			animateDetailsWeightTo: self openedDetailsWeight
@@ -222,30 +240,6 @@ CgtEditor >> animateDetailsWeightTo: aWeight onFinishedDo: aBlock [
 				yourself)
 ]
 
-{ #category : 'private - animation' }
-CgtEditor >> animatePreviewScaleTo: aScale onFinishedDo: aBlock [
-	| aToken |
-	previewAnimationToken := previewAnimationToken + 1.
-	aToken := previewAnimationToken.
-	scenePreviewElement ifNil: [ ^ self ].
-	scenePreviewElement
-		addAnimation: (BlNumberTransition new
-				from: currentPreviewScale;
-				to: aScale;
-				duration: 1500 milliSeconds;
-				easing: CgtFastInSlowOutEasing new;
-				onStepDo: [ :eachScale :anElement |
-					self previewAnimationToken = aToken
-						ifTrue: [ self applyPreviewScale: eachScale ] ];
-				onFinishedDo: [ self previewAnimationToken = aToken ifTrue: [ aBlock value ] ];
-				yourself)
-]
-
-{ #category : 'private - animation' }
-CgtEditor >> applyPreviewScale: aScale [
-	currentPreviewScale := aScale.
-	scenePreviewElement ifNotNil: [ scenePreviewElement scale: aScale @ aScale ]
-]
 
 
 { #category : 'private - tree' }
@@ -268,7 +262,6 @@ CgtEditor >> initialize [
 	isClosingPreview := false.
 	previewAnimationToken := 0.
 	detailsAnimationToken := 0.
-	currentPreviewScale := 1.0.
 	self
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -400,8 +393,7 @@ CgtEditor >> newSceneContainerFor: aTargetContainer [
 						color:
 							self theme default defaultShadowColor darker);
 				background: self theme default contentBackground;
-				addChild: aTargetContainer;
-				scale: 1.0 @ 1.0)}
+				addChild: aTargetContainer)}
 ]
 
 { #category : 'instance creation' }
