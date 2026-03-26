@@ -401,6 +401,7 @@ CgtEditorOverlay >> state: aState [
 { #category : 'private' }
 CgtEditorOverlay >> stateChanged [
 	self syncObservedElements.
+	self updatePositions.
 	self animateHoverTransition
 ]
 
