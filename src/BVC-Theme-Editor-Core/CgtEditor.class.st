@@ -17,7 +17,8 @@ Class {
 		'presentationProgress',
 		'previewTransformAnimation',
 		'previewProgressAnimation',
-		'detailsWeightAnimation'
+		'detailsWeightAnimation',
+		'closeButton'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -276,7 +277,8 @@ CgtEditor >> initializeWith: aTargetContainer [
 	self addChildren: { scenePage. detailsPage }.
 
 	self addChildren: { 
-		self newCloseButtonFor: aTargetContainer }
+		(closeButton := self newCloseButtonFor: aTargetContainer) }.
+	self updateCloseButtonOpacity
 ]
 
 { #category : 'accessing' }
@@ -567,7 +569,8 @@ CgtEditor >> presentationProgress [
 
 { #category : 'accessing' }
 CgtEditor >> presentationProgress: aNumber [
-	presentationProgress := aNumber
+	presentationProgress := aNumber.
+	self updateCloseButtonOpacity
 ]
 
 { #category : 'private - animation' }
@@ -575,6 +578,14 @@ CgtEditor >> previewScaleForProgress: aProgress [
 	| aTargetScale |
 	aTargetScale := self previewScale x.
 	^ (1.0 - ((1.0 - aTargetScale) * aProgress)) @ (1.0 - ((1.0 - self previewScale y) * aProgress))
+]
+
+
+
+{ #category : 'private - animation' }
+CgtEditor >> updateCloseButtonOpacity [
+	closeButton ifNil: [ ^ self ].
+	closeButton opacity: self presentationProgress
 ]
 
 { #category : 'accessing' }
