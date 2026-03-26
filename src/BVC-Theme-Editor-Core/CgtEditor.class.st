@@ -14,7 +14,10 @@ Class {
 		'sceneContainer',
 		'previewAnimationToken',
 		'detailsAnimationToken',
-		'currentPreviewScale'
+		'presentationProgress',
+		'previewTransformAnimation',
+		'previewProgressAnimation',
+		'detailsWeightAnimation'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -22,25 +25,10 @@ Class {
 
 { #category : 'api - animation' }
 CgtEditor >> animateCloseOnFinishedDo: aBlock [
-	| aToken aScaleAnimation |
-	isClosingPreview := true.
-	isOpeningPreview := false.
-	aToken := (previewAnimationToken ifNil: [ 0 ]) + 1.
-	previewAnimationToken := aToken.
 	self
-		animateDetailsWeightTo: 0.0
-		onFinishedDo: [ ].
-	scenePreviewElement ifNil: [
-		isClosingPreview := false.
-		^ aBlock value ].
-	aScaleAnimation := BlTransformAnimation scale: self previewScaleRecipricol.
-	aScaleAnimation duration: 1500 milliSeconds.
-	aScaleAnimation easing: CgtFastInSlowOutEasing new.
-	aScaleAnimation onFinishedDo: [
-		previewAnimationToken = aToken ifTrue: [
-			isClosingPreview := false.
-			aBlock value ] ].
-	scenePreviewElement addAnimation: aScaleAnimation
+		animatePreviewProgressTo: 0.0
+		detailsWeightTo: 0.0
+		onFinishedDo: aBlock
 ]
 
 { #category : 'api - animation' }
@@ -48,7 +36,8 @@ CgtEditor >> animateDetailsOpen [
 	selectedElement ifNil: [ ^ self ].
 	self detailsWeight >= self openedDetailsWeight ifTrue: [ ^ self ].
 	self
-		animateDetailsWeightTo: self openedDetailsWeight
+		animatePreviewProgressTo: self presentationProgress
+		detailsWeightTo: self openedDetailsWeight
 		onFinishedDo: [ ]
 ]
 
@@ -59,26 +48,10 @@ CgtEditor >> animateOpen [
 
 { #category : 'api - animation' }
 CgtEditor >> animateOpenOnFinishedDo: aBlock [
-	| aToken aScaleAnimation |
-	isOpeningPreview := true.
-	isClosingPreview := false.
-	aToken := (previewAnimationToken ifNil: [ 0 ]) + 1.
-	previewAnimationToken := aToken.
-	scenePreviewElement ifNil: [
-		isOpeningPreview := false.
-		^ aBlock value ].
-	aScaleAnimation := BlTransformAnimation scale: self previewScale.
-	aScaleAnimation duration: 1500 milliSeconds.
-	aScaleAnimation easing: CgtFastInSlowOutEasing new.
-	aScaleAnimation onFinishedDo: [
-		previewAnimationToken = aToken ifTrue: [
-			isOpeningPreview := false.
-			aBlock value ] ].
-	scenePreviewElement addAnimation: aScaleAnimation.
-	(selectedElement notNil and: [ self detailsWeight > 0.0 ])
-		ifTrue: [ self
-			animateDetailsWeightTo: self openedDetailsWeight
-			onFinishedDo: [ ] ]
+	self
+		animatePreviewProgressTo: 1.0
+		detailsWeightTo: self detailsTargetWeightForOpening
+		onFinishedDo: aBlock
 ]
 
 { #category : 'private - tree' }
@@ -224,20 +197,29 @@ CgtEditor >> detailsWeight: aWeight [
 
 { #category : 'private - animation' }
 CgtEditor >> animateDetailsWeightTo: aWeight onFinishedDo: aBlock [
-	| aToken |
-	detailsAnimationToken := detailsAnimationToken + 1.
+	| aToken aDuration |
+	detailsAnimationToken := (detailsAnimationToken ifNil: [ 0 ]) + 1.
 	aToken := detailsAnimationToken.
-	self
-		addAnimation: (BlNumberTransition new
-				from: self detailsWeight;
-				to: aWeight;
-				duration: 800 milliSeconds;
-				easing: CgtFastInSlowOutEasing new;
-				onStepDo: [ :eachWeight :anEditor |
-					anEditor detailsAnimationToken = aToken
-						ifTrue: [ anEditor detailsWeight: eachWeight ] ];
-				onFinishedDo: [ self detailsAnimationToken = aToken ifTrue: [ aBlock value ] ];
-				yourself)
+	detailsWeightAnimation ifNotNil: [ detailsWeightAnimation stopIfRunning ].
+	aDuration := self durationForProgressDistance: (aWeight - self detailsWeight) abs.
+	((aWeight - self detailsWeight) abs <= 0.0001 or: [ aDuration <= 0 milliSeconds ])
+		ifTrue: [
+			self detailsWeight: aWeight.
+			^ aBlock value ].
+	detailsWeightAnimation := BlNumberTransition new
+		from: self detailsWeight;
+		to: aWeight;
+		duration: aDuration;
+		easing: CgtFastInSlowOutEasing new;
+		onStepDo: [ :eachWeight :anEditor |
+			anEditor detailsAnimationToken = aToken
+				ifTrue: [ anEditor detailsWeight: eachWeight ] ];
+		onFinishedDo: [
+			self detailsAnimationToken = aToken ifTrue: [
+				detailsWeightAnimation := nil.
+				aBlock value ] ];
+		yourself.
+	self addAnimation: detailsWeightAnimation
 ]
 
 
@@ -262,6 +244,7 @@ CgtEditor >> initialize [
 	isClosingPreview := false.
 	previewAnimationToken := 0.
 	detailsAnimationToken := 0.
+	presentationProgress := 0.0.
 	self
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -516,6 +499,82 @@ CgtEditor >> isAnimatingPreview [
 { #category : 'testing' }
 CgtEditor >> isClosingPreview [
 	^ isClosingPreview
+]
+
+{ #category : 'private - animation' }
+CgtEditor >> animatePreviewProgressTo: aPreviewProgress detailsWeightTo: aDetailsWeight onFinishedDo: aBlock [
+	| aToken aDuration aTargetScale |
+	aToken := (previewAnimationToken ifNil: [ 0 ]) + 1.
+	previewAnimationToken := aToken.
+	previewTransformAnimation ifNotNil: [ previewTransformAnimation stopIfRunning ].
+	previewProgressAnimation ifNotNil: [ previewProgressAnimation stopIfRunning ].
+	isOpeningPreview := aPreviewProgress > self presentationProgress.
+	isClosingPreview := aPreviewProgress < self presentationProgress.
+	self animateDetailsWeightTo: aDetailsWeight onFinishedDo: [ ].
+	aDuration := self durationForProgressDistance: (aPreviewProgress - self presentationProgress) abs.
+	((aPreviewProgress - self presentationProgress) abs <= 0.0001 or: [ scenePreviewElement isNil ])
+		ifTrue: [
+			presentationProgress := aPreviewProgress.
+			isOpeningPreview := false.
+			isClosingPreview := false.
+			^ aBlock value ].
+	aTargetScale := self previewScaleForProgress: aPreviewProgress.
+	previewProgressAnimation := BlNumberTransition new
+		from: self presentationProgress;
+		to: aPreviewProgress;
+		duration: aDuration;
+		easing: CgtFastInSlowOutEasing new;
+		onStepDo: [ :eachProgress :anEditor |
+			anEditor previewAnimationToken = aToken
+				ifTrue: [ anEditor presentationProgress: eachProgress ] ];
+		onFinishedDo: [
+			self previewAnimationToken = aToken ifTrue: [
+				previewProgressAnimation := nil ] ];
+		yourself.
+	previewTransformAnimation := BlTransformAnimation new
+		absolute;
+		transformDo: [ :aBuilder | aBuilder scaleBy: aTargetScale ];
+		duration: aDuration;
+		easing: CgtFastInSlowOutEasing new;
+		onFinishedDo: [
+			self previewAnimationToken = aToken ifTrue: [
+				previewTransformAnimation := nil.
+				presentationProgress := aPreviewProgress.
+				isOpeningPreview := false.
+				isClosingPreview := false.
+				aBlock value ] ];
+		yourself.
+	self addAnimation: previewProgressAnimation.
+	scenePreviewElement addAnimation: previewTransformAnimation
+]
+
+{ #category : 'accessing' }
+CgtEditor >> detailsTargetWeightForOpening [
+	^ selectedElement
+		ifNil: [ 0.0 ]
+		ifNotNil: [ self openedDetailsWeight ]
+]
+
+{ #category : 'private - animation' }
+CgtEditor >> durationForProgressDistance: aDistance [
+	^ ((1500.0 * aDistance) rounded max: 1) milliSeconds
+]
+
+{ #category : 'accessing' }
+CgtEditor >> presentationProgress [
+	^ presentationProgress ifNil: [ 0.0 ]
+]
+
+{ #category : 'accessing' }
+CgtEditor >> presentationProgress: aNumber [
+	presentationProgress := aNumber
+]
+
+{ #category : 'private - animation' }
+CgtEditor >> previewScaleForProgress: aProgress [
+	| aTargetScale |
+	aTargetScale := self previewScale x.
+	^ (1.0 - ((1.0 - aTargetScale) * aProgress)) @ (1.0 - ((1.0 - self previewScale y) * aProgress))
 ]
 
 { #category : 'accessing' }
