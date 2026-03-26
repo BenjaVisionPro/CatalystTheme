@@ -424,6 +424,9 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 			aRootElement space title: 'Catalyst Theme Editor' ].
 
 	hasThemeEditor := true.
+	elementToSelect := nil.
+	elementToHighlight := nil.
+	overlayState deselect.
 	overlayState hoverElement: nil.
 	self showOverlayIn: aRootElement.
 
