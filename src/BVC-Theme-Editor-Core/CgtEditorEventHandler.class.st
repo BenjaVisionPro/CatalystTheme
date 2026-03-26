@@ -137,7 +137,6 @@ CgtEditorEventHandler >> hideOverlayIn: aRootElement [
 CgtEditorEventHandler >> hideThemeEditor: aRootElement [
 	| aToken |
 	hasThemeEditor ifFalse: [ ^ self ].
-	self isTransitioningThemeEditorValue ifTrue: [ ^ self ].
 	isTransitioningThemeEditor := true.
 	desiredThemeEditorOpen := false.
 	aToken := self nextTransitionToken.
@@ -304,10 +303,9 @@ CgtEditorEventHandler >> nextTransitionToken [
 
 { #category : 'private - themeEditor' }
 CgtEditorEventHandler >> processRequestedThemeEditorStateIn: aRootElement [
-	self isTransitioningThemeEditorValue ifTrue: [ ^ self ].
-	(self desiredThemeEditorOpenValue and: [ hasThemeEditor not ])
+	self desiredThemeEditorOpenValue
 		ifTrue: [ ^ self showThemeEditor: aRootElement ].
-	(self desiredThemeEditorOpenValue not and: [ hasThemeEditor ])
+	hasThemeEditor
 		ifTrue: [ ^ self hideThemeEditor: aRootElement ]
 ]
 
@@ -349,15 +347,13 @@ CgtEditorEventHandler >> selectElementEvent: aSelectElementEvent [
 
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> showOverlayIn: aRootElement [
-	hasOverlay
-		ifTrue: [
-			(elementToHighlight isNil and: [ mousePosition notNil ])
-				ifTrue: [ self highlightElementAt: mousePosition in: aRootElement ].
-				
-			self themeEditorOverlayIn: aRootElement do: [ :anOverlay |
-				anOverlay allowMeAndChildrenMouseEvents.
-				anOverlay animateFadeIn ].
-			^ self ].
+	self themeEditorOverlayIn: aRootElement do: [ :anOverlay |
+		hasOverlay := true.
+		(elementToHighlight isNil and: [ mousePosition notNil ])
+			ifTrue: [ self highlightElementAt: mousePosition in: aRootElement ].
+		anOverlay allowMeAndChildrenMouseEvents.
+		anOverlay animateFadeIn.
+		^ self ].
 
 	hasOverlay := true.
 
@@ -380,12 +376,22 @@ CgtEditorEventHandler >> showOverlayIn: aRootElement [
 CgtEditorEventHandler >> showThemeEditor: aRootElement [
 	| aTargetElementChildren aTargetContainer aToken |
 
-	hasThemeEditor ifTrue: [ ^ self ].
-	self isTransitioningThemeEditorValue ifTrue: [ ^ self ].
-	isTransitioningThemeEditor := true.
 	desiredThemeEditorOpen := true.
 	aToken := self nextTransitionToken.
+	isTransitioningThemeEditor := true.
 	self lockOverlay.
+
+	hasThemeEditor
+		ifTrue: [
+			self showOverlayIn: aRootElement.
+			self
+				themeEditorIn: aRootElement
+				do: [ :aThemeEditor |
+					aThemeEditor animateOpenOnFinishedDo: [
+						transitionToken = aToken ifTrue: [
+							isTransitioningThemeEditor := false.
+							self processRequestedThemeEditorStateIn: aRootElement ] ] ].
+			^ self ].
 	
 	aRootElement isAttachedToSceneGraph
 		ifTrue: [
