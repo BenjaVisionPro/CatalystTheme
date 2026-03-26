@@ -2,144 +2,259 @@ Class {
 	#name : 'CgtEditorOverlay',
 	#superclass : 'BlElement',
 	#instVars : [
-		'highlight',
-		'selection',
-		'elementToHighlight',
-		'elementToSelect',
-		'eventHandler'
+		'state',
+		'eventHandler',
+		'maskLayer',
+		'observedElements'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
 }
 
 { #category : 'private' }
-CgtEditorOverlay >> addEventHandlerToElementToHighlightOrSelect: anElement [
-	((elementToSelect = anElement or: [ elementToHighlight = anElement ]) and: [ (anElement hasEventHandler: eventHandler) not ])
+CgtEditorOverlay >> addEventHandlerToObservedElement: anElement [
+	(anElement notNil and: [ (anElement hasEventHandler: eventHandler) not ])
 		ifTrue: [ anElement addEventHandler: eventHandler ]
+]
+
+{ #category : 'actions' }
+CgtEditorOverlay >> clickHoverElement [
+	state clickHoverElement.
+	self stateChanged
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> childScopeElement [
+	^ state childScopeElement
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> cutOutElement: anElement alpha: anAlpha onSpartaCanvas: aCanvas [
+	| aBounds aGeometry |
+	anElement ifNil: [ ^ self ].
+	aBounds := self overlayBoundsFor: anElement.
+	aBounds ifNil: [ ^ self ].
+	aGeometry := self roundedGeometryFor: anElement bounds: aBounds.
+	aCanvas transform
+		by: [ :aTransform | aTransform translateBy: aBounds origin ]
+		during: [
+			aCanvas fill
+				path: (aGeometry buildPathOnSpartaCanvas: aCanvas);
+				paint: (Color white alpha: anAlpha);
+				composeDestOut;
+				draw ]
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> dimBounds [
+	^ self bounds inLocal asRectangle
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> drawDimOnSpartaCanvas: aCanvas [
+	aCanvas fill
+		path: self dimBounds;
+		paint: (Color black alpha: state dimOpacity);
+		draw
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> drawHoverOnSpartaCanvas: aCanvas [
+	| anElement |
+	anElement := state hoverElement.
+	anElement ifNil: [ ^ self ].
+	state isHoverOnSelected ifTrue: [ ^ self ].
+	self
+		cutOutElement: anElement
+		alpha: state hoverTransparencyForCurrentHover
+		onSpartaCanvas: aCanvas
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> drawScopesOnSpartaCanvas: aCanvas [
+	| theScopeElements |
+	theScopeElements := state scopeElementsInDisplayOrder.
+	theScopeElements withIndexDo: [ :eachElement :anIndex |
+		self
+			cutOutElement: eachElement
+			alpha: (state scopeTransparencyAtIndex: anIndex)
+			onSpartaCanvas: aCanvas ]
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> drawSelectionOnSpartaCanvas: aCanvas [
+	self cutOutElement: state selectedElement alpha: 1.0 onSpartaCanvas: aCanvas.
+	self cutOutElement: state childScopeElement alpha: 0.35 onSpartaCanvas: aCanvas
 ]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> hideElement: anElement [
-	(elementToHighlight = anElement or: [ elementToHighlight isNil ])
-		ifTrue: [ highlight visibility: BlVisibility gone ].
-
-	(elementToSelect = anElement or: [ elementToSelect isNil ])
-		ifTrue: [ selection visibility: BlVisibility gone ]
+	(self observedElements includes: anElement)
+		ifFalse: [ self stateChanged ]
 ]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> highlightElement: anElementOrNil [
-	| aPreviousElementToHighlight |
-	
-	aPreviousElementToHighlight := elementToHighlight.
-	elementToHighlight := anElementOrNil.
+	self hoverElement: anElementOrNil
+]
 
-	self removeEventHandlerFromElementToHighlightOrSelect: aPreviousElementToHighlight.
-	
-	anElementOrNil
-		ifNil: [ highlight visibility: BlVisibility gone ]
-		ifNotNil: [ :anElement |
-			self addEventHandlerToElementToHighlightOrSelect: anElement.
-			self updateOverlayElement: highlight toMatch: anElement.
-			highlight visibility: BlVisibility visible ]
+{ #category : 'accessing' }
+CgtEditorOverlay >> hoverElement [
+	^ state hoverElement
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> hoverElement: anElementOrNil [
+	state hoverElement: anElementOrNil.
+	self stateChanged
 ]
 
 { #category : 'initialization' }
 CgtEditorOverlay >> initialize [
 	super initialize.
+	state := CgtEditorOverlayState new.
+	observedElements := OrderedCollection new.
 	self
-		constraintsDo: [ :c | 
+		constraintsDo: [ :c |
 			c ignoreByLayout.
 			c horizontal matchParent.
-			c vertical matchParent ].
-	self beInSeparateCompositionLayer.
+			c vertical matchParent ];
+		beInSeparateCompositionLayer.
 	eventHandler := CgtEditorOverlayEventHandler new overlay: self.
-	highlight := BlPolygonElement new
-		background:
-			(Color
-				r: 1.0
-				g: 0.8396871945259042
-				b: 0.3998044965786901
-				alpha: 0.2).
-	highlight visibility: BlVisibility gone.
-	selection := BlPolygonElement new
-		background: self theme item selectedColor.
-	selection visibility: BlVisibility gone.
-	self addChild: highlight.
-	self addChild: selection
+	maskLayer := BlSpartaElement new
+		constraintsDo: [ :c |
+			c ignoreByLayout.
+			c horizontal matchParent.
+			c vertical matchParent ];
+		effect: (BlBlurEffect radius: state blurRadius);
+		rendering: [ :aCanvas :anElement | self renderOnSpartaCanvas: aCanvas ];
+		yourself.
+	self addChild: maskLayer
+]
+
+{ #category : 'testing' }
+CgtEditorOverlay >> isDescendantOfSelection: anElement [
+	^ state isDescendantOfSelection: anElement
 ]
 
 { #category : 'hooks - children' }
 CgtEditorOverlay >> onAddedToSceneGraph [
 	super onAddedToSceneGraph.
-
-	elementToHighlight ifNotNil: [ :anElement | self addEventHandlerToElementToHighlightOrSelect: anElement ].
-	elementToSelect ifNotNil: [ :anElement | self addEventHandlerToElementToHighlightOrSelect: anElement ].
+	self syncObservedElements
 ]
 
 { #category : 'hooks - geometry' }
 CgtEditorOverlay >> onExtentChanged [
 	super onExtentChanged.
-	
 	self updatePositions
 ]
 
 { #category : 'hooks - children' }
 CgtEditorOverlay >> onRemovedFromSceneGraph [
 	super onRemovedFromSceneGraph.
-	
-	elementToHighlight ifNotNil: [ :anElement | anElement removeEventHandler: eventHandler ].
-	elementToSelect ifNotNil: [ :anElement | anElement removeEventHandler: eventHandler ].
+	observedElements do: [ :eachElement | eachElement removeEventHandler: eventHandler ].
+	observedElements removeAll
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> overlayBoundsFor: anOverlayedElement [
+	| theCorners minX maxX minY maxY |
+	theCorners := anOverlayedElement bounds inLocal bounds corners
+		collect: [ :eachPoint | self globalPointToLocal: (anOverlayedElement localPointToGlobal: eachPoint) ].
+	theCorners ifEmpty: [ ^ nil ].
+	minX := theCorners first x.
+	maxX := theCorners first x.
+	minY := theCorners first y.
+	maxY := theCorners first y.
+	theCorners allButFirstDo: [ :eachPoint |
+		minX := minX min: eachPoint x.
+		maxX := maxX max: eachPoint x.
+		minY := minY min: eachPoint y.
+		maxY := maxY max: eachPoint y ].
+	^ ((minX @ minY) corner: (maxX @ maxY)) expandBy: state maskOutset
 ]
 
 { #category : 'private' }
-CgtEditorOverlay >> removeEventHandlerFromElementToHighlightOrSelect: anElement [
-	"Only remove an event handler if an element is not to select and not to highlight"
-	
-	(elementToSelect ~= anElement and: [ elementToHighlight ~= anElement and: [ anElement notNil ] ])
+CgtEditorOverlay >> removeEventHandlerFromObservedElement: anElement [
+	(anElement notNil and: [ (observedElements includes: anElement) not ])
 		ifTrue: [ anElement removeEventHandler: eventHandler ]
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> renderOnSpartaCanvas: aCanvas [
+	aCanvas layer during: [
+		self drawDimOnSpartaCanvas: aCanvas.
+		self drawScopesOnSpartaCanvas: aCanvas.
+		self drawSelectionOnSpartaCanvas: aCanvas.
+		self drawHoverOnSpartaCanvas: aCanvas ]
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> roundedGeometryFor: anElement bounds: aRectangle [
+	| aRadius |
+	aRadius := state defaultCornerRadius.
+	(anElement geometry isKindOf: BlRoundedRectangleGeometry)
+		ifTrue: [ aRadius := anElement geometry cornerRadii max + state maskOutset ].
+	^ (BlRoundedRectangleGeometry cornerRadius: aRadius)
+		matchExtent: aRectangle extent;
+		yourself
 ]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> selectElement: anElementOrNil [
-	| aPreviousElementToSelect |
+	state selectElement: anElementOrNil.
+	self stateChanged
+]
 
-	aPreviousElementToSelect := elementToSelect.
-	elementToSelect := anElementOrNil.
-
-	self removeEventHandlerFromElementToHighlightOrSelect: aPreviousElementToSelect.
-
-	anElementOrNil
-		ifNil: [ selection visibility: BlVisibility gone ]
-		ifNotNil: [ :anElement |
-			self addEventHandlerToElementToHighlightOrSelect: anElement.
-			self updateOverlayElement: selection toMatch: anElement.
-			selection visibility: BlVisibility visible ]
+{ #category : 'accessing' }
+CgtEditorOverlay >> selectedElement [
+	^ state selectedElement
 ]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> showElement: anElement [
-	(elementToHighlight = anElement)
-		ifTrue: [ highlight visibility: BlVisibility visible ].
-	elementToHighlight ifNil: [ highlight visibility: BlVisibility gone ].	
-	
-	(elementToSelect = anElement)
-		ifTrue: [ selection visibility: BlVisibility visible ].
-	elementToSelect ifNil: [ selection visibility: BlVisibility gone ].	
+	(self observedElements includes: anElement)
+		ifTrue: [ self stateChanged ]
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> state [
+	^ state
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> state: aState [
+	state := aState.
+	maskLayer ifNotNil: [ maskLayer effect: (BlBlurEffect radius: state blurRadius) ].
+	self stateChanged
 ]
 
 { #category : 'private' }
-CgtEditorOverlay >> updateOverlayElement: anOverlayElement toMatch: anOverlayedElement [
-	| theAnchorPositions |
-
-	theAnchorPositions := anOverlayedElement bounds inLocal bounds corners
-		collect: [ :eachPoint | self globalPointToLocal: (anOverlayedElement localPointToGlobal: eachPoint) ].
-
-	anOverlayElement vertices: theAnchorPositions
+CgtEditorOverlay >> stateChanged [
+	self syncObservedElements.
+	self updatePositions
 ]
 
 { #category : 'private' }
+CgtEditorOverlay >> syncObservedElements [
+	| theNewObservedElements |
+	theNewObservedElements := state observedElements asOrderedCollection.
+	observedElements do: [ :eachElement |
+		(theNewObservedElements includes: eachElement)
+			ifFalse: [ eachElement removeEventHandler: eventHandler ] ].
+	theNewObservedElements do: [ :eachElement |
+		(observedElements includes: eachElement)
+			ifFalse: [ eachElement addEventHandler: eventHandler ] ].
+	observedElements := theNewObservedElements
+]
+
+{ #category : 'actions' }
+CgtEditorOverlay >> toggleScopeElement: anElement [
+	state toggleScopeElement: anElement.
+	self stateChanged
+]
+
+{ #category : 'accessing' }
 CgtEditorOverlay >> updatePositions [
-	elementToSelect ifNotNil: [ :anOverlayedElement | self updateOverlayElement: selection toMatch: anOverlayedElement ].
-	elementToHighlight ifNotNil: [ :anOverlayedElement | self updateOverlayElement: highlight toMatch: anOverlayedElement ].
+	maskLayer invalidate
 ]
