@@ -7,7 +7,11 @@ Class {
 		'maskLayer',
 		'observedElements',
 		'overlayOpacity',
-		'fadeAnimationToken'
+		'fadeAnimationToken',
+		'hoverAnimationToken',
+		'animatedHoverBounds',
+		'animatedHoverCornerRadius',
+		'animatedHoverAlpha'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -98,14 +102,17 @@ CgtEditorOverlay >> drawDimOnSpartaCanvas: aCanvas [
 
 { #category : 'private - rendering' }
 CgtEditorOverlay >> drawHoverOnSpartaCanvas: aCanvas [
-	| anElement |
-	anElement := state hoverElement.
-	anElement ifNil: [ ^ self ].
-	state isHoverOnSelected ifTrue: [ ^ self ].
-	self
-		cutOutElement: anElement
-		alpha: state hoverTransparencyForCurrentHover
-		onSpartaCanvas: aCanvas
+	(animatedHoverBounds isNil or: [ animatedHoverAlpha <= 0.0 ]) ifTrue: [ ^ self ].
+	aCanvas transform
+		by: [ :aTransform | aTransform translateBy: animatedHoverBounds origin ]
+		during: [
+			aCanvas fill
+				path: ((BlRoundedRectangleGeometry cornerRadius: animatedHoverCornerRadius)
+					matchExtent: animatedHoverBounds extent;
+					yourself) buildPathOnSpartaCanvas: aCanvas;
+				paint: (Color white alpha: (animatedHoverAlpha * overlayOpacity));
+				composeDestOut;
+				draw ]
 ]
 
 { #category : 'private - rendering' }
@@ -159,6 +166,10 @@ CgtEditorOverlay >> initialize [
 	state := CgtEditorOverlayState new.
 	overlayOpacity := 1.0.
 	fadeAnimationToken := 0.
+	hoverAnimationToken := 0.
+	animatedHoverBounds := nil.
+	animatedHoverCornerRadius := state defaultCornerRadius.
+	animatedHoverAlpha := 0.0.
 	observedElements := OrderedCollection new.
 	self
 		constraintsDo: [ :c |
@@ -259,6 +270,105 @@ CgtEditorOverlay >> overlayOpacity: aNumber [
 	self updatePositions
 ]
 
+
+{ #category : 'private - hover animation' }
+CgtEditorOverlay >> animateHoverTransition [
+	| aTargetBounds aTargetRadius aTargetAlpha aStartBounds aStartRadius aStartAlpha aToken |
+	aTargetBounds := self targetHoverBounds.
+	aTargetRadius := self targetHoverCornerRadius.
+	aTargetAlpha := self targetHoverAlpha.
+	aStartBounds := animatedHoverBounds ifNil: [ aTargetBounds ].
+	aStartRadius := animatedHoverCornerRadius ifNil: [ aTargetRadius ].
+	aStartAlpha := animatedHoverAlpha ifNil: [ 0.0 ].
+	(aStartBounds isNil and: [ aTargetBounds isNil ])
+		ifTrue: [
+			animatedHoverAlpha := 0.0.
+			self updatePositions.
+			^ self ].
+	aStartBounds ifNil: [ aStartBounds := aTargetBounds ].
+	aTargetBounds ifNil: [ aTargetBounds := aStartBounds ].
+	hoverAnimationToken := hoverAnimationToken + 1.
+	aToken := hoverAnimationToken.
+	self addAnimation: (BlNumberTransition new
+			from: 0.0;
+			to: 1.0;
+			duration: 180 milliSeconds;
+			easing: CgtFastInSlowOutEasing new;
+			onStepDo: [ :aProgress :anOverlay |
+				anOverlay hoverAnimationToken = aToken ifTrue: [
+					anOverlay
+						animatedHoverBounds: (anOverlay interpolateBoundsFrom: aStartBounds to: aTargetBounds progress: aProgress);
+						animatedHoverCornerRadius: (anOverlay interpolateNumberFrom: aStartRadius to: aTargetRadius progress: aProgress);
+						animatedHoverAlpha: (anOverlay interpolateNumberFrom: aStartAlpha to: aTargetAlpha progress: aProgress);
+						updatePositions ] ];
+			onFinishedDo: [ self hoverAnimationToken = aToken ifTrue: [
+				animatedHoverBounds := aTargetAlpha > 0.0 ifTrue: [ aTargetBounds ] ifFalse: [ nil ].
+				animatedHoverCornerRadius := aTargetRadius.
+				animatedHoverAlpha := aTargetAlpha.
+				self updatePositions ] ];
+			yourself)
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> animatedHoverAlpha: aNumber [
+	animatedHoverAlpha := aNumber
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> animatedHoverBounds: aRectangleOrNil [
+	animatedHoverBounds := aRectangleOrNil
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> animatedHoverCornerRadius: aNumber [
+	animatedHoverCornerRadius := aNumber
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> hoverAnimationToken [
+	^ hoverAnimationToken
+]
+
+{ #category : 'private - hover animation' }
+CgtEditorOverlay >> interpolateBoundsFrom: aStartBounds to: anEndBounds progress: aProgress [
+	| anOrigin aCorner |
+	anOrigin := self interpolatePointFrom: aStartBounds origin to: anEndBounds origin progress: aProgress.
+	aCorner := self interpolatePointFrom: aStartBounds corner to: anEndBounds corner progress: aProgress.
+	^ anOrigin corner: aCorner
+]
+
+{ #category : 'private - hover animation' }
+CgtEditorOverlay >> interpolateNumberFrom: aStartNumber to: anEndNumber progress: aProgress [
+	^ aStartNumber + ((anEndNumber - aStartNumber) * aProgress)
+]
+
+{ #category : 'private - hover animation' }
+CgtEditorOverlay >> interpolatePointFrom: aStartPoint to: anEndPoint progress: aProgress [
+	^ (self interpolateNumberFrom: aStartPoint x to: anEndPoint x progress: aProgress)
+		@ (self interpolateNumberFrom: aStartPoint y to: anEndPoint y progress: aProgress)
+]
+
+{ #category : 'private - hover animation' }
+CgtEditorOverlay >> targetHoverAlpha [
+	(state hoverElement isNil or: [ state isHoverOnSelected ]) ifTrue: [ ^ 0.0 ].
+	^ state hoverTransparencyForCurrentHover
+]
+
+{ #category : 'private - hover animation' }
+CgtEditorOverlay >> targetHoverBounds [
+	(state hoverElement isNil or: [ state isHoverOnSelected ]) ifTrue: [ ^ nil ].
+	^ self overlayBoundsFor: state hoverElement
+]
+
+{ #category : 'private - hover animation' }
+CgtEditorOverlay >> targetHoverCornerRadius [
+	| aBounds |
+	(state hoverElement isNil or: [ state isHoverOnSelected ]) ifTrue: [ ^ state defaultCornerRadius ].
+	aBounds := self targetHoverBounds.
+	aBounds ifNil: [ ^ state defaultCornerRadius ].
+	^ (self roundedGeometryFor: state hoverElement bounds: aBounds) cornerRadii max
+]
+
 { #category : 'accessing' }
 CgtEditorOverlay >> selectElement: anElementOrNil [
 	state selectElement: anElementOrNil.
@@ -291,7 +401,7 @@ CgtEditorOverlay >> state: aState [
 { #category : 'private' }
 CgtEditorOverlay >> stateChanged [
 	self syncObservedElements.
-	self updatePositions
+	self animateHoverTransition
 ]
 
 { #category : 'private' }
