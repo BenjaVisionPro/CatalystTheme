@@ -28,7 +28,8 @@ Class {
 		'elementToSelect',
 		'shouldLockOverlay',
 		'hasOverlay',
-		'originalTitle'
+		'originalTitle',
+		'overlayModel'
 	],
 	#classVars : [
 		'KeyCombination',
@@ -65,35 +66,38 @@ CgtEditorEventHandler >> childToThemeAt: aPoint in: aTargetElement ifFound: aFou
 
 { #category : 'event handling' }
 CgtEditorEventHandler >> clickEvent: aClickEvent [
-	| aThemeEditorTarget anElementToSelect |
+	| aThemeEditorTarget aHoveredElement anOverlay anAction |
 
-	hasOverlay
-		ifFalse: [ ^ self ].
+	hasOverlay ifFalse: [ ^ self ].
 
 	aThemeEditorTarget := self themeEditorTargetIn: aClickEvent currentTarget.
-	(aThemeEditorTarget containsGlobalPoint: aClickEvent position)
-		ifFalse: [ ^ self ].
-		
-	(self highlightCombinationMatchesIn: aClickEvent currentTarget)
-		ifFalse: [ ^ self ].
+	(aThemeEditorTarget containsGlobalPoint: aClickEvent position) ifFalse: [ ^ self ].
+	(self highlightCombinationMatchesIn: aClickEvent currentTarget) ifFalse: [ ^ self ].
 
-	hasThemeEditor
-		ifFalse: [ self hideOverlayIn: aClickEvent currentTarget ].
-
-	anElementToSelect := self
+	aHoveredElement := self
 		childToThemeAt: aClickEvent localPosition
 		in: aClickEvent currentTarget
 		ifFound: #yourself
 		ifNone: [ nil ].
 
-	self showThemeEditor: aClickEvent currentTarget.
-	self showOverlayIn: aClickEvent currentTarget.
+	hasThemeEditor ifFalse: [
+		self showThemeEditor: aClickEvent currentTarget.
+		self showOverlayIn: aClickEvent currentTarget.
+		aHoveredElement ifNotNil: [
+			self selectElement: aHoveredElement in: aClickEvent currentTarget.
+			self themeEditorIn: aClickEvent currentTarget do: [ :aThemeEditor |
+				aThemeEditor selectElement: aHoveredElement ] ].
+		^ self ].
 
-	anElementToSelect
-		ifNotNil: [
-			self
-				themeEditorIn: aClickEvent currentTarget
-				do: [ :aThemeEditor | aThemeEditor selectElement: anElementToSelect ] ]
+	anOverlay := nil.
+	self themeEditorOverlayIn: aClickEvent currentTarget do: [ :theOverlay | anOverlay := theOverlay ].
+	anOverlay ifNil: [ ^ self ].
+	anOverlay highlightElement: aHoveredElement.
+	anAction := anOverlay hoveredElementClicked.
+	anAction = #selectionChanged ifTrue: [
+		self selectElement: anOverlay selectedElement in: aClickEvent currentTarget.
+		self themeEditorIn: aClickEvent currentTarget do: [ :aThemeEditor |
+			aThemeEditor selectElement: anOverlay selectedElement ] ]
 ]
 
 { #category : 'api - accessing' }
@@ -174,6 +178,7 @@ CgtEditorEventHandler >> highlightCombinationMatchesIn: aRootElement [
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> highlightElement: anElement in: aRootElement [
 	elementToHighlight := anElement.
+	overlayModel hoverElement: anElement.
 
 	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay highlightElement: anElement ]
 ]
@@ -214,13 +219,12 @@ CgtEditorEventHandler >> initialize [
 	super initialize.
 	
 	mousePosition := 0@0.
-
 	hasOverlay := false.
 	hasThemeEditor := false.
 	shouldLockOverlay := false.
-	
 	elementToHighlight := nil.
-	elementToSelect := nil
+	elementToSelect := nil.
+	overlayModel := CgtEditorOverlayModel new
 ]
 
 { #category : 'event handling' }
@@ -287,6 +291,7 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> selectElement: anElement in: aRootElement [
 	elementToSelect := anElement.
+	overlayModel selectElement: anElement.
 
 	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay selectElement: anElement ]
 ]
@@ -313,6 +318,7 @@ CgtEditorEventHandler >> showOverlayIn: aRootElement [
 	(self themeEditorTargetIn: aRootElement)
 		addChild: (CgtEditorOverlay new
 			id: ThemeEditorOverlayId;
+			model: overlayModel;
 			highlightElement: elementToHighlight;
 			selectElement: elementToSelect;
 			allowMeAndChildrenMouseEvents).

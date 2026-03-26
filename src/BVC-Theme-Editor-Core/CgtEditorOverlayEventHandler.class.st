@@ -10,7 +10,6 @@ Class {
 
 { #category : 'element handlers' }
 CgtEditorOverlayEventHandler >> elementAddedToSceneGraphEvent: anEvent [
-	self overlay showElement: anEvent currentTarget.
 	self overlay updatePositions
 ]
 
@@ -26,7 +25,7 @@ CgtEditorOverlayEventHandler >> elementPositionInSpaceChangedEvent: anEvent [
 
 { #category : 'element handlers' }
 CgtEditorOverlayEventHandler >> elementRemovedFromSceneGraphEvent: anEvent [
-	self overlay hideElement: anEvent currentTarget
+	self overlay updatePositions
 ]
 
 { #category : 'api - accessing' }

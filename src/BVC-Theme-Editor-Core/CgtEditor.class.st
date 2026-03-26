@@ -445,26 +445,15 @@ CgtEditor >> sceneWeight [
 { #category : 'accessing' }
 CgtEditor >> selectElement: anElement [
 	| wasNil |
-	selectedElement == anElement
-		ifTrue: [ ^ self ].
-	
+	selectedElement == anElement ifTrue: [ ^ self ].
 	wasNil := selectedElement isNil.
 	selectedElement := anElement.
-	
 	elementsTree items: targetContainer children lazy: [ :each | each children ].
+	selectedElement ifNil: [ ^ self ].
 	elementsTree expandSuchThat: [ :aTreeNode | (selectedElement hasParent: aTreeNode value) or: [ selectedElement == aTreeNode value ] ].
 	elementsTree selectAndScrollTo: selectedElement.
 	elementsTree phlow spawnObject: selectedElement.
-	
-	wasNil ifTrue: [
-		isOpeningPreview ifFalse: [ self animateDetailsOpen ].
-		self
-			childWithId: '#bvc-themeEditor--pager'
-			ifFound: [ :aPager |
-				(aPager isKindOf: GtPager)
-					ifTrue: [ aPager maximizePageContentIn: aPager pages first contentElement ]
-					ifFalse: [ aPager pages first maximize ] ]
-			ifNone: [  ] ]
+	wasNil ifTrue: [ isOpeningPreview ifFalse: [ self animateDetailsOpen ] ]
 ]
 
 { #category : 'accessing' }
