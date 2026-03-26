@@ -304,7 +304,7 @@ CgtEditorEventHandler >> nextTransitionToken [
 { #category : 'private - themeEditor' }
 CgtEditorEventHandler >> processRequestedThemeEditorStateIn: aRootElement [
 	self desiredThemeEditorOpenValue
-		ifTrue: [ ^ self showThemeEditor: aRootElement ].
+		ifTrue: [ hasThemeEditor ifFalse: [ ^ self showThemeEditor: aRootElement ]. ^ self ].
 	hasThemeEditor
 		ifTrue: [ ^ self hideThemeEditor: aRootElement ]
 ]
