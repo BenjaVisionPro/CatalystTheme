@@ -480,16 +480,12 @@ CgtEditor >> sceneWeight [
 
 { #category : 'accessing' }
 CgtEditor >> selectElement: anElement [
-	| wasNil |
 	selectedElement == anElement ifTrue: [ ^ self ].
-	wasNil := selectedElement isNil.
 	selectedElement := anElement.
 	elementsTree items: targetContainer children lazy: [ :each | each children ].
 	selectedElement ifNil: [ ^ self ].
 	elementsTree expandSuchThat: [ :aTreeNode | (selectedElement hasParent: aTreeNode value) or: [ selectedElement == aTreeNode value ] ].
-	elementsTree selectAndScrollTo: selectedElement.
-	elementsTree phlow spawnObject: selectedElement.
-	wasNil ifTrue: [ isOpeningPreview ifFalse: [ self animateDetailsOpen ] ]
+	elementsTree selectAndScrollTo: selectedElement
 ]
 
 
