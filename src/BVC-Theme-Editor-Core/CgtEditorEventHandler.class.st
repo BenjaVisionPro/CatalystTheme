@@ -135,7 +135,7 @@ CgtEditorEventHandler >> hideOverlayIn: aRootElement [
 CgtEditorEventHandler >> hideThemeEditor: aRootElement [
 	| aToken |
 	hasThemeEditor ifFalse: [ ^ self ].
-	isTransitioningThemeEditor ifTrue: [ ^ self ].
+	self isTransitioningThemeEditorValue ifTrue: [ ^ self ].
 	isTransitioningThemeEditor := true.
 	desiredThemeEditorOpen := false.
 	aToken := self nextTransitionToken.
@@ -243,6 +243,11 @@ CgtEditorEventHandler >> desiredThemeEditorOpenValue [
 	^ desiredThemeEditorOpen ifNil: [ false ]
 ]
 
+{ #category : 'private - themeEditor' }
+CgtEditorEventHandler >> isTransitioningThemeEditorValue [
+	^ isTransitioningThemeEditor ifNil: [ false ]
+]
+
 { #category : 'event handling' }
 CgtEditorEventHandler >> keyDownEvent: aKeyDownEvent [
 	(self highlightCombinationMatchesIn: aKeyDownEvent currentTarget)
@@ -297,7 +302,7 @@ CgtEditorEventHandler >> nextTransitionToken [
 
 { #category : 'private - themeEditor' }
 CgtEditorEventHandler >> processRequestedThemeEditorStateIn: aRootElement [
-	isTransitioningThemeEditor ifTrue: [ ^ self ].
+	self isTransitioningThemeEditorValue ifTrue: [ ^ self ].
 	(self desiredThemeEditorOpenValue and: [ hasThemeEditor not ])
 		ifTrue: [ ^ self showThemeEditor: aRootElement ].
 	(self desiredThemeEditorOpenValue not and: [ hasThemeEditor ])
@@ -374,7 +379,7 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 	| aTargetElementChildren aTargetContainer aToken |
 
 	hasThemeEditor ifTrue: [ ^ self ].
-	isTransitioningThemeEditor ifTrue: [ ^ self ].
+	self isTransitioningThemeEditorValue ifTrue: [ ^ self ].
 	isTransitioningThemeEditor := true.
 	desiredThemeEditorOpen := true.
 	aToken := self nextTransitionToken.
