@@ -59,10 +59,7 @@ CgtEditorEventHandler >> childToThemeAt: aPoint in: aTargetElement ifFound: aFou
 		ifTrue: [
 			self
 				themeEditorOverlayIn: aTargetElement
-				do: [ :aThemeEditorOverlay |
-					theChildrenAt := theChildrenAt reject: [ :eachElement |
-						eachElement == aThemeEditorOverlay
-							or: [ eachElement hasParent: aThemeEditorOverlay ] ] ] ].
+				do: [ :aThemeEditorOverlay | theChildrenAt := theChildrenAt copyWithout: aThemeEditorOverlay ] ].
 
 	theChildrenAt := theChildrenAt sorted: [ :a :b | a compositionDepth > b compositionDepth ].
 	theChildrenAt ifEmpty: [ ^ aNoneBlock value ].
@@ -424,9 +421,6 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 			aRootElement space title: 'Catalyst Theme Editor' ].
 
 	hasThemeEditor := true.
-	elementToSelect := nil.
-	elementToHighlight := nil.
-	overlayState deselect.
 	overlayState hoverElement: nil.
 	self showOverlayIn: aRootElement.
 

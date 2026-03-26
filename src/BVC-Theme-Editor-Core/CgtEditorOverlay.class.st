@@ -82,7 +82,8 @@ CgtEditorOverlay >> cutOutElement: anElement alpha: anAlpha onSpartaCanvas: aCan
 		during: [
 			aCanvas fill
 				path: (aGeometry buildPathOnSpartaCanvas: aCanvas);
-				paint: (Color white alpha: (state dimOpacity * anAlpha * overlayOpacity));
+				paint: (Color white alpha: (anAlpha * overlayOpacity));
+				composeDestOut;
 				draw ]
 ]
 
@@ -109,7 +110,8 @@ CgtEditorOverlay >> drawHoverOnSpartaCanvas: aCanvas [
 				path: ((BlRoundedRectangleGeometry cornerRadius: animatedHoverCornerRadius)
 					matchExtent: animatedHoverBounds extent;
 					yourself) buildPathOnSpartaCanvas: aCanvas;
-				paint: (Color white alpha: (state dimOpacity * animatedHoverAlpha * overlayOpacity));
+				paint: (Color white alpha: (animatedHoverAlpha * overlayOpacity));
+				composeDestOut;
 				draw ]
 ]
 
