@@ -3,7 +3,7 @@
 
 ```st
 Metacello new
-	repository: 'github://BenjaVisionPro/CatalystTheme:master/src';
+	repository: 'github://BenjaVisionPro/CatalystTheme:main/src';
 	baseline: 'CatalystTheme';
 	load
 ```
