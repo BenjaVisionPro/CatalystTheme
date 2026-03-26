@@ -9,10 +9,8 @@ Class {
 }
 
 { #category : 'instance creation' }
-CgtElementPathNode class >> element: anElement [
-	^ self new
-		element: anElement;
-		yourself
+CgtElementPathNode class >> on: anElement [
+	^ self new element: anElement; yourself
 ]
 
 { #category : 'accessing' }

@@ -2,7 +2,7 @@ Class {
 	#name : 'CgtEditorOverlay',
 	#superclass : 'BlElement',
 	#instVars : [
-		'state',
+		'model',
 		'eventHandler',
 		'maskLayer',
 		'observedElements',
@@ -25,8 +25,13 @@ CgtEditorOverlay >> addEventHandlerToObservedElement: anElement [
 
 { #category : 'actions' }
 CgtEditorOverlay >> clickHoverElement [
-	state clickHoverElement.
+	model clickHoverElement.
 	self stateChanged
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> childScopeElement [
+	^ model childScopeElement
 ]
 
 
@@ -91,7 +96,7 @@ CgtEditorOverlay >> dimBounds [
 CgtEditorOverlay >> drawDimOnSpartaCanvas: aCanvas [
 	aCanvas fill
 		path: self dimBounds;
-		paint: (Color black alpha: (state dimOpacity * overlayOpacity));
+		paint: (Color black alpha: (model dimOpacity * overlayOpacity));
 		draw
 ]
 
@@ -113,20 +118,82 @@ CgtEditorOverlay >> drawHoverOnSpartaCanvas: aCanvas [
 ]
 
 { #category : 'private - rendering' }
-CgtEditorOverlay >> drawPathPresentationsOnSpartaCanvas: aCanvas [
-	state pathPresentations do: [ :eachPresentation |
-		self drawPathPresentation: eachPresentation onSpartaCanvas: aCanvas ]
+CgtEditorOverlay >> drawScopesOnSpartaCanvas: aCanvas [
+	self primaryPathPresentation ifNil: [ ^ self ].
+	self upstreamElements withIndexDo: [ :eachElement :anIndex |
+		self cutOutElement: eachElement alpha: (self scopeAlphaAtIndex: anIndex forPresentationKind: #primary) onSpartaCanvas: aCanvas ]
 ]
 
 { #category : 'private - rendering' }
-CgtEditorOverlay >> drawPathPresentation: aPresentation onSpartaCanvas: aCanvas [
-	(self orderedElementsForPresentation: aPresentation) do: [ :eachElement |
-		self
-			cutOutElement: eachElement
-			alpha: (state presentationAlphaFor: aPresentation element: eachElement)
-			onSpartaCanvas: aCanvas ]
+CgtEditorOverlay >> drawSelectionOnSpartaCanvas: aCanvas [
+	self pathPresentations do: [ :eachPresentation | self drawPathPresentation: eachPresentation onSpartaCanvas: aCanvas ]
 ]
 
+
+
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> anchorElement [
+	^ model anchorElement
+]
+
+{ #category : 'testing' }
+CgtEditorOverlay >> hoverIsAnchor [
+	^ model hoverIsAnchor
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> pathPresentations [
+	^ model pathPresentations
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> primaryPathPresentation [
+	^ model primaryPathPresentation
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> upstreamElements [
+	| aPath |
+	aPath := model primaryPath.
+	^ aPath ifNil: [ #() ] ifNotNil: [ aPath upstreamElements ]
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> downstreamElements [
+	| aPath |
+	aPath := model primaryPath.
+	^ aPath ifNil: [ #() ] ifNotNil: [ aPath downstreamElements ]
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> anchorAlphaForPresentationKind: aSymbol [
+	^ aSymbol = #primary ifTrue: [ 1.0 ] ifFalse: [ 0.55 ]
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> downstreamAlphaForPresentationKind: aSymbol [
+	^ aSymbol = #primary ifTrue: [ 0.35 ] ifFalse: [ 0.2 ]
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> scopeAlphaAtIndex: anIndex forPresentationKind: aSymbol [
+	| alpha |
+	alpha := model scopeTransparencyAtIndex: anIndex.
+	^ aSymbol = #primary ifTrue: [ alpha ] ifFalse: [ alpha * 0.5 ]
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> drawPathPresentation: aPathPresentation onSpartaCanvas: aCanvas [
+	| aPath |
+	aPath := aPathPresentation elementPath.
+	aPath ifNil: [ ^ self ].
+	aPath upstreamElements withIndexDo: [ :eachElement :anIndex |
+		self cutOutElement: eachElement alpha: (self scopeAlphaAtIndex: anIndex forPresentationKind: aPathPresentation kind) onSpartaCanvas: aCanvas ].
+	self cutOutElement: aPath anchorElement alpha: (self anchorAlphaForPresentationKind: aPathPresentation kind) onSpartaCanvas: aCanvas.
+	aPath downstreamElements do: [ :eachElement |
+		self cutOutElement: eachElement alpha: (self downstreamAlphaForPresentationKind: aPathPresentation kind) onSpartaCanvas: aCanvas ]
+]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> fadeAnimationToken [
@@ -146,24 +213,24 @@ CgtEditorOverlay >> highlightElement: anElementOrNil [
 
 { #category : 'accessing' }
 CgtEditorOverlay >> hoverElement [
-	^ state hoverElement
+	^ model hoverElement
 ]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> hoverElement: anElementOrNil [
-	state hoverElement: anElementOrNil.
+	model hoverElement: anElementOrNil.
 	self stateChanged
 ]
 
 { #category : 'initialization' }
 CgtEditorOverlay >> initialize [
 	super initialize.
-	state := CgtViewTreeOverlayModel new.
+	model := CgtViewTreeOverlayModel new.
 	overlayOpacity := 1.0.
 	fadeAnimationToken := 0.
 	hoverAnimationToken := 0.
 	animatedHoverBounds := nil.
-	animatedHoverCornerRadius := state defaultCornerRadius.
+	animatedHoverCornerRadius := model defaultCornerRadius.
 	animatedHoverAlpha := 0.0.
 	observedElements := OrderedCollection new.
 	self
@@ -185,7 +252,7 @@ CgtEditorOverlay >> initialize [
 
 { #category : 'testing' }
 CgtEditorOverlay >> isDescendantOfSelection: anElement [
-	^ state isDescendantOfAnchor: anElement
+	^ model isDescendantOfSelection: anElement
 ]
 
 { #category : 'hooks - children' }
@@ -207,23 +274,6 @@ CgtEditorOverlay >> onRemovedFromSceneGraph [
 	observedElements removeAll
 ]
 
-
-{ #category : 'private - rendering' }
-CgtEditorOverlay >> orderedElementsForPresentation: aPresentation [
-	| aPath upstreamElements downstreamElements |
-	aPath := aPresentation elementPath.
-	upstreamElements := state upstreamCandidateElements
-		select: [ :eachElement | aPath includesElement: eachElement ].
-	downstreamElements := aPath elements
-		reject: [ :eachElement |
-			eachElement == aPath anchorElement or: [ upstreamElements includes: eachElement ] ].
-	downstreamElements := downstreamElements asSortedCollection: [ :a :b |
-		(state descendantDistanceFrom: aPath anchorElement to: a) <= (state descendantDistanceFrom: aPath anchorElement to: b) ].
-	^ upstreamElements reversed
-		, (aPath anchorElement ifNotNil: [ { aPath anchorElement } ] ifNil: [ #() ])
-		, downstreamElements asArray
-]
-
 { #category : 'private - rendering' }
 CgtEditorOverlay >> overlayBoundsFor: anOverlayedElement [
 	| theCorners minX maxX minY maxY |
@@ -239,7 +289,7 @@ CgtEditorOverlay >> overlayBoundsFor: anOverlayedElement [
 		maxX := maxX max: eachPoint x.
 		minY := minY min: eachPoint y.
 		maxY := maxY max: eachPoint y ].
-	^ ((minX @ minY) corner: (maxX @ maxY)) expandBy: state maskOutset
+	^ ((minX @ minY) corner: (maxX @ maxY)) expandBy: model maskOutset
 ]
 
 { #category : 'private' }
@@ -252,16 +302,17 @@ CgtEditorOverlay >> removeEventHandlerFromObservedElement: anElement [
 CgtEditorOverlay >> renderOnSpartaCanvas: aCanvas [
 	aCanvas layer during: [
 		self drawDimOnSpartaCanvas: aCanvas.
-		self drawPathPresentationsOnSpartaCanvas: aCanvas.
+		self drawScopesOnSpartaCanvas: aCanvas.
+		self drawSelectionOnSpartaCanvas: aCanvas.
 		self drawHoverOnSpartaCanvas: aCanvas ]
 ]
 
 { #category : 'private - rendering' }
 CgtEditorOverlay >> roundedGeometryFor: anElement bounds: aRectangle [
 	| aRadius |
-	aRadius := state defaultCornerRadius.
+	aRadius := model defaultCornerRadius.
 	(anElement geometry isKindOf: BlRoundedRectangleGeometry)
-		ifTrue: [ aRadius := anElement geometry cornerRadii max + state maskOutset ].
+		ifTrue: [ aRadius := anElement geometry cornerRadii max + model maskOutset ].
 	^ (BlRoundedRectangleGeometry cornerRadius: aRadius)
 		matchExtent: aRectangle extent;
 		yourself
@@ -359,34 +410,34 @@ CgtEditorOverlay >> interpolatePointFrom: aStartPoint to: anEndPoint progress: a
 
 { #category : 'private - hover animation' }
 CgtEditorOverlay >> targetHoverAlpha [
-	(state hoverElement isNil or: [ state hoverIsAnchor ]) ifTrue: [ ^ 0.0 ].
-	^ state hoverTransparencyForCurrentHover
+	(model hoverElement isNil or: [ self hoverIsAnchor ]) ifTrue: [ ^ 0.0 ].
+	^ model hoverTransparencyForCurrentHover
 ]
 
 { #category : 'private - hover animation' }
 CgtEditorOverlay >> targetHoverBounds [
-	(state hoverElement isNil or: [ state hoverIsAnchor ]) ifTrue: [ ^ nil ].
-	^ self overlayBoundsFor: state hoverElement
+	(model hoverElement isNil or: [ self hoverIsAnchor ]) ifTrue: [ ^ nil ].
+	^ self overlayBoundsFor: model hoverElement
 ]
 
 { #category : 'private - hover animation' }
 CgtEditorOverlay >> targetHoverCornerRadius [
 	| aBounds |
-	(state hoverElement isNil or: [ state hoverIsAnchor ]) ifTrue: [ ^ state defaultCornerRadius ].
+	(model hoverElement isNil or: [ self hoverIsAnchor ]) ifTrue: [ ^ model defaultCornerRadius ].
 	aBounds := self targetHoverBounds.
-	aBounds ifNil: [ ^ state defaultCornerRadius ].
-	^ (self roundedGeometryFor: state hoverElement bounds: aBounds) cornerRadii max
+	aBounds ifNil: [ ^ model defaultCornerRadius ].
+	^ (self roundedGeometryFor: model hoverElement bounds: aBounds) cornerRadii max
 ]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> selectElement: anElementOrNil [
-	state selectElement: anElementOrNil.
+	model setPrimaryAnchorElement: anElementOrNil.
 	self stateChanged
 ]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> selectedElement [
-	^ state anchorElement
+	^ model anchorElement
 ]
 
 { #category : 'accessing' }
@@ -397,12 +448,12 @@ CgtEditorOverlay >> showElement: anElement [
 
 { #category : 'accessing' }
 CgtEditorOverlay >> state [
-	^ state
+	^ model
 ]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> state: aState [
-	state := aState.
+	model := aState.
 	self stateChanged
 ]
 
@@ -416,7 +467,7 @@ CgtEditorOverlay >> stateChanged [
 { #category : 'private' }
 CgtEditorOverlay >> syncObservedElements [
 	| theNewObservedElements |
-	theNewObservedElements := state observedElements asOrderedCollection.
+	theNewObservedElements := model observedElements asOrderedCollection.
 	observedElements do: [ :eachElement |
 		(theNewObservedElements includes: eachElement)
 			ifFalse: [ eachElement removeEventHandler: eventHandler ] ].
@@ -428,7 +479,7 @@ CgtEditorOverlay >> syncObservedElements [
 
 { #category : 'actions' }
 CgtEditorOverlay >> toggleScopeElement: anElement [
-	state toggleScopeElement: anElement.
+	model toggleScopeElement: anElement.
 	self stateChanged
 ]
 

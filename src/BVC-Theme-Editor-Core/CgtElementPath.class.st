@@ -9,52 +9,6 @@ Class {
 	#package : 'BVC-Theme-Editor-Core'
 }
 
-{ #category : 'instance creation' }
-CgtElementPath class >> anchorElement: anElement [
-	^ self new
-		anchorElement: anElement;
-		yourself
-]
-
-{ #category : 'accessing' }
-CgtElementPath >> addElement: anElement [
-	(self includesElement: anElement) ifTrue: [ ^ self ].
-	nodes add: (CgtElementPathNode element: anElement)
-]
-
-{ #category : 'accessing' }
-CgtElementPath >> anchorElement [
-	(anchorIndex between: 1 and: nodes size)
-		ifFalse: [ ^ nil ].
-	^ (nodes at: anchorIndex) element
-]
-
-{ #category : 'accessing' }
-CgtElementPath >> anchorElement: anElement [
-	nodes := OrderedCollection with: (CgtElementPathNode element: anElement).
-	anchorIndex := 1
-]
-
-{ #category : 'accessing' }
-CgtElementPath >> anchorIndex [
-	^ anchorIndex
-]
-
-{ #category : 'accessing' }
-CgtElementPath >> anchorIndex: anInteger [
-	anchorIndex := anInteger
-]
-
-{ #category : 'accessing' }
-CgtElementPath >> elements [
-	^ nodes collect: [ :eachNode | eachNode element ]
-]
-
-{ #category : 'testing' }
-CgtElementPath >> includesElement: anElement [
-	^ nodes anySatisfy: [ :eachNode | eachNode element == anElement ]
-]
-
 { #category : 'initialization' }
 CgtElementPath >> initialize [
 	super initialize.
@@ -62,9 +16,14 @@ CgtElementPath >> initialize [
 	anchorIndex := 0
 ]
 
+{ #category : 'instance creation' }
+CgtElementPath class >> anchorElement: anElement [
+	^ self new anchorElement: anElement; yourself
+]
+
 { #category : 'accessing' }
 CgtElementPath >> nodes [
-	^ nodes
+	^ nodes copy
 ]
 
 { #category : 'accessing' }
@@ -72,12 +31,115 @@ CgtElementPath >> nodes: aCollection [
 	nodes := aCollection asOrderedCollection
 ]
 
-{ #category : 'removing' }
-CgtElementPath >> removeElement: anElement [
+{ #category : 'accessing' }
+CgtElementPath >> anchorIndex [ ^ anchorIndex ]
+
+{ #category : 'accessing' }
+CgtElementPath >> anchorIndex: anInteger [ anchorIndex := anInteger ]
+
+{ #category : 'accessing' }
+CgtElementPath >> anchorNode [
+	(anchorIndex between: 1 and: nodes size) ifFalse: [ ^ nil ].
+	^ nodes at: anchorIndex
+]
+
+{ #category : 'accessing' }
+CgtElementPath >> anchorElement [
+	^ self anchorNode ifNotNil: #element
+]
+
+{ #category : 'accessing' }
+CgtElementPath >> anchorElement: anElement [
+	nodes := OrderedCollection with: (CgtElementPathNode on: anElement).
+	anchorIndex := 1
+]
+
+{ #category : 'testing' }
+CgtElementPath >> isEmpty [ ^ nodes isEmpty ]
+
+{ #category : 'accessing' }
+CgtElementPath >> elements [ ^ nodes collect: #element ]
+
+{ #category : 'accessing' }
+CgtElementPath >> upstreamNodes [
+	anchorIndex <= 1 ifTrue: [ ^ #() ].
+	^ nodes copyFrom: 1 to: anchorIndex - 1
+]
+
+{ #category : 'accessing' }
+CgtElementPath >> upstreamElements [ ^ self upstreamNodes collect: #element ]
+
+{ #category : 'accessing' }
+CgtElementPath >> downstreamNodes [
+	anchorIndex >= nodes size ifTrue: [ ^ #() ].
+	^ nodes copyFrom: anchorIndex + 1 to: nodes size
+]
+
+{ #category : 'accessing' }
+CgtElementPath >> downstreamElements [ ^ self downstreamNodes collect: #element ]
+
+{ #category : 'testing' }
+CgtElementPath >> includesElement: anElement [ ^ (self nodeForElement: anElement) notNil ]
+
+{ #category : 'accessing' }
+CgtElementPath >> nodeForElement: anElement [
+	^ nodes detect: [ :each | each element == anElement ] ifNone: [ nil ]
+]
+
+{ #category : 'accessing' }
+CgtElementPath >> indexOfElement: anElement [
+	^ nodes findFirst: [ :each | each element == anElement ]
+]
+
+{ #category : 'testing' }
+CgtElementPath >> isAnchorElement: anElement [ ^ self anchorElement == anElement ]
+
+{ #category : 'accessing' }
+CgtElementPath >> relationOfElementToAnchor: anElement [
 	| anIndex |
-	anIndex := nodes findFirst: [ :eachNode | eachNode element == anElement ] ifAbsent: [ ^ self ].
-	nodes removeAt: anIndex.
-	anchorIndex > anIndex ifTrue: [ anchorIndex := anchorIndex - 1 ].
-	nodes isEmpty ifTrue: [ anchorIndex := 0 ].
-	(anchorIndex = 0 and: [ nodes notEmpty ]) ifTrue: [ anchorIndex := 1 ]
+	anIndex := self indexOfElement: anElement.
+	anIndex = 0 ifTrue: [ ^ nil ].
+	anIndex < anchorIndex ifTrue: [ ^ #upstream ].
+	anIndex > anchorIndex ifTrue: [ ^ #downstream ].
+	^ #anchor
+]
+
+{ #category : 'actions' }
+CgtElementPath >> clearDownstreamNodes [
+	nodes := (nodes copyFrom: 1 to: anchorIndex) asOrderedCollection
+]
+
+{ #category : 'actions' }
+CgtElementPath >> toggleUpstreamElement: anElement [
+	| ancestors ordered downstream anchor |
+	anchor := self anchorElement.
+	anchor ifNil: [ ^ self ].
+	anElement ifNil: [ ^ self ].
+	ancestors := OrderedCollection new.
+	| current |
+	current := anchor parent.
+	[ current notNil ] whileTrue: [ ancestors add: current. current := current parent ].
+	(ancestors includes: anElement) ifFalse: [ ^ self ].
+	ordered := ancestors reversed.
+	downstream := self downstreamElements.
+	(self includesElement: anElement)
+		ifTrue: [ nodes := nodes reject: [ :each | each element == anElement ] ]
+		ifFalse: [ nodes add: (CgtElementPathNode on: anElement) ].
+	nodes := OrderedCollection new.
+	(ordered select: [ :each | self includesElement: each ]) do: [ :each | nodes add: (CgtElementPathNode on: each) ].
+	nodes add: (CgtElementPathNode on: anchor).
+	downstream do: [ :each | nodes add: (CgtElementPathNode on: each) ].
+	anchorIndex := nodes findFirst: [ :each | each element == anchor ]
+]
+
+{ #category : 'actions' }
+CgtElementPath >> toggleDownstreamElement: anElement [
+	| anchor |
+	anchor := self anchorElement.
+	(anchor isNil or: [ anElement isNil ]) ifTrue: [ ^ self ].
+	(anElement == anchor or: [ (anElement hasParent: anchor) not ]) ifTrue: [ ^ self ].
+	(self includesElement: anElement)
+		ifTrue: [ nodes := nodes reject: [ :each | each element == anElement ] ]
+		ifFalse: [ nodes add: (CgtElementPathNode on: anElement) ].
+	anchorIndex := nodes findFirst: [ :each | each element == anchor ]
 ]

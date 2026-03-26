@@ -10,39 +10,18 @@ Class {
 }
 
 { #category : 'instance creation' }
-CgtViewTreeOverlayPathPresentation class >> kind: aKind path: anElementPath [
+CgtViewTreeOverlayPathPresentation class >> path: aPath kind: aSymbol [
 	^ self new
-		kind: aKind;
-		elementPath: anElementPath;
+		elementPath: aPath;
+		kind: aSymbol;
 		yourself
 ]
 
 { #category : 'accessing' }
-CgtViewTreeOverlayPathPresentation >> elementPath [
-	^ elementPath
-]
-
+CgtViewTreeOverlayPathPresentation >> elementPath [ ^ elementPath ]
 { #category : 'accessing' }
-CgtViewTreeOverlayPathPresentation >> elementPath: aPath [
-	elementPath := aPath
-]
-
-{ #category : 'testing' }
-CgtViewTreeOverlayPathPresentation >> isMatching [
-	^ kind = #matching
-]
-
-{ #category : 'testing' }
-CgtViewTreeOverlayPathPresentation >> isPrimary [
-	^ kind = #primary
-]
-
+CgtViewTreeOverlayPathPresentation >> elementPath: aPath [ elementPath := aPath ]
 { #category : 'accessing' }
-CgtViewTreeOverlayPathPresentation >> kind [
-	^ kind
-]
-
+CgtViewTreeOverlayPathPresentation >> kind [ ^ kind ifNil: [ #primary ] ]
 { #category : 'accessing' }
-CgtViewTreeOverlayPathPresentation >> kind: aKind [
-	kind := aKind
-]
+CgtViewTreeOverlayPathPresentation >> kind: aSymbol [ kind := aSymbol ]

@@ -29,7 +29,7 @@ Class {
 		'shouldLockOverlay',
 		'hasOverlay',
 		'originalTitle',
-		'overlayState',
+		'overlayModel',
 		'transitionToken',
 		'desiredThemeEditorOpen',
 		'isTransitioningThemeEditor'
@@ -59,9 +59,7 @@ CgtEditorEventHandler >> childToThemeAt: aPoint in: aTargetElement ifFound: aFou
 		ifTrue: [
 			self
 				themeEditorOverlayIn: aTargetElement
-				do: [ :aThemeEditorOverlay |
-					theChildrenAt := theChildrenAt reject: [ :eachElement |
-						eachElement == aThemeEditorOverlay or: [ eachElement hasParent: aThemeEditorOverlay ] ] ] ].
+				do: [ :aThemeEditorOverlay | theChildrenAt := theChildrenAt reject: [ :each | each == aThemeEditorOverlay or: [ each hasParent: aThemeEditorOverlay ] ] ] ].
 
 	theChildrenAt := theChildrenAt sorted: [ :a :b | a compositionDepth > b compositionDepth ].
 	theChildrenAt ifEmpty: [ ^ aNoneBlock value ].
@@ -189,7 +187,7 @@ CgtEditorEventHandler >> highlightCombinationMatchesIn: aRootElement [
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> highlightElement: anElement in: aRootElement [
 	elementToHighlight := anElement.
-	overlayState hoverElement: anElement.
+	overlayModel hoverElement: anElement.
 	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay hoverElement: anElement ]
 ]
 
@@ -231,7 +229,7 @@ CgtEditorEventHandler >> initialize [
 	shouldLockOverlay := false.
 	elementToHighlight := nil.
 	elementToSelect := nil.
-	overlayState := CgtViewTreeOverlayModel new.
+	overlayModel := CgtViewTreeOverlayModel new.
 	transitionToken := 0.
 	desiredThemeEditorOpen := false.
 	isTransitioningThemeEditor := false
@@ -355,7 +353,7 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> selectElement: anElement in: aRootElement [
 	elementToSelect := anElement.
-	overlayState selectElement: anElement.
+	overlayModel setPrimaryAnchorElement: anElement.
 	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay selectElement: anElement ].
 	self
 		themeEditorIn: aRootElement
@@ -384,7 +382,7 @@ CgtEditorEventHandler >> showOverlayIn: aRootElement [
 	(self themeEditorTargetIn: aRootElement)
 		addChild: (CgtEditorOverlay new
 			id: ThemeEditorOverlayId;
-			state: overlayState;
+			state: overlayModel;
 			highlightElement: elementToHighlight;
 			selectElement: elementToSelect;
 			overlayOpacity: 0.0;
@@ -423,7 +421,7 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 			aRootElement space title: 'Catalyst Theme Editor' ].
 
 	hasThemeEditor := true.
-	overlayState hoverElement: nil.
+	overlayModel hoverElement: nil.
 	self showOverlayIn: aRootElement.
 
 	aTargetElementChildren := aRootElement children asArray.
