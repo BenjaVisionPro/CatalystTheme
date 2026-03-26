@@ -185,7 +185,6 @@ CgtEditorOverlay >> initialize [
 			c ignoreByLayout.
 			c horizontal matchParent.
 			c vertical matchParent ];
-		effect: (BlBlurEffect radius: state blurRadius);
 		rendering: [ :aCanvas :anElement | self renderOnSpartaCanvas: aCanvas ];
 		yourself.
 	self addChild: maskLayer
@@ -395,7 +394,6 @@ CgtEditorOverlay >> state [
 { #category : 'accessing' }
 CgtEditorOverlay >> state: aState [
 	state := aState.
-	maskLayer ifNotNil: [ maskLayer effect: (BlBlurEffect radius: state blurRadius) ].
 	self stateChanged
 ]
 
