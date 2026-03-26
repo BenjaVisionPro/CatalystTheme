@@ -59,7 +59,9 @@ CgtEditorEventHandler >> childToThemeAt: aPoint in: aTargetElement ifFound: aFou
 		ifTrue: [
 			self
 				themeEditorOverlayIn: aTargetElement
-				do: [ :aThemeEditorOverlay | theChildrenAt := theChildrenAt copyWithout: aThemeEditorOverlay ] ].
+				do: [ :aThemeEditorOverlay |
+					theChildrenAt := theChildrenAt reject: [ :eachElement |
+						eachElement == aThemeEditorOverlay or: [ eachElement hasParent: aThemeEditorOverlay ] ] ] ].
 
 	theChildrenAt := theChildrenAt sorted: [ :a :b | a compositionDepth > b compositionDepth ].
 	theChildrenAt ifEmpty: [ ^ aNoneBlock value ].
@@ -229,7 +231,7 @@ CgtEditorEventHandler >> initialize [
 	shouldLockOverlay := false.
 	elementToHighlight := nil.
 	elementToSelect := nil.
-	overlayState := CgtEditorOverlayState new.
+	overlayState := CgtViewTreeOverlayModel new.
 	transitionToken := 0.
 	desiredThemeEditorOpen := false.
 	isTransitioningThemeEditor := false

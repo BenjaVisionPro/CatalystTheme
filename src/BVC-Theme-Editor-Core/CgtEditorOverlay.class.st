@@ -29,11 +29,6 @@ CgtEditorOverlay >> clickHoverElement [
 	self stateChanged
 ]
 
-{ #category : 'accessing' }
-CgtEditorOverlay >> childScopeElement [
-	^ state childScopeElement
-]
-
 
 { #category : 'api - animation' }
 CgtEditorOverlay >> animateFadeIn [
@@ -118,20 +113,18 @@ CgtEditorOverlay >> drawHoverOnSpartaCanvas: aCanvas [
 ]
 
 { #category : 'private - rendering' }
-CgtEditorOverlay >> drawScopesOnSpartaCanvas: aCanvas [
-	| theScopeElements |
-	theScopeElements := state scopeElementsInDisplayOrder.
-	theScopeElements withIndexDo: [ :eachElement :anIndex |
-		self
-			cutOutElement: eachElement
-			alpha: (state scopeTransparencyAtIndex: anIndex)
-			onSpartaCanvas: aCanvas ]
+CgtEditorOverlay >> drawPathPresentationsOnSpartaCanvas: aCanvas [
+	state pathPresentations do: [ :eachPresentation |
+		self drawPathPresentation: eachPresentation onSpartaCanvas: aCanvas ]
 ]
 
 { #category : 'private - rendering' }
-CgtEditorOverlay >> drawSelectionOnSpartaCanvas: aCanvas [
-	self cutOutElement: state selectedElement alpha: 1.0 onSpartaCanvas: aCanvas.
-	self cutOutElement: state childScopeElement alpha: 0.35 onSpartaCanvas: aCanvas
+CgtEditorOverlay >> drawPathPresentation: aPresentation onSpartaCanvas: aCanvas [
+	(self orderedElementsForPresentation: aPresentation) do: [ :eachElement |
+		self
+			cutOutElement: eachElement
+			alpha: (state presentationAlphaFor: aPresentation element: eachElement)
+			onSpartaCanvas: aCanvas ]
 ]
 
 
@@ -165,7 +158,7 @@ CgtEditorOverlay >> hoverElement: anElementOrNil [
 { #category : 'initialization' }
 CgtEditorOverlay >> initialize [
 	super initialize.
-	state := CgtEditorOverlayState new.
+	state := CgtViewTreeOverlayModel new.
 	overlayOpacity := 1.0.
 	fadeAnimationToken := 0.
 	hoverAnimationToken := 0.
@@ -192,7 +185,7 @@ CgtEditorOverlay >> initialize [
 
 { #category : 'testing' }
 CgtEditorOverlay >> isDescendantOfSelection: anElement [
-	^ state isDescendantOfSelection: anElement
+	^ state isDescendantOfAnchor: anElement
 ]
 
 { #category : 'hooks - children' }
@@ -212,6 +205,23 @@ CgtEditorOverlay >> onRemovedFromSceneGraph [
 	super onRemovedFromSceneGraph.
 	observedElements do: [ :eachElement | eachElement removeEventHandler: eventHandler ].
 	observedElements removeAll
+]
+
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> orderedElementsForPresentation: aPresentation [
+	| aPath upstreamElements downstreamElements |
+	aPath := aPresentation elementPath.
+	upstreamElements := state upstreamCandidateElements
+		select: [ :eachElement | aPath includesElement: eachElement ].
+	downstreamElements := aPath elements
+		reject: [ :eachElement |
+			eachElement == aPath anchorElement or: [ upstreamElements includes: eachElement ] ].
+	downstreamElements := downstreamElements asSortedCollection: [ :a :b |
+		(state descendantDistanceFrom: aPath anchorElement to: a) <= (state descendantDistanceFrom: aPath anchorElement to: b) ].
+	^ upstreamElements reversed
+		, (aPath anchorElement ifNotNil: [ { aPath anchorElement } ] ifNil: [ #() ])
+		, downstreamElements asArray
 ]
 
 { #category : 'private - rendering' }
@@ -242,8 +252,7 @@ CgtEditorOverlay >> removeEventHandlerFromObservedElement: anElement [
 CgtEditorOverlay >> renderOnSpartaCanvas: aCanvas [
 	aCanvas layer during: [
 		self drawDimOnSpartaCanvas: aCanvas.
-		self drawScopesOnSpartaCanvas: aCanvas.
-		self drawSelectionOnSpartaCanvas: aCanvas.
+		self drawPathPresentationsOnSpartaCanvas: aCanvas.
 		self drawHoverOnSpartaCanvas: aCanvas ]
 ]
 
@@ -350,20 +359,20 @@ CgtEditorOverlay >> interpolatePointFrom: aStartPoint to: anEndPoint progress: a
 
 { #category : 'private - hover animation' }
 CgtEditorOverlay >> targetHoverAlpha [
-	(state hoverElement isNil or: [ state isHoverOnSelected ]) ifTrue: [ ^ 0.0 ].
+	(state hoverElement isNil or: [ state hoverIsAnchor ]) ifTrue: [ ^ 0.0 ].
 	^ state hoverTransparencyForCurrentHover
 ]
 
 { #category : 'private - hover animation' }
 CgtEditorOverlay >> targetHoverBounds [
-	(state hoverElement isNil or: [ state isHoverOnSelected ]) ifTrue: [ ^ nil ].
+	(state hoverElement isNil or: [ state hoverIsAnchor ]) ifTrue: [ ^ nil ].
 	^ self overlayBoundsFor: state hoverElement
 ]
 
 { #category : 'private - hover animation' }
 CgtEditorOverlay >> targetHoverCornerRadius [
 	| aBounds |
-	(state hoverElement isNil or: [ state isHoverOnSelected ]) ifTrue: [ ^ state defaultCornerRadius ].
+	(state hoverElement isNil or: [ state hoverIsAnchor ]) ifTrue: [ ^ state defaultCornerRadius ].
 	aBounds := self targetHoverBounds.
 	aBounds ifNil: [ ^ state defaultCornerRadius ].
 	^ (self roundedGeometryFor: state hoverElement bounds: aBounds) cornerRadii max
@@ -377,7 +386,7 @@ CgtEditorOverlay >> selectElement: anElementOrNil [
 
 { #category : 'accessing' }
 CgtEditorOverlay >> selectedElement [
-	^ state selectedElement
+	^ state anchorElement
 ]
 
 { #category : 'accessing' }
