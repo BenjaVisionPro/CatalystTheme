@@ -218,6 +218,7 @@ CgtEditorOverlay >> hoverElement [
 
 { #category : 'accessing' }
 CgtEditorOverlay >> hoverElement: anElementOrNil [
+	model hoverElement == anElementOrNil ifTrue: [ ^ self ].
 	model hoverElement: anElementOrNil.
 	self stateChanged
 ]

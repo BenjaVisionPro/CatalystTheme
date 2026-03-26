@@ -193,7 +193,7 @@ CgtEditorEventHandler >> highlightElement: anElement in: aRootElement [
 
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> highlightElementAt: aPoint in: aRootElement [
-	| aThemeEditorTarget |
+	| aThemeEditorTarget aHoveredElement |
 
 	mousePosition := aPoint.
 	"moving mouse inside of the theme editor target resets the explicit element to highlight"
@@ -203,13 +203,15 @@ CgtEditorEventHandler >> highlightElementAt: aPoint in: aRootElement [
 		ifFalse: [ ^ self ].
 
 	aThemeEditorTarget := self themeEditorTargetIn: aRootElement.
+	aHoveredElement := self
+		childToThemeAt: (aThemeEditorTarget globalPointToLocal: (aRootElement localPointToGlobal: aPoint))
+		in: aThemeEditorTarget
+		ifFound: #yourself
+		ifNone: [ nil ].
 	
 	self themeEditorOverlayIn: aRootElement do: [ :anOverlay |
-		anOverlay highlightElement: (self
-			childToThemeAt: (aThemeEditorTarget globalPointToLocal: (aRootElement localPointToGlobal: aPoint))
-			in: aThemeEditorTarget
-			ifFound: #yourself
-			ifNone: [ nil ]) ]
+		anOverlay hoverElement == aHoveredElement ifFalse: [
+			anOverlay highlightElement: aHoveredElement ] ]
 ]
 
 { #category : 'event handling' }
