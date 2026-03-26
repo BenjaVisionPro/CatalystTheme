@@ -124,11 +124,13 @@ CgtEditorEventHandler >> hideOverlayIn: aRootElement [
 		themeEditorOverlayIn: aRootElement
 		do: [ :anOverlay |
 			anOverlay preventMeAndChildrenMouseEvents.
-			anOverlay animateFadeOutOnFinishedDo: [
-				aRootElement
-					childWithId: ThemeEditorOverlayId
-					ifFound: [ :currentOverlay | currentOverlay == anOverlay ifTrue: [ aRootElement removeChild: currentOverlay ] ]
-					ifNone: [ ] ] ]
+			anOverlay animateFadeOutOnFinishedDo: [ | anOverlayParent |
+				anOverlayParent := anOverlay parent.
+				anOverlayParent ifNotNil: [
+					anOverlayParent
+						childWithId: ThemeEditorOverlayId
+						ifFound: [ :currentOverlay | currentOverlay == anOverlay ifTrue: [ anOverlayParent removeChild: currentOverlay ] ]
+						ifNone: [ ] ] ] ]
 ]
 
 { #category : 'api - themeEditor' }
@@ -435,7 +437,7 @@ CgtEditorEventHandler >> themeEditorIn: aTargetElement do: aBlock [
 
 { #category : 'private - accessing' }
 CgtEditorEventHandler >> themeEditorOverlayIn: aRootElement do: aBlock [
-	aRootElement
+	(self themeEditorTargetIn: aRootElement)
 		childWithId: ThemeEditorOverlayId
 		ifFound: aBlock
 		ifNone: [  ]
