@@ -2,7 +2,7 @@
 #Theme Editor Event Handler
 Is used to add support of the `Theme Editor` to arbitrary elements. For the best result the element to which the `Theme Editor` is added should have a {{gtClass:BlBasicLayout}} and have `matchParent` or `exact` layout resizing strategy.
 ##Usage
-Press `control-option-tab` to enable the editor, element highlight mode and then click on the highlighted element to select it in the `Theme Editor`.
+Press `control-option-tab` to toggle the `Theme Editor` open and closed.
 ##More
 See {{gtClass:CgtEditor}} for the main UI of the `Theme Editor` and {{gtClass:CgtEditorOverlay}} for an overlay over the scene that shows highlighted and selected elements.
 
@@ -44,7 +44,7 @@ Class {
 CgtEditorEventHandler class >> initialize [
 	ThemeEditorId := #'bvc-themeEditor'.
 	ThemeEditorOverlayId := BlElementId named: #'bvc-themeEditor--preview'.
-	KeyCombination := BlKeyCombination builder control alt primary build
+	KeyCombination := BlKeyCombination builder control alt tab build
 ]
 
 { #category : 'private - accessing' }
@@ -74,23 +74,12 @@ CgtEditorEventHandler >> clickEvent: aClickEvent [
 	aThemeEditorTarget := self themeEditorTargetIn: aClickEvent currentTarget.
 	(aThemeEditorTarget containsGlobalPoint: aClickEvent position)
 		ifFalse: [ ^ self ].
-		
-	(self highlightCombinationMatchesIn: aClickEvent currentTarget)
-		ifFalse: [ ^ self ].
 
 	aHoveredElement := self
 		childToThemeAt: aClickEvent localPosition
 		in: aClickEvent currentTarget
 		ifFound: #yourself
 		ifNone: [ nil ].
-
-	hasThemeEditor
-		ifFalse: [
-			self hideOverlayIn: aClickEvent currentTarget.
-			self showThemeEditor: aClickEvent currentTarget.
-			self showOverlayIn: aClickEvent currentTarget.
-			aHoveredElement ifNotNil: [ self selectElement: aHoveredElement in: aClickEvent currentTarget ].
-			^ self ].
 
 	self highlightElement: aHoveredElement in: aClickEvent currentTarget.
 	self
@@ -228,19 +217,26 @@ CgtEditorEventHandler >> initialize [
 
 { #category : 'event handling' }
 CgtEditorEventHandler >> keyDownEvent: aKeyDownEvent [
-	self keyEvent: aKeyDownEvent
+	(self highlightCombinationMatchesIn: aKeyDownEvent currentTarget)
+		ifFalse: [ ^ self ].
+
+	hasThemeEditor
+		ifTrue: [ self hideThemeEditor: aKeyDownEvent currentTarget ]
+		ifFalse: [
+			self showThemeEditor: aKeyDownEvent currentTarget.
+			self showOverlayIn: aKeyDownEvent currentTarget ].
+
+	aKeyDownEvent consumed: true
 ]
 
 { #category : 'event handling' }
 CgtEditorEventHandler >> keyEvent: aKeyEvent [
-	(self highlightCombinationMatchesIn: aKeyEvent currentTarget)
-		ifTrue: [ self showOverlayIn: aKeyEvent currentTarget ]
-		ifFalse: [ self maybeHideOverlayIn: aKeyEvent currentTarget ]
+	^ self
 ]
 
 { #category : 'event handling' }
 CgtEditorEventHandler >> keyUpEvent: aKeyDownEvent [
-	self keyEvent: aKeyDownEvent
+	^ self
 ]
 
 { #category : 'api - overlay' }
@@ -363,13 +359,12 @@ CgtEditorEventHandler >> showThemeEditorEvent: aShowThemeEditorEvent [
 	aShowThemeEditorEvent consumed: true.
 
 	self showThemeEditor: aShowThemeEditorEvent currentTarget.
+	self showOverlayIn: aShowThemeEditorEvent currentTarget.
 	self
 		themeEditorIn: aShowThemeEditorEvent currentTarget
 		do: [ :aThemeEditor |
 			aShowThemeEditorEvent elementToSelect
-				ifNotNil: [
-					aThemeEditor selectElement: aShowThemeEditorEvent elementToSelect.
-					self showOverlayIn: aShowThemeEditorEvent currentTarget ].
+				ifNotNil: [ aThemeEditor selectElement: aShowThemeEditorEvent elementToSelect ].
 			aShowThemeEditorEvent sceneExtent
 				ifNotNil: [ aThemeEditor targetContainer size: aShowThemeEditorEvent sceneExtent ] ]
 ]
