@@ -13,7 +13,13 @@ Class {
 { #category : 'initialization' }
 CgtElementPathSelector >> initialize [
 	super initialize.
-	self hFitContent
+	self
+		aptitude: (BrGlamorousBreadcrumbAptitude new
+				separator: [ BrLabel new
+						aptitude: (BrGlamorousLabelAptitude new thin foreground: Color gray);
+						text: '>';
+						margin: (BlInsets left: 4 right: 4) ]);
+		hFitContent
 ]
 
 { #category : 'accessing' }
