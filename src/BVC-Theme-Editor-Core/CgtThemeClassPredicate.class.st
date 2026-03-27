@@ -22,3 +22,8 @@ CgtThemeClassPredicate >> elementClass: aClass [ elementClass := aClass ]
 CgtThemeClassPredicate >> matchesElement: anElement [
 	^ anElement notNil and: [ anElement class == elementClass ]
 ]
+
+{ #category : 'printing' }
+CgtThemeClassPredicate >> displayString [
+	^ elementClass ifNil: [ '' ] ifNotNil: [ elementClass name ]
+]

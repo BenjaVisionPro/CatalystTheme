@@ -34,3 +34,14 @@ CgtThemeOrdinalPredicate >> matchesElement: anElement [
 	ordinal = #even ifTrue: [ ^ index even ].
 	^ false
 ]
+
+{ #category : 'printing' }
+CgtThemeOrdinalPredicate >> displayString [
+	ordinal ifNil: [ ^ '' ].
+	ordinal = #all ifTrue: [ ^ ':all' ].
+	ordinal = #first ifTrue: [ ^ ':first' ].
+	ordinal = #last ifTrue: [ ^ ':last' ].
+	ordinal = #odd ifTrue: [ ^ ':odd' ].
+	ordinal = #even ifTrue: [ ^ ':even' ].
+	^ ':', ordinal asString
+]

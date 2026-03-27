@@ -629,19 +629,27 @@ CgtEditor >> overlayBoundsForSelectedElement [
 
 { #category : 'private - style inspector' }
 CgtEditor >> showStyleInspectorPopover [
-	| aPopover |
+	| aPopover aRule |
 	selectedElement ifNil: [ ^ self hideStyleInspectorPopover ].
 	aPopover := self ensureStyleInspectorPopover.
+	aRule := self styleRuleForStyleInspector.
 	aPopover
 		childWithId: #styleInspectorElementLabel
 		ifFound: [ :aLabel | aLabel text: selectedElement class name ]
 		ifNone: [ ].
-	aPopover
-		childWithId: #styleInspectorScopeLabel
-		ifFound: [ :aLabel | aLabel text: 'Selected style context' ]
-		ifNone: [ ].
+	aPopover styleRule: aRule.
 	aPopover visibility: BlVisibility visible.
 	self updateStyleInspectorPopoverPosition
+]
+
+{ #category : 'private - style inspector' }
+CgtEditor >> styleRuleForStyleInspector [
+	^ CgtThemeStyleRule fromElementPath: self styleInspectorElementPath
+]
+
+{ #category : 'private - style inspector' }
+CgtEditor >> styleInspectorElementPath [
+	^ selectedElement ifNil: [ nil ] ifNotNil: [ CgtElementPath anchorElement: selectedElement ]
 ]
 
 { #category : 'private - style inspector' }

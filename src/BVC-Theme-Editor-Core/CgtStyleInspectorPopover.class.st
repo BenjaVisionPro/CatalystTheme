@@ -1,6 +1,10 @@
 Class {
 	#name : 'CgtStyleInspectorPopover',
 	#superclass : 'BrVerticalPane',
+	#instVars : [
+		'styleRule',
+		'selectorWidget'
+	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
 }
@@ -17,6 +21,7 @@ CgtStyleInspectorPopover >> initialize [
 			c ignoreByLayout.
 			c ignored horizontal alignLeft.
 			c ignored vertical alignTop ].
+	selectorWidget := CgtThemeSelectorWidget new.
 	self addChildren: {
 		(BrLabel new
 			id: #styleInspectorTitle;
@@ -26,8 +31,27 @@ CgtStyleInspectorPopover >> initialize [
 			id: #styleInspectorElementLabel;
 			aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
 			text: '').
+		selectorWidget.
 		(BrLabel new
 			id: #styleInspectorScopeLabel;
 			aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
 			text: '') }
+]
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> styleRule [
+	^ styleRule
+]
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> styleRule: aCgtThemeStyleRule [
+	styleRule := aCgtThemeStyleRule.
+	selectorWidget selector: (styleRule ifNotNil: [ styleRule selector ]).
+	self
+		childWithId: #styleInspectorScopeLabel
+		ifFound: [ :aLabel |
+			aLabel text: (styleRule
+				ifNil: [ '' ]
+				ifNotNil: [ styleRule selector ifNil: [ '' ] ifNotNil: [ styleRule selector displayString ] ]) ]
+		ifNone: [ ].
 ]

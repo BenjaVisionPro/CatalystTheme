@@ -25,3 +25,8 @@ CgtThemeSelector class >> selectorFromElementPath: aCgtElementPath [
 CgtThemeSelector >> matchesElement: anElement [
 	self subclassResponsibility
 ]
+
+{ #category : 'printing' }
+CgtThemeSelector >> displayString [
+	self subclassResponsibility
+]

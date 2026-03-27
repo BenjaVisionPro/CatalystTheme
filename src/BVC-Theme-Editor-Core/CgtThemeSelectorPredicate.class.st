@@ -9,3 +9,8 @@ Class {
 CgtThemeSelectorPredicate >> matchesElement: anElement [
 	self subclassResponsibility
 ]
+
+{ #category : 'printing' }
+CgtThemeSelectorPredicate >> displayString [
+	self subclassResponsibility
+]

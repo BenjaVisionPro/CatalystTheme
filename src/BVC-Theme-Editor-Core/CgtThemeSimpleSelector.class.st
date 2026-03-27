@@ -43,3 +43,11 @@ CgtThemeSimpleSelector >> addPredicate: aCgtThemeSelectorPredicate [
 CgtThemeSimpleSelector >> matchesElement: anElement [
 	^ predicates allSatisfy: [ :each | each matchesElement: anElement ]
 ]
+
+{ #category : 'printing' }
+CgtThemeSimpleSelector >> displayString [
+	^ String streamContents: [ :aStream |
+		predicates doWithIndex: [ :each :anIndex |
+			anIndex > 1 ifTrue: [ aStream nextPutAll: '' ].
+			aStream nextPutAll: each displayString ] ]
+]

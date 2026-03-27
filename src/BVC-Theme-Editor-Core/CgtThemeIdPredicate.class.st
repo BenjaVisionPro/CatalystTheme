@@ -24,3 +24,8 @@ CgtThemeIdPredicate >> matchesElement: anElement [
 		and: [ anElement id ~= BlElementId noId ]
 		and: [ anElement id = elementId ]
 ]
+
+{ #category : 'printing' }
+CgtThemeIdPredicate >> displayString [
+	^ '#', elementId asString
+]

@@ -46,3 +46,12 @@ CgtThemeCombinatorSelector >> matchesElement: anElement [
 		^ false ].
 	^ false
 ]
+
+{ #category : 'printing' }
+CgtThemeCombinatorSelector >> displayString [
+	^ String streamContents: [ :aStream |
+		aStream
+			nextPutAll: leftSelector displayString;
+			nextPutAll: (combinator = #child ifTrue: [ ' > ' ] ifFalse: [ ' ', combinator asString, ' ' ]);
+			nextPutAll: rightSelector displayString ]
+]
