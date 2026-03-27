@@ -4,7 +4,9 @@ Class {
 	#instVars : [
 		'styleRule',
 		'selectorWidget',
-		'elementPath'
+		'selectorScrollPane',
+		'elementPath',
+		'pathRootElement'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -24,6 +26,12 @@ CgtStyleInspectorPopover >> initialize [
 			c ignored horizontal alignLeft.
 			c ignored vertical alignTop ].
 	selectorWidget := CgtElementPathSelector new.
+	selectorScrollPane := selectorWidget asPannableElement.
+	selectorScrollPane
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent ];
+		hMatchParent.
 	self addChildren: {
 		(BrLabel new
 			id: #styleInspectorTitle;
@@ -33,7 +41,7 @@ CgtStyleInspectorPopover >> initialize [
 			id: #styleInspectorElementLabel;
 			aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
 			text: '').
-		selectorWidget.
+		selectorScrollPane.
 		(BrLabel new
 			id: #styleInspectorScopeLabel;
 			aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
@@ -52,6 +60,17 @@ CgtStyleInspectorPopover >> elementPath: aCgtElementPath [
 	selectorWidget elementPath: aCgtElementPath
 ]
 
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> pathRootElement [
+	^ pathRootElement
+]
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> pathRootElement: anElement [
+	pathRootElement := anElement.
+	selectorWidget pathRootElement: anElement
+]
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> styleRule [
 	^ styleRule

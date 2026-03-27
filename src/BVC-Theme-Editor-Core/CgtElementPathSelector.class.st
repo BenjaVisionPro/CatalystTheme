@@ -8,7 +8,8 @@ Class {
 		'elementPath',
 		'ancestorRevealCount',
 		'hiddenCrumbLabel',
-		'onElementPathNodeSelectedBlock'
+		'onElementPathNodeSelectedBlock',
+		'pathRootElement'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -20,6 +21,7 @@ CgtElementPathSelector >> initialize [
 	ancestorRevealCount := 0.
 	hiddenCrumbLabel := '…'.
 	self
+		hMatchParent;
 		aptitude: (BrGlamorousBreadcrumbAptitude new
 				separator: [ BrLabel new
 						aptitude: (BrGlamorousLabelAptitude new thin foreground: Color gray);
@@ -53,6 +55,18 @@ CgtElementPathSelector >> elementPath: aCgtElementPath [
 	self rebuild
 ]
 
+
+{ #category : 'accessing' }
+CgtElementPathSelector >> pathRootElement [
+	^ pathRootElement
+]
+
+{ #category : 'accessing' }
+CgtElementPathSelector >> pathRootElement: anElement [
+	pathRootElement := anElement.
+	ancestorRevealCount := 0.
+	self rebuild
+]
 { #category : 'accessing' }
 CgtElementPathSelector >> onElementPathNodeSelectedDo: aBlock [
 	onElementPathNodeSelectedBlock := aBlock
@@ -101,13 +115,16 @@ CgtElementPathSelector >> rebuildForElementPath [
 
 { #category : 'private' }
 CgtElementPathSelector >> fullPathElements [
-	| anchor upstream orderedAncestors current downstream |
+	| anchor upstream orderedAncestors current downstream stopParent |
 	elementPath ifNil: [ ^ #() ].
 	anchor := elementPath anchorElement.
 	anchor ifNil: [ ^ #() ].
 	upstream := OrderedCollection new.
+	stopParent := pathRootElement ifNil: [ nil ] ifNotNil: [ pathRootElement parent ].
 	current := anchor parent.
-	[ current notNil ] whileTrue: [ upstream add: current. current := current parent ].
+	[ current notNil and: [ current ~= stopParent ] ] whileTrue: [
+		upstream add: current.
+		current := current parent ].
 	orderedAncestors := upstream reversed.
 	downstream := elementPath downstreamElements.
 	^ orderedAncestors , { anchor } , downstream
@@ -143,7 +160,7 @@ CgtElementPathSelector >> newHiddenCrumbForHiddenCount: aCount [
 	^ BrButton new
 		label: hiddenCrumbLabel;
 		aptitude: self hiddenCrumbAptitude;
-		action: [ :aButton | ancestorRevealCount := ancestorRevealCount + 1. self rebuild ]
+		action: [ :aButton | ancestorRevealCount := ancestorRevealCount + aCount. self rebuild ]
 ]
 
 { #category : 'private' }

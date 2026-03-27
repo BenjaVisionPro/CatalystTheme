@@ -639,6 +639,7 @@ CgtEditor >> showStyleInspectorPopover [
 		ifFound: [ :aLabel | aLabel text: selectedElement class name ]
 		ifNone: [ ].
 	aPopover styleRule: aRule.
+	aPopover pathRootElement: self styleInspectorPathRootElement.
 	aPopover elementPath: self styleInspectorElementPath.
 	aPopover visibility: BlVisibility visible.
 	self updateStyleInspectorPopoverPosition
@@ -654,6 +655,17 @@ CgtEditor >> styleInspectorElementPath [
 	^ selectedElementPath ifNil: [ selectedElement ifNil: [ nil ] ifNotNil: [ CgtElementPath anchorElement: selectedElement ] ]
 ]
 
+
+{ #category : 'private - style inspector' }
+CgtEditor >> styleInspectorPathRootElement [
+	| current stopParent |
+	selectedElement ifNil: [ ^ nil ].
+	stopParent := targetContainer.
+	current := selectedElement.
+	[ current parent notNil and: [ current parent ~= stopParent ] ] whileTrue: [
+		current := current parent ].
+	^ current
+]
 { #category : 'private - style inspector' }
 CgtEditor >> updateStyleInspectorPopoverPosition [
 	| aBounds aPopover popoverWidth margin left top availableWidth availableHeight |
