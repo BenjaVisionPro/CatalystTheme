@@ -69,7 +69,7 @@ CgtThemeSelectorWidget >> selectorSegments [
 CgtThemeSelectorWidget >> segmentsForSelector: aCgtThemeSelector [
 	| segments |
 	aCgtThemeSelector ifNil: [ ^ #() ].
-	aCgtThemeSelector isKindOf: CgtThemeCombinatorSelector ifTrue: [
+	(aCgtThemeSelector isKindOf: CgtThemeCombinatorSelector) ifTrue: [
 		segments := OrderedCollection new.
 		segments addAll: (self segmentsForSelector: aCgtThemeSelector leftSelector).
 		segments add: aCgtThemeSelector combinator.
