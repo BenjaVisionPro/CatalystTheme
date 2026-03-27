@@ -35,8 +35,8 @@ CgtViewTreeOverlayModel >> initialize [
 	defaultCornerRadius := 10.
 	showsMatches := false.
 	hoverFadeInDurationMs := 100.
-	hoverIdleDurationMs := 1000.
-	hoverFadeOutDurationMs := 300
+	hoverIdleDurationMs := 2000.
+	hoverFadeOutDurationMs := 2000
 ]
 
 { #category : 'accessing' }
@@ -190,13 +190,13 @@ CgtViewTreeOverlayModel >> hoverFadeInDurationMs [ ^ hoverFadeInDurationMs ifNil
 CgtViewTreeOverlayModel >> hoverFadeInDurationMs: aNumber [ hoverFadeInDurationMs := aNumber ]
 
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> hoverIdleDurationMs [ ^ hoverIdleDurationMs ifNil: [ 1000 ] ]
+CgtViewTreeOverlayModel >> hoverIdleDurationMs [ ^ hoverIdleDurationMs ifNil: [ 2000 ] ]
 
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> hoverIdleDurationMs: aNumber [ hoverIdleDurationMs := aNumber ]
 
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> hoverFadeOutDurationMs [ ^ hoverFadeOutDurationMs ifNil: [ 300 ] ]
+CgtViewTreeOverlayModel >> hoverFadeOutDurationMs [ ^ hoverFadeOutDurationMs ifNil: [ 2000 ] ]
 
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> hoverFadeOutDurationMs: aNumber [ hoverFadeOutDurationMs := aNumber ]

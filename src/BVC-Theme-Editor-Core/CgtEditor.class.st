@@ -19,7 +19,8 @@ Class {
 		'previewProgressAnimation',
 		'detailsWeightAnimation',
 		'closeButton',
-		'styleInspectorPopover'
+		'styleInspectorPopover',
+		'selectedElementPath'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -638,6 +639,7 @@ CgtEditor >> showStyleInspectorPopover [
 		ifFound: [ :aLabel | aLabel text: selectedElement class name ]
 		ifNone: [ ].
 	aPopover styleRule: aRule.
+	aPopover elementPath: self styleInspectorElementPath.
 	aPopover visibility: BlVisibility visible.
 	self updateStyleInspectorPopoverPosition
 ]
@@ -649,7 +651,7 @@ CgtEditor >> styleRuleForStyleInspector [
 
 { #category : 'private - style inspector' }
 CgtEditor >> styleInspectorElementPath [
-	^ selectedElement ifNil: [ nil ] ifNotNil: [ CgtElementPath anchorElement: selectedElement ]
+	^ selectedElementPath ifNil: [ selectedElement ifNil: [ nil ] ifNotNil: [ CgtElementPath anchorElement: selectedElement ] ]
 ]
 
 { #category : 'private - style inspector' }
@@ -659,7 +661,7 @@ CgtEditor >> updateStyleInspectorPopoverPosition [
 	aBounds := self overlayBoundsForSelectedElement.
 	aBounds ifNil: [ ^ self ].
 	aPopover := styleInspectorPopover.
-	popoverWidth := 280.
+	popoverWidth := 560.
 	margin := 12.
 	availableWidth := self bounds inLocal width.
 	availableHeight := self bounds inLocal height.
@@ -682,6 +684,18 @@ CgtEditor >> updateStyleInspectorPopoverPosition [
 { #category : 'accessing' }
 CgtEditor >> styleInspectorPopover [
 	^ styleInspectorPopover
+]
+
+
+{ #category : 'accessing' }
+CgtEditor >> selectedElementPath [
+	^ selectedElementPath
+]
+
+{ #category : 'accessing' }
+CgtEditor >> selectedElementPath: aCgtElementPath [
+	selectedElementPath := aCgtElementPath.
+	selectedElement ifNotNil: [ self showStyleInspectorPopover ]
 ]
 
 { #category : 'accessing' }

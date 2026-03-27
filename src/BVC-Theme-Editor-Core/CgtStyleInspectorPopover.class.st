@@ -3,7 +3,8 @@ Class {
 	#superclass : 'BrVerticalPane',
 	#instVars : [
 		'styleRule',
-		'selectorWidget'
+		'selectorWidget',
+		'elementPath'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -37,6 +38,18 @@ CgtStyleInspectorPopover >> initialize [
 			id: #styleInspectorScopeLabel;
 			aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
 			text: '') }
+]
+
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> elementPath [
+	^ elementPath
+]
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> elementPath: aCgtElementPath [
+	elementPath := aCgtElementPath.
+	selectorWidget elementPath: aCgtElementPath
 ]
 
 { #category : 'accessing' }

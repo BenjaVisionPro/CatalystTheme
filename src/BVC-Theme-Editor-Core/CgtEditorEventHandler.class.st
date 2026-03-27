@@ -388,7 +388,9 @@ CgtEditorEventHandler >> selectElement: anElement in: aRootElement [
 	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay selectElement: anElement ].
 	self
 		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | aThemeEditor selectElement: anElement ]
+		do: [ :aThemeEditor |
+			aThemeEditor selectedElementPath: overlayModel primaryPath.
+			aThemeEditor selectElement: anElement ]
 ]
 
 { #category : 'event handling' }
