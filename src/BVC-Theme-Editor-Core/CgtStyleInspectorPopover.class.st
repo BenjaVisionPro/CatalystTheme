@@ -21,7 +21,7 @@ CgtStyleInspectorPopover >> initialize [
 			c ignoreByLayout.
 			c ignored horizontal alignLeft.
 			c ignored vertical alignTop ].
-	selectorWidget := CgtThemeSelectorWidget new.
+	selectorWidget := CgtElementPathSelector new.
 	self addChildren: {
 		(BrLabel new
 			id: #styleInspectorTitle;

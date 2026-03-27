@@ -27,8 +27,5 @@ CgtThemeIdPredicate >> matchesElement: anElement [
 
 { #category : 'printing' }
 CgtThemeIdPredicate >> displayString [
-	| aPrintedId |
-	aPrintedId := elementId ifNil: [ '' ] ifNotNil: [ elementId asSymbol printString ].
-	(aPrintedId isEmpty or: [ aPrintedId = '#''' ]) ifTrue: [ ^ '#' ].
-	^ '#', aPrintedId
+	^ '#', elementId asString
 ]
