@@ -489,10 +489,16 @@ CgtEditorEventHandler >> showThemeEditorEvent: aShowThemeEditorEvent [
 
 { #category : 'private - accessing' }
 CgtEditorEventHandler >> themeEditorIn: aTargetElement do: aBlock [
-	aTargetElement
-		childWithId: ThemeEditorId
-		ifFound: aBlock
-		ifNone: [  ]
+	| current |
+	current := aTargetElement.
+	[ current notNil ] whileTrue: [
+		(current id = ThemeEditorId)
+			ifTrue: [ ^ aBlock value: current ].
+		current
+			childWithId: ThemeEditorId
+			ifFound: [ :anEditor | ^ aBlock value: anEditor ]
+			ifNone: [  ].
+		current := current parent ].
 ]
 
 { #category : 'private - accessing' }
