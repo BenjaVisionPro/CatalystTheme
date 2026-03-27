@@ -31,6 +31,14 @@ CgtStyleInspectorPopover >> initialize [
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical fitContent ].
+	selectorScrollPane children ifNotEmpty: [ :theChildren |
+		| aZoomable |
+		aZoomable := theChildren first.
+		(aZoomable respondsTo: #layout) ifTrue: [
+			(aZoomable layout isKindOf: BlZoomableLayout) ifTrue: [
+				aZoomable layout
+					defaultScale: 1;
+					animationDuration: 0 milliSeconds ] ] ].
 	self addChildren: {
 		(BrLabel new
 			id: #styleInspectorTitle;
