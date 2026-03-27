@@ -18,7 +18,8 @@ Class {
 		'previewTransformAnimation',
 		'previewProgressAnimation',
 		'detailsWeightAnimation',
-		'closeButton'
+		'closeButton',
+		'styleInspectorPopover'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -480,12 +481,17 @@ CgtEditor >> sceneWeight [
 
 { #category : 'accessing' }
 CgtEditor >> selectElement: anElement [
-	selectedElement == anElement ifTrue: [ ^ self ].
+	selectedElement == anElement ifTrue: [
+		selectedElement ifNotNil: [ self updateStyleInspectorPopoverPosition ].
+		^ self ].
 	selectedElement := anElement.
 	elementsTree items: targetContainer children lazy: [ :each | each children ].
-	selectedElement ifNil: [ ^ self ].
+	selectedElement ifNil: [
+		self hideStyleInspectorPopover.
+		^ self ].
 	elementsTree expandSuchThat: [ :aTreeNode | (selectedElement hasParent: aTreeNode value) or: [ selectedElement == aTreeNode value ] ].
-	elementsTree selectAndScrollTo: selectedElement
+	elementsTree selectAndScrollTo: selectedElement.
+	self showStyleInspectorPopover
 ]
 
 
@@ -564,7 +570,8 @@ CgtEditor >> presentationProgress [
 { #category : 'accessing' }
 CgtEditor >> presentationProgress: aNumber [
 	presentationProgress := aNumber.
-	self updateCloseButtonOpacity
+	self updateCloseButtonOpacity.
+	self updateStyleInspectorPopoverPosition
 ]
 
 { #category : 'private - animation' }
@@ -580,6 +587,86 @@ CgtEditor >> previewScaleForProgress: aProgress [
 CgtEditor >> updateCloseButtonOpacity [
 	closeButton ifNil: [ ^ self ].
 	closeButton opacity: self presentationProgress
+]
+
+
+
+{ #category : 'private - style inspector' }
+CgtEditor >> ensureStyleInspectorPopover [
+	styleInspectorPopover ifNotNil: [ ^ styleInspectorPopover ].
+	styleInspectorPopover := self newStyleInspectorPopover.
+	self addChild: styleInspectorPopover.
+	^ styleInspectorPopover
+]
+
+{ #category : 'private - style inspector' }
+CgtEditor >> hideStyleInspectorPopover [
+	styleInspectorPopover ifNil: [ ^ self ].
+	styleInspectorPopover visibility: BlVisibility gone
+]
+
+{ #category : 'instance creation' }
+CgtEditor >> newStyleInspectorPopover [
+	^ CgtStyleInspectorPopover new
+]
+
+{ #category : 'private - style inspector' }
+CgtEditor >> overlayBoundsForSelectedElement [
+	| theCorners minX maxX minY maxY |
+	selectedElement ifNil: [ ^ nil ].
+	theCorners := selectedElement bounds inLocal bounds corners
+		collect: [ :eachPoint | self localPointToGlobal: (selectedElement localPointToGlobal: eachPoint) ].
+	theCorners ifEmpty: [ ^ nil ].
+	minX := maxX := theCorners first x.
+	minY := maxY := theCorners first y.
+	theCorners allButFirstDo: [ :eachPoint |
+		minX := minX min: eachPoint x.
+		maxX := maxX max: eachPoint x.
+		minY := minY min: eachPoint y.
+		maxY := maxY max: eachPoint y ].
+	^ (minX @ minY) corner: (maxX @ maxY)
+]
+
+{ #category : 'private - style inspector' }
+CgtEditor >> showStyleInspectorPopover [
+	| aPopover |
+	selectedElement ifNil: [ ^ self hideStyleInspectorPopover ].
+	aPopover := self ensureStyleInspectorPopover.
+	aPopover
+		childWithId: #styleInspectorElementLabel
+		ifFound: [ :aLabel | aLabel text: selectedElement class name ]
+		ifNone: [ ].
+	aPopover
+		childWithId: #styleInspectorScopeLabel
+		ifFound: [ :aLabel | aLabel text: 'Selected style context' ]
+		ifNone: [ ].
+	aPopover visibility: BlVisibility visible.
+	self updateStyleInspectorPopoverPosition
+]
+
+{ #category : 'private - style inspector' }
+CgtEditor >> updateStyleInspectorPopoverPosition [
+	| aBounds aPopover popoverWidth margin left top availableWidth availableHeight |
+	(styleInspectorPopover isNil or: [ selectedElement isNil ]) ifTrue: [ ^ self ].
+	aBounds := self overlayBoundsForSelectedElement.
+	aBounds ifNil: [ ^ self ].
+	aPopover := styleInspectorPopover.
+	popoverWidth := 280.
+	margin := 12.
+	availableWidth := self bounds inLocal width.
+	availableHeight := self bounds inLocal height.
+	left := aBounds right + margin.
+	(left + popoverWidth > availableWidth and: [ aBounds left - margin - popoverWidth >= 0 ])
+		ifTrue: [ left := aBounds left - margin - popoverWidth ].
+	left := (left max: 0) min: ((availableWidth - popoverWidth) max: 0).
+	top := (aBounds top max: 0) min: ((availableHeight - 120) max: 0).
+	aPopover constraintsDo: [ :c |
+		c ignoreByLayout.
+		c ignored horizontal alignLeft.
+		c ignored vertical alignTop.
+		c margin: (BlInsets top: top left: left bottom: 0 right: 0) ].
+	aPopover width: popoverWidth.
+	aPopover requestLayout
 ]
 
 { #category : 'accessing' }
