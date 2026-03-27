@@ -677,6 +677,13 @@ CgtEditor >> updateStyleInspectorPopoverPosition [
 	aPopover requestLayout
 ]
 
+
+
+{ #category : 'accessing' }
+CgtEditor >> styleInspectorPopover [
+	^ styleInspectorPopover
+]
+
 { #category : 'accessing' }
 CgtEditor >> targetContainer [
 	^ targetContainer
