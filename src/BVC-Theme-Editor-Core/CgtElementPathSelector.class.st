@@ -143,7 +143,7 @@ CgtElementPathSelector >> newHiddenCrumbForHiddenCount: aCount [
 	^ BrButton new
 		label: hiddenCrumbLabel;
 		aptitude: self hiddenCrumbAptitude;
-		action: [ :aButton | ancestorRevealCount := ancestorRevealCount + 1. self rebuild ]
+		action: [ :aButton | ancestorRevealCount := ancestorRevealCount + aCount. self rebuild ]
 ]
 
 { #category : 'private' }
