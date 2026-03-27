@@ -76,9 +76,7 @@ CgtEditorEventHandler >> clickEvent: aClickEvent [
 		ifFalse: [ ^ self ].
 
 	(self isPointInsideVisibleStyleInspector: aClickEvent position in: aClickEvent currentTarget)
-		ifTrue: [
-			aClickEvent consumed: true.
-			^ self ].
+		ifTrue: [ ^ self ].
 
 	aThemeEditorTarget := self themeEditorTargetIn: aClickEvent currentTarget.
 	(aThemeEditorTarget containsGlobalPoint: aClickEvent position)
