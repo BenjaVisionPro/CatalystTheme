@@ -350,7 +350,10 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 			^ self ].
 
 	(self isPointInsideVisibleStyleInspector: aMouseMoveEvent position in: aMouseMoveEvent currentTarget)
-		ifTrue: [ ^ self ].
+		ifTrue: [
+			self highlightElement: nil in: aMouseMoveEvent currentTarget.
+			mousePosition := nil.
+			^ self ].
 	
 	aThemeEditorTarget := self themeEditorTargetIn: aMouseMoveEvent currentTarget.
 	(aThemeEditorTarget containsGlobalPoint: aMouseMoveEvent position)
