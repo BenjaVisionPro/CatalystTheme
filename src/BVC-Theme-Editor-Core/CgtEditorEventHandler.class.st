@@ -355,6 +355,21 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 		ifFalse: [ mousePosition := nil ] 
 ]
 
+
+
+{ #category : 'event handling' }
+CgtEditorEventHandler >> isPointInsideVisibleStyleInspector: aGlobalPoint in: aRootElement [
+	| anEditor aPopover |
+	anEditor := self themeEditorIn: aRootElement ifAbsent: [ ^ false ].
+	(anEditor respondsTo: #styleInspectorPopover)
+		ifFalse: [ ^ false ].
+	aPopover := anEditor styleInspectorPopover.
+	aPopover ifNil: [ ^ false ].
+	(aPopover visibility = BlVisibility visible)
+		ifFalse: [ ^ false ].
+	^ aPopover containsGlobalPoint: aGlobalPoint
+]
+
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> selectElement: anElement in: aRootElement [
 	elementToSelect := anElement.
