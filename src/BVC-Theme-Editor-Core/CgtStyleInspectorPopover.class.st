@@ -13,6 +13,7 @@ Class {
 CgtStyleInspectorPopover >> initialize [
 	super initialize.
 	self
+		vFitContent;
 		visibility: BlVisibility gone;
 		padding: (BlInsets all: 12);
 		background: self theme default contentBackground;
