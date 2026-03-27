@@ -498,22 +498,34 @@ CgtEditorOverlay >> updatePositions [
 
 { #category : 'api - hover tracking' }
 CgtEditorOverlay >> beginHoverTracking [
-	self animateHoverVisibilityTo: 1.0 duration: model hoverFadeInDurationMs milliSeconds
+	self animateHoverVisibilityTo: 1.0 duration: self hoverFadeInDuration milliSeconds
 ]
 
 { #category : 'api - hover tracking' }
 CgtEditorOverlay >> endHoverTracking [
-	self animateHoverVisibilityTo: 0.0 duration: model hoverFadeOutDurationMs milliSeconds
+	self animateHoverVisibilityTo: 0.0 duration: self hoverFadeOutDuration milliSeconds
+]
+
+
+
+{ #category : 'private - hover tracking' }
+CgtEditorOverlay >> hoverFadeInDuration [
+	^ model ifNil: [ 100 ] ifNotNil: [ model hoverFadeInDurationMs ifNil: [ 100 ] ]
+]
+
+{ #category : 'private - hover tracking' }
+CgtEditorOverlay >> hoverFadeOutDuration [
+	^ model ifNil: [ 300 ] ifNotNil: [ model hoverFadeOutDurationMs ifNil: [ 300 ] ]
 ]
 
 { #category : 'private - hover tracking' }
 CgtEditorOverlay >> animateHoverVisibilityTo: aNumber duration: aDuration [
 	| aToken aStartVisibility |
-	hoverVisibilityTarget = aNumber ifTrue: [ ^ self ].
+	(hoverVisibilityTarget ifNil: [ 0.0 ]) = aNumber ifTrue: [ ^ self ].
 	hoverVisibilityTarget := aNumber.
-	hoverVisibilityAnimationToken := hoverVisibilityAnimationToken + 1.
+	hoverVisibilityAnimationToken := (hoverVisibilityAnimationToken ifNil: [ 0 ]) + 1.
 	aToken := hoverVisibilityAnimationToken.
-	aStartVisibility := hoverVisibility.
+	aStartVisibility := hoverVisibility ifNil: [ 0.0 ].
 	self addAnimation: (BlNumberTransition new
 			from: aStartVisibility;
 			to: aNumber;
@@ -526,7 +538,7 @@ CgtEditorOverlay >> animateHoverVisibilityTo: aNumber duration: aDuration [
 ]
 
 { #category : 'accessing' }
-CgtEditorOverlay >> hoverVisibility [ ^ hoverVisibility ]
+CgtEditorOverlay >> hoverVisibility [ ^ hoverVisibility ifNil: [ 0.0 ] ]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> hoverVisibility: aNumber [
@@ -535,4 +547,4 @@ CgtEditorOverlay >> hoverVisibility: aNumber [
 ]
 
 { #category : 'accessing' }
-CgtEditorOverlay >> hoverVisibilityAnimationToken [ ^ hoverVisibilityAnimationToken ]
+CgtEditorOverlay >> hoverVisibilityAnimationToken [ ^ hoverVisibilityAnimationToken ifNil: [ 0 ] ]

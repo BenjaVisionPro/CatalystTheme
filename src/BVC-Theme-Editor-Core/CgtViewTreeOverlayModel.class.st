@@ -184,19 +184,19 @@ CgtViewTreeOverlayModel >> observedElements [
 
 
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> hoverFadeInDurationMs [ ^ hoverFadeInDurationMs ]
+CgtViewTreeOverlayModel >> hoverFadeInDurationMs [ ^ hoverFadeInDurationMs ifNil: [ 100 ] ]
 
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> hoverFadeInDurationMs: aNumber [ hoverFadeInDurationMs := aNumber ]
 
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> hoverIdleDurationMs [ ^ hoverIdleDurationMs ]
+CgtViewTreeOverlayModel >> hoverIdleDurationMs [ ^ hoverIdleDurationMs ifNil: [ 1000 ] ]
 
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> hoverIdleDurationMs: aNumber [ hoverIdleDurationMs := aNumber ]
 
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> hoverFadeOutDurationMs [ ^ hoverFadeOutDurationMs ]
+CgtViewTreeOverlayModel >> hoverFadeOutDurationMs [ ^ hoverFadeOutDurationMs ifNil: [ 300 ] ]
 
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> hoverFadeOutDurationMs: aNumber [ hoverFadeOutDurationMs := aNumber ]
