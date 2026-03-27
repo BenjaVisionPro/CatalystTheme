@@ -32,7 +32,8 @@ Class {
 		'overlayModel',
 		'transitionToken',
 		'desiredThemeEditorOpen',
-		'isTransitioningThemeEditor'
+		'isTransitioningThemeEditor',
+		'hoverIdleToken'
 	],
 	#classVars : [
 		'KeyCombination',
@@ -240,7 +241,8 @@ CgtEditorEventHandler >> initialize [
 	overlayModel := CgtViewTreeOverlayModel new.
 	transitionToken := 0.
 	desiredThemeEditorOpen := false.
-	isTransitioningThemeEditor := false
+	isTransitioningThemeEditor := false.
+	hoverIdleToken := 0
 ]
 
 
@@ -348,21 +350,16 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 			mousePosition := aMouseMoveEvent localPosition.
 			elementToHighlight := nil.
 			^ self ].
-
-	(self isPointInsideVisibleStyleInspector: aMouseMoveEvent position in: aMouseMoveEvent currentTarget)
-		ifTrue: [
-			self highlightElement: nil in: aMouseMoveEvent currentTarget.
-			mousePosition := nil.
-			^ self ].
 	
 	aThemeEditorTarget := self themeEditorTargetIn: aMouseMoveEvent currentTarget.
-	(aThemeEditorTarget containsGlobalPoint: aMouseMoveEvent position)
+	((aThemeEditorTarget containsGlobalPoint: aMouseMoveEvent position)
+		and: [ (self isPointInsideVisibleStyleInspector: aMouseMoveEvent position in: aMouseMoveEvent currentTarget) not ])
 		ifTrue: [
+			self noteTrackableHoverActivityIn: aMouseMoveEvent currentTarget.
 			self
 				highlightElementAt: aMouseMoveEvent localPosition
 				in: aMouseMoveEvent currentTarget ]
 		ifFalse: [
-			self highlightElement: nil in: aMouseMoveEvent currentTarget.
 			mousePosition := nil ] 
 ]
 
@@ -523,4 +520,18 @@ CgtEditorEventHandler >> themeEditorTargetIn: aRootElement [
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> unlockOverlay [
 	shouldLockOverlay := false
+]
+
+{ #category : 'private - hover tracking' }
+CgtEditorEventHandler >> noteTrackableHoverActivityIn: aRootElement [
+	| aToken aIdleDuration |
+	hoverIdleToken := (hoverIdleToken ifNil: [ 0 ]) + 1.
+	aToken := hoverIdleToken.
+	aIdleDuration := overlayModel hoverIdleDurationMs.
+	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay beginHoverTracking ].
+	[
+		(Delay forMilliseconds: aIdleDuration) wait.
+		hoverIdleToken = aToken ifTrue: [
+			self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay endHoverTracking ] ]
+	] forkAt: Processor userBackgroundPriority
 ]

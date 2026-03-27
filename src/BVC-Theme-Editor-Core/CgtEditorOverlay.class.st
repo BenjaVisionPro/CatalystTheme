@@ -11,7 +11,10 @@ Class {
 		'hoverAnimationToken',
 		'animatedHoverBounds',
 		'animatedHoverCornerRadius',
-		'animatedHoverAlpha'
+		'animatedHoverAlpha',
+		'hoverVisibility',
+		'hoverVisibilityTarget',
+		'hoverVisibilityAnimationToken'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -233,6 +236,9 @@ CgtEditorOverlay >> initialize [
 	animatedHoverBounds := nil.
 	animatedHoverCornerRadius := model defaultCornerRadius.
 	animatedHoverAlpha := 0.0.
+	hoverVisibility := 0.0.
+	hoverVisibilityTarget := 0.0.
+	hoverVisibilityAnimationToken := 0.
 	observedElements := OrderedCollection new.
 	self
 		constraintsDo: [ :c |
@@ -412,7 +418,7 @@ CgtEditorOverlay >> interpolatePointFrom: aStartPoint to: anEndPoint progress: a
 { #category : 'private - hover animation' }
 CgtEditorOverlay >> targetHoverAlpha [
 	(model hoverElement isNil or: [ self hoverIsAnchor ]) ifTrue: [ ^ 0.0 ].
-	^ model hoverTransparencyForCurrentHover
+	^ model hoverTransparencyForCurrentHover * hoverVisibility
 ]
 
 { #category : 'private - hover animation' }
@@ -488,3 +494,45 @@ CgtEditorOverlay >> toggleScopeElement: anElement [
 CgtEditorOverlay >> updatePositions [
 	maskLayer invalidate
 ]
+
+
+{ #category : 'api - hover tracking' }
+CgtEditorOverlay >> beginHoverTracking [
+	self animateHoverVisibilityTo: 1.0 duration: model hoverFadeInDurationMs milliSeconds
+]
+
+{ #category : 'api - hover tracking' }
+CgtEditorOverlay >> endHoverTracking [
+	self animateHoverVisibilityTo: 0.0 duration: model hoverFadeOutDurationMs milliSeconds
+]
+
+{ #category : 'private - hover tracking' }
+CgtEditorOverlay >> animateHoverVisibilityTo: aNumber duration: aDuration [
+	| aToken aStartVisibility |
+	hoverVisibilityTarget = aNumber ifTrue: [ ^ self ].
+	hoverVisibilityTarget := aNumber.
+	hoverVisibilityAnimationToken := hoverVisibilityAnimationToken + 1.
+	aToken := hoverVisibilityAnimationToken.
+	aStartVisibility := hoverVisibility.
+	self addAnimation: (BlNumberTransition new
+			from: aStartVisibility;
+			to: aNumber;
+			duration: aDuration;
+			onStepDo: [ :aVisibility :anOverlay |
+				anOverlay hoverVisibilityAnimationToken = aToken ifTrue: [
+					anOverlay hoverVisibility: aVisibility ] ];
+			onFinishedDo: [ self hoverVisibilityAnimationToken = aToken ifTrue: [ self hoverVisibility: aNumber ] ];
+			yourself)
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> hoverVisibility [ ^ hoverVisibility ]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> hoverVisibility: aNumber [
+	hoverVisibility := aNumber.
+	self updatePositions
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> hoverVisibilityAnimationToken [ ^ hoverVisibilityAnimationToken ]

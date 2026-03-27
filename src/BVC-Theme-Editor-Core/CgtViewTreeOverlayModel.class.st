@@ -12,7 +12,10 @@ Class {
 		'dimOpacity',
 		'blurRadius',
 		'defaultCornerRadius',
-		'showsMatches'
+		'showsMatches',
+		'hoverFadeInDurationMs',
+		'hoverIdleDurationMs',
+		'hoverFadeOutDurationMs'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -30,7 +33,10 @@ CgtViewTreeOverlayModel >> initialize [
 	dimOpacity := 0.35.
 	blurRadius := 6.
 	defaultCornerRadius := 10.
-	showsMatches := false
+	showsMatches := false.
+	hoverFadeInDurationMs := 100.
+	hoverIdleDurationMs := 1000.
+	hoverFadeOutDurationMs := 300
 ]
 
 { #category : 'accessing' }
@@ -175,3 +181,22 @@ CgtViewTreeOverlayModel >> observedElements [
 			(elements includes: eachElement) ifFalse: [ elements add: eachElement ] ] ].
 	^ elements
 ]
+
+
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> hoverFadeInDurationMs [ ^ hoverFadeInDurationMs ]
+
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> hoverFadeInDurationMs: aNumber [ hoverFadeInDurationMs := aNumber ]
+
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> hoverIdleDurationMs [ ^ hoverIdleDurationMs ]
+
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> hoverIdleDurationMs: aNumber [ hoverIdleDurationMs := aNumber ]
+
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> hoverFadeOutDurationMs [ ^ hoverFadeOutDurationMs ]
+
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> hoverFadeOutDurationMs: aNumber [ hoverFadeOutDurationMs := aNumber ]
