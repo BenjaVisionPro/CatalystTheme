@@ -30,7 +30,7 @@ CgtStyleInspectorPopover >> initialize [
 	selectorScrollPane
 		constraintsDo: [ :c |
 			c horizontal matchParent.
-			c vertical fitContent ].
+			c vertical exact: 28 ].
 	selectorScrollPane children ifNotEmpty: [ :theChildren |
 		| aZoomable |
 		aZoomable := theChildren first.

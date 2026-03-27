@@ -22,6 +22,7 @@ CgtElementPathSelector >> initialize [
 	hiddenCrumbLabel := '…'.
 	self
 		hMatchParent;
+		vFitContent;
 		aptitude: (BrGlamorousBreadcrumbAptitude new
 				separator: [ BrLabel new
 						aptitude: (BrGlamorousLabelAptitude new thin foreground: Color gray);
