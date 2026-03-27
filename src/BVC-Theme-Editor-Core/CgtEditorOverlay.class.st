@@ -105,7 +105,9 @@ CgtEditorOverlay >> drawDimOnSpartaCanvas: aCanvas [
 
 { #category : 'private - rendering' }
 CgtEditorOverlay >> drawHoverOnSpartaCanvas: aCanvas [
-	(animatedHoverBounds isNil or: [ animatedHoverAlpha <= 0.0 ]) ifTrue: [ ^ self ].
+	| visibleAlpha |
+	visibleAlpha := animatedHoverAlpha * self hoverVisibility.
+	(animatedHoverBounds isNil or: [ visibleAlpha <= 0.0 ]) ifTrue: [ ^ self ].
 	aCanvas transform
 		by: [ :aTransform | aTransform translateBy: animatedHoverBounds origin ]
 		during: [
@@ -115,7 +117,7 @@ CgtEditorOverlay >> drawHoverOnSpartaCanvas: aCanvas [
 				yourself) buildPathOnSpartaCanvas: aCanvas.
 			aCanvas fill
 				path: aPath;
-				paint: (Color white alpha: (animatedHoverAlpha * overlayOpacity));
+				paint: (Color white alpha: (visibleAlpha * overlayOpacity));
 				composeDestOut;
 				draw ]
 ]
@@ -418,7 +420,7 @@ CgtEditorOverlay >> interpolatePointFrom: aStartPoint to: anEndPoint progress: a
 { #category : 'private - hover animation' }
 CgtEditorOverlay >> targetHoverAlpha [
 	(model hoverElement isNil or: [ self hoverIsAnchor ]) ifTrue: [ ^ 0.0 ].
-	^ model hoverTransparencyForCurrentHover * hoverVisibility
+	^ model hoverTransparencyForCurrentHover
 ]
 
 { #category : 'private - hover animation' }
