@@ -91,7 +91,7 @@ CgtThemeSelectorWidget >> newCrumbButtonFor: aCgtThemeSimpleSelector [
 	^ BrButton new
 		beTinySize;
 		label: aCgtThemeSimpleSelector displayString;
-		aptitude: self crumbAptitudeFor: aCgtThemeSimpleSelector;
+		aptitude: (self crumbAptitudeFor: aCgtThemeSimpleSelector);
 		action: [ :aButton | self selectedSimpleSelector: aCgtThemeSimpleSelector ]
 ]
 
