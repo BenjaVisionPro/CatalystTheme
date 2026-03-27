@@ -74,6 +74,11 @@ CgtEditorEventHandler >> clickEvent: aClickEvent [
 	hasOverlay
 		ifFalse: [ ^ self ].
 
+	(self isPointInsideVisibleStyleInspector: aClickEvent position in: aClickEvent currentTarget)
+		ifTrue: [
+			aClickEvent consumed: true.
+			^ self ].
+
 	aThemeEditorTarget := self themeEditorTargetIn: aClickEvent currentTarget.
 	(aThemeEditorTarget containsGlobalPoint: aClickEvent position)
 		ifFalse: [ ^ self ].
@@ -89,7 +94,8 @@ CgtEditorEventHandler >> clickEvent: aClickEvent [
 		themeEditorOverlayIn: aClickEvent currentTarget
 		do: [ :anOverlay |
 			anOverlay clickHoverElement.
-			self selectElement: anOverlay selectedElement in: aClickEvent currentTarget ]
+			self selectElement: anOverlay selectedElement in: aClickEvent currentTarget ].
+	aClickEvent consumed: true
 ]
 
 { #category : 'api - accessing' }
