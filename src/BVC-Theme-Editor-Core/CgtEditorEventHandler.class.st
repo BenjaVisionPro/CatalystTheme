@@ -359,18 +359,18 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 
 { #category : 'event handling' }
 CgtEditorEventHandler >> isPointInsideVisibleStyleInspector: aGlobalPoint in: aRootElement [
-	| aPopover |
+	| isInside |
+	isInside := false.
 	self
 		themeEditorIn: aRootElement
 		do: [ :anEditor |
+			| aPopover |
 			(anEditor respondsTo: #styleInspectorPopover)
-				ifFalse: [ ^ false ].
-			aPopover := anEditor styleInspectorPopover.
-			aPopover ifNil: [ ^ false ].
-			(aPopover visibility = BlVisibility visible)
-				ifFalse: [ ^ false ].
-			^ aPopover containsGlobalPoint: aGlobalPoint ].
-	^ false
+				ifTrue: [
+					aPopover := anEditor styleInspectorPopover.
+					(aPopover notNil and: [ aPopover visibility = BlVisibility visible ])
+						ifTrue: [ isInside := aPopover containsGlobalPoint: aGlobalPoint ] ] ].
+	^ isInside
 ]
 
 { #category : 'api - overlay' }
