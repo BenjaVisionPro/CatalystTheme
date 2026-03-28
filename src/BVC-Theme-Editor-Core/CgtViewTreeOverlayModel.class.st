@@ -15,7 +15,14 @@ Class {
 		'showsMatches',
 		'hoverFadeInDurationMs',
 		'hoverIdleDurationMs',
-		'hoverFadeOutDurationMs'
+		'hoverFadeOutDurationMs',
+		'outerPaneTransparency',
+		'selectedElementTransparency',
+		'childScopeTransparency',
+		'maskLayerStep',
+		'cornerRadiusStep',
+		'outerPaneCornerRadius',
+		'outerPaneInset'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -25,14 +32,21 @@ Class {
 CgtViewTreeOverlayModel >> initialize [
 	super initialize.
 	pathPresentations := OrderedCollection new.
-	scopeStartTransparency := 0.85.
-	scopeStepTransparency := 0.025.
-	hoverTransparency := 0.85.
+	outerPaneTransparency := 0.2.
+	scopeStartTransparency := 0.6.
+	scopeStepTransparency := 0.1.
+	selectedElementTransparency := 1.0.
+	childScopeTransparency := 0.9.
+	hoverTransparency := 0.9.
 	hoverInsideAnchorTransparency := 0.05.
 	maskOutset := 6.
+	maskLayerStep := 8.
+	cornerRadiusStep := 8.
 	dimOpacity := 0.35.
 	blurRadius := 6.
 	defaultCornerRadius := 10.
+	outerPaneCornerRadius := 36.
+	outerPaneInset := 12.
 	showsMatches := false.
 	hoverFadeInDurationMs := 100.
 	hoverIdleDurationMs := 2000.
@@ -54,15 +68,29 @@ CgtViewTreeOverlayModel >> showsMatches: aBoolean [ showsMatches := aBoolean ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> maskOutset [ ^ maskOutset ]
 { #category : 'accessing' }
+CgtViewTreeOverlayModel >> maskLayerStep [ ^ maskLayerStep ifNil: [ 8 ] ]
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> cornerRadiusStep [ ^ cornerRadiusStep ifNil: [ 8 ] ]
+{ #category : 'accessing' }
 CgtViewTreeOverlayModel >> dimOpacity [ ^ dimOpacity ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> blurRadius [ ^ blurRadius ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> defaultCornerRadius [ ^ defaultCornerRadius ]
 { #category : 'accessing' }
+CgtViewTreeOverlayModel >> outerPaneTransparency [ ^ outerPaneTransparency ifNil: [ 0.2 ] ]
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> outerPaneCornerRadius [ ^ outerPaneCornerRadius ifNil: [ 36 ] ]
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> outerPaneInset [ ^ outerPaneInset ifNil: [ 12 ] ]
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> selectedElementTransparency [ ^ selectedElementTransparency ifNil: [ 1.0 ] ]
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> childScopeTransparency [ ^ childScopeTransparency ifNil: [ 0.9 ] ]
+{ #category : 'accessing' }
 CgtViewTreeOverlayModel >> hoverTransparency [ ^ hoverTransparency ]
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> scopeTransparencyAtIndex: anIndex [ ^ (scopeStartTransparency - ((anIndex - 1) * scopeStepTransparency)) max: 0.0 ]
+CgtViewTreeOverlayModel >> scopeTransparencyAtIndex: anIndex [ ^ (scopeStartTransparency + ((anIndex - 1) * scopeStepTransparency)) min: 1.0 ]
 
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> primaryPathPresentation [

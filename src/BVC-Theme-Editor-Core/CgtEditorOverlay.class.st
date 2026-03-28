@@ -74,12 +74,12 @@ CgtEditorOverlay >> animateFadeOutOnFinishedDo: aBlock [
 ]
 
 { #category : 'private - rendering' }
-CgtEditorOverlay >> cutOutElement: anElement alpha: anAlpha onSpartaCanvas: aCanvas [
-	| aBounds aGeometry |
-	anElement ifNil: [ ^ self ].
-	aBounds := self overlayBoundsFor: anElement.
-	aBounds ifNil: [ ^ self ].
-	aGeometry := self roundedGeometryFor: anElement bounds: aBounds.
+CgtEditorOverlay >> cutOutBounds: aBounds cornerRadius: aCornerRadius alpha: anAlpha onSpartaCanvas: aCanvas [
+	| aGeometry |
+	(aBounds isNil or: [ anAlpha <= 0.0 ]) ifTrue: [ ^ self ].
+	aGeometry := (BlRoundedRectangleGeometry cornerRadius: aCornerRadius)
+		matchExtent: aBounds extent;
+		yourself.
 	aCanvas transform
 		by: [ :aTransform | aTransform translateBy: aBounds origin ]
 		during: [
@@ -91,8 +91,38 @@ CgtEditorOverlay >> cutOutElement: anElement alpha: anAlpha onSpartaCanvas: aCan
 ]
 
 { #category : 'private - rendering' }
+CgtEditorOverlay >> cutOutElement: anElement alpha: anAlpha onSpartaCanvas: aCanvas [
+	self
+		cutOutElement: anElement
+		alpha: anAlpha
+		layerLevel: 0
+		onSpartaCanvas: aCanvas
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> cutOutElement: anElement alpha: anAlpha layerLevel: aLayerLevel onSpartaCanvas: aCanvas [
+	| aBounds aCornerRadius |
+	anElement ifNil: [ ^ self ].
+	aBounds := self overlayBoundsFor: anElement layerLevel: aLayerLevel.
+	aBounds ifNil: [ ^ self ].
+	aCornerRadius := self cornerRadiusFor: anElement layerLevel: aLayerLevel.
+	self cutOutBounds: aBounds cornerRadius: aCornerRadius alpha: anAlpha onSpartaCanvas: aCanvas
+]
+
+{ #category : 'private - rendering' }
 CgtEditorOverlay >> dimBounds [
 	^ self bounds inLocal asRectangle
+]
+
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> maskOutsetForLayerLevel: aLayerLevel [
+	^ model maskOutset + ((aLayerLevel max: 0) * model maskLayerStep)
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> outerPaneBounds [
+	^ self dimBounds insetBy: model outerPaneInset
 ]
 
 { #category : 'private - rendering' }
@@ -108,30 +138,51 @@ CgtEditorOverlay >> drawHoverOnSpartaCanvas: aCanvas [
 	| visibleAlpha |
 	visibleAlpha := animatedHoverAlpha * self hoverVisibility.
 	(animatedHoverBounds isNil or: [ visibleAlpha <= 0.0 ]) ifTrue: [ ^ self ].
-	aCanvas transform
-		by: [ :aTransform | aTransform translateBy: animatedHoverBounds origin ]
-		during: [
-				| aPath |
-			aPath := ((BlRoundedRectangleGeometry cornerRadius: animatedHoverCornerRadius)
-				matchExtent: animatedHoverBounds extent;
-				yourself) buildPathOnSpartaCanvas: aCanvas.
-			aCanvas fill
-				path: aPath;
-				paint: (Color white alpha: (visibleAlpha * overlayOpacity));
-				composeDestOut;
-				draw ]
+	self
+		cutOutBounds: animatedHoverBounds
+		cornerRadius: animatedHoverCornerRadius
+		alpha: visibleAlpha
+		onSpartaCanvas: aCanvas
 ]
 
 { #category : 'private - rendering' }
-CgtEditorOverlay >> drawScopesOnSpartaCanvas: aCanvas [
+CgtEditorOverlay >> drawOuterPaneMaskOnSpartaCanvas: aCanvas [
+	self
+		cutOutBounds: self outerPaneBounds
+		cornerRadius: model outerPaneCornerRadius
+		alpha: model outerPaneTransparency
+		onSpartaCanvas: aCanvas
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> drawUpstreamScopesOnSpartaCanvas: aCanvas [
+	| upstreamCount |
 	self primaryPathPresentation ifNil: [ ^ self ].
+	upstreamCount := self upstreamElements size.
 	self upstreamElements withIndexDo: [ :eachElement :anIndex |
-		self cutOutElement: eachElement alpha: (self scopeAlphaAtIndex: anIndex forPresentationKind: #primary) onSpartaCanvas: aCanvas ]
+		| layerLevel |
+		layerLevel := upstreamCount - anIndex + 1.
+		self
+			cutOutElement: eachElement
+			alpha: (self scopeAlphaAtIndex: anIndex forPresentationKind: #primary)
+			layerLevel: layerLevel
+			onSpartaCanvas: aCanvas ]
 ]
 
 { #category : 'private - rendering' }
 CgtEditorOverlay >> drawSelectionOnSpartaCanvas: aCanvas [
-	self pathPresentations do: [ :eachPresentation | self drawPathPresentation: eachPresentation onSpartaCanvas: aCanvas ]
+	self anchorElement ifNotNil: [
+		self
+			cutOutElement: self anchorElement
+			alpha: model selectedElementTransparency
+			layerLevel: 0
+			onSpartaCanvas: aCanvas ].
+	self childScopeElement ifNotNil: [
+		self
+			cutOutElement: self childScopeElement
+			alpha: model childScopeTransparency
+			layerLevel: 0
+			onSpartaCanvas: aCanvas ]
 ]
 
 
@@ -145,6 +196,11 @@ CgtEditorOverlay >> anchorElement [
 { #category : 'testing' }
 CgtEditorOverlay >> hoverIsAnchor [
 	^ model hoverIsAnchor
+]
+
+{ #category : 'accessing' }
+CgtEditorOverlay >> observedElements [
+	^ observedElements ifNil: [ #() ]
 ]
 
 { #category : 'accessing' }
@@ -190,14 +246,8 @@ CgtEditorOverlay >> scopeAlphaAtIndex: anIndex forPresentationKind: aSymbol [
 
 { #category : 'private - rendering' }
 CgtEditorOverlay >> drawPathPresentation: aPathPresentation onSpartaCanvas: aCanvas [
-	| aPath |
-	aPath := aPathPresentation elementPath.
-	aPath ifNil: [ ^ self ].
-	aPath upstreamElements withIndexDo: [ :eachElement :anIndex |
-		self cutOutElement: eachElement alpha: (self scopeAlphaAtIndex: anIndex forPresentationKind: aPathPresentation kind) onSpartaCanvas: aCanvas ].
-	self cutOutElement: aPath anchorElement alpha: (self anchorAlphaForPresentationKind: aPathPresentation kind) onSpartaCanvas: aCanvas.
-	aPath downstreamElements do: [ :eachElement |
-		self cutOutElement: eachElement alpha: (self downstreamAlphaForPresentationKind: aPathPresentation kind) onSpartaCanvas: aCanvas ]
+	self drawUpstreamScopesOnSpartaCanvas: aCanvas.
+	self drawSelectionOnSpartaCanvas: aCanvas
 ]
 
 { #category : 'accessing' }
@@ -284,7 +334,7 @@ CgtEditorOverlay >> onRemovedFromSceneGraph [
 ]
 
 { #category : 'private - rendering' }
-CgtEditorOverlay >> overlayBoundsFor: anOverlayedElement [
+CgtEditorOverlay >> elementLocalBoundsFor: anOverlayedElement [
 	| theCorners minX maxX minY maxY |
 	theCorners := anOverlayedElement bounds inLocal bounds corners
 		collect: [ :eachPoint | self globalPointToLocal: (anOverlayedElement localPointToGlobal: eachPoint) ].
@@ -298,7 +348,20 @@ CgtEditorOverlay >> overlayBoundsFor: anOverlayedElement [
 		maxX := maxX max: eachPoint x.
 		minY := minY min: eachPoint y.
 		maxY := maxY max: eachPoint y ].
-	^ ((minX @ minY) corner: (maxX @ maxY)) expandBy: model maskOutset
+	^ (minX @ minY) corner: (maxX @ maxY)
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> overlayBoundsFor: anOverlayedElement [
+	^ self overlayBoundsFor: anOverlayedElement layerLevel: 0
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> overlayBoundsFor: anOverlayedElement layerLevel: aLayerLevel [
+	| aBounds |
+	aBounds := self elementLocalBoundsFor: anOverlayedElement.
+	aBounds ifNil: [ ^ nil ].
+	^ aBounds expandBy: (self maskOutsetForLayerLevel: aLayerLevel)
 ]
 
 { #category : 'private' }
@@ -311,18 +374,25 @@ CgtEditorOverlay >> removeEventHandlerFromObservedElement: anElement [
 CgtEditorOverlay >> renderOnSpartaCanvas: aCanvas [
 	aCanvas layer during: [
 		self drawDimOnSpartaCanvas: aCanvas.
-		self drawScopesOnSpartaCanvas: aCanvas.
+		self drawOuterPaneMaskOnSpartaCanvas: aCanvas.
+		self drawUpstreamScopesOnSpartaCanvas: aCanvas.
 		self drawSelectionOnSpartaCanvas: aCanvas.
 		self drawHoverOnSpartaCanvas: aCanvas ]
 ]
 
 { #category : 'private - rendering' }
-CgtEditorOverlay >> roundedGeometryFor: anElement bounds: aRectangle [
+CgtEditorOverlay >> cornerRadiusFor: anElement layerLevel: aLayerLevel [
 	| aRadius |
 	aRadius := model defaultCornerRadius.
 	(anElement geometry isKindOf: BlRoundedRectangleGeometry)
-		ifTrue: [ aRadius := anElement geometry cornerRadii max + model maskOutset ].
-	^ (BlRoundedRectangleGeometry cornerRadius: aRadius)
+		ifTrue: [ aRadius := anElement geometry cornerRadii max ].
+	^ aRadius + model maskOutset + ((aLayerLevel max: 0) * model cornerRadiusStep)
+]
+
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> roundedGeometryFor: anElement bounds: aRectangle [
+	^ (BlRoundedRectangleGeometry cornerRadius: (self cornerRadiusFor: anElement layerLevel: 0))
 		matchExtent: aRectangle extent;
 		yourself
 ]
@@ -431,11 +501,8 @@ CgtEditorOverlay >> targetHoverBounds [
 
 { #category : 'private - hover animation' }
 CgtEditorOverlay >> targetHoverCornerRadius [
-	| aBounds |
 	(model hoverElement isNil or: [ self hoverIsAnchor ]) ifTrue: [ ^ model defaultCornerRadius ].
-	aBounds := self targetHoverBounds.
-	aBounds ifNil: [ ^ model defaultCornerRadius ].
-	^ (self roundedGeometryFor: model hoverElement bounds: aBounds) cornerRadii max
+	^ self cornerRadiusFor: model hoverElement layerLevel: 0
 ]
 
 { #category : 'accessing' }
