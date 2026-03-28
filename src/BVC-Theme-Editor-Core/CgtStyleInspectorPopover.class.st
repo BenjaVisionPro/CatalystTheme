@@ -26,23 +26,12 @@ CgtStyleInspectorPopover >> initialize [
 			c ignored horizontal alignLeft.
 			c ignored vertical alignTop ].
 	selectorWidget := CgtElementPathSelector new.
-	selectorScrollPane := selectorWidget asPannableElement.
+	selectorScrollPane := selectorWidget asScrollableElement.
 	selectorScrollPane
 		size: 1 @ 24;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical exact: 24 ].
-	selectorScrollPane children ifNotEmpty: [ :theChildren |
-		| aZoomable |
-		aZoomable := theChildren first.
-		aZoomable
-			size: 1 @ 24;
-			constraintsDo: [ :c | c horizontal fitContent. c vertical exact: 24 ].
-		(aZoomable respondsTo: #layout) ifTrue: [
-			(aZoomable layout isKindOf: BlZoomableLayout) ifTrue: [
-				aZoomable layout
-					defaultScale: 1;
-					animationDuration: 0 milliSeconds ] ] ].
 	self addChildren: {
 		(BrLabel new
 			id: #styleInspectorTitle;
