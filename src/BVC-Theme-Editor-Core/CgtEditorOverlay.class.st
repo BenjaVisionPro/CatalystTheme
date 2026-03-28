@@ -164,7 +164,7 @@ CgtEditorOverlay >> drawUpstreamScopesOnSpartaCanvas: aCanvas [
 		layerLevel := upstreamCount - anIndex + 1.
 		self
 			cutOutElement: eachElement
-			alpha: (self scopeAlphaAtIndex: anIndex forPresentationKind: #primary)
+			alpha: (self scopeAlphaAtIndex: anIndex totalCount: upstreamCount forPresentationKind: #primary)
 			layerLevel: layerLevel
 			onSpartaCanvas: aCanvas ]
 ]
@@ -238,9 +238,9 @@ CgtEditorOverlay >> downstreamAlphaForPresentationKind: aSymbol [
 ]
 
 { #category : 'private - rendering' }
-CgtEditorOverlay >> scopeAlphaAtIndex: anIndex forPresentationKind: aSymbol [
+CgtEditorOverlay >> scopeAlphaAtIndex: anIndex totalCount: aCount forPresentationKind: aSymbol [
 	| alpha |
-	alpha := model scopeTransparencyAtIndex: anIndex.
+	alpha := model scopeTransparencyAtIndex: anIndex totalCount: aCount.
 	^ aSymbol = #primary ifTrue: [ alpha ] ifFalse: [ alpha * 0.5 ]
 ]
 
