@@ -21,14 +21,13 @@ CgtElementPathSelector >> initialize [
 	ancestorRevealCount := 0.
 	hiddenCrumbLabel := '…'.
 	self
-		hMatchParent;
-		vFitContent;
+		hFitContent;
+		constraintsDo: [ :c | c vertical exact: 24 ];
 		aptitude: (BrGlamorousBreadcrumbAptitude new
 				separator: [ BrLabel new
 						aptitude: (BrGlamorousLabelAptitude new thin foreground: Color gray);
 						text: '>';
-						margin: (BlInsets left: 4 right: 4) ]);
-		hFitContent
+						margin: (BlInsets left: 4 right: 4) ])
 ]
 
 { #category : 'accessing' }
