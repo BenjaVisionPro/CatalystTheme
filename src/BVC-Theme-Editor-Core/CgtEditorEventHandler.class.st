@@ -93,7 +93,7 @@ CgtEditorEventHandler >> clickEvent: aClickEvent [
 		themeEditorOverlayIn: aClickEvent currentTarget
 		do: [ :anOverlay |
 			anOverlay clickHoverElement.
-			self selectElement: anOverlay selectedElement in: aClickEvent currentTarget ].
+			self syncThemeEditorSelectionFromOverlayIn: aClickEvent currentTarget ].
 	aClickEvent consumed: true
 ]
 
@@ -543,6 +543,21 @@ CgtEditorEventHandler >> noteTrackableHoverActivityIn: aRootElement [
 ]
 
 
+
+{ #category : 'private - themeEditor' }
+CgtEditorEventHandler >> syncThemeEditorSelectionFromOverlayIn: aRootElement [
+	| selectedElement |
+	selectedElement := overlayModel anchorElement.
+	elementToSelect := selectedElement.
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor |
+			aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
+				self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
+			aThemeEditor selectedElementPath: overlayModel primaryPath.
+			aThemeEditor selectElement: selectedElement ]
+]
+
 { #category : 'private - style inspector' }
 CgtEditorEventHandler >> styleInspectorElementPathNodeSelected: anElement in: aRootElement [
 	| aPath anchor |
@@ -550,12 +565,15 @@ CgtEditorEventHandler >> styleInspectorElementPathNodeSelected: anElement in: aR
 	aPath ifNil: [ ^ self ].
 	anchor := aPath anchorElement.
 	(anchor isNil or: [ anElement isNil ]) ifTrue: [ ^ self ].
-	(anElement == anchor or: [ (anchor hasParent: anElement) not ]) ifTrue: [ ^ self ].
-	aPath toggleUpstreamElement: anElement.
+	anElement == anchor
+		ifTrue: [ overlayModel deselect ]
+		ifFalse: [
+			(anchor hasParent: anElement)
+				ifTrue: [ aPath toggleUpstreamElement: anElement ]
+				ifFalse: [
+					(anElement hasParent: anchor)
+						ifTrue: [ aPath setDownstreamElement: anElement ]
+						ifFalse: [ overlayModel setPrimaryAnchorElement: anElement ] ] ].
 	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay stateChanged ].
-	self
-		themeEditorIn: aRootElement
-		do: [ :aThemeEditor |
-			aThemeEditor selectedElementPath: overlayModel primaryPath.
-			aThemeEditor showStyleInspectorPopover ]
+	self syncThemeEditorSelectionFromOverlayIn: aRootElement
 ]

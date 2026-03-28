@@ -133,6 +133,18 @@ CgtElementPath >> toggleUpstreamElement: anElement [
 	anchorIndex := nodes findFirst: [ :each | each element == anchor ]
 ]
 
+
+{ #category : 'actions' }
+CgtElementPath >> setDownstreamElement: anElement [
+	| anchor |
+	anchor := self anchorElement.
+	(anchor isNil or: [ anElement isNil ]) ifTrue: [ ^ self clearDownstreamNodes ].
+	(anElement == anchor or: [ (anElement hasParent: anchor) not ]) ifTrue: [ ^ self ].
+	self clearDownstreamNodes.
+	nodes add: (CgtElementPathNode on: anElement).
+	anchorIndex := nodes findFirst: [ :each | each element == anchor ]
+]
+
 { #category : 'actions' }
 CgtElementPath >> toggleDownstreamElement: anElement [
 	| anchor |
