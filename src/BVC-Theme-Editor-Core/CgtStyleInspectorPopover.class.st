@@ -27,6 +27,10 @@ CgtStyleInspectorPopover >> initialize [
 			c ignored vertical alignTop ].
 	selectorWidget := CgtElementPathSelector new.
 	selectorScrollPane := selectorWidget asScrollableElement.
+	selectorScrollPane eventDispatcher handlersDo: [ :eachHandler |
+		(eachHandler isKindOf: BlScrollableElementEventHandler)
+			ifTrue: [ selectorScrollPane removeEventHandler: eachHandler ] ].
+	selectorScrollPane addEventHandler: CgtHorizontalScrollableElementEventHandler new.
 	selectorScrollPane
 		size: 1 @ 24;
 		constraintsDo: [ :c |
