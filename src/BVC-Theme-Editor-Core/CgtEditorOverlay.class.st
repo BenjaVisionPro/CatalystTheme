@@ -114,21 +114,6 @@ CgtEditorOverlay >> dimBounds [
 	^ self bounds inLocal asRectangle
 ]
 
-{ #category : 'private - rendering' }
-CgtEditorOverlay >> cutAlphaToReachOpacity: aTargetOpacity fromCurrentOpacity: aCurrentOpacity [
-	| currentOpacity targetOpacity |
-	currentOpacity := aCurrentOpacity max: 0.0.
-	targetOpacity := aTargetOpacity max: 0.0.
-	currentOpacity <= 0.0 ifTrue: [ ^ 0.0 ].
-	targetOpacity >= currentOpacity ifTrue: [ ^ 0.0 ].
-	^ (1.0 - (targetOpacity / currentOpacity)) max: 0.0 min: 1.0
-]
-
-{ #category : 'private - rendering' }
-CgtEditorOverlay >> finalMaskOpacityForTransparency: aTransparency [
-	^ (1.0 - aTransparency) max: 0.0 min: 1.0
-]
-
 
 { #category : 'private - rendering' }
 CgtEditorOverlay >> maskOutsetForLayerLevel: aLayerLevel [
@@ -171,22 +156,39 @@ CgtEditorOverlay >> drawOuterPaneMaskOnSpartaCanvas: aCanvas [
 
 { #category : 'private - rendering' }
 CgtEditorOverlay >> drawUpstreamScopesOnSpartaCanvas: aCanvas [
-	| upstreamCount previousOpacity |
+	| previousOpacity targetTransparency targetOpacity cutAlpha upstreamCount |
 	self primaryPathPresentation ifNil: [ ^ self ].
 	upstreamCount := self upstreamElements size.
 	previousOpacity := self finalMaskOpacityForTransparency: model outerPaneTransparency.
 	self upstreamElements withIndexDo: [ :eachElement :anIndex |
-		| layerLevel targetTransparency targetOpacity cutAlpha |
+		| layerLevel |
 		layerLevel := upstreamCount - anIndex + 1.
 		targetTransparency := self scopeAlphaAtIndex: anIndex totalCount: upstreamCount forPresentationKind: #primary.
 		targetOpacity := self finalMaskOpacityForTransparency: targetTransparency.
-		cutAlpha := self cutAlphaToReachOpacity: targetOpacity fromCurrentOpacity: previousOpacity.
+		cutAlpha := self
+			cutAlphaToReachOpacity: targetOpacity
+			fromCurrentOpacity: previousOpacity.
 		self
 			cutOutElement: eachElement
 			alpha: cutAlpha
 			layerLevel: layerLevel
 			onSpartaCanvas: aCanvas.
 		previousOpacity := targetOpacity ]
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> finalMaskOpacityForTransparency: aTransparency [
+	^ ((1.0 - aTransparency) max: 0.0) min: 1.0
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> cutAlphaToReachOpacity: aTargetOpacity fromCurrentOpacity: aCurrentOpacity [
+	| currentOpacity targetOpacity |
+	currentOpacity := (aCurrentOpacity max: 0.0) min: 1.0.
+	targetOpacity := (aTargetOpacity max: 0.0) min: 1.0.
+	currentOpacity <= 0.0 ifTrue: [ ^ 0.0 ].
+	targetOpacity >= currentOpacity ifTrue: [ ^ 0.0 ].
+	^ ((1.0 - (targetOpacity / currentOpacity)) max: 0.0) min: 1.0
 ]
 
 { #category : 'private - rendering' }
