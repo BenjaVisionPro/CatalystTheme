@@ -39,8 +39,8 @@ CgtViewTreeOverlayModel >> initialize [
 	childScopeTransparency := 0.9.
 	hoverTransparency := 0.9.
 	hoverInsideAnchorTransparency := 0.05.
-	maskOutset := 6.
-	maskLayerStep := 8.
+	maskOutset := 4.
+	maskLayerStep := 4.
 	cornerRadiusStep := 8.
 	dimOpacity := 1.0.
 	blurRadius := 6.
@@ -66,14 +66,18 @@ CgtViewTreeOverlayModel >> showsMatches [ ^ showsMatches ifNil: [ false ] ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> showsMatches: aBoolean [ showsMatches := aBoolean ]
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> maskOutset [ ^ maskOutset ]
+CgtViewTreeOverlayModel >> maskOutset [ ^ maskOutset ifNil: [ 4 ] ]
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> maskLayerStep [ ^ maskLayerStep ifNil: [ 8 ] ]
+CgtViewTreeOverlayModel >> maskOutset: aNumber [ maskOutset := aNumber ]
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> maskLayerStep [ ^ maskLayerStep ifNil: [ 4 ] ]
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> maskLayerStep: aNumber [ maskLayerStep := aNumber ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> cornerRadiusStep [ ^ cornerRadiusStep ifNil: [ 8 ] ]
 
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> edgeCoincidenceTolerance [ ^ ((self maskLayerStep max: maskOutset) + 2) ]
+CgtViewTreeOverlayModel >> edgeCoincidenceTolerance [ ^ self maskLayerStep ]
 
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> cornerCoincidenceTolerance [ ^ self edgeCoincidenceTolerance + 2 ]
