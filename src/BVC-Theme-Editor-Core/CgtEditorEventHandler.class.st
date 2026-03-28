@@ -545,11 +545,12 @@ CgtEditorEventHandler >> noteTrackableHoverActivityIn: aRootElement [
 
 { #category : 'private - style inspector' }
 CgtEditorEventHandler >> styleInspectorElementPathNodeSelected: anElement in: aRootElement [
-	| aPath relation |
+	| aPath anchor |
 	aPath := overlayModel primaryPath.
 	aPath ifNil: [ ^ self ].
-	relation := aPath relationOfElementToAnchor: anElement.
-	relation = #upstream ifFalse: [ ^ self ].
+	anchor := aPath anchorElement.
+	(anchor isNil or: [ anElement isNil ]) ifTrue: [ ^ self ].
+	(anElement == anchor or: [ (anchor hasParent: anElement) not ]) ifTrue: [ ^ self ].
 	aPath toggleUpstreamElement: anElement.
 	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay stateChanged ].
 	self
