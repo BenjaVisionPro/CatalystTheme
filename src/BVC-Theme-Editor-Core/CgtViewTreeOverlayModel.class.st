@@ -92,6 +92,9 @@ CgtViewTreeOverlayModel >> outerPaneCornerRadius [ ^ outerPaneCornerRadius ifNil
 CgtViewTreeOverlayModel >> outerPaneCornerRadius: aNumber [ outerPaneCornerRadius := aNumber ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> outerPaneInset [ ^ outerPaneInset ifNil: [ 0 ] ]
+
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> outerPaneInset: aNumber [ outerPaneInset := aNumber ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> selectedElementTransparency [ ^ selectedElementTransparency ifNil: [ 1.0 ] ]
 { #category : 'accessing' }
