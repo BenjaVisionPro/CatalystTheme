@@ -71,6 +71,13 @@ CgtViewTreeOverlayModel >> maskOutset [ ^ maskOutset ]
 CgtViewTreeOverlayModel >> maskLayerStep [ ^ maskLayerStep ifNil: [ 8 ] ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> cornerRadiusStep [ ^ cornerRadiusStep ifNil: [ 8 ] ]
+
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> edgeCoincidenceTolerance [ ^ ((self maskLayerStep max: maskOutset) + 2) ]
+
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> cornerCoincidenceTolerance [ ^ self edgeCoincidenceTolerance + 2 ]
+
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> dimOpacity [ ^ dimOpacity ]
 { #category : 'accessing' }

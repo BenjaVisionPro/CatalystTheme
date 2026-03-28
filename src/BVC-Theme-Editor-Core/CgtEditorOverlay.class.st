@@ -358,10 +358,15 @@ CgtEditorOverlay >> overlayBoundsFor: anOverlayedElement [
 
 { #category : 'private - rendering' }
 CgtEditorOverlay >> overlayBoundsFor: anOverlayedElement layerLevel: aLayerLevel [
-	| aBounds |
+	| aBounds leftOutset rightOutset topOutset bottomOutset |
 	aBounds := self elementLocalBoundsFor: anOverlayedElement.
 	aBounds ifNil: [ ^ nil ].
-	^ aBounds expandBy: (self maskOutsetForLayerLevel: aLayerLevel)
+	leftOutset := self leftOutsetFor: anOverlayedElement bounds: aBounds layerLevel: aLayerLevel.
+	rightOutset := self rightOutsetFor: anOverlayedElement bounds: aBounds layerLevel: aLayerLevel.
+	topOutset := self topOutsetFor: anOverlayedElement bounds: aBounds layerLevel: aLayerLevel.
+	bottomOutset := self bottomOutsetFor: anOverlayedElement bounds: aBounds layerLevel: aLayerLevel.
+	^ (aBounds origin x - leftOutset @ (aBounds origin y - topOutset))
+		corner: (aBounds corner x + rightOutset @ (aBounds corner y + bottomOutset))
 ]
 
 { #category : 'private' }
@@ -382,11 +387,12 @@ CgtEditorOverlay >> renderOnSpartaCanvas: aCanvas [
 
 { #category : 'private - rendering' }
 CgtEditorOverlay >> cornerRadiusFor: anElement layerLevel: aLayerLevel [
-	| aRadius |
+	| aRadius extraCornerSteps |
 	aRadius := model defaultCornerRadius.
 	(anElement geometry isKindOf: BlRoundedRectangleGeometry)
 		ifTrue: [ aRadius := anElement geometry cornerRadii max ].
-	^ aRadius + model maskOutset + ((aLayerLevel max: 0) * model cornerRadiusStep)
+	extraCornerSteps := self cornerSeparationStepCountFor: anElement.
+	^ aRadius + model maskOutset + ((aLayerLevel max: 0) * model cornerRadiusStep) + (extraCornerSteps * model cornerRadiusStep)
 ]
 
 
@@ -398,6 +404,99 @@ CgtEditorOverlay >> roundedGeometryFor: anElement bounds: aRectangle [
 ]
 
 
+
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> bounds: aBounds edge: anEdgeSymbol [
+	anEdgeSymbol = #left ifTrue: [ ^ aBounds origin x ].
+	anEdgeSymbol = #right ifTrue: [ ^ aBounds corner x ].
+	anEdgeSymbol = #top ifTrue: [ ^ aBounds origin y ].
+	anEdgeSymbol = #bottom ifTrue: [ ^ aBounds corner y ].
+	^ 0
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> bottomOutsetFor: anElement bounds: aBounds layerLevel: aLayerLevel [
+	^ (self maskOutsetForLayerLevel: aLayerLevel)
+		+ ((self coincidentInnerEdgeCountFor: anElement bounds: aBounds edge: #bottom) * model maskLayerStep)
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> coincidentInnerCornerCountFor: aPoint in: aCollection [
+	^ aCollection count: [ :eachPoint |
+		((aPoint x - eachPoint x) abs <= model cornerCoincidenceTolerance)
+			and: [ (aPoint y - eachPoint y) abs <= model cornerCoincidenceTolerance ] ]
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> coincidentInnerEdgeCountFor: anElement bounds: aBounds edge: anEdgeSymbol [
+	| edgeValue innerBounds |
+	edgeValue := self bounds: aBounds edge: anEdgeSymbol.
+	innerBounds := self innerReferenceBoundsForUpstreamElement: anElement.
+	^ innerBounds count: [ :eachBounds |
+		((edgeValue - (self bounds: eachBounds edge: anEdgeSymbol)) abs) <= model edgeCoincidenceTolerance ]
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> cornerSeparationStepCountFor: anElement [
+	| aBounds innerBounds corners |
+	aBounds := self elementLocalBoundsFor: anElement.
+	aBounds ifNil: [ ^ 0 ].
+	innerBounds := self innerReferenceBoundsForUpstreamElement: anElement.
+	innerBounds ifEmpty: [ ^ 0 ].
+	corners := {
+		aBounds origin.
+		aBounds origin x @ aBounds corner y.
+		aBounds corner x @ aBounds origin y.
+		aBounds corner }.
+	^ corners inject: 0 into: [ :maxCount :eachCorner |
+		| innerCorners |
+		innerCorners := OrderedCollection new.
+		innerBounds do: [ :eachBounds |
+			innerCorners
+				add: eachBounds origin;
+				add: (eachBounds origin x @ eachBounds corner y);
+				add: (eachBounds corner x @ eachBounds origin y);
+				add: eachBounds corner ].
+		maxCount max: (self coincidentInnerCornerCountFor: eachCorner in: innerCorners) ]
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> innerReferenceBoundsForUpstreamElement: anElement [
+	| aPath upstreamElements currentIndex innerElements bounds |
+	aPath := model primaryPath.
+	aPath ifNil: [ ^ #() ].
+	upstreamElements := aPath upstreamElements asOrderedCollection.
+	currentIndex := upstreamElements indexOf: anElement ifAbsent: [ ^ #() ].
+	innerElements := OrderedCollection new.
+	(currentIndex + 1 to: upstreamElements size) do: [ :anIndex |
+		innerElements add: (upstreamElements at: anIndex) ].
+	aPath anchorElement ifNotNil: [ :anAnchor | innerElements add: anAnchor ].
+	bounds := OrderedCollection new.
+	innerElements do: [ :eachElement |
+		| eachBounds |
+		eachBounds := self elementLocalBoundsFor: eachElement.
+		eachBounds ifNotNil: [ bounds add: eachBounds ] ].
+	^ bounds
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> leftOutsetFor: anElement bounds: aBounds layerLevel: aLayerLevel [
+	^ (self maskOutsetForLayerLevel: aLayerLevel)
+		+ ((self coincidentInnerEdgeCountFor: anElement bounds: aBounds edge: #left) * model maskLayerStep)
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> rightOutsetFor: anElement bounds: aBounds layerLevel: aLayerLevel [
+	^ (self maskOutsetForLayerLevel: aLayerLevel)
+		+ ((self coincidentInnerEdgeCountFor: anElement bounds: aBounds edge: #right) * model maskLayerStep)
+]
+
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> topOutsetFor: anElement bounds: aBounds layerLevel: aLayerLevel [
+	^ (self maskOutsetForLayerLevel: aLayerLevel)
+		+ ((self coincidentInnerEdgeCountFor: anElement bounds: aBounds edge: #top) * model maskLayerStep)
+]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> overlayOpacity [
