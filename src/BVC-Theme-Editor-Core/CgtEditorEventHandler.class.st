@@ -387,6 +387,8 @@ CgtEditorEventHandler >> selectElement: anElement in: aRootElement [
 	self
 		themeEditorIn: aRootElement
 		do: [ :aThemeEditor |
+			aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
+				self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
 			aThemeEditor selectedElementPath: overlayModel primaryPath.
 			aThemeEditor selectElement: anElement ]
 ]
@@ -440,7 +442,9 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 			self
 				themeEditorIn: aRootElement
 				do: [ :aThemeEditor |
-					aThemeEditor animateOpenOnFinishedDo: [
+					aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
+					self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
+				aThemeEditor animateOpenOnFinishedDo: [
 						transitionToken = aToken ifTrue: [
 							isTransitioningThemeEditor := false.
 							self processRequestedThemeEditorStateIn: aRootElement ] ] ].
@@ -466,7 +470,9 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 	self
 		themeEditorIn: aRootElement
 		do: [ :aThemeEditor |
-			aThemeEditor animateOpenOnFinishedDo: [
+			aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
+					self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
+				aThemeEditor animateOpenOnFinishedDo: [
 				transitionToken = aToken ifTrue: [
 					isTransitioningThemeEditor := false.
 					self processRequestedThemeEditorStateIn: aRootElement ] ] ]
@@ -534,4 +540,21 @@ CgtEditorEventHandler >> noteTrackableHoverActivityIn: aRootElement [
 		hoverIdleToken = aToken ifTrue: [
 			self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay endHoverTracking ] ]
 	] forkAt: Processor userBackgroundPriority
+]
+
+
+{ #category : 'private - style inspector' }
+CgtEditorEventHandler >> styleInspectorElementPathNodeSelected: anElement in: aRootElement [
+	| aPath relation |
+	aPath := overlayModel primaryPath.
+	aPath ifNil: [ ^ self ].
+	relation := aPath relationOfElementToAnchor: anElement.
+	relation = #upstream ifFalse: [ ^ self ].
+	aPath toggleUpstreamElement: anElement.
+	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay stateChanged ].
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor |
+			aThemeEditor selectedElementPath: overlayModel primaryPath.
+			aThemeEditor showStyleInspectorPopover ]
 ]

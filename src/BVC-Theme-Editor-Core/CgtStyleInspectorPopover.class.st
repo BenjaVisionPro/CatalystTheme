@@ -92,3 +92,9 @@ CgtStyleInspectorPopover >> styleRule: aCgtThemeStyleRule [
 				ifNotNil: [ styleRule selector ifNil: [ '' ] ifNotNil: [ styleRule selector displayString ] ]) ]
 		ifNone: [ ].
 ]
+
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> onElementPathNodeSelectedDo: aBlock [
+	selectorWidget onElementPathNodeSelectedDo: aBlock
+]

@@ -20,7 +20,8 @@ Class {
 		'detailsWeightAnimation',
 		'closeButton',
 		'styleInspectorPopover',
-		'selectedElementPath'
+		'selectedElementPath',
+		'onStyleInspectorElementPathNodeSelectedBlock'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -596,6 +597,8 @@ CgtEditor >> updateCloseButtonOpacity [
 CgtEditor >> ensureStyleInspectorPopover [
 	styleInspectorPopover ifNotNil: [ ^ styleInspectorPopover ].
 	styleInspectorPopover := self newStyleInspectorPopover.
+	onStyleInspectorElementPathNodeSelectedBlock ifNotNil: [
+		styleInspectorPopover onElementPathNodeSelectedDo: onStyleInspectorElementPathNodeSelectedBlock ].
 	self addChild: styleInspectorPopover.
 	^ styleInspectorPopover
 ]
@@ -713,4 +716,11 @@ CgtEditor >> selectedElementPath: aCgtElementPath [
 { #category : 'accessing' }
 CgtEditor >> targetContainer [
 	^ targetContainer
+]
+
+
+{ #category : 'accessing' }
+CgtEditor >> onStyleInspectorElementPathNodeSelectedDo: aBlock [
+	onStyleInspectorElementPathNodeSelectedBlock := aBlock.
+	styleInspectorPopover ifNotNil: [ styleInspectorPopover onElementPathNodeSelectedDo: aBlock ]
 ]
