@@ -66,23 +66,17 @@ CgtViewTreeOverlayModel >> showsMatches [ ^ showsMatches ifNil: [ false ] ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> showsMatches: aBoolean [ showsMatches := aBoolean ]
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> maskOutset [ ^ maskOutset ]
+CgtViewTreeOverlayModel >> maskOutset [ ^ maskOutset ifNil: [ 2 ] ]
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> maskLayerStep [ ^ maskLayerStep ifNil: [ self maskOutset ] ]
+CgtViewTreeOverlayModel >> maskLayerStep [ ^ maskLayerStep ifNil: [ 2 ] ]
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> maskOutset: aNumber [ maskOutset := aNumber ]
-{ #category : 'accessing' }
-CgtViewTreeOverlayModel >> maskLayerStep: aNumber [ maskLayerStep := aNumber ]
-{ #category : 'accessing' }
-CgtViewTreeOverlayModel >> cornerRadiusStep [ ^ cornerRadiusStep ifNil: [ self maskLayerStep ] ]
-{ #category : 'accessing' }
-CgtViewTreeOverlayModel >> cornerRadiusStep: aNumber [ cornerRadiusStep := aNumber ]
+CgtViewTreeOverlayModel >> cornerRadiusStep [ ^ cornerRadiusStep ifNil: [ 2 ] ]
 
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> edgeCoincidenceTolerance [ ^ self maskLayerStep ]
+CgtViewTreeOverlayModel >> edgeCoincidenceTolerance [ ^ (self maskLayerStep max: self maskOutset) ]
 
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> cornerCoincidenceTolerance [ ^ self maskLayerStep ]
+CgtViewTreeOverlayModel >> cornerCoincidenceTolerance [ ^ self edgeCoincidenceTolerance ]
 
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> dimOpacity [ ^ dimOpacity ]
