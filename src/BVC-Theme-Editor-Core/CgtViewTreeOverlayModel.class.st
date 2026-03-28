@@ -45,7 +45,7 @@ CgtViewTreeOverlayModel >> initialize [
 	dimOpacity := 1.0.
 	blurRadius := 6.
 	defaultCornerRadius := 10.
-	outerPaneCornerRadius := 36.
+	outerPaneCornerRadius := 0.
 	outerPaneInset := 12.
 	showsMatches := false.
 	hoverFadeInDurationMs := 100.
@@ -87,7 +87,9 @@ CgtViewTreeOverlayModel >> defaultCornerRadius [ ^ defaultCornerRadius ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> outerPaneTransparency [ ^ outerPaneTransparency ifNil: [ 0.2 ] ]
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> outerPaneCornerRadius [ ^ outerPaneCornerRadius ifNil: [ 36 ] ]
+CgtViewTreeOverlayModel >> outerPaneCornerRadius [ ^ outerPaneCornerRadius ifNil: [ 0 ] ]
+
+CgtViewTreeOverlayModel >> outerPaneCornerRadius: aNumber [ outerPaneCornerRadius := aNumber ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> outerPaneInset [ ^ outerPaneInset ifNil: [ 12 ] ]
 { #category : 'accessing' }
