@@ -713,6 +713,13 @@ CgtEditor >> selectedElementPath: aCgtElementPath [
 	selectedElement ifNotNil: [ self showStyleInspectorPopover ]
 ]
 
+
+
+{ #category : 'accessing' }
+CgtEditor >> overlayContainer [
+	^ scenePreviewElement ifNil: [ targetContainer ]
+]
+
 { #category : 'accessing' }
 CgtEditor >> targetContainer [
 	^ targetContainer
