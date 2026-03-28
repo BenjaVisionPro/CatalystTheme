@@ -391,8 +391,8 @@ CgtEditorOverlay >> cornerRadiusFor: anElement layerLevel: aLayerLevel [
 	aRadius := model defaultCornerRadius.
 	(anElement geometry isKindOf: BlRoundedRectangleGeometry)
 		ifTrue: [ aRadius := anElement geometry cornerRadii max ].
-	extraCornerSteps := self cornerSeparationStepCountFor: anElement.
-	^ aRadius + model maskOutset + ((aLayerLevel max: 0) * model cornerRadiusStep) + (extraCornerSteps * model cornerRadiusStep)
+	extraCornerSteps := self cornerSeparationStepCountFor: anElement layerLevel: aLayerLevel.
+	^ aRadius + (extraCornerSteps * model cornerRadiusStep)
 ]
 
 
@@ -438,19 +438,18 @@ CgtEditorOverlay >> coincidentInnerEdgeCountFor: anElement bounds: aBounds edge:
 ]
 
 { #category : 'private - rendering' }
-CgtEditorOverlay >> cornerSeparationStepCountFor: anElement [
+CgtEditorOverlay >> cornerSeparationStepCountFor: anElement layerLevel: aLayerLevel [
 	| aBounds innerBounds corners |
 	aBounds := self elementLocalBoundsFor: anElement.
 	aBounds ifNil: [ ^ 0 ].
 	innerBounds := self innerReferenceBoundsForUpstreamElement: anElement.
-	innerBounds ifEmpty: [ ^ 0 ].
 	corners := {
 		aBounds origin.
 		aBounds origin x @ aBounds corner y.
 		aBounds corner x @ aBounds origin y.
 		aBounds corner }.
 	^ corners inject: 0 into: [ :maxCount :eachCorner |
-		| innerCorners |
+		| innerCorners coincidentCount |
 		innerCorners := OrderedCollection new.
 		innerBounds do: [ :eachBounds |
 			innerCorners
@@ -458,7 +457,10 @@ CgtEditorOverlay >> cornerSeparationStepCountFor: anElement [
 				add: (eachBounds origin x @ eachBounds corner y);
 				add: (eachBounds corner x @ eachBounds origin y);
 				add: eachBounds corner ].
-		maxCount max: (self coincidentInnerCornerCountFor: eachCorner in: innerCorners) ]
+		coincidentCount := self coincidentInnerCornerCountFor: eachCorner in: innerCorners.
+		maxCount max: ((coincidentCount > 0)
+			ifTrue: [ coincidentCount + (aLayerLevel max: 0) ]
+			ifFalse: [ 0 ]) ]
 ]
 
 { #category : 'private - rendering' }

@@ -39,9 +39,9 @@ CgtViewTreeOverlayModel >> initialize [
 	childScopeTransparency := 0.9.
 	hoverTransparency := 0.9.
 	hoverInsideAnchorTransparency := 0.05.
-	maskOutset := 4.
-	maskLayerStep := 4.
-	cornerRadiusStep := 8.
+	maskOutset := 2.
+	maskLayerStep := 2.
+	cornerRadiusStep := 2.
 	dimOpacity := 1.0.
 	blurRadius := 6.
 	defaultCornerRadius := 10.
@@ -66,21 +66,23 @@ CgtViewTreeOverlayModel >> showsMatches [ ^ showsMatches ifNil: [ false ] ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> showsMatches: aBoolean [ showsMatches := aBoolean ]
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> maskOutset [ ^ maskOutset ifNil: [ 4 ] ]
+CgtViewTreeOverlayModel >> maskOutset [ ^ maskOutset ]
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> maskLayerStep [ ^ maskLayerStep ifNil: [ self maskOutset ] ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> maskOutset: aNumber [ maskOutset := aNumber ]
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> maskLayerStep [ ^ maskLayerStep ifNil: [ 4 ] ]
-{ #category : 'accessing' }
 CgtViewTreeOverlayModel >> maskLayerStep: aNumber [ maskLayerStep := aNumber ]
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> cornerRadiusStep [ ^ cornerRadiusStep ifNil: [ 8 ] ]
+CgtViewTreeOverlayModel >> cornerRadiusStep [ ^ cornerRadiusStep ifNil: [ self maskLayerStep ] ]
+{ #category : 'accessing' }
+CgtViewTreeOverlayModel >> cornerRadiusStep: aNumber [ cornerRadiusStep := aNumber ]
 
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> edgeCoincidenceTolerance [ ^ self maskLayerStep ]
 
 { #category : 'accessing' }
-CgtViewTreeOverlayModel >> cornerCoincidenceTolerance [ ^ self edgeCoincidenceTolerance + 2 ]
+CgtViewTreeOverlayModel >> cornerCoincidenceTolerance [ ^ self maskLayerStep ]
 
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> dimOpacity [ ^ dimOpacity ]
@@ -102,12 +104,14 @@ CgtViewTreeOverlayModel >> childScopeTransparency [ ^ childScopeTransparency ifN
 CgtViewTreeOverlayModel >> hoverTransparency [ ^ hoverTransparency ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> scopeTransparencyAtIndex: anIndex totalCount: aCount [
-	| count clampedIndex position |
+	| count position |
 	count := aCount ifNil: [ 0 ].
-	count <= 1 ifTrue: [ ^ 0.65 ].
-	clampedIndex := (anIndex max: 1) min: count.
-	position := (clampedIndex - 1) asFloat / (count - 1) asFloat.
-	^ 0.4 + (position * 0.25)
+	count <= 0 ifTrue: [ ^ 0.7 ].
+	count = 1 ifTrue: [ ^ 0.7 ].
+	count = 2 ifTrue: [ ^ anIndex = 1 ifTrue: [ 0.6 ] ifFalse: [ 0.7 ] ].
+	count = 3 ifTrue: [ ^ 0.4 + (anIndex * 0.1) ].
+	position := (anIndex - 1) asFloat / (count - 1) asFloat.
+	^ 0.5 + (position * 0.2)
 ]
 
 { #category : 'accessing' }
