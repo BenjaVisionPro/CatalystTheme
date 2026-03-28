@@ -98,14 +98,12 @@ CgtViewTreeOverlayModel >> childScopeTransparency [ ^ childScopeTransparency ifN
 CgtViewTreeOverlayModel >> hoverTransparency [ ^ hoverTransparency ]
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> scopeTransparencyAtIndex: anIndex totalCount: aCount [
-	| count position |
+	| count clampedIndex position |
 	count := aCount ifNil: [ 0 ].
-	count <= 0 ifTrue: [ ^ 0.7 ].
-	count = 1 ifTrue: [ ^ 0.7 ].
-	count = 2 ifTrue: [ ^ anIndex = 1 ifTrue: [ 0.6 ] ifFalse: [ 0.7 ] ].
-	count = 3 ifTrue: [ ^ 0.4 + (anIndex * 0.1) ].
-	position := (anIndex - 1) asFloat / (count - 1) asFloat.
-	^ 0.5 + (position * 0.2)
+	count <= 1 ifTrue: [ ^ 0.65 ].
+	clampedIndex := (anIndex max: 1) min: count.
+	position := (clampedIndex - 1) asFloat / (count - 1) asFloat.
+	^ 0.4 + (position * 0.25)
 ]
 
 { #category : 'accessing' }
