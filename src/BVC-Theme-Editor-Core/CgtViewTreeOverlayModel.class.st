@@ -42,7 +42,7 @@ CgtViewTreeOverlayModel >> initialize [
 	maskOutset := 6.
 	maskLayerStep := 8.
 	cornerRadiusStep := 8.
-	dimOpacity := 0.35.
+	dimOpacity := 1.0.
 	blurRadius := 6.
 	defaultCornerRadius := 10.
 	outerPaneCornerRadius := 36.
