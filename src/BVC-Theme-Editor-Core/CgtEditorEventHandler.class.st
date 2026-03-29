@@ -212,22 +212,7 @@ CgtEditorEventHandler >> highlightElement: anElement in: aRootElement [
 		do: [ :aThemeEditor | aThemeEditor highlightedElement: anElement ]
 ]
 
-{ #category : 'api - overlay' }
-CgtEditorEventHandler >> highlightElementAt: aPoint in: aRootElement [
-	| aHoveredElement |
 
-	mousePosition := aPoint.
-	elementToHighlight := nil.
-
-	hasOverlay
-		ifFalse: [ ^ self ].
-
-	aHoveredElement := self previewElementAt: aPoint in: aRootElement.
-
-	self
-		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | aThemeEditor previewHoverMovedOver: aHoveredElement ]
-]
 
 { #category : 'event handling' }
 CgtEditorEventHandler >> highlightElementEvent: aHighlightElementEvent [
