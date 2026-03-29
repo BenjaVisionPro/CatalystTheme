@@ -331,13 +331,12 @@ CgtEditorEventHandler >> processRequestedThemeEditorStateIn: aRootElement [
 
 { #category : 'private - themeEditor' }
 CgtEditorEventHandler >> refreshEditorStateIn: aRootElement [
-	| aPreviewHoveredElement |
-	aPreviewHoveredElement := nil.
-	(interactionState externallyHighlightedElement isNil and: [ mousePosition notNil ])
-		ifTrue: [ aPreviewHoveredElement := self previewElementAt: mousePosition in: aRootElement ].
 	self
 		themeEditorIn: aRootElement
-		do: [ :aThemeEditor |
+		do: [ :aThemeEditor | | aPreviewHoveredElement |
+			aPreviewHoveredElement := nil.
+			(aThemeEditor interactionState externallyHighlightedElement isNil and: [ mousePosition notNil ])
+				ifTrue: [ aPreviewHoveredElement := self previewElementAt: mousePosition in: aRootElement ].
 			aThemeEditor refreshInterfaceFromInteractionState.
 			aPreviewHoveredElement
 				ifNil: [ aThemeEditor clearPreviewHover ]
@@ -541,7 +540,7 @@ CgtEditorEventHandler >> noteTrackableHoverActivityIn: aRootElement [
 	| aToken aIdleDuration |
 	hoverIdleToken := (hoverIdleToken ifNil: [ 0 ]) + 1.
 	aToken := hoverIdleToken.
-	aIdleDuration := interactionState overlayModel hoverIdleDurationMs.
+	aIdleDuration := 2000.
 	self themeEditorIn: aRootElement do: [ :aThemeEditor |
 		aIdleDuration := aThemeEditor overlayModel hoverIdleDurationMs ].
 	[
