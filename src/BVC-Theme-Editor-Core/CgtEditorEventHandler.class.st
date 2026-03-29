@@ -506,7 +506,6 @@ CgtEditorEventHandler >> themeEditorIn: aTargetElement do: aBlock [
 		current := current parent ].
 ]
 
-
 { #category : 'private - accessing' }
 CgtEditorEventHandler >> themeEditorOverlayHostIn: aRootElement [
 	self
