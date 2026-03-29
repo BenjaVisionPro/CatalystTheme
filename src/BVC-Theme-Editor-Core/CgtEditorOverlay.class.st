@@ -209,10 +209,6 @@ CgtEditorOverlay >> anchorElement [
 	^ model anchorElement
 ]
 
-{ #category : 'testing' }
-CgtEditorOverlay >> hoverIsAnchor [
-	^ model hoverIsAnchor
-]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> observedElements [
@@ -325,10 +321,6 @@ CgtEditorOverlay >> initialize [
 	self addChild: maskLayer
 ]
 
-{ #category : 'testing' }
-CgtEditorOverlay >> isDescendantOfSelection: anElement [
-	^ model isDescendantOfSelection: anElement
-]
 
 { #category : 'hooks - children' }
 CgtEditorOverlay >> onAddedToSceneGraph [
@@ -604,20 +596,43 @@ CgtEditorOverlay >> interpolatePointFrom: aStartPoint to: anEndPoint progress: a
 
 { #category : 'private - hover animation' }
 CgtEditorOverlay >> targetHoverAlpha [
-	(model hoverElement isNil or: [ self hoverIsAnchor ]) ifTrue: [ ^ 0.0 ].
-	^ model hoverTransparencyForCurrentHover
+	(self hasVisibleHover not) ifTrue: [ ^ 0.0 ].
+	^ self hoverMaskTransparency
 ]
 
 { #category : 'private - hover animation' }
 CgtEditorOverlay >> targetHoverBounds [
-	(model hoverElement isNil or: [ self hoverIsAnchor ]) ifTrue: [ ^ nil ].
+	self hasVisibleHover ifFalse: [ ^ nil ].
 	^ self overlayBoundsFor: model hoverElement
 ]
 
 { #category : 'private - hover animation' }
 CgtEditorOverlay >> targetHoverCornerRadius [
-	(model hoverElement isNil or: [ self hoverIsAnchor ]) ifTrue: [ ^ model defaultCornerRadius ].
+	self hasVisibleHover ifFalse: [ ^ model defaultCornerRadius ].
 	^ self cornerRadiusFor: model hoverElement layerLevel: 0
+]
+
+
+{ #category : 'private - hover animation' }
+CgtEditorOverlay >> hasVisibleHover [
+	^ model hoverElement notNil and: [ model hoverElement ~= self anchorElement ]
+]
+
+{ #category : 'private - hover animation' }
+CgtEditorOverlay >> hoverMaskTransparency [
+	^ (self hoverTargetsSelectedDescendant)
+		ifTrue: [ model hoverInsideAnchorTransparency ]
+		ifFalse: [ model hoverTransparency ]
+]
+
+{ #category : 'private - hover animation' }
+CgtEditorOverlay >> hoverTargetsSelectedDescendant [
+	| hoverElement anchorElement |
+	hoverElement := model hoverElement.
+	anchorElement := self anchorElement.
+	(hoverElement isNil or: [ anchorElement isNil ]) ifTrue: [ ^ false ].
+	hoverElement == anchorElement ifTrue: [ ^ false ].
+	^ hoverElement hasParent: anchorElement
 ]
 
 { #category : 'accessing' }

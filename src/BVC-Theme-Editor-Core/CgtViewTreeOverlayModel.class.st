@@ -99,6 +99,9 @@ CgtViewTreeOverlayModel >> childScopeTransparency [ ^ childScopeTransparency ifN
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> hoverTransparency [ ^ hoverTransparency ]
 { #category : 'accessing' }
+CgtViewTreeOverlayModel >> hoverInsideAnchorTransparency [ ^ hoverInsideAnchorTransparency ifNil: [ 0.05 ] ]
+
+{ #category : 'accessing' }
 CgtViewTreeOverlayModel >> scopeTransparencyAtIndex: anIndex totalCount: aCount [
 	| count clampedIndex position |
 	count := aCount ifNil: [ 0 ].
@@ -139,59 +142,13 @@ CgtViewTreeOverlayModel >> childScopeElement [
 { #category : 'testing' }
 CgtViewTreeOverlayModel >> hasPrimaryPath [ ^ self primaryPath notNil ]
 
-{ #category : 'accessing' }
-CgtViewTreeOverlayModel >> setPrimaryAnchorElement: anElementOrNil [
-	anElementOrNil ifNil: [ ^ self deselect ].
-	pathPresentations := OrderedCollection with: (CgtViewTreeOverlayPathPresentation path: (CgtElementPath anchorElement: anElementOrNil) kind: #primary)
-]
 
-{ #category : 'actions' }
-CgtViewTreeOverlayModel >> deselect [
-	pathPresentations := OrderedCollection new.
-	hoverElement := nil
-]
 
-{ #category : 'testing' }
-CgtViewTreeOverlayModel >> hoverIsAnchor [
-	^ hoverElement notNil and: [ hoverElement == self anchorElement ]
-]
 
-{ #category : 'testing' }
-CgtViewTreeOverlayModel >> hoverIsAncestorOfAnchor [
-	| anchor |
-	anchor := self anchorElement.
-	(anchor isNil or: [ hoverElement isNil ]) ifTrue: [ ^ false ].
-	hoverElement == anchor ifTrue: [ ^ false ].
-	^ anchor hasParent: hoverElement
-]
 
-{ #category : 'testing' }
-CgtViewTreeOverlayModel >> hoverIsOnPrimaryUpstreamPath [
-	| aPath |
-	aPath := self primaryPath.
-	aPath ifNil: [ ^ false ].
-	^ aPath upstreamElements includes: hoverElement
-]
 
-{ #category : 'testing' }
-CgtViewTreeOverlayModel >> hoverIsDescendantOfAnchor [
-	^ self isDescendantOfSelection: hoverElement
-]
 
-{ #category : 'testing - compatibility' }
-CgtViewTreeOverlayModel >> isDescendantOfSelection: anElement [
-	| anchor |
-	anchor := self anchorElement.
-	(anchor isNil or: [ anElement isNil ]) ifTrue: [ ^ false ].
-	anElement == anchor ifTrue: [ ^ false ].
-	^ anElement hasParent: anchor
-]
 
-{ #category : 'accessing' }
-CgtViewTreeOverlayModel >> hoverTransparencyForCurrentHover [
-	(self hoverIsDescendantOfAnchor) ifTrue: [ ^ hoverInsideAnchorTransparency ].
-	^ hoverTransparency
-]
 
 { #category : 'accessing' }
 CgtViewTreeOverlayModel >> observedElements [

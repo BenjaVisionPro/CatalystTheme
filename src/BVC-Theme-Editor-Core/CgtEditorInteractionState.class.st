@@ -107,8 +107,8 @@ CgtEditorInteractionState >> restoreSelection: aSelectedElement highlighted: aHi
 { #category : 'event handling - selection' }
 CgtEditorInteractionState >> requestSelectionOf: anElement [
 	anElement
-		ifNil: [ overlayModel deselect ]
-		ifNotNil: [ overlayModel setPrimaryAnchorElement: anElement ].
+		ifNil: [ self clearSelection ]
+		ifNotNil: [ self selectAnchorElement: anElement ].
 	self synchronizeSelectionState.
 	^ true
 ]
@@ -126,19 +126,36 @@ CgtEditorInteractionState >> synchronizeSelectionState [
 	selectedElement := overlayModel anchorElement
 ]
 
+
+{ #category : 'private - selection' }
+CgtEditorInteractionState >> clearSelection [
+	overlayModel
+		pathPresentations: #();
+		hoverElement: nil
+]
+
+{ #category : 'private - selection' }
+CgtEditorInteractionState >> selectAnchorElement: anElement [
+	overlayModel pathPresentations:
+		(OrderedCollection with:
+			(CgtViewTreeOverlayPathPresentation
+				path: (CgtElementPath anchorElement: anElement)
+				kind: #primary))
+]
+
 { #category : 'private - selection' }
 CgtEditorInteractionState >> updateSelectionWithInteractedElement: anElement [
 	| aPath anchor |
 	anElement ifNil: [ ^ self ].
 	aPath := overlayModel primaryPath.
-	aPath ifNil: [ ^ overlayModel setPrimaryAnchorElement: anElement ].
+	aPath ifNil: [ ^ self selectAnchorElement: anElement ].
 	anchor := aPath anchorElement.
-	anchor ifNil: [ ^ overlayModel setPrimaryAnchorElement: anElement ].
+	anchor ifNil: [ ^ self selectAnchorElement: anElement ].
 	anElement == anchor
-		ifTrue: [ ^ overlayModel deselect ].
+		ifTrue: [ ^ self clearSelection ].
 	(anchor hasParent: anElement)
 		ifTrue: [ ^ aPath toggleUpstreamElement: anElement ].
 	(anElement hasParent: anchor)
 		ifTrue: [ ^ aPath setDownstreamElement: anElement ].
-	overlayModel setPrimaryAnchorElement: anElement
+	self selectAnchorElement: anElement
 ]
