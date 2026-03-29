@@ -130,9 +130,6 @@ CgtViewTreeOverlayModel >> anchorElement [
 ]
 
 { #category : 'accessing - compatibility' }
-CgtViewTreeOverlayModel >> selectedElement [ ^ self anchorElement ]
-
-{ #category : 'accessing - compatibility' }
 CgtViewTreeOverlayModel >> childScopeElement [
 	| aPath |
 	aPath := self primaryPath.
@@ -158,9 +155,6 @@ CgtViewTreeOverlayModel >> deselect [
 CgtViewTreeOverlayModel >> hoverIsAnchor [
 	^ hoverElement notNil and: [ hoverElement == self anchorElement ]
 ]
-
-{ #category : 'testing - compatibility' }
-CgtViewTreeOverlayModel >> isHoverOnSelected [ ^ self hoverIsAnchor ]
 
 { #category : 'testing' }
 CgtViewTreeOverlayModel >> hoverIsAncestorOfAnchor [
@@ -197,32 +191,6 @@ CgtViewTreeOverlayModel >> isDescendantOfSelection: anElement [
 CgtViewTreeOverlayModel >> hoverTransparencyForCurrentHover [
 	(self hoverIsDescendantOfAnchor) ifTrue: [ ^ hoverInsideAnchorTransparency ].
 	^ hoverTransparency
-]
-
-{ #category : 'actions' }
-CgtViewTreeOverlayModel >> clickBehaviorForHover [
-	hoverElement ifNil: [ ^ #none ].
-	self hasPrimaryPath ifFalse: [ ^ #select ].
-	self hoverIsAnchor ifTrue: [ ^ #deselect ].
-	self hoverIsAncestorOfAnchor ifTrue: [ ^ #toggleUpstream ].
-	self hoverIsDescendantOfAnchor ifTrue: [ ^ #toggleDownstream ].
-	^ #select
-]
-
-{ #category : 'actions' }
-CgtViewTreeOverlayModel >> clickHoverElement [
-	| behavior |
-	behavior := self clickBehaviorForHover.
-	behavior = #none ifTrue: [ ^ self ].
-	behavior = #select ifTrue: [ ^ self setPrimaryAnchorElement: hoverElement ].
-	behavior = #deselect ifTrue: [ ^ self deselect ].
-	behavior = #toggleUpstream ifTrue: [ ^ self primaryPath toggleUpstreamElement: hoverElement ].
-	behavior = #toggleDownstream ifTrue: [ ^ self primaryPath setDownstreamElement: hoverElement ]
-]
-
-{ #category : 'actions - compatibility' }
-CgtViewTreeOverlayModel >> toggleScopeElement: anElement [
-	self primaryPath ifNotNil: [ :aPath | aPath toggleUpstreamElement: anElement ]
 ]
 
 { #category : 'accessing' }

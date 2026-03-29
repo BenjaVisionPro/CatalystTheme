@@ -26,12 +26,6 @@ CgtEditorOverlay >> addEventHandlerToObservedElement: anElement [
 		ifTrue: [ anElement addEventHandler: eventHandler ]
 ]
 
-{ #category : 'actions' }
-CgtEditorOverlay >> clickHoverElement [
-	model clickHoverElement.
-	self stateChanged
-]
-
 { #category : 'accessing' }
 CgtEditorOverlay >> childScopeElement [
 	^ model childScopeElement
@@ -627,17 +621,6 @@ CgtEditorOverlay >> targetHoverCornerRadius [
 ]
 
 { #category : 'accessing' }
-CgtEditorOverlay >> selectElement: anElementOrNil [
-	model setPrimaryAnchorElement: anElementOrNil.
-	self stateChanged
-]
-
-{ #category : 'accessing' }
-CgtEditorOverlay >> selectedElement [
-	^ model anchorElement
-]
-
-{ #category : 'accessing' }
 CgtEditorOverlay >> showElement: anElement [
 	(self observedElements includes: anElement)
 		ifTrue: [ self stateChanged ]
@@ -672,12 +655,6 @@ CgtEditorOverlay >> syncObservedElements [
 		(observedElements includes: eachElement)
 			ifFalse: [ eachElement addEventHandler: eventHandler ] ].
 	observedElements := theNewObservedElements
-]
-
-{ #category : 'actions' }
-CgtEditorOverlay >> toggleScopeElement: anElement [
-	model toggleScopeElement: anElement.
-	self stateChanged
 ]
 
 { #category : 'accessing' }

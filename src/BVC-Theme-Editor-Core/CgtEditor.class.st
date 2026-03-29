@@ -747,11 +747,6 @@ CgtEditor >> overlayDo: aBlock [
 ]
 
 { #category : 'private - overlay' }
-CgtEditor >> overlayStateChanged [
-	self overlayDo: [ :anOverlay | anOverlay stateChanged ]
-]
-
-{ #category : 'private - overlay' }
 CgtEditor >> refreshOverlayState [
 	self overlayDo: [ :anOverlay |
 		anOverlay hoverElement: self effectiveHoverElement.
@@ -865,8 +860,8 @@ CgtEditor >> applySelectionInteractionWith: anElement [
 { #category : 'private - selection' }
 CgtEditor >> mutateSelectionDo: aBlock [
 	aBlock value.
-	self overlayStateChanged.
-	self syncSelectionFromOverlayState: overlayModel
+	self syncSelectionFromOverlayState: overlayModel.
+	self refreshOverlayState
 ]
 
 { #category : 'private - selection' }
