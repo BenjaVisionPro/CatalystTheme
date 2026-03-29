@@ -21,7 +21,8 @@ Class {
 		'closeButton',
 		'styleInspectorPopover',
 		'selectedElementPath',
-		'onStyleInspectorElementPathNodeSelectedBlock'
+		'onStyleInspectorElementPathNodeSelectedBlock',
+		'onStyleInspectorElementPathNodeHoveredBlock'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -599,6 +600,8 @@ CgtEditor >> ensureStyleInspectorPopover [
 	styleInspectorPopover := self newStyleInspectorPopover.
 	onStyleInspectorElementPathNodeSelectedBlock ifNotNil: [
 		styleInspectorPopover onElementPathNodeSelectedDo: onStyleInspectorElementPathNodeSelectedBlock ].
+	onStyleInspectorElementPathNodeHoveredBlock ifNotNil: [
+		styleInspectorPopover onElementPathNodeHoveredDo: onStyleInspectorElementPathNodeHoveredBlock ].
 	self addChild: styleInspectorPopover.
 	^ styleInspectorPopover
 ]
@@ -729,6 +732,13 @@ CgtEditor >> targetContainer [
 	^ targetContainer
 ]
 
+
+
+{ #category : 'accessing' }
+CgtEditor >> onStyleInspectorElementPathNodeHoveredDo: aBlock [
+	onStyleInspectorElementPathNodeHoveredBlock := aBlock.
+	styleInspectorPopover ifNotNil: [ styleInspectorPopover onElementPathNodeHoveredDo: aBlock ]
+]
 
 { #category : 'accessing' }
 CgtEditor >> onStyleInspectorElementPathNodeSelectedDo: aBlock [

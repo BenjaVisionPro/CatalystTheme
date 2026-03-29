@@ -568,6 +568,12 @@ CgtEditorEventHandler >> syncThemeEditorSelectionFromOverlayIn: aRootElement [
 ]
 
 { #category : 'private - style inspector' }
+CgtEditorEventHandler >> styleInspectorElementPathNodeHovered: anElement in: aRootElement [
+	self noteTrackableHoverActivityIn: aRootElement.
+	self highlightElement: anElement in: aRootElement
+]
+
+{ #category : 'private - style inspector' }
 CgtEditorEventHandler >> styleInspectorElementPathNodeSelected: anElement in: aRootElement [
 	| aPath anchor |
 	aPath := overlayModel primaryPath.

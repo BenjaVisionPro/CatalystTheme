@@ -9,6 +9,7 @@ Class {
 		'ancestorRevealCount',
 		'hiddenCrumbLabel',
 		'onElementPathNodeSelectedBlock',
+		'onElementPathNodeHoveredBlock',
 		'pathRootElement'
 	],
 	#category : 'BVC-Theme-Editor-Core',
@@ -70,6 +71,12 @@ CgtElementPathSelector >> pathRootElement: anElement [
 { #category : 'accessing' }
 CgtElementPathSelector >> onElementPathNodeSelectedDo: aBlock [
 	onElementPathNodeSelectedBlock := aBlock
+]
+
+
+{ #category : 'accessing' }
+CgtElementPathSelector >> onElementPathNodeHoveredDo: aBlock [
+	onElementPathNodeHoveredBlock := aBlock
 ]
 
 { #category : 'accessing' }
@@ -149,10 +156,17 @@ CgtElementPathSelector >> visibleIndexesForFullPath: fullPath [
 
 { #category : 'private' }
 CgtElementPathSelector >> newElementCrumbFor: anElement [
-	^ BrButton new
+	| aButton |
+	aButton := BrButton new
 		label: (self displayStringForElement: anElement);
 		aptitude: (self elementCrumbAptitudeFor: anElement);
-		action: [ :aButton | onElementPathNodeSelectedBlock ifNotNil: [ onElementPathNodeSelectedBlock value: anElement ] ]
+		action: [ :clickedButton | onElementPathNodeSelectedBlock ifNotNil: [ onElementPathNodeSelectedBlock value: anElement ] ];
+		yourself.
+	aButton when: BlMouseEnterEvent do: [ :anEvent |
+		onElementPathNodeHoveredBlock ifNotNil: [ onElementPathNodeHoveredBlock value: anElement ] ].
+	aButton when: BlMouseLeaveEvent do: [ :anEvent |
+		onElementPathNodeHoveredBlock ifNotNil: [ onElementPathNodeHoveredBlock value: nil ] ].
+	^ aButton
 ]
 
 { #category : 'private' }

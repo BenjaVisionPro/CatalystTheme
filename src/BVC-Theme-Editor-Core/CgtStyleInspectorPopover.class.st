@@ -94,6 +94,13 @@ CgtStyleInspectorPopover >> styleRule: aCgtThemeStyleRule [
 ]
 
 
+
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> onElementPathNodeHoveredDo: aBlock [
+	selectorWidget onElementPathNodeHoveredDo: aBlock
+]
+
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> onElementPathNodeSelectedDo: aBlock [
 	selectorWidget onElementPathNodeSelectedDo: aBlock
