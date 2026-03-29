@@ -162,20 +162,11 @@ CgtElementPathSelector >> newElementCrumbFor: anElement [
 		aptitude: (self elementCrumbAptitudeFor: anElement);
 		action: [ :clickedButton | onElementPathNodeSelectedBlock ifNotNil: [ onElementPathNodeSelectedBlock value: anElement ] ];
 		yourself.
-	self installHoverHandlersOnCrumb: aButton forElement: anElement.
-	^ aButton
-]
-
-{ #category : 'private' }
-CgtElementPathSelector >> installHoverHandlersOnCrumb: anElement forElement: aPathElement [
-	anElement when: BlMouseEnterEvent do: [ :anEvent |
-		onElementPathNodeHoveredBlock ifNotNil: [ onElementPathNodeHoveredBlock value: aPathElement ] ].
-	anElement when: BlMouseMoveEvent do: [ :anEvent |
-		onElementPathNodeHoveredBlock ifNotNil: [ onElementPathNodeHoveredBlock value: aPathElement ] ].
-	anElement when: BlMouseLeaveEvent do: [ :anEvent |
+	aButton when: BlElementHoveredEvent do: [ :anEvent |
+		onElementPathNodeHoveredBlock ifNotNil: [ onElementPathNodeHoveredBlock value: anElement ] ].
+	aButton when: BlElementUnhoveredEvent do: [ :anEvent |
 		onElementPathNodeHoveredBlock ifNotNil: [ onElementPathNodeHoveredBlock value: nil ] ].
-	anElement childrenDo: [ :eachChild |
-		self installHoverHandlersOnCrumb: eachChild forElement: aPathElement ]
+	^ aButton
 ]
 
 { #category : 'private' }
