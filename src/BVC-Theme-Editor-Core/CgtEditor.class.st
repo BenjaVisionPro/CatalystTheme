@@ -3,7 +3,6 @@ Class {
 	#superclass : 'BlElement',
 	#instVars : [
 		'targetContainer',
-		'selectedElement',
 		'inspector',
 		'elementsTree',
 		'scenePage',
@@ -20,11 +19,7 @@ Class {
 		'detailsWeightAnimation',
 		'closeButton',
 		'styleInspectorPopover',
-		'selectedElementPath',
-		'previewHoverElement',
-		'widgetHoverElement',
-		'explicitHoverElement',
-		'overlayModel'
+		'interactionState'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -40,7 +35,7 @@ CgtEditor >> animateCloseOnFinishedDo: aBlock [
 
 { #category : 'api - animation' }
 CgtEditor >> animateDetailsOpen [
-	selectedElement ifNil: [ ^ self ].
+	self selectedElement ifNil: [ ^ self ].
 	self detailsWeight >= self openedDetailsWeight ifTrue: [ ^ self ].
 	self
 		animatePreviewProgressTo: self presentationProgress
@@ -252,10 +247,7 @@ CgtEditor >> initialize [
 	previewAnimationToken := 0.
 	detailsAnimationToken := 0.
 	presentationProgress := 0.0.
-	previewHoverElement := nil.
-	widgetHoverElement := nil.
-	explicitHoverElement := nil.
-	overlayModel := CgtViewTreeOverlayModel new.
+	interactionState := CgtEditorInteractionState new.
 	self
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -263,7 +255,6 @@ CgtEditor >> initialize [
 		layout: BlLinearLayout horizontal;
 		background: self theme header defaultBackgroundColor
 ]
-
 { #category : 'initialization' }
 CgtEditor >> initializeWith: aTargetContainer [
 	^ self initializeWith: aTargetContainer overlayModel: CgtViewTreeOverlayModel new
@@ -272,7 +263,7 @@ CgtEditor >> initializeWith: aTargetContainer [
 { #category : 'initialization' }
 CgtEditor >> initializeWith: aTargetContainer overlayModel: aCgtViewTreeOverlayModel [
 	targetContainer := aTargetContainer.
-	overlayModel := aCgtViewTreeOverlayModel ifNil: [ CgtViewTreeOverlayModel new ].
+	interactionState overlayModel: (aCgtViewTreeOverlayModel ifNil: [ CgtViewTreeOverlayModel new ]).
 
 	scenePage := BlElement new
 		layout: BlLinearLayout vertical alignCenter;
@@ -296,16 +287,11 @@ CgtEditor >> initializeWith: aTargetContainer overlayModel: aCgtViewTreeOverlayM
 		(closeButton := self newCloseButtonFor: aTargetContainer) }.
 	self updateCloseButtonOpacity
 ]
-
 { #category : 'accessing' }
 CgtEditor >> inspectElement: anElement [
-	selectedElement == anElement
-		ifTrue: [ ^ self ].
-
-	selectedElement := anElement.
-	elementsTree phlow spawnObject: selectedElement
+	self requestSelectionOf: anElement.
+	elementsTree phlow spawnObject: anElement
 ]
-
 { #category : 'instance creation' }
 CgtEditor >> newCloseButtonFor: aTargetContainer [
 	^ BrButton new
@@ -494,22 +480,23 @@ CgtEditor >> sceneWeight [
 	^ aLayoutConstraints linear weight
 ]
 
-{ #category : 'accessing' }
-CgtEditor >> selectElement: anElement [
-	selectedElement == anElement ifTrue: [
-		selectedElement ifNotNil: [ self updateStyleInspectorPopoverPosition ].
+{ #category : 'private - selection' }
+CgtEditor >> synchronizeSelectionInterfaceTo: anElement [
+	self selectedElement == anElement ifTrue: [
+		anElement ifNotNil: [ self updateStyleInspectorPopoverPosition ].
 		^ self ].
-	selectedElement := anElement.
 	elementsTree items: targetContainer children lazy: [ :each | each children ].
-	selectedElement ifNil: [
+	anElement ifNil: [
 		self hideStyleInspectorPopover.
 		^ self ].
-	elementsTree expandSuchThat: [ :aTreeNode | (selectedElement hasParent: aTreeNode value) or: [ selectedElement == aTreeNode value ] ].
-	elementsTree selectAndScrollTo: selectedElement.
+	elementsTree expandSuchThat: [ :aTreeNode | (anElement hasParent: aTreeNode value) or: [ anElement == aTreeNode value ] ].
+	elementsTree selectAndScrollTo: anElement.
 	self showStyleInspectorPopover
 ]
-
-
+{ #category : 'private - selection' }
+CgtEditor >> refreshSelectionInterface [
+	self synchronizeSelectionInterfaceTo: self selectedElement
+]
 { #category : 'testing' }
 CgtEditor >> isAnimatingPreview [
 	^ isOpeningPreview or: [ isClosingPreview ]
@@ -629,9 +616,9 @@ CgtEditor >> newStyleInspectorPopover [
 { #category : 'private - style inspector' }
 CgtEditor >> overlayBoundsForSelectedElement [
 	| theCorners minX maxX minY maxY |
-	selectedElement ifNil: [ ^ nil ].
-	theCorners := selectedElement bounds inLocal bounds corners
-		collect: [ :eachPoint | self localPointToGlobal: (selectedElement localPointToGlobal: eachPoint) ].
+	self selectedElement ifNil: [ ^ nil ].
+	theCorners := self selectedElement bounds inLocal bounds corners
+		collect: [ :eachPoint | self localPointToGlobal: (self selectedElement localPointToGlobal: eachPoint) ].
 	theCorners ifEmpty: [ ^ nil ].
 	minX := maxX := theCorners first x.
 	minY := maxY := theCorners first y.
@@ -646,12 +633,12 @@ CgtEditor >> overlayBoundsForSelectedElement [
 { #category : 'private - style inspector' }
 CgtEditor >> showStyleInspectorPopover [
 	| aPopover aRule |
-	selectedElement ifNil: [ ^ self hideStyleInspectorPopover ].
+	self selectedElement ifNil: [ ^ self hideStyleInspectorPopover ].
 	aPopover := self ensureStyleInspectorPopover.
 	aRule := self styleRuleForStyleInspector.
 	aPopover
 		childWithId: #styleInspectorElementLabel
-		ifFound: [ :aLabel | aLabel text: selectedElement class name ]
+		ifFound: [ :aLabel | aLabel text: self selectedElement class name ]
 		ifNone: [ ].
 	aPopover styleRule: aRule.
 	aPopover pathRootElement: self styleInspectorPathRootElement.
@@ -667,16 +654,16 @@ CgtEditor >> styleRuleForStyleInspector [
 
 { #category : 'private - style inspector' }
 CgtEditor >> styleInspectorElementPath [
-	^ selectedElementPath ifNil: [ selectedElement ifNil: [ nil ] ifNotNil: [ CgtElementPath anchorElement: selectedElement ] ]
+	^ self selectedElementPath ifNil: [ self selectedElement ifNil: [ nil ] ifNotNil: [ CgtElementPath anchorElement: self selectedElement ] ]
 ]
 
 
 { #category : 'private - style inspector' }
 CgtEditor >> styleInspectorPathRootElement [
 	| current stopParent |
-	selectedElement ifNil: [ ^ nil ].
+	self selectedElement ifNil: [ ^ nil ].
 	stopParent := targetContainer.
-	current := selectedElement.
+	current := self selectedElement.
 	[ current parent notNil and: [ current parent ~= stopParent ] ] whileTrue: [
 		current := current parent ].
 	^ current
@@ -684,7 +671,7 @@ CgtEditor >> styleInspectorPathRootElement [
 { #category : 'private - style inspector' }
 CgtEditor >> updateStyleInspectorPopoverPosition [
 	| aBounds aPopover popoverWidth margin left top availableWidth availableHeight |
-	(styleInspectorPopover isNil or: [ selectedElement isNil ]) ifTrue: [ ^ self ].
+	(styleInspectorPopover isNil or: [ self selectedElement isNil ]) ifTrue: [ ^ self ].
 	aBounds := self overlayBoundsForSelectedElement.
 	aBounds ifNil: [ ^ self ].
 	aPopover := styleInspectorPopover.
@@ -725,14 +712,16 @@ CgtEditor >> wireStyleInspectorPopover: aStyleInspectorPopover [
 { #category : 'event handling - style inspector' }
 CgtEditor >> elementPathNodeHoveredEvent: anEvent [
 	self beginHoverTracking.
-	self widgetHoveredElement: anEvent element
+	(interactionState pathWidgetHoveredElement: anEvent element)
+		ifTrue: [ self refreshOverlayState ]
 ]
-
 { #category : 'event handling - style inspector' }
 CgtEditor >> elementPathNodeUnhoveredEvent: anEvent [
-	self clearWidgetHover
+	| didClear |
+	didClear := interactionState clearPathWidgetHover.
+	didClear ifTrue: [ self refreshOverlayState ].
+	(didClear and: [ interactionState hasPreviewHover not ]) ifTrue: [ self endHoverTracking ]
 ]
-
 { #category : 'event handling - style inspector' }
 CgtEditor >> elementPathNodeSelectedEvent: anEvent [
 	self applySelectionInteractionWith: anEvent element
@@ -749,23 +738,18 @@ CgtEditor >> overlayDo: aBlock [
 { #category : 'private - overlay' }
 CgtEditor >> refreshOverlayState [
 	self overlayDo: [ :anOverlay |
-		anOverlay hoverElement: self effectiveHoverElement.
+		anOverlay hoverElement: interactionState effectiveHoverElement.
 		anOverlay stateChanged ]
 ]
-
 { #category : 'private - overlay' }
 CgtEditor >> restoreInteractionStateSelection: aSelectedElement highlighted: aHighlightedElement previewHovered: aPreviewHoveredElement [
-	self requestSelectionOf: aSelectedElement.
-	aHighlightedElement
-		ifNil: [ self clearHighlightedElement ]
-		ifNotNil: [ self highlightedElement: aHighlightedElement ].
-	aPreviewHoveredElement
-		ifNil: [ self clearPreviewHover ]
-		ifNotNil: [ self setPreviewHoverElement: aPreviewHoveredElement ]
+	interactionState
+		restoreSelection: aSelectedElement
+		highlighted: aHighlightedElement
+		previewHovered: aPreviewHoveredElement.
+	self refreshSelectionInterface.
+	self refreshOverlayState
 ]
-
-
-
 { #category : 'event handling - preview' }
 CgtEditor >> beginHoverTracking [
 	self overlayDo: [ :anOverlay | anOverlay beginHoverTracking ]
@@ -773,17 +757,14 @@ CgtEditor >> beginHoverTracking [
 
 { #category : 'event handling - preview' }
 CgtEditor >> endHoverTracking [
-	widgetHoverElement ifNotNil: [ ^ self ].
+	interactionState hasPathWidgetHover ifTrue: [ ^ self ].
 	self overlayDo: [ :anOverlay | anOverlay endHoverTracking ]
 ]
-
 { #category : 'private - hover' }
 CgtEditor >> setPreviewHoverElement: anElement [
-	previewHoverElement == anElement ifTrue: [ ^ self ].
-	previewHoverElement := anElement.
-	self updateEffectiveHover
+	(interactionState setPreviewHoverElement: anElement)
+		ifTrue: [ self refreshOverlayState ]
 ]
-
 { #category : 'event handling - preview' }
 CgtEditor >> previewHoveredElement: anElement [
 	self beginHoverTracking.
@@ -792,95 +773,40 @@ CgtEditor >> previewHoveredElement: anElement [
 
 { #category : 'event handling - preview' }
 CgtEditor >> clearPreviewHover [
-	previewHoverElement := nil.
-	self updateEffectiveHover
+	(interactionState clearPreviewHover)
+		ifTrue: [ self refreshOverlayState ]
 ]
-
-{ #category : 'private - hover' }
-CgtEditor >> effectiveHoverElement [
-	^ explicitHoverElement
-		ifNil: [ widgetHoverElement ifNil: [ previewHoverElement ] ]
-]
-
-{ #category : 'private - hover' }
-CgtEditor >> updateEffectiveHover [
-	self refreshOverlayState
-]
-
-{ #category : 'event handling - style inspector' }
-CgtEditor >> widgetHoveredElement: anElement [
-	widgetHoverElement := anElement.
-	self updateEffectiveHover
-]
-
-{ #category : 'event handling - style inspector' }
-CgtEditor >> clearWidgetHover [
-	widgetHoverElement := nil.
-	self updateEffectiveHover.
-	previewHoverElement ifNil: [ self endHoverTracking ]
-]
-
 { #category : 'event handling - external' }
 CgtEditor >> highlightedElement: anElement [
-	explicitHoverElement := anElement.
-	self updateEffectiveHover
+	(interactionState highlightedElement: anElement)
+		ifTrue: [ self refreshOverlayState ]
 ]
-
 { #category : 'event handling - external' }
 CgtEditor >> clearHighlightedElement [
-	explicitHoverElement := nil.
-	self updateEffectiveHover
+	(interactionState clearHighlightedElement)
+		ifTrue: [ self refreshOverlayState ]
 ]
-
 { #category : 'event handling - external' }
 CgtEditor >> requestSelectionOf: anElement [
-	self mutateSelectionDo: [
-		anElement
-			ifNil: [ overlayModel deselect ]
-			ifNotNil: [ overlayModel setPrimaryAnchorElement: anElement ] ]
+	(interactionState requestSelectionOf: anElement)
+		ifTrue: [ self synchronizeSelectionInterfaceFromInteractionState ]
 ]
-
 { #category : 'event handling - preview' }
 CgtEditor >> previewClickedElement: anElement [
 	self applySelectionInteractionWith: anElement
 ]
 
-{ #category : 'private - overlay' }
-CgtEditor >> syncSelectionFromOverlayState: anOverlayState [
-	selectedElementPath := anOverlayState primaryPath.
-	self selectElement: anOverlayState anchorElement
-]
-
-
 { #category : 'private - selection' }
-CgtEditor >> applySelectionInteractionWith: anElement [
-	self mutateSelectionDo: [ self updateSelectionWithInteractedElement: anElement ]
-]
-
-{ #category : 'private - selection' }
-CgtEditor >> mutateSelectionDo: aBlock [
-	aBlock value.
-	self syncSelectionFromOverlayState: overlayModel.
+CgtEditor >> synchronizeSelectionInterfaceFromInteractionState [
+	interactionState synchronizeSelectionState.
+	self refreshSelectionInterface.
 	self refreshOverlayState
 ]
-
 { #category : 'private - selection' }
-CgtEditor >> updateSelectionWithInteractedElement: anElement [
-	| aPath anchor |
-	anElement ifNil: [ ^ self ].
-	aPath := overlayModel primaryPath.
-	aPath ifNil: [ ^ overlayModel setPrimaryAnchorElement: anElement ].
-	anchor := aPath anchorElement.
-	anchor ifNil: [ ^ overlayModel setPrimaryAnchorElement: anElement ].
-	anElement == anchor
-		ifTrue: [ ^ overlayModel deselect ].
-	(anchor hasParent: anElement)
-		ifTrue: [ ^ aPath toggleUpstreamElement: anElement ].
-	(anElement hasParent: anchor)
-		ifTrue: [ ^ aPath setDownstreamElement: anElement ].
-	overlayModel setPrimaryAnchorElement: anElement
+CgtEditor >> applySelectionInteractionWith: anElement [
+	(interactionState applySelectionInteractionWith: anElement)
+		ifTrue: [ self synchronizeSelectionInterfaceFromInteractionState ]
 ]
-
 { #category : 'accessing' }
 CgtEditor >> styleInspectorPopover [
 	^ styleInspectorPopover
@@ -888,16 +814,17 @@ CgtEditor >> styleInspectorPopover [
 
 
 { #category : 'accessing' }
-CgtEditor >> selectedElementPath [
-	^ selectedElementPath
+CgtEditor >> selectedElement [
+	^ interactionState selectedElement
 ]
-
 { #category : 'accessing' }
-CgtEditor >> selectedElementPath: aCgtElementPath [
-	selectedElementPath := aCgtElementPath.
-	selectedElement ifNotNil: [ self showStyleInspectorPopover ]
+CgtEditor >> interactionState [
+	^ interactionState
 ]
-
+{ #category : 'accessing' }
+CgtEditor >> selectedElementPath [
+	^ interactionState selectedElementPath
+]
 { #category : 'accessing' }
 CgtEditor >> sceneContainer [
 	^ sceneContainer
@@ -910,12 +837,12 @@ CgtEditor >> overlayContainer [
 
 { #category : 'accessing' }
 CgtEditor >> overlayModel [
-	^ overlayModel
+	^ interactionState overlayModel
 ]
-
 { #category : 'accessing' }
 CgtEditor >> targetContainer [
 	^ targetContainer
 ]
+
 
 
