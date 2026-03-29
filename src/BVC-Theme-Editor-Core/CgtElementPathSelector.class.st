@@ -4,7 +4,6 @@ Class {
 	#instVars : [
 		'selector',
 		'selectedSimpleSelector',
-		'onSelectorSelectedBlock',
 		'elementPath',
 		'ancestorRevealCount',
 		'hiddenCrumbLabel',
@@ -75,12 +74,7 @@ CgtElementPathSelector >> selectedSimpleSelector [
 CgtElementPathSelector >> selectedSimpleSelector: aCgtThemeSimpleSelector [
 	selectedSimpleSelector := aCgtThemeSimpleSelector.
 	self rebuild.
-	onSelectorSelectedBlock ifNotNil: [ onSelectorSelectedBlock value: aCgtThemeSimpleSelector ]
-]
-
-{ #category : 'accessing' }
-CgtElementPathSelector >> onSelectorSelectedDo: aBlock [
-	onSelectorSelectedBlock := aBlock
+	self fireEvent: (CgtElementPathSelectorSelectedEvent new selectedSimpleSelector: aCgtThemeSimpleSelector)
 ]
 
 { #category : 'private' }
