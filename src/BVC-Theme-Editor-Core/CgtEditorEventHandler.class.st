@@ -456,8 +456,6 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 			aRootElement space title: 'Catalyst Theme Editor' ].
 
 	hasThemeEditor := true.
-	overlayModel hoverElement: nil.
-	self showOverlayIn: aRootElement.
 
 	aTargetElementChildren := aRootElement children asArray.
 	aRootElement removeChildren.
@@ -467,6 +465,10 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 	aTargetContainer addChildren: aTargetElementChildren.
 
 	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer) as: ThemeEditorId.
+
+	overlayModel hoverElement: nil.
+	self showOverlayIn: aRootElement.
+
 	self
 		themeEditorIn: aRootElement
 		do: [ :aThemeEditor |
@@ -514,16 +516,6 @@ CgtEditorEventHandler >> themeEditorOverlayIn: aRootElement do: aBlock [
 		ifNone: [  ]
 ]
 
-
-
-{ #category : 'private - accessing' }
-CgtEditorEventHandler >> themeEditorOverlayHostIn: aRootElement [
-	self
-		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | ^ aThemeEditor overlayContainer ].
-		
-	^ aRootElement
-]
 { #category : 'private - accessing' }
 CgtEditorEventHandler >> themeEditorTargetIn: aRootElement [
 	self

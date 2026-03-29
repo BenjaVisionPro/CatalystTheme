@@ -284,6 +284,12 @@ CgtEditor >> initializeWith: aTargetContainer [
 	self updateCloseButtonOpacity
 ]
 
+
+{ #category : 'accessing' }
+CgtEditor >> overlayContainer [
+	^ sceneContainer
+]
+
 { #category : 'accessing' }
 CgtEditor >> inspectElement: anElement [
 	selectedElement == anElement
@@ -713,18 +719,6 @@ CgtEditor >> selectedElementPath: aCgtElementPath [
 	selectedElement ifNotNil: [ self showStyleInspectorPopover ]
 ]
 
-
-
-{ #category : 'accessing' }
-CgtEditor >> overlayContainer [
-	^ sceneContainer
-]
-
-
-{ #category : 'accessing' }
-CgtEditor >> sceneContainer [
-	^ sceneContainer
-]
 { #category : 'accessing' }
 CgtEditor >> targetContainer [
 	^ targetContainer
