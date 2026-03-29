@@ -199,8 +199,9 @@ CgtEditorEventHandler >> highlightCombinationMatchesIn: aRootElement [
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> highlightElement: anElement in: aRootElement [
 	elementToHighlight := anElement.
-	overlayModel hoverElement: anElement.
-	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay hoverElement: anElement ]
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor | aThemeEditor highlightedElement: anElement ]
 ]
 
 { #category : 'api - overlay' }
@@ -208,7 +209,6 @@ CgtEditorEventHandler >> highlightElementAt: aPoint in: aRootElement [
 	| aThemeEditorTarget aHoveredElement |
 
 	mousePosition := aPoint.
-	"moving mouse inside of the theme editor target resets the explicit element to highlight"
 	elementToHighlight := nil.
 
 	hasOverlay
@@ -220,10 +220,10 @@ CgtEditorEventHandler >> highlightElementAt: aPoint in: aRootElement [
 		in: aThemeEditorTarget
 		ifFound: #yourself
 		ifNone: [ nil ].
-	
-	self themeEditorOverlayIn: aRootElement do: [ :anOverlay |
-		anOverlay hoverElement == aHoveredElement ifFalse: [
-			anOverlay highlightElement: aHoveredElement ] ]
+
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor | aThemeEditor previewHoveredElement: aHoveredElement ]
 ]
 
 { #category : 'event handling' }
@@ -346,6 +346,17 @@ CgtEditorEventHandler >> processRequestedThemeEditorStateIn: aRootElement [
 				ifTrue: [ ^ self hideThemeEditor: aRootElement ] ]
 ]
 
+{ #category : 'private - themeEditor' }
+CgtEditorEventHandler >> refreshEditorStateIn: aRootElement [
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor |
+			aThemeEditor requestSelectionOf: elementToSelect.
+			aThemeEditor highlightedElement: elementToHighlight.
+			(elementToHighlight isNil and: [ mousePosition notNil ])
+				ifTrue: [ self highlightElementAt: mousePosition in: aRootElement ] ]
+]
+
 { #category : 'event handling' }
 CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 	| aThemeEditorTarget aHoveredElement isInsidePreview isInsideInspector |
@@ -402,13 +413,12 @@ CgtEditorEventHandler >> isPointInsideVisibleStyleInspector: aGlobalPoint in: aR
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> selectElement: anElement in: aRootElement [
 	elementToSelect := anElement.
-	overlayModel setPrimaryAnchorElement: anElement.
-	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay selectElement: anElement ].
+	anElement
+		ifNil: [ overlayModel deselect ]
+		ifNotNil: [ overlayModel setPrimaryAnchorElement: anElement ].
 	self
 		themeEditorIn: aRootElement
-		do: [ :aThemeEditor |
-			aThemeEditor selectedElementPath: overlayModel primaryPath.
-			aThemeEditor selectElement: anElement ]
+		do: [ :aThemeEditor | aThemeEditor requestSelectionOf: anElement ]
 ]
 
 { #category : 'event handling' }
@@ -422,10 +432,9 @@ CgtEditorEventHandler >> selectElementEvent: aSelectElementEvent [
 CgtEditorEventHandler >> showOverlayIn: aRootElement [
 	self themeEditorOverlayIn: aRootElement do: [ :anOverlay |
 		hasOverlay := true.
-		(elementToHighlight isNil and: [ mousePosition notNil ])
-			ifTrue: [ self highlightElementAt: mousePosition in: aRootElement ].
 		anOverlay allowMeAndChildrenMouseEvents.
 		anOverlay animateFadeIn.
+		self refreshEditorStateIn: aRootElement.
 		^ self ].
 
 	hasOverlay := true.
@@ -434,15 +443,12 @@ CgtEditorEventHandler >> showOverlayIn: aRootElement [
 		addChild: (CgtEditorOverlay new
 			id: ThemeEditorOverlayId;
 			state: overlayModel;
-			highlightElement: elementToHighlight;
-			selectElement: elementToSelect;
 			overlayOpacity: 0.0;
 			allowMeAndChildrenMouseEvents;
 			animateFadeIn;
 			yourself).
 
-	(elementToHighlight isNil and: [ mousePosition notNil ])
-		ifTrue: [ self highlightElementAt: mousePosition in: aRootElement ]
+	self refreshEditorStateIn: aRootElement
 ]
 
 { #category : 'api - themeEditor' }

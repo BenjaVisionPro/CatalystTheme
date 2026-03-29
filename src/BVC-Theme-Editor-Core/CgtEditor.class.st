@@ -22,7 +22,8 @@ Class {
 		'styleInspectorPopover',
 		'selectedElementPath',
 		'previewHoverElement',
-		'widgetHoverElement'
+		'widgetHoverElement',
+		'explicitHoverElement'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -252,6 +253,7 @@ CgtEditor >> initialize [
 	presentationProgress := 0.0.
 	previewHoverElement := nil.
 	widgetHoverElement := nil.
+	explicitHoverElement := nil.
 	self
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -781,7 +783,8 @@ CgtEditor >> clearPreviewHover [
 
 { #category : 'private - hover' }
 CgtEditor >> effectiveHoverElement [
-	^ widgetHoverElement ifNil: [ previewHoverElement ]
+	^ explicitHoverElement
+		ifNil: [ widgetHoverElement ifNil: [ previewHoverElement ] ]
 ]
 
 { #category : 'private - hover' }
@@ -802,6 +805,28 @@ CgtEditor >> clearWidgetHover [
 	widgetHoverElement := nil.
 	self updateEffectiveHover.
 	previewHoverElement ifNil: [ self endHoverTracking ]
+]
+
+{ #category : 'event handling - external' }
+CgtEditor >> highlightedElement: anElement [
+	explicitHoverElement := anElement.
+	self updateEffectiveHover
+]
+
+{ #category : 'event handling - external' }
+CgtEditor >> clearHighlightedElement [
+	explicitHoverElement := nil.
+	self updateEffectiveHover
+]
+
+{ #category : 'event handling - external' }
+CgtEditor >> requestSelectionOf: anElement [
+	self overlayDo: [ :anOverlay |
+		anElement
+			ifNil: [ anOverlay state deselect ]
+			ifNotNil: [ anOverlay state setPrimaryAnchorElement: anElement ].
+		anOverlay stateChanged.
+		self syncSelectionFromOverlayState: anOverlay state ]
 ]
 
 { #category : 'event handling - preview' }
