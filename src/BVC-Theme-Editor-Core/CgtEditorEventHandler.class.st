@@ -226,7 +226,7 @@ CgtEditorEventHandler >> highlightElementAt: aPoint in: aRootElement [
 
 	self
 		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | aThemeEditor previewHoveredElement: aHoveredElement ]
+		do: [ :aThemeEditor | aThemeEditor previewHoverMovedOver: aHoveredElement ]
 ]
 
 { #category : 'event handling' }
@@ -383,9 +383,7 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 			self noteTrackableHoverActivityIn: aMouseMoveEvent currentTarget.
 			self
 				themeEditorIn: aMouseMoveEvent currentTarget
-				do: [ :aThemeEditor |
-					aThemeEditor beginHoverTracking.
-					aThemeEditor previewHoveredElement: aHoveredElement ] ]
+				do: [ :aThemeEditor | aThemeEditor previewHoverMovedOver: aHoveredElement ] ]
 		ifFalse: [
 			mousePosition := nil.
 			(elementToHighlight notNil and: [ isInsideInspector ])
@@ -566,8 +564,7 @@ CgtEditorEventHandler >> noteTrackableHoverActivityIn: aRootElement [
 	aToken := hoverIdleToken.
 	aIdleDuration := overlayModel hoverIdleDurationMs.
 	self themeEditorIn: aRootElement do: [ :aThemeEditor |
-		aIdleDuration := aThemeEditor overlayModel hoverIdleDurationMs.
-		aThemeEditor beginHoverTracking ].
+		aIdleDuration := aThemeEditor overlayModel hoverIdleDurationMs ].
 	[
 		(Delay forMilliseconds: aIdleDuration) wait.
 		hoverIdleToken = aToken ifTrue: [
