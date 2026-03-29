@@ -389,6 +389,8 @@ CgtEditorEventHandler >> selectElement: anElement in: aRootElement [
 		do: [ :aThemeEditor |
 			aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
 				self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
+			aThemeEditor onStyleInspectorElementPathNodeHoveredDo: [ :hoveredElement |
+				self styleInspectorElementPathNodeHovered: hoveredElement in: aRootElement ].
 			aThemeEditor selectedElementPath: overlayModel primaryPath.
 			aThemeEditor selectElement: anElement ]
 ]
@@ -444,6 +446,8 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 				do: [ :aThemeEditor |
 					aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
 						self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
+				aThemeEditor onStyleInspectorElementPathNodeHoveredDo: [ :hoveredElement |
+					self styleInspectorElementPathNodeHovered: hoveredElement in: aRootElement ].
 					aThemeEditor animateOpenOnFinishedDo: [
 						transitionToken = aToken ifTrue: [
 							isTransitioningThemeEditor := false.
@@ -472,6 +476,8 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 		do: [ :aThemeEditor |
 			aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
 				self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
+			aThemeEditor onStyleInspectorElementPathNodeHoveredDo: [ :hoveredElement |
+				self styleInspectorElementPathNodeHovered: hoveredElement in: aRootElement ].
 			aThemeEditor animateOpenOnFinishedDo: [
 				transitionToken = aToken ifTrue: [
 					isTransitioningThemeEditor := false.
@@ -563,6 +569,8 @@ CgtEditorEventHandler >> syncThemeEditorSelectionFromOverlayIn: aRootElement [
 		do: [ :aThemeEditor |
 			aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
 				self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
+			aThemeEditor onStyleInspectorElementPathNodeHoveredDo: [ :hoveredElement |
+				self styleInspectorElementPathNodeHovered: hoveredElement in: aRootElement ].
 			aThemeEditor selectedElementPath: overlayModel primaryPath.
 			aThemeEditor selectElement: selectedElement ]
 ]
