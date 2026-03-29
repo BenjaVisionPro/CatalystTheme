@@ -70,13 +70,15 @@ CgtElementPath >> upstreamNodes [
 CgtElementPath >> upstreamElements [ ^ self upstreamNodes collect: #element ]
 
 { #category : 'accessing' }
-CgtElementPath >> downstreamNodes [
-	anchorIndex >= nodes size ifTrue: [ ^ #() ].
-	^ nodes copyFrom: anchorIndex + 1 to: nodes size
+CgtElementPath >> selectedChildScopeNode [
+	anchorIndex >= nodes size ifTrue: [ ^ nil ].
+	^ nodes at: anchorIndex + 1
 ]
 
 { #category : 'accessing' }
-CgtElementPath >> downstreamElements [ ^ self downstreamNodes collect: #element ]
+CgtElementPath >> selectedChildScopeElement [
+	^ self selectedChildScopeNode ifNotNil: #element
+]
 
 { #category : 'testing' }
 CgtElementPath >> includesElement: anElement [ ^ (self nodeForElement: anElement) notNil ]
@@ -105,13 +107,13 @@ CgtElementPath >> relationOfElementToAnchor: anElement [
 ]
 
 { #category : 'actions' }
-CgtElementPath >> clearDownstreamNodes [
+CgtElementPath >> clearSelectedChildScope [
 	nodes := (nodes copyFrom: 1 to: anchorIndex) asOrderedCollection
 ]
 
 { #category : 'actions' }
 CgtElementPath >> toggleUpstreamElement: anElement [
-	| ancestors ordered downstream anchor current includedUpstream |
+	| ancestors ordered selectedChildScope anchor current includedUpstream |
 	anchor := self anchorElement.
 	anchor ifNil: [ ^ self ].
 	anElement ifNil: [ ^ self ].
@@ -120,7 +122,7 @@ CgtElementPath >> toggleUpstreamElement: anElement [
 	[ current notNil ] whileTrue: [ ancestors add: current. current := current parent ].
 	(ancestors includes: anElement) ifFalse: [ ^ self ].
 	ordered := ancestors reversed.
-	downstream := self downstreamElements.
+	selectedChildScope := self selectedChildScopeElement.
 	includedUpstream := self upstreamElements asOrderedCollection.
 	(includedUpstream includes: anElement)
 		ifTrue: [ includedUpstream remove: anElement ifAbsent: [ ] ]
@@ -129,30 +131,18 @@ CgtElementPath >> toggleUpstreamElement: anElement [
 	(ordered select: [ :each | includedUpstream includes: each ])
 		do: [ :each | nodes add: (CgtElementPathNode on: each) ].
 	nodes add: (CgtElementPathNode on: anchor).
-	downstream do: [ :each | nodes add: (CgtElementPathNode on: each) ].
+	selectedChildScope ifNotNil: [ nodes add: (CgtElementPathNode on: selectedChildScope) ].
 	anchorIndex := nodes findFirst: [ :each | each element == anchor ]
 ]
 
 
 { #category : 'actions' }
-CgtElementPath >> setDownstreamElement: anElement [
+CgtElementPath >> selectedChildScopeElement: anElement [
 	| anchor |
 	anchor := self anchorElement.
-	(anchor isNil or: [ anElement isNil ]) ifTrue: [ ^ self clearDownstreamNodes ].
+	(anchor isNil or: [ anElement isNil ]) ifTrue: [ ^ self clearSelectedChildScope ].
 	(anElement == anchor or: [ (anElement hasParent: anchor) not ]) ifTrue: [ ^ self ].
-	self clearDownstreamNodes.
+	self clearSelectedChildScope.
 	nodes add: (CgtElementPathNode on: anElement).
-	anchorIndex := nodes findFirst: [ :each | each element == anchor ]
-]
-
-{ #category : 'actions' }
-CgtElementPath >> toggleDownstreamElement: anElement [
-	| anchor |
-	anchor := self anchorElement.
-	(anchor isNil or: [ anElement isNil ]) ifTrue: [ ^ self ].
-	(anElement == anchor or: [ (anElement hasParent: anchor) not ]) ifTrue: [ ^ self ].
-	(self includesElement: anElement)
-		ifTrue: [ nodes := nodes reject: [ :each | each element == anElement ] ]
-		ifFalse: [ nodes add: (CgtElementPathNode on: anElement) ].
 	anchorIndex := nodes findFirst: [ :each | each element == anchor ]
 ]

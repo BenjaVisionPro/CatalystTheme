@@ -4,6 +4,7 @@ Class {
 	#instVars : [
 		'selector',
 		'selectedSimpleSelector',
+		'onSelectorSelectedBlock',
 		'elementPath',
 		'ancestorRevealCount',
 		'hiddenCrumbLabel',
@@ -74,7 +75,12 @@ CgtElementPathSelector >> selectedSimpleSelector [
 CgtElementPathSelector >> selectedSimpleSelector: aCgtThemeSimpleSelector [
 	selectedSimpleSelector := aCgtThemeSimpleSelector.
 	self rebuild.
-	self fireEvent: (CgtElementPathSelectorSelectedEvent new selectedSimpleSelector: aCgtThemeSimpleSelector)
+	onSelectorSelectedBlock ifNotNil: [ onSelectorSelectedBlock value: aCgtThemeSimpleSelector ]
+]
+
+{ #category : 'accessing' }
+CgtElementPathSelector >> onSelectorSelectedDo: aBlock [
+	onSelectorSelectedBlock := aBlock
 ]
 
 { #category : 'private' }
@@ -103,7 +109,7 @@ CgtElementPathSelector >> rebuildForElementPath [
 
 { #category : 'private' }
 CgtElementPathSelector >> fullPathElements [
-	| anchor upstream orderedAncestors current downstream stopParent |
+	| anchor upstream orderedAncestors current selectedChildScope stopParent |
 	elementPath ifNil: [ ^ #() ].
 	anchor := elementPath anchorElement.
 	anchor ifNil: [ ^ #() ].
@@ -114,8 +120,10 @@ CgtElementPathSelector >> fullPathElements [
 		upstream add: current.
 		current := current parent ].
 	orderedAncestors := upstream reversed.
-	downstream := elementPath downstreamElements.
-	^ orderedAncestors , { anchor } , downstream
+	selectedChildScope := elementPath selectedChildScopeElement.
+	^ selectedChildScope
+		ifNil: [ orderedAncestors , { anchor } ]
+		ifNotNil: [ orderedAncestors , { anchor. selectedChildScope } ]
 ]
 
 { #category : 'private' }
