@@ -257,13 +257,13 @@ CgtEditor >> initialize [
 ]
 { #category : 'initialization' }
 CgtEditor >> initializeWith: aTargetContainer [
-	^ self initializeWith: aTargetContainer overlayModel: CgtViewTreeOverlayModel new
+	^ self initializeWith: aTargetContainer interactionState: CgtEditorInteractionState new
 ]
 
 { #category : 'initialization' }
-CgtEditor >> initializeWith: aTargetContainer overlayModel: aCgtViewTreeOverlayModel [
+CgtEditor >> initializeWith: aTargetContainer interactionState: aCgtEditorInteractionState [
 	targetContainer := aTargetContainer.
-	interactionState overlayModel: (aCgtViewTreeOverlayModel ifNil: [ CgtViewTreeOverlayModel new ]).
+	interactionState := aCgtEditorInteractionState ifNil: [ CgtEditorInteractionState new ].
 
 	scenePage := BlElement new
 		layout: BlLinearLayout vertical alignCenter;
@@ -742,11 +742,7 @@ CgtEditor >> refreshOverlayState [
 		anOverlay stateChanged ]
 ]
 { #category : 'private - overlay' }
-CgtEditor >> restoreInteractionStateSelection: aSelectedElement highlighted: aHighlightedElement previewHovered: aPreviewHoveredElement [
-	interactionState
-		restoreSelection: aSelectedElement
-		highlighted: aHighlightedElement
-		previewHovered: aPreviewHoveredElement.
+CgtEditor >> refreshInterfaceFromInteractionState [
 	self refreshSelectionInterface.
 	self refreshOverlayState
 ]

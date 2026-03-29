@@ -24,12 +24,10 @@ Class {
 	#instVars : [
 		'mousePosition',
 		'hasThemeEditor',
-		'elementToHighlight',
-		'elementToSelect',
 		'shouldLockOverlay',
 		'hasOverlay',
 		'originalTitle',
-		'overlayModel',
+		'interactionState',
 		'transitionToken',
 		'desiredThemeEditorOpen',
 		'isTransitioningThemeEditor',
@@ -173,8 +171,10 @@ CgtEditorEventHandler >> hideThemeEditor: aRootElement [
 				animateCloseOnFinishedDo: [ | aTargetElementChildren |
 					transitionToken = aToken ifTrue: [
 						self unlockOverlay.
-						self selectElement: nil in: aRootElement.
-						self highlightElement: nil in: aRootElement.
+						interactionState requestSelectionOf: nil.
+						interactionState clearHighlightedElement.
+						interactionState clearPreviewHover.
+						interactionState clearPathWidgetHover.
 						hasThemeEditor := false.
 						aTargetElementChildren := aThemeEditor targetContainer children asArray.
 						aThemeEditor targetContainer removeChildren.
@@ -206,10 +206,10 @@ CgtEditorEventHandler >> highlightCombinationMatchesIn: aRootElement [
 
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> highlightElement: anElement in: aRootElement [
-	elementToHighlight := anElement.
 	self
 		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | aThemeEditor highlightedElement: anElement ]
+		do: [ :aThemeEditor | ^ aThemeEditor highlightedElement: anElement ].
+	interactionState highlightedElement: anElement
 ]
 
 
@@ -229,9 +229,7 @@ CgtEditorEventHandler >> initialize [
 	hasOverlay := false.
 	hasThemeEditor := false.
 	shouldLockOverlay := false.
-	elementToHighlight := nil.
-	elementToSelect := nil.
-	overlayModel := CgtViewTreeOverlayModel new.
+	interactionState := CgtEditorInteractionState new.
 	transitionToken := 0.
 	desiredThemeEditorOpen := false.
 	isTransitioningThemeEditor := false.
@@ -281,10 +279,7 @@ CgtEditorEventHandler >> maybeHideOverlayIn: aRootElement [
 	
 	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay preventMeAndChildrenMouseEvents ].
 		
-	shouldLockOverlay
-		ifTrue: [
-			self highlightElement: elementToHighlight in: aRootElement.
-			^ self ].
+	shouldLockOverlay ifTrue: [ ^ self ].
 
 	aRootElement isAttachedToSceneGraph
 		ifFalse: [ ^ self hideOverlayIn: aRootElement ].
@@ -338,15 +333,15 @@ CgtEditorEventHandler >> processRequestedThemeEditorStateIn: aRootElement [
 CgtEditorEventHandler >> refreshEditorStateIn: aRootElement [
 	| aPreviewHoveredElement |
 	aPreviewHoveredElement := nil.
-	(elementToHighlight isNil and: [ mousePosition notNil ])
+	(interactionState externallyHighlightedElement isNil and: [ mousePosition notNil ])
 		ifTrue: [ aPreviewHoveredElement := self previewElementAt: mousePosition in: aRootElement ].
 	self
 		themeEditorIn: aRootElement
 		do: [ :aThemeEditor |
-			aThemeEditor
-				restoreInteractionStateSelection: elementToSelect
-				highlighted: elementToHighlight
-				previewHovered: aPreviewHoveredElement ]
+			aThemeEditor refreshInterfaceFromInteractionState.
+			aPreviewHoveredElement
+				ifNil: [ aThemeEditor clearPreviewHover ]
+				ifNotNil: [ aThemeEditor previewHoveredElement: aPreviewHoveredElement ] ]
 ]
 
 { #category : 'event handling' }
@@ -356,7 +351,6 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 	hasOverlay
 		ifFalse: [
 			mousePosition := aMouseMoveEvent localPosition.
-			elementToHighlight := nil.
 			^ self ].
 	
 	aThemeEditorTarget := self themeEditorTargetIn: aMouseMoveEvent currentTarget.
@@ -371,7 +365,7 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 				do: [ :aThemeEditor | aThemeEditor previewHoveredElement: aHoveredElement ] ]
 		ifFalse: [
 			mousePosition := nil.
-			(elementToHighlight notNil and: [ isInsideInspector ])
+			isInsideInspector
 				ifFalse: [
 					self
 						themeEditorIn: aMouseMoveEvent currentTarget
@@ -398,10 +392,10 @@ CgtEditorEventHandler >> isPointInsideVisibleStyleInspector: aGlobalPoint in: aR
 
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> selectElement: anElement in: aRootElement [
-	elementToSelect := anElement.
 	self
 		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | aThemeEditor requestSelectionOf: anElement ]
+		do: [ :aThemeEditor | ^ aThemeEditor requestSelectionOf: anElement ].
+	interactionState requestSelectionOf: anElement
 ]
 
 { #category : 'event handling' }
@@ -472,7 +466,7 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 	aTargetContainer size: aRootElement extent.
 	aTargetContainer addChildren: aTargetElementChildren.
 
-	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer overlayModel: overlayModel) as: ThemeEditorId.
+	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer interactionState: interactionState) as: ThemeEditorId.
 	self showOverlayIn: aRootElement.
 	self
 		themeEditorIn: aRootElement
@@ -547,7 +541,7 @@ CgtEditorEventHandler >> noteTrackableHoverActivityIn: aRootElement [
 	| aToken aIdleDuration |
 	hoverIdleToken := (hoverIdleToken ifNil: [ 0 ]) + 1.
 	aToken := hoverIdleToken.
-	aIdleDuration := overlayModel hoverIdleDurationMs.
+	aIdleDuration := interactionState overlayModel hoverIdleDurationMs.
 	self themeEditorIn: aRootElement do: [ :aThemeEditor |
 		aIdleDuration := aThemeEditor overlayModel hoverIdleDurationMs ].
 	[

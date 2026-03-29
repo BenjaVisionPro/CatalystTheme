@@ -49,6 +49,18 @@ CgtEditorInteractionState >> hasPreviewHover [
 	^ previewHoverElement notNil
 ]
 
+
+
+{ #category : 'accessing' }
+CgtEditorInteractionState >> externallyHighlightedElement [
+	^ externallyHighlightedElement
+]
+
+{ #category : 'accessing' }
+CgtEditorInteractionState >> previewHoverElement [
+	^ previewHoverElement
+]
+
 { #category : 'accessing' }
 CgtEditorInteractionState >> effectiveHoverElement [
 	^ externallyHighlightedElement
@@ -95,13 +107,6 @@ CgtEditorInteractionState >> clearHighlightedElement [
 	externallyHighlightedElement ifNil: [ ^ false ].
 	externallyHighlightedElement := nil.
 	^ true
-]
-
-{ #category : 'restoring' }
-CgtEditorInteractionState >> restoreSelection: aSelectedElement highlighted: aHighlightedElement previewHovered: aPreviewHoveredElement [
-	self requestSelectionOf: aSelectedElement.
-	externallyHighlightedElement := aHighlightedElement.
-	previewHoverElement := aPreviewHoveredElement
 ]
 
 { #category : 'event handling - selection' }
