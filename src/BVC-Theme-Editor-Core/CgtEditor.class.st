@@ -766,7 +766,7 @@ CgtEditor >> restoreInteractionStateSelection: aSelectedElement highlighted: aHi
 		ifNotNil: [ self highlightedElement: aHighlightedElement ].
 	aPreviewHoveredElement
 		ifNil: [ self clearPreviewHover ]
-		ifNotNil: [ self previewHoveredElement: aPreviewHoveredElement ]
+		ifNotNil: [ self previewHoverMovedOver: aPreviewHoveredElement ]
 ]
 
 

@@ -383,7 +383,7 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 			self noteTrackableHoverActivityIn: aMouseMoveEvent currentTarget.
 			self
 				themeEditorIn: aMouseMoveEvent currentTarget
-				do: [ :aThemeEditor | aThemeEditor previewHoverMovedOver: aHoveredElement ] ]
+				do: [ :aThemeEditor | aThemeEditor previewHoveredElement: aHoveredElement ] ]
 		ifFalse: [
 			mousePosition := nil.
 			(elementToHighlight notNil and: [ isInsideInspector ])
