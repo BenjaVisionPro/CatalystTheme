@@ -443,13 +443,13 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 				themeEditorIn: aRootElement
 				do: [ :aThemeEditor |
 					aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
-					self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
-				aThemeEditor animateOpenOnFinishedDo: [
+						self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
+					aThemeEditor animateOpenOnFinishedDo: [
 						transitionToken = aToken ifTrue: [
 							isTransitioningThemeEditor := false.
 							self processRequestedThemeEditorStateIn: aRootElement ] ] ].
 			^ self ].
-	
+
 	aRootElement isAttachedToSceneGraph
 		ifTrue: [
 			originalTitle := aRootElement space title.
@@ -465,16 +465,14 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 	aTargetContainer addChildren: aTargetElementChildren.
 
 	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer) as: ThemeEditorId.
-
 	overlayModel hoverElement: nil.
 	self showOverlayIn: aRootElement.
-
 	self
 		themeEditorIn: aRootElement
 		do: [ :aThemeEditor |
 			aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
-					self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
-				aThemeEditor animateOpenOnFinishedDo: [
+				self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
+			aThemeEditor animateOpenOnFinishedDo: [
 				transitionToken = aToken ifTrue: [
 					isTransitioningThemeEditor := false.
 					self processRequestedThemeEditorStateIn: aRootElement ] ] ]
@@ -506,6 +504,15 @@ CgtEditorEventHandler >> themeEditorIn: aTargetElement do: aBlock [
 			ifFound: [ :anEditor | ^ aBlock value: anEditor ]
 			ifNone: [  ].
 		current := current parent ].
+]
+
+{ #category : 'private - accessing' }
+CgtEditorEventHandler >> themeEditorOverlayHostIn: aRootElement [
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor | ^ aThemeEditor sceneContainer ].
+
+	^ aRootElement
 ]
 
 { #category : 'private - accessing' }
