@@ -53,6 +53,13 @@ CgtStyleInspectorPopover >> initialize [
 ]
 
 
+
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> selectorWidget [
+	^ selectorWidget
+]
+
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> elementPath [
 	^ elementPath
@@ -93,15 +100,3 @@ CgtStyleInspectorPopover >> styleRule: aCgtThemeStyleRule [
 		ifNone: [ ].
 ]
 
-
-
-
-{ #category : 'accessing' }
-CgtStyleInspectorPopover >> onElementPathNodeHoveredDo: aBlock [
-	selectorWidget onElementPathNodeHoveredDo: aBlock
-]
-
-{ #category : 'accessing' }
-CgtStyleInspectorPopover >> onElementPathNodeSelectedDo: aBlock [
-	selectorWidget onElementPathNodeSelectedDo: aBlock
-]

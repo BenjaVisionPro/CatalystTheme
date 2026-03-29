@@ -8,8 +8,6 @@ Class {
 		'elementPath',
 		'ancestorRevealCount',
 		'hiddenCrumbLabel',
-		'onElementPathNodeSelectedBlock',
-		'onElementPathNodeHoveredBlock',
 		'pathRootElement'
 	],
 	#category : 'BVC-Theme-Editor-Core',
@@ -68,17 +66,6 @@ CgtElementPathSelector >> pathRootElement: anElement [
 	ancestorRevealCount := 0.
 	self rebuild
 ]
-{ #category : 'accessing' }
-CgtElementPathSelector >> onElementPathNodeSelectedDo: aBlock [
-	onElementPathNodeSelectedBlock := aBlock
-]
-
-
-{ #category : 'accessing' }
-CgtElementPathSelector >> onElementPathNodeHoveredDo: aBlock [
-	onElementPathNodeHoveredBlock := aBlock
-]
-
 { #category : 'accessing' }
 CgtElementPathSelector >> selectedSimpleSelector [
 	^ selectedSimpleSelector
@@ -160,12 +147,13 @@ CgtElementPathSelector >> newElementCrumbFor: anElement [
 	aButton := BrButton new
 		label: (self displayStringForElement: anElement);
 		aptitude: (self elementCrumbAptitudeFor: anElement);
-		action: [ :clickedButton | onElementPathNodeSelectedBlock ifNotNil: [ onElementPathNodeSelectedBlock value: anElement ] ];
+		action: [ :clickedButton |
+			self fireEvent: (CgtElementPathNodeSelectedEvent new element: anElement) ];
 		yourself.
 	aButton when: BlElementHoveredEvent do: [ :anEvent |
-		onElementPathNodeHoveredBlock ifNotNil: [ onElementPathNodeHoveredBlock value: anElement ] ].
+		self fireEvent: (CgtElementPathNodeHoveredEvent new element: anElement) ].
 	aButton when: BlElementUnhoveredEvent do: [ :anEvent |
-		onElementPathNodeHoveredBlock ifNotNil: [ onElementPathNodeHoveredBlock value: nil ] ].
+		self fireEvent: (CgtElementPathNodeUnhoveredEvent new element: anElement) ].
 	^ aButton
 ]
 

@@ -20,9 +20,7 @@ Class {
 		'detailsWeightAnimation',
 		'closeButton',
 		'styleInspectorPopover',
-		'selectedElementPath',
-		'onStyleInspectorElementPathNodeSelectedBlock',
-		'onStyleInspectorElementPathNodeHoveredBlock'
+		'selectedElementPath'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -598,10 +596,7 @@ CgtEditor >> updateCloseButtonOpacity [
 CgtEditor >> ensureStyleInspectorPopover [
 	styleInspectorPopover ifNotNil: [ ^ styleInspectorPopover ].
 	styleInspectorPopover := self newStyleInspectorPopover.
-	onStyleInspectorElementPathNodeSelectedBlock ifNotNil: [
-		styleInspectorPopover onElementPathNodeSelectedDo: onStyleInspectorElementPathNodeSelectedBlock ].
-	onStyleInspectorElementPathNodeHoveredBlock ifNotNil: [
-		styleInspectorPopover onElementPathNodeHoveredDo: onStyleInspectorElementPathNodeHoveredBlock ].
+	self wireStyleInspectorPopover: styleInspectorPopover.
 	self addChild: styleInspectorPopover.
 	^ styleInspectorPopover
 ]
@@ -699,6 +694,64 @@ CgtEditor >> updateStyleInspectorPopoverPosition [
 
 
 
+
+
+{ #category : 'private - style inspector' }
+CgtEditor >> wireStyleInspectorPopover: aStyleInspectorPopover [
+	| aSelectorWidget |
+	aSelectorWidget := aStyleInspectorPopover selectorWidget.
+	aSelectorWidget when: CgtElementPathNodeSelectedEvent do: [ :anEvent |
+		self elementPathNodeSelectedEvent: anEvent ].
+	aSelectorWidget when: CgtElementPathNodeHoveredEvent do: [ :anEvent |
+		self elementPathNodeHoveredEvent: anEvent ].
+	aSelectorWidget when: CgtElementPathNodeUnhoveredEvent do: [ :anEvent |
+		self elementPathNodeUnhoveredEvent: anEvent ]
+]
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> elementPathNodeHoveredEvent: anEvent [
+	self overlayDo: [ :anOverlay |
+		anOverlay beginHoverTracking;
+			hoverElement: anEvent element ]
+]
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> elementPathNodeUnhoveredEvent: anEvent [
+	self overlayDo: [ :anOverlay |
+		anOverlay hoverElement: nil ]
+]
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> elementPathNodeSelectedEvent: anEvent [
+	| aPath anchor clickedElement |
+	clickedElement := anEvent element.
+	self overlayDo: [ :anOverlay |
+		aPath := anOverlay state primaryPath.
+		aPath ifNil: [ ^ self ].
+		anchor := aPath anchorElement.
+		(anchor isNil or: [ clickedElement isNil ]) ifTrue: [ ^ self ].
+		clickedElement == anchor
+			ifTrue: [ anOverlay state deselect ]
+			ifFalse: [
+				(anchor hasParent: clickedElement)
+					ifTrue: [ aPath toggleUpstreamElement: clickedElement ]
+					ifFalse: [
+						(clickedElement hasParent: anchor)
+							ifTrue: [ aPath setDownstreamElement: clickedElement ]
+							ifFalse: [ anOverlay state setPrimaryAnchorElement: clickedElement ] ] ].
+		anOverlay stateChanged.
+		self selectedElementPath: anOverlay state primaryPath.
+		self selectElement: anOverlay state anchorElement ]
+]
+
+{ #category : 'private - overlay' }
+CgtEditor >> overlayDo: aBlock [
+	self overlayContainer
+		childWithId: CgtEditorEventHandler themeEditorOverlayId
+		ifFound: aBlock
+		ifNone: [ ]
+]
+
 { #category : 'accessing' }
 CgtEditor >> styleInspectorPopover [
 	^ styleInspectorPopover
@@ -733,15 +786,3 @@ CgtEditor >> targetContainer [
 ]
 
 
-
-{ #category : 'accessing' }
-CgtEditor >> onStyleInspectorElementPathNodeHoveredDo: aBlock [
-	onStyleInspectorElementPathNodeHoveredBlock := aBlock.
-	styleInspectorPopover ifNotNil: [ styleInspectorPopover onElementPathNodeHoveredDo: aBlock ]
-]
-
-{ #category : 'accessing' }
-CgtEditor >> onStyleInspectorElementPathNodeSelectedDo: aBlock [
-	onStyleInspectorElementPathNodeSelectedBlock := aBlock.
-	styleInspectorPopover ifNotNil: [ styleInspectorPopover onElementPathNodeSelectedDo: aBlock ]
-]

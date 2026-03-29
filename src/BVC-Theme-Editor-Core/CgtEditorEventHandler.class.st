@@ -51,6 +51,18 @@ CgtEditorEventHandler class >> initialize [
 	KeyCombination := BlKeyCombination builder control alt tab build
 ]
 
+
+
+{ #category : 'accessing' }
+CgtEditorEventHandler class >> themeEditorId [
+	^ ThemeEditorId
+]
+
+{ #category : 'accessing' }
+CgtEditorEventHandler class >> themeEditorOverlayId [
+	^ ThemeEditorOverlayId
+]
+
 { #category : 'private - accessing' }
 CgtEditorEventHandler >> childToThemeAt: aPoint in: aTargetElement ifFound: aFoundBlock ifNone: aNoneBlock [
 	| theChildrenAt |
@@ -389,10 +401,6 @@ CgtEditorEventHandler >> selectElement: anElement in: aRootElement [
 	self
 		themeEditorIn: aRootElement
 		do: [ :aThemeEditor |
-			aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
-				self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
-			aThemeEditor onStyleInspectorElementPathNodeHoveredDo: [ :hoveredElement |
-				self styleInspectorElementPathNodeHovered: hoveredElement in: aRootElement ].
 			aThemeEditor selectedElementPath: overlayModel primaryPath.
 			aThemeEditor selectElement: anElement ]
 ]
@@ -446,10 +454,6 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 			self
 				themeEditorIn: aRootElement
 				do: [ :aThemeEditor |
-					aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
-						self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
-				aThemeEditor onStyleInspectorElementPathNodeHoveredDo: [ :hoveredElement |
-					self styleInspectorElementPathNodeHovered: hoveredElement in: aRootElement ].
 					aThemeEditor animateOpenOnFinishedDo: [
 						transitionToken = aToken ifTrue: [
 							isTransitioningThemeEditor := false.
@@ -476,10 +480,6 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 	self
 		themeEditorIn: aRootElement
 		do: [ :aThemeEditor |
-			aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
-				self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
-			aThemeEditor onStyleInspectorElementPathNodeHoveredDo: [ :hoveredElement |
-				self styleInspectorElementPathNodeHovered: hoveredElement in: aRootElement ].
 			aThemeEditor animateOpenOnFinishedDo: [
 				transitionToken = aToken ifTrue: [
 					isTransitioningThemeEditor := false.
@@ -569,10 +569,6 @@ CgtEditorEventHandler >> syncThemeEditorSelectionFromOverlayIn: aRootElement [
 	self
 		themeEditorIn: aRootElement
 		do: [ :aThemeEditor |
-			aThemeEditor onStyleInspectorElementPathNodeSelectedDo: [ :clickedElement |
-				self styleInspectorElementPathNodeSelected: clickedElement in: aRootElement ].
-			aThemeEditor onStyleInspectorElementPathNodeHoveredDo: [ :hoveredElement |
-				self styleInspectorElementPathNodeHovered: hoveredElement in: aRootElement ].
 			aThemeEditor selectedElementPath: overlayModel primaryPath.
 			aThemeEditor selectElement: selectedElement ]
 ]
