@@ -766,7 +766,7 @@ CgtEditor >> restoreInteractionStateSelection: aSelectedElement highlighted: aHi
 		ifNotNil: [ self highlightedElement: aHighlightedElement ].
 	aPreviewHoveredElement
 		ifNil: [ self clearPreviewHover ]
-		ifNotNil: [ self previewHoverMovedOver: aPreviewHoveredElement ]
+		ifNotNil: [ self previewHoveredElement: aPreviewHoveredElement ]
 ]
 
 
@@ -784,13 +784,14 @@ CgtEditor >> endHoverTracking [
 
 { #category : 'event handling - preview' }
 CgtEditor >> previewHoverMovedOver: anElement [
-	self beginHoverTracking.
+	previewHoverElement == anElement ifTrue: [ ^ self ].
 	previewHoverElement := anElement.
 	self updateEffectiveHover
 ]
 
 { #category : 'event handling - preview' }
 CgtEditor >> previewHoveredElement: anElement [
+	self beginHoverTracking.
 	self previewHoverMovedOver: anElement
 ]
 
