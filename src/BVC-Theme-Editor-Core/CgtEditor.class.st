@@ -714,7 +714,6 @@ CgtEditor >> selectedElementPath: aCgtElementPath [
 ]
 
 
-
 { #category : 'accessing' }
 CgtEditor >> overlayContainer [
 	^ scenePage

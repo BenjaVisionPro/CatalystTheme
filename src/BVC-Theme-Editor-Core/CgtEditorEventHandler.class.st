@@ -412,7 +412,7 @@ CgtEditorEventHandler >> showOverlayIn: aRootElement [
 
 	hasOverlay := true.
 
-	(self themeEditorTargetIn: aRootElement)
+	(self themeEditorOverlayHostIn: aRootElement)
 		addChild: (CgtEditorOverlay new
 			id: ThemeEditorOverlayId;
 			state: overlayModel;
@@ -506,9 +506,19 @@ CgtEditorEventHandler >> themeEditorIn: aTargetElement do: aBlock [
 		current := current parent ].
 ]
 
+
+{ #category : 'private - accessing' }
+CgtEditorEventHandler >> themeEditorOverlayHostIn: aRootElement [
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor | ^ aThemeEditor overlayContainer ].
+		
+	^ aRootElement
+]
+
 { #category : 'private - accessing' }
 CgtEditorEventHandler >> themeEditorOverlayIn: aRootElement do: aBlock [
-	(self themeEditorTargetIn: aRootElement)
+	(self themeEditorOverlayHostIn: aRootElement)
 		childWithId: ThemeEditorOverlayId
 		ifFound: aBlock
 		ifNone: [  ]
@@ -518,7 +528,7 @@ CgtEditorEventHandler >> themeEditorOverlayIn: aRootElement do: aBlock [
 CgtEditorEventHandler >> themeEditorTargetIn: aRootElement [
 	self
 		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | ^ aThemeEditor overlayContainer ].
+		do: [ :aThemeEditor | ^ aThemeEditor targetContainer ].
 		
 	^ aRootElement
 ]
