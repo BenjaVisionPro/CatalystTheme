@@ -171,10 +171,10 @@ CgtEditorEventHandler >> hideThemeEditor: aRootElement [
 				animateCloseOnFinishedDo: [ | aTargetElementChildren |
 					transitionToken = aToken ifTrue: [
 						self unlockOverlay.
-						interactionState requestSelectionOf: nil.
-						interactionState clearHighlightedElement.
-						interactionState clearPreviewHover.
-						interactionState clearPathWidgetHover.
+						self interactionState requestSelectionOf: nil.
+						self interactionState clearHighlightedElement.
+						self interactionState clearPreviewHover.
+						self interactionState clearPathWidgetHover.
 						hasThemeEditor := false.
 						aTargetElementChildren := aThemeEditor targetContainer children asArray.
 						aThemeEditor targetContainer removeChildren.
@@ -209,7 +209,7 @@ CgtEditorEventHandler >> highlightElement: anElement in: aRootElement [
 	self
 		themeEditorIn: aRootElement
 		do: [ :aThemeEditor | ^ aThemeEditor highlightedElement: anElement ].
-	interactionState highlightedElement: anElement
+	self interactionState highlightedElement: anElement
 ]
 
 
@@ -236,6 +236,13 @@ CgtEditorEventHandler >> initialize [
 	hoverIdleToken := 0
 ]
 
+
+
+
+{ #category : 'private - accessing' }
+CgtEditorEventHandler >> interactionState [
+	^ interactionState ifNil: [ interactionState := CgtEditorInteractionState new ]
+]
 
 { #category : 'private - themeEditor' }
 CgtEditorEventHandler >> desiredThemeEditorOpenValue [
@@ -394,7 +401,7 @@ CgtEditorEventHandler >> selectElement: anElement in: aRootElement [
 	self
 		themeEditorIn: aRootElement
 		do: [ :aThemeEditor | ^ aThemeEditor requestSelectionOf: anElement ].
-	interactionState requestSelectionOf: anElement
+	self interactionState requestSelectionOf: anElement
 ]
 
 { #category : 'event handling' }
@@ -465,7 +472,7 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 	aTargetContainer size: aRootElement extent.
 	aTargetContainer addChildren: aTargetElementChildren.
 
-	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer interactionState: interactionState) as: ThemeEditorId.
+	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer interactionState: self interactionState) as: ThemeEditorId.
 	self showOverlayIn: aRootElement.
 	self
 		themeEditorIn: aRootElement
