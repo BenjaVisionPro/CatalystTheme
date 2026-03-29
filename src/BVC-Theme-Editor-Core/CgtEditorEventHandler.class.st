@@ -510,7 +510,7 @@ CgtEditorEventHandler >> themeEditorIn: aTargetElement do: aBlock [
 CgtEditorEventHandler >> themeEditorOverlayHostIn: aRootElement [
 	self
 		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | ^ aThemeEditor sceneContainer ].
+		do: [ :aThemeEditor | ^ aThemeEditor overlayContainer ].
 
 	^ aRootElement
 ]

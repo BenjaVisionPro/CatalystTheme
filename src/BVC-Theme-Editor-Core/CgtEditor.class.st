@@ -719,6 +719,12 @@ CgtEditor >> sceneContainer [
 ]
 
 { #category : 'accessing' }
+CgtEditor >> overlayContainer [
+	^ scenePage
+]
+
+
+{ #category : 'accessing' }
 CgtEditor >> targetContainer [
 	^ targetContainer
 ]
