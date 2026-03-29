@@ -84,9 +84,7 @@ CgtEditorEventHandler >> childToThemeAt: aPoint in: aTargetElement ifFound: aFou
 CgtEditorEventHandler >> clickEvent: aClickEvent [
 	| aThemeEditorTarget aHoveredElement |
 
-	hasOverlay
-		ifFalse: [ ^ self ].
-
+	hasOverlay ifFalse: [ ^ self ].
 	(self isPointInsideVisibleStyleInspector: aClickEvent position in: aClickEvent currentTarget)
 		ifTrue: [ ^ self ].
 
@@ -100,12 +98,9 @@ CgtEditorEventHandler >> clickEvent: aClickEvent [
 		ifFound: #yourself
 		ifNone: [ nil ].
 
-	self highlightElement: aHoveredElement in: aClickEvent currentTarget.
 	self
-		themeEditorOverlayIn: aClickEvent currentTarget
-		do: [ :anOverlay |
-			anOverlay clickHoverElement.
-			self syncThemeEditorSelectionFromOverlayIn: aClickEvent currentTarget ].
+		themeEditorIn: aClickEvent currentTarget
+		do: [ :aThemeEditor | aThemeEditor previewClickedElement: aHoveredElement ].
 	aClickEvent consumed: true
 ]
 
@@ -353,26 +348,37 @@ CgtEditorEventHandler >> processRequestedThemeEditorStateIn: aRootElement [
 
 { #category : 'event handling' }
 CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
-	| aThemeEditorTarget |
+	| aThemeEditorTarget aHoveredElement isInsidePreview isInsideInspector |
 	
 	hasOverlay
-		ifFalse: [ 
+		ifFalse: [
 			mousePosition := aMouseMoveEvent localPosition.
 			elementToHighlight := nil.
 			^ self ].
 	
 	aThemeEditorTarget := self themeEditorTargetIn: aMouseMoveEvent currentTarget.
-	((aThemeEditorTarget containsGlobalPoint: aMouseMoveEvent position)
-		and: [ (self isPointInsideVisibleStyleInspector: aMouseMoveEvent position in: aMouseMoveEvent currentTarget) not ])
+	isInsideInspector := self isPointInsideVisibleStyleInspector: aMouseMoveEvent position in: aMouseMoveEvent currentTarget.
+	isInsidePreview := aThemeEditorTarget containsGlobalPoint: aMouseMoveEvent position.
+	(isInsidePreview and: [ isInsideInspector not ])
 		ifTrue: [
+			aHoveredElement := self
+				childToThemeAt: aMouseMoveEvent localPosition
+				in: aMouseMoveEvent currentTarget
+				ifFound: #yourself
+				ifNone: [ nil ].
 			self noteTrackableHoverActivityIn: aMouseMoveEvent currentTarget.
 			self
-				highlightElementAt: aMouseMoveEvent localPosition
-				in: aMouseMoveEvent currentTarget ]
+				themeEditorIn: aMouseMoveEvent currentTarget
+				do: [ :aThemeEditor |
+					aThemeEditor beginHoverTracking.
+					aThemeEditor previewHoveredElement: aHoveredElement ] ]
 		ifFalse: [
 			mousePosition := nil.
-			(elementToHighlight notNil and: [ self isPointInsideVisibleStyleInspector: aMouseMoveEvent position in: aMouseMoveEvent currentTarget ])
-				ifFalse: [ self highlightElement: nil in: aMouseMoveEvent currentTarget ] ] 
+			(elementToHighlight notNil and: [ isInsideInspector ])
+				ifFalse: [
+					self
+						themeEditorIn: aMouseMoveEvent currentTarget
+						do: [ :aThemeEditor | aThemeEditor clearPreviewHover ] ] ]
 ]
 
 
@@ -551,50 +557,17 @@ CgtEditorEventHandler >> noteTrackableHoverActivityIn: aRootElement [
 	hoverIdleToken := (hoverIdleToken ifNil: [ 0 ]) + 1.
 	aToken := hoverIdleToken.
 	aIdleDuration := overlayModel hoverIdleDurationMs.
-	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay beginHoverTracking ].
+	self themeEditorIn: aRootElement do: [ :aThemeEditor | aThemeEditor beginHoverTracking ].
 	[
 		(Delay forMilliseconds: aIdleDuration) wait.
 		hoverIdleToken = aToken ifTrue: [
-			self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay endHoverTracking ] ]
+			self themeEditorIn: aRootElement do: [ :aThemeEditor | aThemeEditor endHoverTracking ] ]
 	] forkAt: Processor userBackgroundPriority
 ]
 
 
 
-{ #category : 'private - themeEditor' }
-CgtEditorEventHandler >> syncThemeEditorSelectionFromOverlayIn: aRootElement [
-	| selectedElement |
-	selectedElement := overlayModel anchorElement.
-	elementToSelect := selectedElement.
-	self
-		themeEditorIn: aRootElement
-		do: [ :aThemeEditor |
-			aThemeEditor selectedElementPath: overlayModel primaryPath.
-			aThemeEditor selectElement: selectedElement ]
-]
 
-{ #category : 'private - style inspector' }
-CgtEditorEventHandler >> styleInspectorElementPathNodeHovered: anElement in: aRootElement [
-	self noteTrackableHoverActivityIn: aRootElement.
-	self highlightElement: anElement in: aRootElement
-]
 
-{ #category : 'private - style inspector' }
-CgtEditorEventHandler >> styleInspectorElementPathNodeSelected: anElement in: aRootElement [
-	| aPath anchor |
-	aPath := overlayModel primaryPath.
-	aPath ifNil: [ ^ self ].
-	anchor := aPath anchorElement.
-	(anchor isNil or: [ anElement isNil ]) ifTrue: [ ^ self ].
-	anElement == anchor
-		ifTrue: [ overlayModel deselect ]
-		ifFalse: [
-			(anchor hasParent: anElement)
-				ifTrue: [ aPath toggleUpstreamElement: anElement ]
-				ifFalse: [
-					(anElement hasParent: anchor)
-						ifTrue: [ aPath setDownstreamElement: anElement ]
-						ifFalse: [ overlayModel setPrimaryAnchorElement: anElement ] ] ].
-	self themeEditorOverlayIn: aRootElement do: [ :anOverlay | anOverlay stateChanged ].
-	self syncThemeEditorSelectionFromOverlayIn: aRootElement
-]
+
+

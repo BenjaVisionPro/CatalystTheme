@@ -752,6 +752,42 @@ CgtEditor >> overlayDo: aBlock [
 		ifNone: [ ]
 ]
 
+
+
+{ #category : 'event handling - preview' }
+CgtEditor >> beginHoverTracking [
+	self overlayDo: [ :anOverlay | anOverlay beginHoverTracking ]
+]
+
+{ #category : 'event handling - preview' }
+CgtEditor >> endHoverTracking [
+	self overlayDo: [ :anOverlay | anOverlay endHoverTracking ]
+]
+
+{ #category : 'event handling - preview' }
+CgtEditor >> previewHoveredElement: anElement [
+	self overlayDo: [ :anOverlay | anOverlay highlightElement: anElement ]
+]
+
+{ #category : 'event handling - preview' }
+CgtEditor >> clearPreviewHover [
+	self overlayDo: [ :anOverlay | anOverlay hoverElement: nil ]
+]
+
+{ #category : 'event handling - preview' }
+CgtEditor >> previewClickedElement: anElement [
+	self overlayDo: [ :anOverlay |
+		anOverlay hoverElement: anElement.
+		anOverlay clickHoverElement.
+		self syncSelectionFromOverlayState: anOverlay state ]
+]
+
+{ #category : 'private - overlay' }
+CgtEditor >> syncSelectionFromOverlayState: anOverlayState [
+	selectedElementPath := anOverlayState primaryPath.
+	self selectElement: anOverlayState anchorElement
+]
+
 { #category : 'accessing' }
 CgtEditor >> styleInspectorPopover [
 	^ styleInspectorPopover
