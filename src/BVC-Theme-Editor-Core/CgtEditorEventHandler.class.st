@@ -358,7 +358,9 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 				highlightElementAt: aMouseMoveEvent localPosition
 				in: aMouseMoveEvent currentTarget ]
 		ifFalse: [
-			mousePosition := nil ] 
+			mousePosition := nil.
+			(elementToHighlight notNil and: [ self isPointInsideVisibleStyleInspector: aMouseMoveEvent position in: aMouseMoveEvent currentTarget ])
+				ifFalse: [ self highlightElement: nil in: aMouseMoveEvent currentTarget ] ] 
 ]
 
 

@@ -164,6 +164,8 @@ CgtElementPathSelector >> newElementCrumbFor: anElement [
 		yourself.
 	aButton when: BlMouseEnterEvent do: [ :anEvent |
 		onElementPathNodeHoveredBlock ifNotNil: [ onElementPathNodeHoveredBlock value: anElement ] ].
+	aButton when: BlMouseMoveEvent do: [ :anEvent |
+		onElementPathNodeHoveredBlock ifNotNil: [ onElementPathNodeHoveredBlock value: anElement ] ].
 	aButton when: BlMouseLeaveEvent do: [ :anEvent |
 		onElementPathNodeHoveredBlock ifNotNil: [ onElementPathNodeHoveredBlock value: nil ] ].
 	^ aButton
