@@ -23,7 +23,8 @@ Class {
 		'selectedElementPath',
 		'previewHoverElement',
 		'widgetHoverElement',
-		'explicitHoverElement'
+		'explicitHoverElement',
+		'overlayModel'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -254,6 +255,7 @@ CgtEditor >> initialize [
 	previewHoverElement := nil.
 	widgetHoverElement := nil.
 	explicitHoverElement := nil.
+	overlayModel := CgtViewTreeOverlayModel new.
 	self
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -264,7 +266,13 @@ CgtEditor >> initialize [
 
 { #category : 'initialization' }
 CgtEditor >> initializeWith: aTargetContainer [
+	^ self initializeWith: aTargetContainer overlayModel: CgtViewTreeOverlayModel new
+]
+
+{ #category : 'initialization' }
+CgtEditor >> initializeWith: aTargetContainer overlayModel: aCgtViewTreeOverlayModel [
 	targetContainer := aTargetContainer.
+	overlayModel := aCgtViewTreeOverlayModel ifNil: [ CgtViewTreeOverlayModel new ].
 
 	scenePage := BlElement new
 		layout: BlLinearLayout vertical alignCenter;
@@ -729,23 +737,21 @@ CgtEditor >> elementPathNodeUnhoveredEvent: anEvent [
 CgtEditor >> elementPathNodeSelectedEvent: anEvent [
 	| aPath anchor clickedElement |
 	clickedElement := anEvent element.
-	self overlayDo: [ :anOverlay |
-		aPath := anOverlay state primaryPath.
-		aPath ifNil: [ ^ self ].
-		anchor := aPath anchorElement.
-		(anchor isNil or: [ clickedElement isNil ]) ifTrue: [ ^ self ].
-		clickedElement == anchor
-			ifTrue: [ anOverlay state deselect ]
-			ifFalse: [
-				(anchor hasParent: clickedElement)
-					ifTrue: [ aPath toggleUpstreamElement: clickedElement ]
-					ifFalse: [
-						(clickedElement hasParent: anchor)
-							ifTrue: [ aPath setDownstreamElement: clickedElement ]
-							ifFalse: [ anOverlay state setPrimaryAnchorElement: clickedElement ] ] ].
-		anOverlay stateChanged.
-		self selectedElementPath: anOverlay state primaryPath.
-		self selectElement: anOverlay state anchorElement ]
+	aPath := overlayModel primaryPath.
+	aPath ifNil: [ ^ self ].
+	anchor := aPath anchorElement.
+	(anchor isNil or: [ clickedElement isNil ]) ifTrue: [ ^ self ].
+	clickedElement == anchor
+		ifTrue: [ overlayModel deselect ]
+		ifFalse: [
+			(anchor hasParent: clickedElement)
+				ifTrue: [ aPath toggleUpstreamElement: clickedElement ]
+				ifFalse: [
+					(clickedElement hasParent: anchor)
+						ifTrue: [ aPath setDownstreamElement: clickedElement ]
+						ifFalse: [ overlayModel setPrimaryAnchorElement: clickedElement ] ] ].
+	self overlayStateChanged.
+	self syncSelectionFromOverlayState: overlayModel
 ]
 
 { #category : 'private - overlay' }
@@ -754,6 +760,31 @@ CgtEditor >> overlayDo: aBlock [
 		childWithId: CgtEditorEventHandler themeEditorOverlayId
 		ifFound: aBlock
 		ifNone: [ ]
+]
+
+{ #category : 'private - overlay' }
+CgtEditor >> overlayStateChanged [
+	self overlayDo: [ :anOverlay | anOverlay stateChanged ]
+]
+
+{ #category : 'private - overlay' }
+CgtEditor >> refreshOverlayState [
+	self overlayDo: [ :anOverlay |
+		anOverlay hoverElement: self effectiveHoverElement.
+		anOverlay stateChanged ]
+]
+
+{ #category : 'private - overlay' }
+CgtEditor >> restoreInteractionStateSelection: aSelectedElement highlighted: aHighlightedElement previewHovered: aPreviewHoveredElement [
+	self requestSelectionOf: aSelectedElement.
+	aHighlightedElement
+		ifNil: [ self clearHighlightedElement ]
+		ifNotNil: [ self highlightedElement: aHighlightedElement ].
+	aPreviewHoveredElement
+		ifNil: [ self clearPreviewHover ]
+		ifNotNil: [
+			self beginHoverTracking.
+			self previewHoveredElement: aPreviewHoveredElement ]
 ]
 
 
@@ -789,9 +820,7 @@ CgtEditor >> effectiveHoverElement [
 
 { #category : 'private - hover' }
 CgtEditor >> updateEffectiveHover [
-	| anEffectiveHover |
-	anEffectiveHover := self effectiveHoverElement.
-	self overlayDo: [ :anOverlay | anOverlay hoverElement: anEffectiveHover ]
+	self refreshOverlayState
 ]
 
 { #category : 'event handling - style inspector' }
@@ -821,20 +850,19 @@ CgtEditor >> clearHighlightedElement [
 
 { #category : 'event handling - external' }
 CgtEditor >> requestSelectionOf: anElement [
-	self overlayDo: [ :anOverlay |
-		anElement
-			ifNil: [ anOverlay state deselect ]
-			ifNotNil: [ anOverlay state setPrimaryAnchorElement: anElement ].
-		anOverlay stateChanged.
-		self syncSelectionFromOverlayState: anOverlay state ]
+	anElement
+		ifNil: [ overlayModel deselect ]
+		ifNotNil: [ overlayModel setPrimaryAnchorElement: anElement ].
+	self overlayStateChanged.
+	self syncSelectionFromOverlayState: overlayModel
 ]
 
 { #category : 'event handling - preview' }
 CgtEditor >> previewClickedElement: anElement [
-	self overlayDo: [ :anOverlay |
-		anOverlay hoverElement: anElement.
-		anOverlay clickHoverElement.
-		self syncSelectionFromOverlayState: anOverlay state ]
+	overlayModel hoverElement: anElement.
+	overlayModel clickHoverElement.
+	self overlayStateChanged.
+	self syncSelectionFromOverlayState: overlayModel
 ]
 
 { #category : 'private - overlay' }
@@ -870,6 +898,10 @@ CgtEditor >> overlayContainer [
 	^ scenePage
 ]
 
+{ #category : 'accessing' }
+CgtEditor >> overlayModel [
+	^ overlayModel
+]
 
 { #category : 'accessing' }
 CgtEditor >> targetContainer [

@@ -80,6 +80,18 @@ CgtEditorEventHandler >> childToThemeAt: aPoint in: aTargetElement ifFound: aFou
 	^ aFoundBlock value: theChildrenAt first
 ]
 
+
+{ #category : 'private - preview' }
+CgtEditorEventHandler >> previewElementAt: aPoint in: aRootElement [
+	| aThemeEditorTarget |
+	aThemeEditorTarget := self themeEditorTargetIn: aRootElement.
+	^ self
+		childToThemeAt: (aThemeEditorTarget globalPointToLocal: (aRootElement localPointToGlobal: aPoint))
+		in: aThemeEditorTarget
+		ifFound: #yourself
+		ifNone: [ nil ]
+]
+
 { #category : 'event handling' }
 CgtEditorEventHandler >> clickEvent: aClickEvent [
 	| aThemeEditorTarget aHoveredElement |
@@ -92,11 +104,7 @@ CgtEditorEventHandler >> clickEvent: aClickEvent [
 	(aThemeEditorTarget containsGlobalPoint: aClickEvent position)
 		ifFalse: [ ^ self ].
 
-	aHoveredElement := self
-		childToThemeAt: aClickEvent localPosition
-		in: aClickEvent currentTarget
-		ifFound: #yourself
-		ifNone: [ nil ].
+	aHoveredElement := self previewElementAt: aClickEvent localPosition in: aClickEvent currentTarget.
 
 	self
 		themeEditorIn: aClickEvent currentTarget
@@ -206,7 +214,7 @@ CgtEditorEventHandler >> highlightElement: anElement in: aRootElement [
 
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> highlightElementAt: aPoint in: aRootElement [
-	| aThemeEditorTarget aHoveredElement |
+	| aHoveredElement |
 
 	mousePosition := aPoint.
 	elementToHighlight := nil.
@@ -214,12 +222,7 @@ CgtEditorEventHandler >> highlightElementAt: aPoint in: aRootElement [
 	hasOverlay
 		ifFalse: [ ^ self ].
 
-	aThemeEditorTarget := self themeEditorTargetIn: aRootElement.
-	aHoveredElement := self
-		childToThemeAt: (aThemeEditorTarget globalPointToLocal: (aRootElement localPointToGlobal: aPoint))
-		in: aThemeEditorTarget
-		ifFound: #yourself
-		ifNone: [ nil ].
+	aHoveredElement := self previewElementAt: aPoint in: aRootElement.
 
 	self
 		themeEditorIn: aRootElement
@@ -348,13 +351,17 @@ CgtEditorEventHandler >> processRequestedThemeEditorStateIn: aRootElement [
 
 { #category : 'private - themeEditor' }
 CgtEditorEventHandler >> refreshEditorStateIn: aRootElement [
+	| aPreviewHoveredElement |
+	aPreviewHoveredElement := nil.
+	(elementToHighlight isNil and: [ mousePosition notNil ])
+		ifTrue: [ aPreviewHoveredElement := self previewElementAt: mousePosition in: aRootElement ].
 	self
 		themeEditorIn: aRootElement
 		do: [ :aThemeEditor |
-			aThemeEditor requestSelectionOf: elementToSelect.
-			aThemeEditor highlightedElement: elementToHighlight.
-			(elementToHighlight isNil and: [ mousePosition notNil ])
-				ifTrue: [ self highlightElementAt: mousePosition in: aRootElement ] ]
+			aThemeEditor
+				restoreInteractionStateSelection: elementToSelect
+				highlighted: elementToHighlight
+				previewHovered: aPreviewHoveredElement ]
 ]
 
 { #category : 'event handling' }
@@ -372,11 +379,7 @@ CgtEditorEventHandler >> mouseMoveEvent: aMouseMoveEvent [
 	isInsidePreview := aThemeEditorTarget containsGlobalPoint: aMouseMoveEvent position.
 	(isInsidePreview and: [ isInsideInspector not ])
 		ifTrue: [
-			aHoveredElement := self
-				childToThemeAt: aMouseMoveEvent localPosition
-				in: aMouseMoveEvent currentTarget
-				ifFound: #yourself
-				ifNone: [ nil ].
+			aHoveredElement := self previewElementAt: aMouseMoveEvent localPosition in: aMouseMoveEvent currentTarget.
 			self noteTrackableHoverActivityIn: aMouseMoveEvent currentTarget.
 			self
 				themeEditorIn: aMouseMoveEvent currentTarget
@@ -413,9 +416,6 @@ CgtEditorEventHandler >> isPointInsideVisibleStyleInspector: aGlobalPoint in: aR
 { #category : 'api - overlay' }
 CgtEditorEventHandler >> selectElement: anElement in: aRootElement [
 	elementToSelect := anElement.
-	anElement
-		ifNil: [ overlayModel deselect ]
-		ifNotNil: [ overlayModel setPrimaryAnchorElement: anElement ].
 	self
 		themeEditorIn: aRootElement
 		do: [ :aThemeEditor | aThemeEditor requestSelectionOf: anElement ]
@@ -439,14 +439,17 @@ CgtEditorEventHandler >> showOverlayIn: aRootElement [
 
 	hasOverlay := true.
 
-	(self themeEditorOverlayHostIn: aRootElement)
-		addChild: (CgtEditorOverlay new
-			id: ThemeEditorOverlayId;
-			state: overlayModel;
-			overlayOpacity: 0.0;
-			allowMeAndChildrenMouseEvents;
-			animateFadeIn;
-			yourself).
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor |
+			(self themeEditorOverlayHostIn: aRootElement)
+				addChild: (CgtEditorOverlay new
+					id: ThemeEditorOverlayId;
+					state: aThemeEditor overlayModel;
+					overlayOpacity: 0.0;
+					allowMeAndChildrenMouseEvents;
+					animateFadeIn;
+					yourself) ].
 
 	self refreshEditorStateIn: aRootElement
 ]
@@ -486,8 +489,7 @@ CgtEditorEventHandler >> showThemeEditor: aRootElement [
 	aTargetContainer size: aRootElement extent.
 	aTargetContainer addChildren: aTargetElementChildren.
 
-	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer) as: ThemeEditorId.
-	overlayModel hoverElement: nil.
+	aRootElement addChild: (CgtEditor new initializeWith: aTargetContainer overlayModel: overlayModel) as: ThemeEditorId.
 	self showOverlayIn: aRootElement.
 	self
 		themeEditorIn: aRootElement
@@ -507,7 +509,7 @@ CgtEditorEventHandler >> showThemeEditorEvent: aShowThemeEditorEvent [
 		themeEditorIn: aShowThemeEditorEvent currentTarget
 		do: [ :aThemeEditor |
 			aShowThemeEditorEvent elementToSelect
-				ifNotNil: [ aThemeEditor selectElement: aShowThemeEditorEvent elementToSelect ].
+				ifNotNil: [ aThemeEditor requestSelectionOf: aShowThemeEditorEvent elementToSelect ].
 			aShowThemeEditorEvent sceneExtent
 				ifNotNil: [ aThemeEditor targetContainer size: aShowThemeEditorEvent sceneExtent ] ]
 ]
@@ -563,7 +565,9 @@ CgtEditorEventHandler >> noteTrackableHoverActivityIn: aRootElement [
 	hoverIdleToken := (hoverIdleToken ifNil: [ 0 ]) + 1.
 	aToken := hoverIdleToken.
 	aIdleDuration := overlayModel hoverIdleDurationMs.
-	self themeEditorIn: aRootElement do: [ :aThemeEditor | aThemeEditor beginHoverTracking ].
+	self themeEditorIn: aRootElement do: [ :aThemeEditor |
+		aIdleDuration := aThemeEditor overlayModel hoverIdleDurationMs.
+		aThemeEditor beginHoverTracking ].
 	[
 		(Delay forMilliseconds: aIdleDuration) wait.
 		hoverIdleToken = aToken ifTrue: [
