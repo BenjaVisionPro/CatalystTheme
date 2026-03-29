@@ -507,15 +507,6 @@ CgtEditorEventHandler >> themeEditorIn: aTargetElement do: aBlock [
 ]
 
 { #category : 'private - accessing' }
-CgtEditorEventHandler >> themeEditorOverlayHostIn: aRootElement [
-	self
-		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | ^ aThemeEditor overlayContainer ].
-		
-	^ aRootElement
-]
-
-{ #category : 'private - accessing' }
 CgtEditorEventHandler >> themeEditorOverlayIn: aRootElement do: aBlock [
 	(self themeEditorOverlayHostIn: aRootElement)
 		childWithId: ThemeEditorOverlayId
@@ -523,6 +514,16 @@ CgtEditorEventHandler >> themeEditorOverlayIn: aRootElement do: aBlock [
 		ifNone: [  ]
 ]
 
+
+
+{ #category : 'private - accessing' }
+CgtEditorEventHandler >> themeEditorOverlayHostIn: aRootElement [
+	self
+		themeEditorIn: aRootElement
+		do: [ :aThemeEditor | ^ aThemeEditor overlayContainer ].
+		
+	^ aRootElement
+]
 { #category : 'private - accessing' }
 CgtEditorEventHandler >> themeEditorTargetIn: aRootElement [
 	self
