@@ -20,7 +20,9 @@ Class {
 		'detailsWeightAnimation',
 		'closeButton',
 		'styleInspectorPopover',
-		'selectedElementPath'
+		'selectedElementPath',
+		'previewHoverElement',
+		'widgetHoverElement'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -248,6 +250,8 @@ CgtEditor >> initialize [
 	previewAnimationToken := 0.
 	detailsAnimationToken := 0.
 	presentationProgress := 0.0.
+	previewHoverElement := nil.
+	widgetHoverElement := nil.
 	self
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -710,15 +714,13 @@ CgtEditor >> wireStyleInspectorPopover: aStyleInspectorPopover [
 
 { #category : 'event handling - style inspector' }
 CgtEditor >> elementPathNodeHoveredEvent: anEvent [
-	self overlayDo: [ :anOverlay |
-		anOverlay beginHoverTracking;
-			hoverElement: anEvent element ]
+	self beginHoverTracking.
+	self widgetHoveredElement: anEvent element
 ]
 
 { #category : 'event handling - style inspector' }
 CgtEditor >> elementPathNodeUnhoveredEvent: anEvent [
-	self overlayDo: [ :anOverlay |
-		anOverlay hoverElement: nil ]
+	self clearWidgetHover
 ]
 
 { #category : 'event handling - style inspector' }
@@ -761,17 +763,45 @@ CgtEditor >> beginHoverTracking [
 
 { #category : 'event handling - preview' }
 CgtEditor >> endHoverTracking [
+	widgetHoverElement ifNotNil: [ ^ self ].
 	self overlayDo: [ :anOverlay | anOverlay endHoverTracking ]
 ]
 
 { #category : 'event handling - preview' }
 CgtEditor >> previewHoveredElement: anElement [
-	self overlayDo: [ :anOverlay | anOverlay highlightElement: anElement ]
+	previewHoverElement := anElement.
+	self updateEffectiveHover
 ]
 
 { #category : 'event handling - preview' }
 CgtEditor >> clearPreviewHover [
-	self overlayDo: [ :anOverlay | anOverlay hoverElement: nil ]
+	previewHoverElement := nil.
+	self updateEffectiveHover
+]
+
+{ #category : 'private - hover' }
+CgtEditor >> effectiveHoverElement [
+	^ widgetHoverElement ifNil: [ previewHoverElement ]
+]
+
+{ #category : 'private - hover' }
+CgtEditor >> updateEffectiveHover [
+	| anEffectiveHover |
+	anEffectiveHover := self effectiveHoverElement.
+	self overlayDo: [ :anOverlay | anOverlay hoverElement: anEffectiveHover ]
+]
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> widgetHoveredElement: anElement [
+	widgetHoverElement := anElement.
+	self updateEffectiveHover
+]
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> clearWidgetHover [
+	widgetHoverElement := nil.
+	self updateEffectiveHover.
+	previewHoverElement ifNil: [ self endHoverTracking ]
 ]
 
 { #category : 'event handling - preview' }
