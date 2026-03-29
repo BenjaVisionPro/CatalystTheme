@@ -735,23 +735,7 @@ CgtEditor >> elementPathNodeUnhoveredEvent: anEvent [
 
 { #category : 'event handling - style inspector' }
 CgtEditor >> elementPathNodeSelectedEvent: anEvent [
-	| aPath anchor clickedElement |
-	clickedElement := anEvent element.
-	aPath := overlayModel primaryPath.
-	aPath ifNil: [ ^ self ].
-	anchor := aPath anchorElement.
-	(anchor isNil or: [ clickedElement isNil ]) ifTrue: [ ^ self ].
-	clickedElement == anchor
-		ifTrue: [ overlayModel deselect ]
-		ifFalse: [
-			(anchor hasParent: clickedElement)
-				ifTrue: [ aPath toggleUpstreamElement: clickedElement ]
-				ifFalse: [
-					(clickedElement hasParent: anchor)
-						ifTrue: [ aPath setDownstreamElement: clickedElement ]
-						ifFalse: [ overlayModel setPrimaryAnchorElement: clickedElement ] ] ].
-	self overlayStateChanged.
-	self syncSelectionFromOverlayState: overlayModel
+	self applySelectionInteractionWith: anEvent element
 ]
 
 { #category : 'private - overlay' }
@@ -850,25 +834,51 @@ CgtEditor >> clearHighlightedElement [
 
 { #category : 'event handling - external' }
 CgtEditor >> requestSelectionOf: anElement [
-	anElement
-		ifNil: [ overlayModel deselect ]
-		ifNotNil: [ overlayModel setPrimaryAnchorElement: anElement ].
-	self overlayStateChanged.
-	self syncSelectionFromOverlayState: overlayModel
+	self mutateSelectionDo: [
+		anElement
+			ifNil: [ overlayModel deselect ]
+			ifNotNil: [ overlayModel setPrimaryAnchorElement: anElement ] ]
 ]
 
 { #category : 'event handling - preview' }
 CgtEditor >> previewClickedElement: anElement [
-	overlayModel hoverElement: anElement.
-	overlayModel clickHoverElement.
-	self overlayStateChanged.
-	self syncSelectionFromOverlayState: overlayModel
+	self applySelectionInteractionWith: anElement
 ]
 
 { #category : 'private - overlay' }
 CgtEditor >> syncSelectionFromOverlayState: anOverlayState [
 	selectedElementPath := anOverlayState primaryPath.
 	self selectElement: anOverlayState anchorElement
+]
+
+
+{ #category : 'private - selection' }
+CgtEditor >> applySelectionInteractionWith: anElement [
+	self mutateSelectionDo: [ self updateSelectionWithInteractedElement: anElement ]
+]
+
+{ #category : 'private - selection' }
+CgtEditor >> mutateSelectionDo: aBlock [
+	aBlock value.
+	self overlayStateChanged.
+	self syncSelectionFromOverlayState: overlayModel
+]
+
+{ #category : 'private - selection' }
+CgtEditor >> updateSelectionWithInteractedElement: anElement [
+	| aPath anchor |
+	anElement ifNil: [ ^ self ].
+	aPath := overlayModel primaryPath.
+	aPath ifNil: [ ^ overlayModel setPrimaryAnchorElement: anElement ].
+	anchor := aPath anchorElement.
+	anchor ifNil: [ ^ overlayModel setPrimaryAnchorElement: anElement ].
+	anElement == anchor
+		ifTrue: [ ^ overlayModel deselect ].
+	(anchor hasParent: anElement)
+		ifTrue: [ ^ aPath toggleUpstreamElement: anElement ].
+	(anElement hasParent: anchor)
+		ifTrue: [ ^ aPath setDownstreamElement: anElement ].
+	overlayModel setPrimaryAnchorElement: anElement
 ]
 
 { #category : 'accessing' }
