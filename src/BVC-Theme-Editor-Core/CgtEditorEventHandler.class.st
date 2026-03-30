@@ -176,8 +176,7 @@ CgtEditorEventHandler >> hideThemeEditor: aRootElement [
 						self interactionState clearPreviewHover.
 						self interactionState clearPathWidgetHover.
 						hasThemeEditor := false.
-						aTargetElementChildren := aThemeEditor targetContainer children asArray.
-						aThemeEditor targetContainer removeChildren.
+						aTargetElementChildren := aThemeEditor detachPreviewChildren.
 						aRootElement removeChildren.
 						aRootElement addChildren: aTargetElementChildren.
 						aRootElement
@@ -494,7 +493,7 @@ CgtEditorEventHandler >> showThemeEditorEvent: aShowThemeEditorEvent [
 			aShowThemeEditorEvent elementToSelect
 				ifNotNil: [ aThemeEditor requestSelectionOf: aShowThemeEditorEvent elementToSelect ].
 			aShowThemeEditorEvent sceneExtent
-				ifNotNil: [ aThemeEditor targetContainer size: aShowThemeEditorEvent sceneExtent ] ]
+				ifNotNil: [ aThemeEditor previewExtent: aShowThemeEditorEvent sceneExtent ] ]
 ]
 
 { #category : 'private - accessing' }
@@ -549,7 +548,7 @@ CgtEditorEventHandler >> noteTrackableHoverActivityIn: aRootElement [
 	aToken := hoverIdleToken.
 	aIdleDuration := 2000.
 	self themeEditorIn: aRootElement do: [ :aThemeEditor |
-		aIdleDuration := aThemeEditor overlayModel hoverIdleDurationMs ].
+		aIdleDuration := aThemeEditor hoverIdleDurationMs ].
 	[
 		(Delay forMilliseconds: aIdleDuration) wait.
 		hoverIdleToken = aToken ifTrue: [

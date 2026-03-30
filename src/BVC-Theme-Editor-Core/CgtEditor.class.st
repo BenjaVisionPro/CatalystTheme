@@ -448,6 +448,25 @@ CgtEditor >> newTreeRowElement [
 				action: [ :aButtonElement | aButtonElement phlow spawnObject: aButtonElement model ] }
 ]
 
+
+{ #category : 'private - preview' }
+CgtEditor >> detachPreviewChildren [
+	| previewChildren |
+	previewChildren := targetContainer children asArray.
+	targetContainer removeChildren.
+	^ previewChildren
+]
+
+{ #category : 'accessing' }
+CgtEditor >> hoverIdleDurationMs [
+	^ self overlayModel hoverIdleDurationMs
+]
+
+{ #category : 'accessing' }
+CgtEditor >> previewExtent: anExtent [
+	targetContainer size: anExtent
+]
+
 { #category : 'accessing' }
 CgtEditor >> detailsAnimationToken [
 	^ detailsAnimationToken
