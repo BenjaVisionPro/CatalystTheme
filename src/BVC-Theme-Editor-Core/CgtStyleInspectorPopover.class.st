@@ -30,7 +30,7 @@ CgtStyleInspectorPopover >> initialize [
 			c ignoreByLayout.
 			c ignored horizontal alignLeft.
 			c ignored vertical alignTop ].
-	selectorWidget := CgtThemeMatcherMondrianWidget new.
+	selectorWidget := CgtThemeSelectorWidget new.
 	selectorScrollPane := selectorWidget asScrollableElement.
 	selectorScrollPane eventDispatcher handlersDo: [ :eachHandler |
 		(eachHandler isKindOf: BlScrollableElementEventHandler)
@@ -107,16 +107,11 @@ CgtStyleInspectorPopover >> styleRule: aCgtThemeStyleRule [
 
 { #category : 'private - matcher' }
 CgtStyleInspectorPopover >> refreshMatcherProjection [
-	| projection |
-	(styleRule isNil or: [ selectedElement isNil ]) ifTrue: [
-		selectorWidget projection: nil.
-		^ self ].
-	projection := CgtMatcherProjectionBuilder
-		projectionForStyleRule: styleRule
+	selectorWidget
+		configureForStyleRule: styleRule
 		selectedElement: selectedElement
-		hierarchyRoot: pathRootElement
+		pathRootElement: pathRootElement
 		relatedStyleRules: self relatedStyleRules.
-	selectorWidget projection: projection.
 	self updateScopeLabel
 ]
 

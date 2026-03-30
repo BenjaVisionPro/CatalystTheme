@@ -15,6 +15,17 @@ Class {
 	#package : 'BVC-Theme-Editor-Core'
 }
 
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement pathRootElement: aRootElement relatedStyleRules: aCollection [
+	styleRule := aCgtThemeStyleRule.
+	selectedElement := anElement.
+	pathRootElement := aRootElement.
+	relatedStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
+	self refreshProjection.
+	^ self
+]
+
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> styleRule [
 	^ styleRule

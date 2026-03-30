@@ -86,3 +86,12 @@ CgtStyleInspectorPopoverTests >> styleRuleForSelector: aSelector [
 		selector: aSelector;
 		yourself
 ]
+
+
+{ #category : 'tests' }
+CgtStyleInspectorPopoverTests >> testUsesThemeSelectorWidgetAsSelectorWidget [
+	| popover |
+	popover := CgtStyleInspectorPopover new.
+
+	self assert: popover selectorWidget class equals: CgtThemeSelectorWidget
+]

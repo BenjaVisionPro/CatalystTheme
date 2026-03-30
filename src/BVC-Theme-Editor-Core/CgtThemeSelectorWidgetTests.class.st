@@ -55,3 +55,27 @@ CgtThemeSelectorWidgetTests >> testClearsProjectionWhenSelectedElementBecomesNil
 	widget selectedElement: nil.
 	self assert: widget projection isNil
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testConfigureForStyleRuleSelectedElementPathRootElementRelatedStyleRulesRefreshesProjection [
+	| root parent child rule widget relatedRule |
+	root := CgtThemeSelectorTestElement named: #Root id: #root.
+	parent := CgtThemeSelectorTestElement named: #Parent id: #parent.
+	child := CgtThemeSelectorTestElement named: #Child id: #child.
+	root addChild: parent.
+	parent addChild: child.
+	rule := CgtThemeStyleRule bootstrapForSelectedElement: child withinHierarchyRoot: root.
+	relatedRule := CgtThemeStyleRule bootstrapForSelectedElement: parent withinHierarchyRoot: root.
+	widget := CgtThemeSelectorWidget new.
+
+	widget
+		configureForStyleRule: rule
+		selectedElement: child
+		pathRootElement: root
+		relatedStyleRules: { relatedRule }.
+
+	self assert: widget projection notNil.
+	self assert: widget projection selectedElement == child.
+	self assert: widget projection relatedStyleRules size equals: 1
+]
