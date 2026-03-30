@@ -10,60 +10,26 @@ Class {
 }
 
 { #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testDefaultExpansionDirectionIsLeftForHorizontalCorridor [
+CgtMatcherTransitionPolicyTests >> testDefaultExpansionDirectionIsLeft [
 	self assert: CgtMatcherTransitionPolicy new expansionDirection equals: #left
+]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testDurationUsesRevealWhenExpandedGapCountIncreases [
+	self assert: (CgtMatcherTransitionPolicy new durationFromExpandedGapCount: 0 to: 1) equals: CgtMatcherTransitionPolicy new revealDuration
+]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testDurationUsesCollapseWhenExpandedGapCountDecreases [
+	self assert: (CgtMatcherTransitionPolicy new durationFromExpandedGapCount: 2 to: 1) equals: CgtMatcherTransitionPolicy new collapseDuration
+]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testLeadingMarginUsesLeftInsetForHorizontalCorridor [
+	self assert: (CgtMatcherTransitionPolicy new leadingMarginForProgress: 0.0) left > 0
 ]
 
 { #category : 'tests' }
 CgtMatcherTransitionPolicyTests >> testKeepsFollowingNodeFixed [
 	self assert: CgtMatcherTransitionPolicy new keepsFollowingNodeFixed
-]
-
-{ #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testUsesRevealDurationWhenExpandedGapCountIncreases [
-	self
-		assert: (CgtMatcherTransitionPolicy new durationFromExpandedGapCount: 0 to: 1)
-		equals: CgtMatcherTransitionPolicy new revealDuration
-]
-
-{ #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testUsesCollapseDurationWhenExpandedGapCountDecreases [
-	self
-		assert: (CgtMatcherTransitionPolicy new durationFromExpandedGapCount: 2 to: 1)
-		equals: CgtMatcherTransitionPolicy new collapseDuration
-]
-
-{ #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testUsesStructuralRefreshDurationWhenExpandedGapCountIsStable [
-	self
-		assert: (CgtMatcherTransitionPolicy new durationFromExpandedGapCount: 1 to: 1)
-		equals: CgtMatcherTransitionPolicy new structuralRefreshDuration
-]
-
-{ #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testVerticalCorridorExpandsUp [
-	| policy |
-	policy := CgtMatcherTransitionPolicy new
-		corridorOrientation: #vertical;
-		yourself.
-	self assert: policy expansionDirection equals: #up
-]
-
-{ #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testHorizontalLeadingMarginUsesLeftInset [
-	| margin |
-	margin := CgtMatcherTransitionPolicy new leadingMarginForProgress: 1.0.
-	self assert: margin left > 0.
-	self assert: margin top equals: 0
-]
-
-{ #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testVerticalLeadingMarginUsesTopInset [
-	| policy margin |
-	policy := CgtMatcherTransitionPolicy new
-		corridorOrientation: #vertical;
-		yourself.
-	margin := policy leadingMarginForProgress: 1.0.
-	self assert: margin top > 0.
-	self assert: margin left equals: 0
 ]

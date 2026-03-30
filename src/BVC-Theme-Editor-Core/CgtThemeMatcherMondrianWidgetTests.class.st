@@ -461,40 +461,37 @@ CgtThemeMatcherMondrianWidgetTests >> testGapElementForwardsCombinatorChangedEve
 
 
 { #category : 'tests' }
-CgtThemeMatcherMondrianWidgetTests >> testOrdersPrimaryCorridorBeforeOtherRuleContext [
-	| leadingGap root selected otherRule projection widget orderedNodes |
-	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
-		hiddenNodeCount: 2;
-		isEditable: false;
-		yourself.
+CgtThemeMatcherMondrianWidgetTests >> testOrdersPrimaryCorridorAheadOfOtherRuleContextForRendering [
+	| root compacted selected other projection widget orderedNodes |
 	root := (CgtMatcherProjectionNode kind: #upstreamScope)
 		className: 'Root';
 		isInCurrentRule: true;
+		yourself.
+	compacted := (CgtMatcherProjectionNode kind: #compactedSection)
+		hiddenNodeCount: 2;
 		yourself.
 	selected := (CgtMatcherProjectionNode kind: #selectedElement)
 		className: 'Selected';
 		isInCurrentRule: true;
 		yourself.
-	otherRule := (CgtMatcherProjectionNode kind: #otherRuleRelated)
-		className: 'SiblingRule';
+	other := (CgtMatcherProjectionNode kind: #otherRuleRelated)
+		className: 'Other';
 		isInOtherRule: true;
 		yourself.
 	projection := CgtMatcherProjection new.
 	projection
-		addNode: otherRule;
+		addNode: other;
 		addNode: selected;
+		addNode: compacted;
 		addNode: root;
-		addNode: leadingGap;
-		addRelation: (CgtMatcherProjectionRelation from: leadingGap to: root kind: #compaction);
-		addRelation: ((CgtMatcherProjectionRelation from: root to: selected kind: #matcher)
-			combinator: #child;
-			yourself).
+		addRelation: (CgtMatcherProjectionRelation from: root to: compacted kind: #compaction);
+		addRelation: ((CgtMatcherProjectionRelation from: compacted to: selected kind: #matcher) combinator: #descendant; yourself).
 	widget := CgtThemeMatcherMondrianWidget new
 		projection: projection;
 		yourself.
 	orderedNodes := widget orderedNodesForRendering.
-	self assert: orderedNodes first identicalTo: leadingGap.
-	self assert: orderedNodes second identicalTo: root.
+	self assert: orderedNodes first identicalTo: root.
+	self assert: orderedNodes second identicalTo: compacted.
 	self assert: orderedNodes third identicalTo: selected.
-	self assert: orderedNodes last identicalTo: otherRule
+	self assert: orderedNodes last identicalTo: other
 ]
