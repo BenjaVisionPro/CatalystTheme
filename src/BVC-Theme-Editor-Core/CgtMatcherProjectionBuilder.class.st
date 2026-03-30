@@ -179,27 +179,32 @@ CgtMatcherProjectionBuilder >> addMatchedElements: matchedElements selector: aSe
 
 { #category : 'building' }
 CgtMatcherProjectionBuilder >> connectPreviousDisplayNode: aPreviousDisplayNode toCurrentNode: aCurrentNode betweenMatchedElementsAtIndex: anIndex matchedElements: matchedElements steps: steps projection: aProjection otherRule: isOtherRule [
-	| combinator previousElement currentElement hiddenElements compactedNode |
+	| combinator previousElement currentElement hiddenElements compactedNode relationKind |
 	combinator := (steps at: anIndex - 1) combinatorToNext.
 	previousElement := matchedElements at: anIndex - 1.
 	currentElement := matchedElements at: anIndex.
+	relationKind := isOtherRule ifTrue: [ #otherRule ] ifFalse: [ #matcher ].
 	(combinator = #descendant and: [ (hiddenElements := self elementsBetweenAncestor: previousElement andDescendant: currentElement) notEmpty ]) ifTrue: [
 		(self shouldRevealElements: hiddenElements)
-			ifTrue: [ ^ self
-				addRevealedGapElements: hiddenElements
-				between: aPreviousDisplayNode
-				and: aCurrentNode
-				relationKind: (isOtherRule ifTrue: [ #otherRule ] ifFalse: [ #matcher ])
-				combinator: combinator
-				toProjection: aProjection ].
+			ifTrue: [
+				(aProjection nodes includes: aCurrentNode) ifFalse: [ aProjection addNode: aCurrentNode ].
+				^ self
+					addRevealedGapElements: hiddenElements
+					between: aPreviousDisplayNode
+					and: aCurrentNode
+					relationKind: relationKind
+					combinator: combinator
+					toProjection: aProjection ].
 		compactedNode := self compactedNodeForElements: hiddenElements.
 		aProjection addNode: compactedNode.
+		(aProjection nodes includes: aCurrentNode) ifFalse: [ aProjection addNode: aCurrentNode ].
 		aProjection addRelation: (CgtMatcherProjectionRelation from: aPreviousDisplayNode to: compactedNode kind: #compaction).
-		aProjection addRelation: ((CgtMatcherProjectionRelation from: compactedNode to: aCurrentNode kind: (isOtherRule ifTrue: [ #otherRule ] ifFalse: [ #matcher ]))
+		aProjection addRelation: ((CgtMatcherProjectionRelation from: compactedNode to: aCurrentNode kind: relationKind)
 			combinator: combinator;
 			yourself).
 		^ aCurrentNode ].
-	aProjection addRelation: ((CgtMatcherProjectionRelation from: aPreviousDisplayNode to: aCurrentNode kind: (isOtherRule ifTrue: [ #otherRule ] ifFalse: [ #matcher ]))
+	(aProjection nodes includes: aCurrentNode) ifFalse: [ aProjection addNode: aCurrentNode ].
+	aProjection addRelation: ((CgtMatcherProjectionRelation from: aPreviousDisplayNode to: aCurrentNode kind: relationKind)
 		combinator: combinator;
 		yourself).
 	^ aCurrentNode
