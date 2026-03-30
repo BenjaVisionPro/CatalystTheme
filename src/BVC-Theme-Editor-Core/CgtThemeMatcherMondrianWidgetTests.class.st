@@ -41,6 +41,31 @@ CgtThemeMatcherMondrianWidgetTests >> testBuildsMondrianGraphFromProjection [
 ]
 
 { #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testPublishesSelectorChangedEventWhenClassToggleChanges [
+	| element node projection widget selectorChangedEvent graphNodeElement |
+	element := CgtThemeSelectorTestElement new
+		id: (BlElementId named: #selected);
+		yourself.
+	projection := CgtMatcherProjection new.
+	node := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: element;
+		isInCurrentRule: true;
+		matchByClass: false;
+		yourself.
+	projection addNode: node.
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	widget when: CgtMatcherSelectorChangedEvent do: [ :anEvent | selectorChangedEvent := anEvent ].
+	graphNodeElement := widget graphElement graph nodeChildren first.
+	graphNodeElement requestClassMatchToggleFor: node.
+	self assert: selectorChangedEvent notNil.
+	self assert: selectorChangedEvent projection identicalTo: projection.
+	self assert: selectorChangedEvent selector displayString equals: 'CgtThemeSelectorTestElement'.
+	self assert: node matchByClass
+]
+
+{ #category : 'tests' }
 CgtThemeMatcherMondrianWidgetTests >> testUsesCustomNodeStencilElement [
 	| node projection widget graphNodeElement |
 	projection := CgtMatcherProjection new.

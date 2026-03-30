@@ -45,6 +45,11 @@ CgtThemeMatcherMondrianWidget >> graphElement [
 	^ graphElement
 ]
 
+{ #category : 'accessing' }
+CgtThemeMatcherMondrianWidget >> currentSelector [
+	^ CgtMatcherProjectionSelectorComposer selectorForProjection: projection
+]
+
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> refreshContents [
 	self removeAllChildren.
@@ -82,10 +87,39 @@ CgtThemeMatcherMondrianWidget >> newNodeElementFor: aProjectionNode [
 	nodeElement := CgtMatcherNodeElement new
 		projectionNode: aProjectionNode;
 		yourself.
-	nodeElement when: CgtMatcherNodeSelectedEvent do: [ :anEvent | self fireEvent: anEvent ].
-	nodeElement when: CgtMatcherClassMatchToggledEvent do: [ :anEvent | self fireEvent: anEvent ].
-	nodeElement when: CgtMatcherIdMatchToggledEvent do: [ :anEvent | self fireEvent: anEvent ].
+	nodeElement when: CgtMatcherNodeSelectedEvent do: [ :anEvent | self forwardNodeSelectedEvent: anEvent ].
+	nodeElement when: CgtMatcherClassMatchToggledEvent do: [ :anEvent | self handleClassMatchToggledEvent: anEvent ].
+	nodeElement when: CgtMatcherIdMatchToggledEvent do: [ :anEvent | self handleIdMatchToggledEvent: anEvent ].
 	^ nodeElement
+]
+
+{ #category : 'events' }
+CgtThemeMatcherMondrianWidget >> forwardNodeSelectedEvent: anEvent [
+	self fireEvent: anEvent
+]
+
+{ #category : 'events' }
+CgtThemeMatcherMondrianWidget >> handleClassMatchToggledEvent: anEvent [
+	anEvent projectionNode matchByClass: anEvent shouldMatch.
+	self refreshContents.
+	self fireEvent: anEvent.
+	self publishSelectorChanged
+]
+
+{ #category : 'events' }
+CgtThemeMatcherMondrianWidget >> handleIdMatchToggledEvent: anEvent [
+	anEvent projectionNode matchById: anEvent shouldMatch.
+	self refreshContents.
+	self fireEvent: anEvent.
+	self publishSelectorChanged
+]
+
+{ #category : 'events' }
+CgtThemeMatcherMondrianWidget >> publishSelectorChanged [
+	self fireEvent: (CgtMatcherSelectorChangedEvent new
+		projection: projection;
+		selector: self currentSelector;
+		yourself)
 ]
 
 { #category : 'rendering' }
