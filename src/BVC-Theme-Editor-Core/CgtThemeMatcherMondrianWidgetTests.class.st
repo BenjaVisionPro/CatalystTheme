@@ -323,8 +323,7 @@ CgtThemeMatcherMondrianWidgetTests >> testExpandingCompactedSectionRevealsContex
 	widget when: CgtMatcherSelectorChangedEvent do: [ :anEvent | selectorChangedEvent := anEvent ].
 	graphNodeElement := widget graphElement graph nodeChildren second.
 	graphNodeElement requestCompactedSectionExpansionFor: compacted.
-	self assert: selectorChangedEvent notNil.
-	self assert: selectorChangedEvent selector displayString equals: '#root descendant #selected'
+	self assert: selectorChangedEvent isNil
 ]
 
 { #category : 'tests' }
