@@ -7,6 +7,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for representing the concrete selected path through the live rendered element tree. I model the anchor element, the selected upstream scopes, and the selected child scope that together define the editor''s current structural selection.'
 }
 
 { #category : 'initialization' }

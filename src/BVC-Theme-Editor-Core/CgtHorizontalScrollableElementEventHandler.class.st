@@ -3,6 +3,7 @@ Class {
 	#superclass : 'BlScrollableElementEventHandler',
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for adapting raw scrolling input into horizontal scrolling behavior for an element. I exist so horizontal path navigation behavior stays out of unrelated UI objects.'
 }
 
 { #category : 'mouse handlers' }

@@ -19,6 +19,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for rendering the editor''s visual overlay. I draw pane dimming, scope masks, selection masks, child-scope masks, and hover feedback from passive overlay state and calculated geometry. I render; I do not own interaction semantics.'
 }
 
 { #category : 'observed elements' }

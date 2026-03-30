@@ -6,6 +6,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for representing a simple selector made from one or more selector predicates. I model the directly matchable part of a theme rule before structural combinators are applied.'
 }
 
 { #category : 'initialization' }

@@ -3,6 +3,7 @@ Class {
 	#superclass : 'Object',
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for describing an easing curve that accelerates quickly and settles slowly. I provide that animation behavior as a focused reusable object.'
 }
 
 { #category : 'instance creation' }

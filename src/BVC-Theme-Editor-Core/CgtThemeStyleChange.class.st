@@ -7,6 +7,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for representing one style change in a theme rule. I capture a single change so style rules can describe what should be altered independently of how elements are matched.'
 }
 
 { #category : 'instance creation' }

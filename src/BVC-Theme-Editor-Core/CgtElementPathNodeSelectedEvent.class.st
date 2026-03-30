@@ -6,6 +6,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for announcing that a path node was selected in the path selector. I carry the represented element so the editor can apply its selection policy explicitly.'
 }
 
 { #category : 'accessing' }

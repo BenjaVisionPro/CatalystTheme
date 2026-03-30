@@ -11,6 +11,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for representing a request to show the editor. I let other objects express that intent without needing to know how the editor is mounted or animated.'
 }
 
 { #category : 'accessing' }

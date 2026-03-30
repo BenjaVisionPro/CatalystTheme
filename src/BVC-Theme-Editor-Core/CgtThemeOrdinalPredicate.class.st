@@ -6,6 +6,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for matching elements by ordinal position within the theme selector model. I capture that structural predicate separately so it can participate cleanly in selector composition.'
 }
 
 { #category : 'instance creation' }

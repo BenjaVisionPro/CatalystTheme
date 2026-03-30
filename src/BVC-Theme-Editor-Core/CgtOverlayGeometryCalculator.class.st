@@ -7,6 +7,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for calculating overlay geometry and opacity stepping. I derive mask bounds, concentric outsets, corner radii, coincidence counts, and incremental opacity values so rendering policy stays out of the overlay element itself.'
 }
 
 { #category : 'accessing' }

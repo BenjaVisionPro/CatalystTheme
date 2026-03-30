@@ -10,6 +10,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for presenting the style inspector popover for the current selection. I host the path selector and related style-inspection UI next to the selected element without owning selection semantics.'
 }
 
 { #category : 'initialization' }

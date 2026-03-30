@@ -3,6 +3,7 @@ Class {
 	#superclass : 'Object',
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for representing a theme selector in the abstract. I provide the common protocol for selector objects that describe how style rules match the rendered element tree.'
 }
 
 { #category : 'instance creation' }

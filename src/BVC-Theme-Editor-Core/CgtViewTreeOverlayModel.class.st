@@ -26,6 +26,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for holding the passive render state and configuration for the view-tree overlay. I expose the selected path, hover target, and rendering values that the overlay and geometry calculator need, but I do not own interaction semantics.'
 }
 
 { #category : 'initialization' }

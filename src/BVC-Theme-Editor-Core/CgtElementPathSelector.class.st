@@ -11,6 +11,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for presenting and interacting with a concrete element path. I build the path widget UI, reveal or collapse path segments, and announce node and selector interactions. I do not decide what those interactions mean for the editor as a whole.'
 }
 
 { #category : 'initialization' }

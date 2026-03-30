@@ -11,6 +11,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for the editor''s interaction semantics. I own selection, hover, explicit highlight, and the rules that resolve them into effective editor state. I mutate selection and hover meaning; I do not build UI or draw overlays.'
 }
 
 { #category : 'initialization' }

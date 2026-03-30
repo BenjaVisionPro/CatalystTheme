@@ -23,6 +23,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for composing and presenting the theme editor user interface. I own the editor''s visible structure, wire together its major subcomponents, and translate semantic interaction state into concrete interface updates such as tree selection, inspector presentation, and overlay refreshes. I do not decide the meaning of interaction itself; I host and present it.'
 }
 
 { #category : 'api - animation' }

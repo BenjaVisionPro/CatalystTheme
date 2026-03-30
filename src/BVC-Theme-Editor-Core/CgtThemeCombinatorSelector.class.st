@@ -8,6 +8,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for composing theme selectors structurally. I represent selector relationships such as ancestor or contextual combination so complex selectors can be built from simpler parts.'
 }
 
 { #category : 'instance creation' }

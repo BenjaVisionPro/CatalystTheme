@@ -6,6 +6,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for representing a request to select a specific element in the editor. I communicate that intent as data so the editor infrastructure can react without direct coupling.'
 }
 
 { #category : 'accessing' }

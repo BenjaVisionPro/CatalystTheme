@@ -6,6 +6,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for representing one node in an element path. I pair a concrete element with its place in the path so path-oriented UI and logic can reason about individual path members clearly.'
 }
 
 { #category : 'instance creation' }

@@ -7,6 +7,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for representing one complete theme style rule. I combine selector matching with the set of style changes that should apply when that selector matches.'
 }
 
 { #category : 'initialization' }

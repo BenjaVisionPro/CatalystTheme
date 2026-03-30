@@ -7,6 +7,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for representing a prepared overlay path presentation. I hold the path-oriented information that the overlay uses to render a specific visual presentation of selection and scope state.'
 }
 
 { #category : 'instance creation' }

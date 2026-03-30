@@ -40,6 +40,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for raw editor lifecycle and input handling. I react to low-level events such as keyboard and mouse activity, open and close the editor, and forward raw interaction to the editor session without owning editor semantics or render policy.'
 }
 
 { #category : 'class initialization' }

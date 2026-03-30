@@ -7,6 +7,7 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
+	#comment : 'I am responsible for building the visual stencil used for rows in the editor''s element tree. I encapsulate that row construction so tree presentation stays out of the higher-level editor composition code.'
 }
 
 { #category : 'accessing' }
