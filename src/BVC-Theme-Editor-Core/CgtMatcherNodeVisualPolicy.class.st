@@ -47,22 +47,22 @@ CgtMatcherNodeVisualPolicy >> elementIdTextForNode: aProjectionNode [
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> roleLabelForNode: aProjectionNode [
-	aProjectionNode kind = #selectedElement ifTrue: [ ^ 'Selected element' ].
-	aProjectionNode kind = #upstreamScope ifTrue: [ ^ 'Upstream scope' ].
-	aProjectionNode kind = #downstreamScope ifTrue: [ ^ 'Downstream scope' ].
-	aProjectionNode kind = #compactedSection ifTrue: [ ^ 'Compacted context' ].
-	aProjectionNode kind = #otherRuleRelated ifTrue: [ ^ 'Other-rule context' ].
+	aProjectionNode kind = #selectedElement ifTrue: [ ^ 'Selected' ].
+	aProjectionNode kind = #upstreamScope ifTrue: [ ^ 'Scope' ].
+	aProjectionNode kind = #downstreamScope ifTrue: [ ^ 'Scope' ].
+	aProjectionNode kind = #compactedSection ifTrue: [ ^ 'Between' ].
+	aProjectionNode kind = #otherRuleRelated ifTrue: [ ^ 'Other rule' ].
 	^ aProjectionNode kind asString
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> matchSummaryForNode: aProjectionNode [
 	aProjectionNode isCompactedSection ifTrue: [ ^ 'Context only' ].
-	(aProjectionNode matchByClass and: [ aProjectionNode matchById ]) ifTrue: [ ^ 'Matches by class + id' ].
-	aProjectionNode matchByClass ifTrue: [ ^ 'Matches by class' ].
-	aProjectionNode matchById ifTrue: [ ^ 'Matches by id' ].
+	(aProjectionNode matchByClass and: [ aProjectionNode matchById ]) ifTrue: [ ^ 'Class + id' ].
+	aProjectionNode matchByClass ifTrue: [ ^ 'Class' ].
+	aProjectionNode matchById ifTrue: [ ^ 'Id' ].
 	^ aProjectionNode isEditable
-		ifTrue: [ 'No matcher selected yet' ]
+		ifTrue: [ 'Choose class or id' ]
 		ifFalse: [ 'Context only' ]
 ]
 

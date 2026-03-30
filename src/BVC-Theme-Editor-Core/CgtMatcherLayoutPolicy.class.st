@@ -63,3 +63,32 @@ CgtMatcherLayoutPolicy >> treeHorizontalGap [
 CgtMatcherLayoutPolicy >> treeVerticalGap [
 	^ 12
 ]
+
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> showsLegendByDefault [
+	^ false
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> widthForNode: aProjectionNode [
+	aProjectionNode ifNil: [ ^ self nodeWidth ].
+	aProjectionNode kind = #selectedElement ifTrue: [ ^ self selectedNodeWidth ].
+	(aProjectionNode isInCurrentRule or: [ aProjectionNode kind = #upstreamScope or: [ aProjectionNode kind = #downstreamScope ] ]) ifTrue: [ ^ self scopeNodeWidth ].
+	^ self contextNodeWidth
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> selectedNodeWidth [
+	^ 196
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> scopeNodeWidth [
+	^ 168
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> contextNodeWidth [
+	^ 148
+]

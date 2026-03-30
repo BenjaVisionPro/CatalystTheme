@@ -104,6 +104,7 @@ CgtMatcherNodeElement >> refreshContents [
 	self
 		background: (self backgroundForNode: projectionNode);
 		border: (self borderForNode: projectionNode).
+	self applyLayoutForNode: projectionNode.
 	self addChild: (self newTitleLabelFor: projectionNode).
 	self addChild: (self newElementIdLabelFor: projectionNode).
 	self addChild: (self newMatchSummaryLabelFor: projectionNode).
@@ -113,6 +114,20 @@ CgtMatcherNodeElement >> refreshContents [
 	(self shouldShowRuleMembershipActionsFor: projectionNode)
 		ifTrue: [ self addChild: (self newRuleMembershipActionRowFor: projectionNode) ].
 	self addChild: (self newNodeStateRowFor: projectionNode)
+]
+
+
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> applyLayoutForNode: aProjectionNode [
+	self constraintsDo: [ :c |
+		c horizontal exact: (layoutPolicy widthForNode: aProjectionNode).
+		c vertical fitContent ]
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> shouldShowRoleBadgeForNode: aProjectionNode [
+	^ aProjectionNode kind ~= #selectedElement
 ]
 
 { #category : 'rendering' }
@@ -177,8 +192,10 @@ CgtMatcherNodeElement >> newNodeStateRowFor: aProjectionNode [
 		hFitContent;
 		cellSpacing: 4.
 	badges := OrderedCollection new.
-	badges add: (self newBadgeLabeled: (visualPolicy roleLabelForNode: aProjectionNode) active: true).
-	aProjectionNode isInCurrentRule ifTrue: [ badges add: (self newBadgeLabeled: 'Current rule' active: true) ].
+	(self shouldShowRoleBadgeForNode: aProjectionNode) ifTrue: [
+		badges add: (self newBadgeLabeled: (visualPolicy roleLabelForNode: aProjectionNode) active: true) ].
+	(aProjectionNode isInCurrentRule and: [ aProjectionNode kind ~= #selectedElement ])
+		ifTrue: [ badges add: (self newBadgeLabeled: 'Rule' active: true) ].
 	aProjectionNode isInOtherRule ifTrue: [ badges add: (self newBadgeLabeled: 'Other rule' active: true) ].
 	aProjectionNode isEditable ifFalse: [ badges add: (self newBadgeLabeled: 'Read only' active: false) ].
 	row addChildren: badges asArray.

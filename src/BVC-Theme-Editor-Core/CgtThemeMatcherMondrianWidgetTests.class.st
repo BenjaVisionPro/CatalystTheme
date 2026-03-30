@@ -480,3 +480,21 @@ CgtThemeMatcherMondrianWidgetTests >> testShowsOtherRuleIndicatorWhenRelatedRule
 	self assert: indicator notNil.
 	self assert: indicator relatedRuleCount equals: 1
 ]
+
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testDoesNotRenderLegendByDefault [
+	| node projection widget |
+	projection := CgtMatcherProjection new.
+	node := (CgtMatcherProjectionNode kind: #selectedElement)
+		className: 'SelectedElement';
+		elementId: (BlElementId named: #selected);
+		isInCurrentRule: true;
+		matchByClass: true;
+		yourself.
+	projection addNode: node.
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	self assert: (widget children anySatisfy: [ :each | each isKindOf: CgtMatcherLegendElement ]) not
+]

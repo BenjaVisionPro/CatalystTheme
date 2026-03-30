@@ -69,7 +69,7 @@ CgtThemeMatcherMondrianWidget >> refreshContents [
 		graphElement := nil.
 		mondrian := nil.
 		^ self ].
-	newLegend := CgtMatcherLegendElement new.
+	newLegend := self newLegendIfNeeded.
 	otherRuleIndicator := self newOtherRuleIndicatorIfNeeded.
 	mondrian := self buildMondrian.
 	newGraph := mondrian root.
@@ -78,11 +78,19 @@ CgtThemeMatcherMondrianWidget >> refreshContents [
 		c vertical fitContent ].
 	shouldAnimate := self children isNotEmpty.
 	self removeChildren.
-	self addChild: newLegend.
+	newLegend ifNotNil: [ self addChild: newLegend ].
 	otherRuleIndicator ifNotNil: [ self addChild: otherRuleIndicator ].
 	self addChild: newGraph.
 	graphElement := newGraph.
 	shouldAnimate ifTrue: [ self animateStructuralRefreshFor: newLegend and: newGraph ]
+]
+
+
+
+{ #category : 'rendering' }
+CgtThemeMatcherMondrianWidget >> newLegendIfNeeded [
+	layoutPolicy showsLegendByDefault ifFalse: [ ^ nil ].
+	^ CgtMatcherLegendElement new
 ]
 
 { #category : 'rendering' }
@@ -153,7 +161,7 @@ CgtThemeMatcherMondrianWidget >> animateStructuralRefreshFor: aLegendElement and
 	endOpacity := transitionPolicy graphRevealEndOpacity.
 	startMargin := transitionPolicy leadingMarginForProgress: 0.0.
 	duration := transitionPolicy structuralRefreshDuration.
-	{ aLegendElement. aGraphElement } do: [ :each |
+	({ aLegendElement. aGraphElement } reject: [ :each | each isNil ]) do: [ :each |
 		each opacity: startOpacity.
 		self applyStructuralRefreshMargin: startMargin to: each ].
 	self addAnimation: (BlNumberTransition new
@@ -166,14 +174,16 @@ CgtThemeMatcherMondrianWidget >> animateStructuralRefreshFor: aLegendElement and
 					| currentOpacity currentMargin |
 					currentOpacity := startOpacity + ((endOpacity - startOpacity) * aProgress).
 					currentMargin := transitionPolicy leadingMarginForProgress: aProgress.
-					aLegendElement opacity: currentOpacity.
+					aLegendElement ifNotNil: [
+						aLegendElement opacity: currentOpacity.
+						aWidget applyStructuralRefreshMargin: currentMargin to: aLegendElement ].
 					aGraphElement opacity: currentOpacity.
-					aWidget applyStructuralRefreshMargin: currentMargin to: aLegendElement.
 					aWidget applyStructuralRefreshMargin: currentMargin to: aGraphElement ] ];
 			onFinishedDo: [ self structuralRefreshAnimationToken = token ifTrue: [
-				aLegendElement opacity: endOpacity.
+				aLegendElement ifNotNil: [
+					aLegendElement opacity: endOpacity.
+					self resetStructuralRefreshMarginFor: aLegendElement ].
 				aGraphElement opacity: endOpacity.
-				self resetStructuralRefreshMarginFor: aLegendElement.
 				self resetStructuralRefreshMarginFor: aGraphElement ] ];
 			yourself)
 ]
