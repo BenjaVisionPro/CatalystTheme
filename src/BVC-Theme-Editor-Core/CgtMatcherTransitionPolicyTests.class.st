@@ -1,3 +1,7 @@
+"
+#Matcher Transition Policy Tests
+I verify matcher transition policy defaults used by the matcher visual transitions.
+"
 Class {
 	#name : 'CgtMatcherTransitionPolicyTests',
 	#superclass : 'TestCase',
@@ -6,22 +10,11 @@ Class {
 }
 
 { #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testExpansionDirectionFollowsHorizontalCorridorOrientation [
+CgtMatcherTransitionPolicyTests >> testDefaultExpansionDirectionIsLeft [
 	self assert: CgtMatcherTransitionPolicy new expansionDirection equals: #left
 ]
 
 { #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testLeadingMarginUsesLeftInsetForHorizontalCorridor [
-	| margin |
-	margin := CgtMatcherTransitionPolicy new leadingMarginForProgress: 0.0.
-	self assert: margin left equals: -24.
-	self assert: margin top equals: 0
-]
-
-{ #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testCanStillSwitchToVerticalCorridor [
-	| policy |
-	policy := CgtMatcherTransitionPolicy new.
-	policy corridorOrientation: #vertical.
-	self assert: policy expansionDirection equals: #up
+CgtMatcherTransitionPolicyTests >> testKeepsFollowingNodeFixed [
+	self assert: CgtMatcherTransitionPolicy new keepsFollowingNodeFixed
 ]

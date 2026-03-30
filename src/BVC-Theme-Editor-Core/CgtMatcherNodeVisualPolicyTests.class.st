@@ -16,7 +16,7 @@ CgtMatcherNodeVisualPolicyTests >> testRoleLabelForSelectedElementNode [
 	node := CgtMatcherProjectionNode new
 		kind: #selectedElement;
 		yourself.
-	self assert: (policy roleLabelForNode: node) equals: 'Selected'
+	self assert: (policy roleLabelForNode: node) equals: 'Selected element'
 ]
 
 { #category : 'tests' }
@@ -28,7 +28,7 @@ CgtMatcherNodeVisualPolicyTests >> testMatchSummaryForClassAndIdNode [
 		matchByClass: true;
 		matchById: true;
 		yourself.
-	self assert: (policy matchSummaryForNode: node) equals: 'Class + id'
+	self assert: (policy matchSummaryForNode: node) equals: 'Matches by class + id'
 ]
 
 { #category : 'tests' }
@@ -42,4 +42,13 @@ CgtMatcherNodeVisualPolicyTests >> testCompactedNodeUsesContextOnlySummary [
 		yourself.
 	self assert: (policy titleForNode: node) equals: '2 hidden nodes'.
 	self assert: (policy matchSummaryForNode: node) equals: 'Context only'
+]
+
+
+{ #category : 'tests' }
+CgtMatcherNodeVisualPolicyTests >> testSelectedRoleLabelIsShort [
+	| policy node |
+	policy := CgtMatcherNodeVisualPolicy new.
+	node := CgtMatcherProjectionNode kind: #selectedElement.
+	self assert: (policy roleLabelForNode: node) equals: 'Selected'
 ]

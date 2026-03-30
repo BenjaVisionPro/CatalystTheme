@@ -10,11 +10,6 @@ Class {
 }
 
 { #category : 'layout' }
-CgtMatcherLayoutPolicy >> corridorOrientation [
-	^ #horizontal
-]
-
-{ #category : 'layout' }
 CgtMatcherLayoutPolicy >> widgetPadding [
 	^ BlInsets all: 8
 ]
@@ -54,41 +49,23 @@ CgtMatcherLayoutPolicy >> popoverMatcherHeight [
 	^ 260
 ]
 
-{ #category : 'layout' }
-CgtMatcherLayoutPolicy >> treeHorizontalGap [
-	^ 22
-]
-
-{ #category : 'layout' }
-CgtMatcherLayoutPolicy >> treeVerticalGap [
-	^ 12
-]
-
-
-{ #category : 'layout' }
-CgtMatcherLayoutPolicy >> showsLegendByDefault [
-	^ false
-]
-
-{ #category : 'layout' }
-CgtMatcherLayoutPolicy >> widthForNode: aProjectionNode [
-	aProjectionNode ifNil: [ ^ self nodeWidth ].
-	aProjectionNode kind = #selectedElement ifTrue: [ ^ self selectedNodeWidth ].
-	(aProjectionNode isInCurrentRule or: [ aProjectionNode kind = #upstreamScope or: [ aProjectionNode kind = #downstreamScope ] ]) ifTrue: [ ^ self scopeNodeWidth ].
-	^ self contextNodeWidth
-]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> selectedNodeWidth [
-	^ 196
+	^ 220
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> scopeNodeWidth [
-	^ 168
+	^ 190
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> contextNodeWidth [
-	^ 148
+	^ 156
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> compactedGapWidth [
+	^ 132
 ]

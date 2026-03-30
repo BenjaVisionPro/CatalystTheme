@@ -109,28 +109,3 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 	self assert: widget currentStyleRule identicalTo: originalRule.
 	self assert: widget currentStyleRule selector identicalTo: newSelector
 ]
-
-
-{ #category : 'tests' }
-CgtThemeSelectorWidgetTests >> testOtherRuleContextToggleUpdatesVisibilityState [
-	| root selected rule relatedRule widget event |
-	root := self newTestElementWithId: #root.
-	selected := self newTestElementWithId: #selected.
-	root addChild: selected.
-	rule := CgtThemeStyleRule bootstrapForSelectedElement: selected withinHierarchyRoot: root.
-	relatedRule := CgtThemeStyleRule new
-		selector: (CgtThemeSelector new
-			predicate: (CgtThemeIdPredicate elementId: #other);
-			yourself);
-		yourself.
-	widget := CgtThemeSelectorWidget new
-		configureForStyleRule: rule
-		selectedElement: selected
-		pathRootElement: root
-		relatedStyleRules: { relatedRule }.
-	event := CgtMatcherOtherRuleContextToggledEvent new
-		shouldShow: true;
-		yourself.
-	widget matcherOtherRuleContextToggledEvent: event.
-	self assert: widget visibilityState showsOtherRuleContext
-]

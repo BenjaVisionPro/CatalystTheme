@@ -28,7 +28,7 @@ CgtMatcherNodeElement >> initialize [
 		background: (Color white alpha: 0.95);
 		border: (BlBorder paint: (Color gray alpha: 0.3));
 		constraintsDo: [ :c |
-			c horizontal exact: layoutPolicy nodeWidth.
+			c horizontal exact: layoutPolicy contextNodeWidth.
 			c vertical fitContent ].
 	visualPolicy := CgtMatcherNodeVisualPolicy new.
 	hoverNestingCount := 0.
@@ -103,12 +103,17 @@ CgtMatcherNodeElement >> refreshContents [
 	projectionNode ifNil: [ ^ self ].
 	self
 		background: (self backgroundForNode: projectionNode);
-		border: (self borderForNode: projectionNode).
-	self applyLayoutForNode: projectionNode.
-	self addChild: (self newTitleLabelFor: projectionNode).
-	self addChild: (self newElementIdLabelFor: projectionNode).
-	self addChild: (self newMatchSummaryLabelFor: projectionNode).
-	self addChild: (self newMatchToggleRowFor: projectionNode).
+		border: (self borderForNode: projectionNode);
+		constraintsDo: [ :c |
+			c horizontal exact: (self widthForNode: projectionNode).
+			c vertical fitContent ].
+	self addChild: (self newHeaderRowFor: projectionNode).
+	(self shouldShowElementIdLabelFor: projectionNode) ifTrue: [
+		self addChild: (self newElementIdLabelFor: projectionNode) ].
+	(self shouldShowMatchSummaryFor: projectionNode) ifTrue: [
+		self addChild: (self newMatchSummaryLabelFor: projectionNode) ].
+	(self shouldShowMatchToggleRowFor: projectionNode) ifTrue: [
+		self addChild: (self newMatchToggleRowFor: projectionNode) ].
 	(self shouldShowCompactedSectionActionsFor: projectionNode)
 		ifTrue: [ self addChild: (self newCompactedSectionActionRowFor: projectionNode) ].
 	(self shouldShowRuleMembershipActionsFor: projectionNode)
@@ -119,15 +124,45 @@ CgtMatcherNodeElement >> refreshContents [
 
 
 { #category : 'rendering' }
-CgtMatcherNodeElement >> applyLayoutForNode: aProjectionNode [
-	self constraintsDo: [ :c |
-		c horizontal exact: (layoutPolicy widthForNode: aProjectionNode).
-		c vertical fitContent ]
+CgtMatcherNodeElement >> widthForNode: aProjectionNode [
+	aProjectionNode kind = #selectedElement ifTrue: [ ^ layoutPolicy selectedNodeWidth ].
+	(aProjectionNode kind = #upstreamScope or: [ aProjectionNode kind = #downstreamScope ]) ifTrue: [ ^ layoutPolicy scopeNodeWidth ].
+	aProjectionNode kind = #compactedSection ifTrue: [ ^ layoutPolicy compactedGapWidth ].
+	^ layoutPolicy contextNodeWidth
 ]
 
 { #category : 'rendering' }
-CgtMatcherNodeElement >> shouldShowRoleBadgeForNode: aProjectionNode [
+CgtMatcherNodeElement >> newHeaderRowFor: aProjectionNode [
+	| row |
+	row := BrHorizontalPane new
+		vFitContent;
+		hMatchParent;
+		cellSpacing: 4.
+	row addChild: (self newTitleLabelFor: aProjectionNode).
+	(self shouldShowRoleBadgeFor: aProjectionNode) ifTrue: [
+		row addChild: (self newBadgeLabeled: (visualPolicy roleLabelForNode: aProjectionNode) active: true) ].
+	^ self wireNodeHoverForwardingOn: row
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> shouldShowRoleBadgeFor: aProjectionNode [
 	^ aProjectionNode kind ~= #selectedElement
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> shouldShowElementIdLabelFor: aProjectionNode [
+	^ aProjectionNode elementId notNil or: [ aProjectionNode isCompactedSection ]
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> shouldShowMatchSummaryFor: aProjectionNode [
+	^ aProjectionNode isCompactedSection
+		or: [ aProjectionNode isEditable or: [ aProjectionNode isInOtherRule ] ]
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> shouldShowMatchToggleRowFor: aProjectionNode [
+	^ aProjectionNode isEditable and: [ aProjectionNode kind ~= #compactedSection ]
 ]
 
 { #category : 'rendering' }
@@ -153,12 +188,14 @@ CgtMatcherNodeElement >> wireNodeHoverForwardingOn: anElement [
 CgtMatcherNodeElement >> newTitleLabelFor: aProjectionNode [
 	^ self wireNodeHoverForwardingOn: (BrLabel new
 		aptitude: BrGlamorousLabelAptitude;
+		beSmallSize;
 		text: (visualPolicy titleForNode: aProjectionNode))
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeElement >> newElementIdLabelFor: aProjectionNode [
 	^ self wireNodeHoverForwardingOn: (BrLabel new
+		beSmallSize;
 		aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
 		text: (visualPolicy elementIdTextForNode: aProjectionNode))
 ]
@@ -192,10 +229,9 @@ CgtMatcherNodeElement >> newNodeStateRowFor: aProjectionNode [
 		hFitContent;
 		cellSpacing: 4.
 	badges := OrderedCollection new.
-	(self shouldShowRoleBadgeForNode: aProjectionNode) ifTrue: [
+	(self shouldShowRoleBadgeFor: aProjectionNode) ifTrue: [
 		badges add: (self newBadgeLabeled: (visualPolicy roleLabelForNode: aProjectionNode) active: true) ].
-	(aProjectionNode isInCurrentRule and: [ aProjectionNode kind ~= #selectedElement ])
-		ifTrue: [ badges add: (self newBadgeLabeled: 'Rule' active: true) ].
+	(aProjectionNode isInCurrentRule and: [ aProjectionNode kind ~= #selectedElement ]) ifTrue: [ badges add: (self newBadgeLabeled: 'Rule' active: true) ].
 	aProjectionNode isInOtherRule ifTrue: [ badges add: (self newBadgeLabeled: 'Other rule' active: true) ].
 	aProjectionNode isEditable ifFalse: [ badges add: (self newBadgeLabeled: 'Read only' active: false) ].
 	row addChildren: badges asArray.

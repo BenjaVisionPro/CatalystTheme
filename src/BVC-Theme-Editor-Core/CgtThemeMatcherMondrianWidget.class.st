@@ -28,9 +28,7 @@ CgtThemeMatcherMondrianWidget >> initialize [
 		cellSpacing: layoutPolicy widgetCellSpacing;
 		padding: layoutPolicy widgetPadding.
 	relationVisualPolicy := CgtMatcherRelationVisualPolicy new.
-	transitionPolicy := CgtMatcherTransitionPolicy new
-		corridorOrientation: layoutPolicy corridorOrientation;
-		yourself.
+	transitionPolicy := CgtMatcherTransitionPolicy new.
 	structuralRefreshAnimationToken := 0
 ]
 
@@ -63,14 +61,13 @@ CgtThemeMatcherMondrianWidget >> currentSelector [
 
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> refreshContents [
-	| newLegend newGraph shouldAnimate otherRuleIndicator |
+	| newLegend newGraph shouldAnimate |
 	projection ifNil: [
 		self removeChildren.
 		graphElement := nil.
 		mondrian := nil.
 		^ self ].
-	newLegend := self newLegendIfNeeded.
-	otherRuleIndicator := self newOtherRuleIndicatorIfNeeded.
+	newLegend := CgtMatcherLegendElement new.
 	mondrian := self buildMondrian.
 	newGraph := mondrian root.
 	newGraph constraintsDo: [ :c |
@@ -78,56 +75,10 @@ CgtThemeMatcherMondrianWidget >> refreshContents [
 		c vertical fitContent ].
 	shouldAnimate := self children isNotEmpty.
 	self removeChildren.
-	newLegend ifNotNil: [ self addChild: newLegend ].
-	otherRuleIndicator ifNotNil: [ self addChild: otherRuleIndicator ].
+	self addChild: newLegend.
 	self addChild: newGraph.
 	graphElement := newGraph.
 	shouldAnimate ifTrue: [ self animateStructuralRefreshFor: newLegend and: newGraph ]
-]
-
-
-
-{ #category : 'rendering' }
-CgtThemeMatcherMondrianWidget >> newLegendIfNeeded [
-	layoutPolicy showsLegendByDefault ifFalse: [ ^ nil ].
-	^ CgtMatcherLegendElement new
-]
-
-{ #category : 'rendering' }
-CgtThemeMatcherMondrianWidget >> hiddenOtherRuleCount [
-	^ (projection ifNil: [ #() ] ifNotNil: [ projection relatedStyleRules ])
-		count: [ :each | each notNil and: [ each ~~ projection styleRule ] ]
-]
-
-{ #category : 'rendering' }
-CgtThemeMatcherMondrianWidget >> newOtherRuleIndicatorIfNeeded [
-	| count indicator |
-	count := self hiddenOtherRuleCount.
-	count > 0 ifFalse: [ ^ nil ].
-	indicator := CgtMatcherOtherRuleIndicatorElement new
-		relatedRuleCount: count;
-		showsOtherRuleContext: projection visibilityState showsOtherRuleContext;
-		yourself.
-	indicator when: CgtMatcherOtherRuleContextToggledEvent do: [ :anEvent | self handleOtherRuleContextToggledEvent: anEvent ].
-	^ indicator
-]
-
-
-
-{ #category : 'rendering' }
-CgtThemeMatcherMondrianWidget >> applyCorridorLayoutToMondrian: aMondrian [
-	aMondrian root layout: (GtGraphTreeLayout new
-		verticalGap: layoutPolicy treeVerticalGap;
-		horizontalGap: layoutPolicy treeHorizontalGap)
-]
-
-{ #category : 'rendering' }
-CgtThemeMatcherMondrianWidget >> configureEdgeAnchorsOn: aMondrian [
-	layoutPolicy corridorOrientation = #horizontal
-		ifTrue: [ ^ self ].
-	aMondrian edges
-		fromCenterBottom;
-		toCenterTop
 ]
 
 { #category : 'rendering' }
@@ -138,8 +89,9 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 		stencil: [ :aProjectionNode | self newGraphElementFor: aProjectionNode ];
 		with: self orderedNodesForRendering.
 	projection relations ifNotEmpty: [
-		self configureEdgeAnchorsOn: view.
 		view edges
+			fromCenterBottom;
+			toCenterTop;
 			stencil: [ :aRelation |
 				BlLineElement new
 					zIndex: -1;
@@ -147,23 +99,23 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 			connect: projection relations
 			from: [ :aRelation | aRelation fromNode ]
 			to: [ :aRelation | aRelation toNode ] ].
-	self applyCorridorLayoutToMondrian: view.
+	view layout tree.
 	^ view
 ]
 
 
 
+
 { #category : 'private - animation' }
 CgtThemeMatcherMondrianWidget >> animateStructuralRefreshFor: aLegendElement and: aGraphElement [
-	| token startOpacity endOpacity duration startMargin |
+	| token startOpacity endOpacity offsetX duration |
 	token := structuralRefreshAnimationToken := structuralRefreshAnimationToken + 1.
 	startOpacity := transitionPolicy graphRevealStartOpacity.
 	endOpacity := transitionPolicy graphRevealEndOpacity.
-	startMargin := transitionPolicy leadingMarginForProgress: 0.0.
+	offsetX := transitionPolicy graphRevealOffsetX.
 	duration := transitionPolicy structuralRefreshDuration.
-	({ aLegendElement. aGraphElement } reject: [ :each | each isNil ]) do: [ :each |
-		each opacity: startOpacity.
-		self applyStructuralRefreshMargin: startMargin to: each ].
+	{ aLegendElement. aGraphElement } do: [ :each |
+		each opacity: startOpacity ].
 	self addAnimation: (BlNumberTransition new
 			from: 0.0;
 			to: 1.0;
@@ -171,32 +123,14 @@ CgtThemeMatcherMondrianWidget >> animateStructuralRefreshFor: aLegendElement and
 			easing: CgtFastInSlowOutEasing new;
 			onStepDo: [ :aProgress :aWidget |
 				aWidget structuralRefreshAnimationToken = token ifTrue: [
-					| currentOpacity currentMargin |
+					| currentOpacity |
 					currentOpacity := startOpacity + ((endOpacity - startOpacity) * aProgress).
-					currentMargin := transitionPolicy leadingMarginForProgress: aProgress.
-					aLegendElement ifNotNil: [
-						aLegendElement opacity: currentOpacity.
-						aWidget applyStructuralRefreshMargin: currentMargin to: aLegendElement ].
-					aGraphElement opacity: currentOpacity.
-					aWidget applyStructuralRefreshMargin: currentMargin to: aGraphElement ] ];
+					aLegendElement opacity: currentOpacity.
+					aGraphElement opacity: currentOpacity ] ];
 			onFinishedDo: [ self structuralRefreshAnimationToken = token ifTrue: [
-				aLegendElement ifNotNil: [
-					aLegendElement opacity: endOpacity.
-					self resetStructuralRefreshMarginFor: aLegendElement ].
-				aGraphElement opacity: endOpacity.
-				self resetStructuralRefreshMarginFor: aGraphElement ] ];
+				aLegendElement opacity: endOpacity.
+				aGraphElement opacity: endOpacity ] ];
 			yourself)
-]
-
-{ #category : 'private - animation' }
-CgtThemeMatcherMondrianWidget >> applyStructuralRefreshMargin: anInsets to: anElement [
-	anElement constraintsDo: [ :c | c margin: anInsets ].
-	anElement requestLayout
-]
-
-{ #category : 'private - animation' }
-CgtThemeMatcherMondrianWidget >> resetStructuralRefreshMarginFor: anElement [
-	self applyStructuralRefreshMargin: (BlInsets top: 0 left: 0 bottom: 0 right: 0) to: anElement
 ]
 
 { #category : 'accessing' }
@@ -207,13 +141,6 @@ CgtThemeMatcherMondrianWidget >> transitionPolicy [
 { #category : 'accessing' }
 CgtThemeMatcherMondrianWidget >> structuralRefreshAnimationToken [
 	^ structuralRefreshAnimationToken ifNil: [ 0 ]
-]
-
-
-
-{ #category : 'events' }
-CgtThemeMatcherMondrianWidget >> handleOtherRuleContextToggledEvent: anEvent [
-	self fireEvent: anEvent
 ]
 
 { #category : 'rendering' }

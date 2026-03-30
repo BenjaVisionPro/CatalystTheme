@@ -5,18 +5,9 @@ I provide timing and motion policy for matcher structural transitions. I am resp
 Class {
 	#name : 'CgtMatcherTransitionPolicy',
 	#superclass : 'Object',
-	#instVars : [
-		'corridorOrientation'
-	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
 }
-
-{ #category : 'initialization' }
-CgtMatcherTransitionPolicy >> initialize [
-	super initialize.
-	corridorOrientation := #horizontal
-]
 
 { #category : 'accessing' }
 CgtMatcherTransitionPolicy >> structuralRefreshDuration [
@@ -40,16 +31,7 @@ CgtMatcherTransitionPolicy >> collapseDuration [
 
 { #category : 'accessing' }
 CgtMatcherTransitionPolicy >> graphRevealOffsetX [
-	^ self corridorOrientation = #horizontal
-		ifTrue: [ -24 ]
-		ifFalse: [ 0 ]
-]
-
-{ #category : 'accessing' }
-CgtMatcherTransitionPolicy >> graphRevealOffsetY [
-	^ self corridorOrientation = #vertical
-		ifTrue: [ -24 ]
-		ifFalse: [ 0 ]
+	^ -24
 ]
 
 { #category : 'accessing' }
@@ -68,27 +50,6 @@ CgtMatcherTransitionPolicy >> keepsFollowingNodeFixed [
 ]
 
 { #category : 'accessing' }
-CgtMatcherTransitionPolicy >> corridorOrientation [
-	^ corridorOrientation ifNil: [ #horizontal ]
-]
-
-{ #category : 'accessing' }
-CgtMatcherTransitionPolicy >> corridorOrientation: aSymbol [
-	corridorOrientation := aSymbol.
-	^ self
-]
-
-{ #category : 'accessing' }
 CgtMatcherTransitionPolicy >> expansionDirection [
-	^ self corridorOrientation = #horizontal
-		ifTrue: [ #left ]
-		ifFalse: [ #up ]
-]
-
-{ #category : 'accessing' }
-CgtMatcherTransitionPolicy >> leadingMarginForProgress: aProgress [
-	| left top |
-	left := self graphRevealOffsetX * (1.0 - aProgress).
-	top := self graphRevealOffsetY * (1.0 - aProgress).
-	^ BlInsets top: top left: left bottom: 0 right: 0
+	^ #left
 ]

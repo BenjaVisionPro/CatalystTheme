@@ -10,11 +10,6 @@ Class {
 }
 
 { #category : 'tests' }
-CgtMatcherLayoutPolicyTests >> testCorridorDefaultsToHorizontal [
-	self assert: CgtMatcherLayoutPolicy new corridorOrientation equals: #horizontal
-]
-
-{ #category : 'tests' }
 CgtMatcherLayoutPolicyTests >> testNodeWidthIsCompact [
 	self assert: CgtMatcherLayoutPolicy new nodeWidth equals: 180
 ]
@@ -22,4 +17,13 @@ CgtMatcherLayoutPolicyTests >> testNodeWidthIsCompact [
 { #category : 'tests' }
 CgtMatcherLayoutPolicyTests >> testPopoverMatcherHeightLeavesRoomForLabels [
 	self assert: CgtMatcherLayoutPolicy new popoverMatcherHeight equals: 260
+]
+
+
+{ #category : 'tests' }
+CgtMatcherLayoutPolicyTests >> testSelectedNodeIsWiderThanContextNode [
+	| policy |
+	policy := CgtMatcherLayoutPolicy new.
+	self assert: policy selectedNodeWidth > policy contextNodeWidth.
+	self assert: policy scopeNodeWidth > policy compactedGapWidth
 ]
