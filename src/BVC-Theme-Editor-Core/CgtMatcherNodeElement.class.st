@@ -248,7 +248,6 @@ CgtMatcherNodeElement >> newCompactedSectionActionRowFor: aProjectionNode [
 ]
 
 { #category : 'rendering' }
-{ #category : 'rendering' }
 CgtMatcherNodeElement >> newClassToggleButtonFor: aProjectionNode [
 	^ self
 		newToggleButtonLabeled: 'Class'
