@@ -41,7 +41,9 @@ CgtThemeSelectorWidget >> initialize [
 	self when: CgtMatcherNodeHoveredEvent do: [ :anEvent |
 		self matcherInteractionEvent: anEvent ].
 	self when: CgtMatcherNodeSelectedEvent do: [ :anEvent |
-		self matcherInteractionEvent: anEvent ]
+		self matcherInteractionEvent: anEvent ].
+	self when: CgtMatcherOtherRuleContextToggledEvent do: [ :anEvent |
+		self matcherOtherRuleContextToggledEvent: anEvent ]
 ]
 
 
@@ -158,6 +160,14 @@ CgtThemeSelectorWidget >> matcherSelectorChangedEvent: anEvent [
 	styleRule selector: anEvent selector.
 	self refreshProjection
 ]
+
+{ #category : 'event handling' }
+CgtThemeSelectorWidget >> matcherOtherRuleContextToggledEvent: anEvent [
+	self visibilityState showsOtherRuleContext: anEvent shouldShow.
+	self matcherInteractionEvent: anEvent.
+	self refreshProjection
+]
+
 
 
 { #category : 'private - projection' }

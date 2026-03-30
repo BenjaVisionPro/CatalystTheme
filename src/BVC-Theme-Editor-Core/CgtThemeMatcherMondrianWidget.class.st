@@ -63,13 +63,14 @@ CgtThemeMatcherMondrianWidget >> currentSelector [
 
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> refreshContents [
-	| newLegend newGraph shouldAnimate |
+	| newLegend newGraph shouldAnimate otherRuleIndicator |
 	projection ifNil: [
 		self removeChildren.
 		graphElement := nil.
 		mondrian := nil.
 		^ self ].
 	newLegend := CgtMatcherLegendElement new.
+	otherRuleIndicator := self newOtherRuleIndicatorIfNeeded.
 	mondrian := self buildMondrian.
 	newGraph := mondrian root.
 	newGraph constraintsDo: [ :c |
@@ -78,10 +79,31 @@ CgtThemeMatcherMondrianWidget >> refreshContents [
 	shouldAnimate := self children isNotEmpty.
 	self removeChildren.
 	self addChild: newLegend.
+	otherRuleIndicator ifNotNil: [ self addChild: otherRuleIndicator ].
 	self addChild: newGraph.
 	graphElement := newGraph.
 	shouldAnimate ifTrue: [ self animateStructuralRefreshFor: newLegend and: newGraph ]
 ]
+
+{ #category : 'rendering' }
+CgtThemeMatcherMondrianWidget >> hiddenOtherRuleCount [
+	^ (projection ifNil: [ #() ] ifNotNil: [ projection relatedStyleRules ])
+		count: [ :each | each notNil and: [ each ~~ projection styleRule ] ]
+]
+
+{ #category : 'rendering' }
+CgtThemeMatcherMondrianWidget >> newOtherRuleIndicatorIfNeeded [
+	| count indicator |
+	count := self hiddenOtherRuleCount.
+	count > 0 ifFalse: [ ^ nil ].
+	indicator := CgtMatcherOtherRuleIndicatorElement new
+		relatedRuleCount: count;
+		showsOtherRuleContext: projection visibilityState showsOtherRuleContext;
+		yourself.
+	indicator when: CgtMatcherOtherRuleContextToggledEvent do: [ :anEvent | self handleOtherRuleContextToggledEvent: anEvent ].
+	^ indicator
+]
+
 
 
 { #category : 'rendering' }
@@ -175,6 +197,13 @@ CgtThemeMatcherMondrianWidget >> transitionPolicy [
 { #category : 'accessing' }
 CgtThemeMatcherMondrianWidget >> structuralRefreshAnimationToken [
 	^ structuralRefreshAnimationToken ifNil: [ 0 ]
+]
+
+
+
+{ #category : 'events' }
+CgtThemeMatcherMondrianWidget >> handleOtherRuleContextToggledEvent: anEvent [
+	self fireEvent: anEvent
 ]
 
 { #category : 'rendering' }
