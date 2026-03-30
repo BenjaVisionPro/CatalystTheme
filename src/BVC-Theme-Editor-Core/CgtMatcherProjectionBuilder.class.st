@@ -162,17 +162,19 @@ CgtMatcherProjectionBuilder >> addMatchedElements: matchedElements selector: aSe
 			otherRule: isOtherRule
 			projection: aProjection.
 		node ifNotNil: [
-			(aProjection nodes includes: node) ifFalse: [ aProjection addNode: node ].
 			previousDisplayNode
-				ifNil: [ previousDisplayNode := node ]
-				ifNotNil: [ previousDisplayNode := self
-					connectPreviousDisplayNode: previousDisplayNode
-					toCurrentNode: node
-					betweenMatchedElementsAtIndex: anIndex
-					matchedElements: matchedElements
-					steps: steps
-					projection: aProjection
-					otherRule: isOtherRule ] ] ]
+				ifNil: [
+					(aProjection nodes includes: node) ifFalse: [ aProjection addNode: node ].
+					previousDisplayNode := node ]
+				ifNotNil: [
+					previousDisplayNode := self
+						connectPreviousDisplayNode: previousDisplayNode
+						toCurrentNode: node
+						betweenMatchedElementsAtIndex: anIndex
+						matchedElements: matchedElements
+						steps: steps
+						projection: aProjection
+						otherRule: isOtherRule ] ] ]
 ]
 
 { #category : 'building' }

@@ -16,7 +16,7 @@ CgtMatcherNodeVisualPolicyTests >> testRoleLabelForSelectedElementNode [
 	node := CgtMatcherProjectionNode new
 		kind: #selectedElement;
 		yourself.
-	self assert: (policy roleLabelForNode: node) equals: 'Selected element'
+	self assert: (policy roleLabelForNode: node) equals: 'Selected'
 ]
 
 { #category : 'tests' }
@@ -28,7 +28,7 @@ CgtMatcherNodeVisualPolicyTests >> testMatchSummaryForClassAndIdNode [
 		matchByClass: true;
 		matchById: true;
 		yourself.
-	self assert: (policy matchSummaryForNode: node) equals: 'Matches by class + id'
+	self assert: (policy matchSummaryForNode: node) equals: 'Class + id'
 ]
 
 { #category : 'tests' }
