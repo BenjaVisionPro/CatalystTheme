@@ -160,3 +160,42 @@ CgtMatcherProjectionBuilderTests >> styleRuleForSelector: aSelector [
 		selector: aSelector;
 		yourself
 ]
+
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testBuildsLeadingCompactedSectionForSingleSelectedRule [
+	| root middle selected rule projection leadingGap |
+	root := self newTestElementWithId: #'root'.
+	middle := root addChild: (self newTestElementWithId: #'middle').
+	selected := middle addChild: (self newTestElementWithId: #'selected').
+	rule := self styleRuleForSelector: (self selectorForId: #'selected').
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root.
+	self assert: (projection nodes count: [ :each | each kind = #compactedSection ]) equals: 1.
+	leadingGap := projection nodes detect: [ :each | each kind = #compactedSection ].
+	self assert: leadingGap hiddenNodeCount equals: 2.
+	self assert: leadingGap representedElements asArray equals: { root. middle }.
+	self assert: (projection relations anySatisfy: [ :each |
+		each kind = #compaction and: [ each toNode kind = #selectedElement ] ])
+]
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testBuildsLeadingAndTrailingCompactedSectionsAroundFocusedCorridor [
+	| root selected child grandChild rule projection compactedNodes |
+	root := self newTestElementWithId: #'root'.
+	selected := root addChild: (self newTestElementWithId: #'selected').
+	child := selected addChild: (self newTestElementWithId: #'child').
+	grandChild := child addChild: (self newTestElementWithId: #'grandChild').
+	rule := self styleRuleForSelector: (self selectorForId: #'selected').
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root.
+	compactedNodes := projection nodes select: [ :each | each kind = #compactedSection ].
+	self assert: compactedNodes size equals: 1.
+	self assert: compactedNodes first representedElements asArray equals: { child. grandChild }.
+	self assert: (projection relations anySatisfy: [ :each |
+		each kind = #compaction and: [ each fromNode kind = #selectedElement ] ])
+]

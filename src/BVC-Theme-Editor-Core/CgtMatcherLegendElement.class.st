@@ -25,16 +25,24 @@ CgtMatcherLegendElement >> initialize [
 		hMatchParent;
 		padding: layoutPolicy legendPadding;
 		cellSpacing: layoutPolicy legendCellSpacing;
-		background: (Color white alpha: 0.55);
-		border: (BlBorder paint: (Color gray alpha: 0.12)).
+		background: (Color white alpha: 0.65);
+		border: (BlBorder paint: (Color gray alpha: 0.15)).
 	self refreshContents
 ]
 
 { #category : 'rendering' }
 CgtMatcherLegendElement >> refreshContents [
 	self removeChildren.
+	self addChild: (self newHeaderLabel).
 	self addChild: (self newRoleLegendRow).
 	self addChild: (self newRelationLegendRow)
+]
+
+{ #category : 'rendering' }
+CgtMatcherLegendElement >> newHeaderLabel [
+	^ BrLabel new
+		aptitude: BrGlamorousLabelAptitude;
+		text: 'Matcher legend'
 ]
 
 { #category : 'rendering' }
@@ -43,7 +51,7 @@ CgtMatcherLegendElement >> newRoleLegendRow [
 	row := BrHorizontalPane new
 		vFitContent;
 		hFitContent;
-		cellSpacing: 3.
+		cellSpacing: 4.
 	row addChildren: {
 		(self newRoleBadgeLabeled: (nodeVisualPolicy roleLabelForNode: (CgtMatcherProjectionNode kind: #selectedElement))).
 		(self newRoleBadgeLabeled: (nodeVisualPolicy roleLabelForNode: (CgtMatcherProjectionNode kind: #upstreamScope))).
@@ -64,7 +72,7 @@ CgtMatcherLegendElement >> newRelationLegendRow [
 	row := BrHorizontalPane new
 		vFitContent;
 		hFitContent;
-		cellSpacing: 3.
+		cellSpacing: 4.
 	row addChildren: {
 		(self newRelationBadgeFor: childRelation).
 		(self newRelationBadgeFor: descendantRelation).
@@ -75,8 +83,8 @@ CgtMatcherLegendElement >> newRelationLegendRow [
 { #category : 'rendering' }
 CgtMatcherLegendElement >> newRoleBadgeLabeled: aString [
 	^ BrLabel new
-		beTinySize;
-		padding: layoutPolicy badgePadding;
+		beSmallSize;
+		padding: (BlInsets top: 2 right: 5 bottom: 2 left: 5);
 		background: (Color black alpha: 0.05);
 		aptitude: (BrGlamorousLabelAptitude new foreground: Color black);
 		text: aString
@@ -85,8 +93,8 @@ CgtMatcherLegendElement >> newRoleBadgeLabeled: aString [
 { #category : 'rendering' }
 CgtMatcherLegendElement >> newRelationBadgeFor: aRelation [
 	^ BrLabel new
-		beTinySize;
-		padding: layoutPolicy badgePadding;
+		beSmallSize;
+		padding: (BlInsets top: 2 right: 5 bottom: 2 left: 5);
 		background: ((relationVisualPolicy colorForRelation: aRelation) alpha: 0.12);
 		aptitude: (BrGlamorousLabelAptitude new foreground: Color black);
 		text: (relationVisualPolicy labelForRelation: aRelation)

@@ -70,8 +70,50 @@ CgtMatcherProjectionBuilder >> buildProjection [
 	matchedElements
 		ifNil: [ self addFallbackSelectedNodeTo: projection ]
 		ifNotNil: [ self addMatchedElements: matchedElements selector: styleRule selector toProjection: projection currentRule: true otherRule: false ].
+	self addFocusedCorridorGapsTo: projection matchedElements: matchedElements.
 	self addOtherRuleContextTo: projection.
 	^ projection
+]
+
+
+{ #category : 'building' }
+CgtMatcherProjectionBuilder >> addFocusedCorridorGapsTo: aProjection matchedElements: matchedElements [
+	| visibleElements firstVisible lastVisible firstNode lastNode leadingElements trailingElements |
+	visibleElements := matchedElements
+		ifNil: [ selectedElement ifNil: [ #() ] ifNotNil: [ Array with: selectedElement ] ]
+		ifNotNil: [ matchedElements ].
+	visibleElements ifEmpty: [ ^ aProjection ].
+	firstVisible := visibleElements first.
+	lastVisible := visibleElements last.
+	firstNode := self nodeRepresenting: firstVisible in: aProjection.
+	lastNode := self nodeRepresenting: lastVisible in: aProjection.
+	leadingElements := self leadingHiddenElementsBefore: firstVisible excluding: visibleElements.
+	trailingElements := self trailingHiddenElementsAfter: lastVisible excluding: visibleElements.
+	leadingElements ifNotEmpty: [
+		self addLeadingCompactedNodeForElements: leadingElements beforeNode: firstNode toProjection: aProjection ].
+	trailingElements ifNotEmpty: [
+		self addTrailingCompactedNodeForElements: trailingElements afterNode: lastNode toProjection: aProjection ].
+	^ aProjection
+]
+
+{ #category : 'building' }
+CgtMatcherProjectionBuilder >> addLeadingCompactedNodeForElements: aCollection beforeNode: aProjectionNode toProjection: aProjection [
+	| compactedNode |
+	aProjectionNode ifNil: [ ^ aProjection ].
+	compactedNode := self compactedNodeForElements: aCollection.
+	aProjection addNode: compactedNode.
+	aProjection addRelation: (CgtMatcherProjectionRelation from: compactedNode to: aProjectionNode kind: #compaction).
+	^ compactedNode
+]
+
+{ #category : 'building' }
+CgtMatcherProjectionBuilder >> addTrailingCompactedNodeForElements: aCollection afterNode: aProjectionNode toProjection: aProjection [
+	| compactedNode |
+	aProjectionNode ifNil: [ ^ aProjection ].
+	compactedNode := self compactedNodeForElements: aCollection.
+	aProjection addNode: compactedNode.
+	aProjection addRelation: (CgtMatcherProjectionRelation from: aProjectionNode to: compactedNode kind: #compaction).
+	^ compactedNode
 ]
 
 { #category : 'building' }
@@ -294,4 +336,31 @@ CgtMatcherProjectionBuilder >> elementsBetweenAncestor: anAncestor andDescendant
 { #category : 'testing' }
 CgtMatcherProjectionBuilder >> step: aSelectorStep includesPredicateOfClass: aClass [
 	^ aSelectorStep simpleSelector predicates anySatisfy: [ :each | each isKindOf: aClass ]
+]
+
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilder >> leadingHiddenElementsBefore: anElement excluding: visibleElements [
+	| elements current |
+	elements := OrderedCollection new.
+	current := anElement ifNil: [ nil ] ifNotNil: [ anElement parent ].
+	[current notNil] whileTrue: [
+		(visibleElements includes: current) ifFalse: [ elements addFirst: current ].
+		current == hierarchyRoot ifTrue: [ ^ elements ].
+		current := current parent ].
+	^ elements
+]
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilder >> trailingHiddenElementsAfter: anElement excluding: visibleElements [
+	anElement ifNil: [ ^ OrderedCollection new ].
+	^ (self descendantsOf: anElement)
+		reject: [ :each | visibleElements includes: each ]
+]
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilder >> nodeRepresenting: anElement in: aProjection [
+	^ aProjection nodes
+		detect: [ :each | each representedElement == anElement ]
+		ifNone: [ nil ]
 ]
