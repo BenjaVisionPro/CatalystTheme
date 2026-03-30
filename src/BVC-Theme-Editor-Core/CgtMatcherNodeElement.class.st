@@ -41,7 +41,7 @@ CgtMatcherNodeElement >> projectionNode: aCgtMatcherProjectionNode [
 
 { #category : 'rendering' }
 CgtMatcherNodeElement >> refreshContents [
-	self removeAllChildren.
+	self removeChildren.
 	projectionNode ifNil: [ ^ self ].
 	self background: (self backgroundForNode: projectionNode).
 	self addChildren: {

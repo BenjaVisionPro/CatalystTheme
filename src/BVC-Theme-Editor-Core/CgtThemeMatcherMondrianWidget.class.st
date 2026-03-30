@@ -52,7 +52,7 @@ CgtThemeMatcherMondrianWidget >> currentSelector [
 
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> refreshContents [
-	self removeAllChildren.
+	self removeChildren.
 	projection ifNil: [ ^ self ].
 	mondrian := self buildMondrian.
 	graphElement := mondrian root.
