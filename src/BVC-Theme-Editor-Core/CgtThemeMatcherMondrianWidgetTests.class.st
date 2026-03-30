@@ -458,3 +458,43 @@ CgtThemeMatcherMondrianWidgetTests >> testGapElementForwardsCombinatorChangedEve
 	self assert: forwardedEvent relation identicalTo: relation.
 	self assert: relation combinator equals: #descendant
 ]
+
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testOrdersPrimaryCorridorBeforeOtherRuleContext [
+	| leadingGap root selected otherRule projection widget orderedNodes |
+	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
+		hiddenNodeCount: 2;
+		isEditable: false;
+		yourself.
+	root := (CgtMatcherProjectionNode kind: #upstreamScope)
+		className: 'Root';
+		isInCurrentRule: true;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		className: 'Selected';
+		isInCurrentRule: true;
+		yourself.
+	otherRule := (CgtMatcherProjectionNode kind: #otherRuleRelated)
+		className: 'SiblingRule';
+		isInOtherRule: true;
+		yourself.
+	projection := CgtMatcherProjection new.
+	projection
+		addNode: otherRule;
+		addNode: selected;
+		addNode: root;
+		addNode: leadingGap;
+		addRelation: (CgtMatcherProjectionRelation from: leadingGap to: root kind: #compaction);
+		addRelation: ((CgtMatcherProjectionRelation from: root to: selected kind: #matcher)
+			combinator: #child;
+			yourself).
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	orderedNodes := widget orderedNodesForRendering.
+	self assert: orderedNodes first identicalTo: leadingGap.
+	self assert: orderedNodes second identicalTo: root.
+	self assert: orderedNodes third identicalTo: selected.
+	self assert: orderedNodes last identicalTo: otherRule
+]
