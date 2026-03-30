@@ -136,7 +136,7 @@ CgtViewTreeOverlayModel >> anchorElement [
 CgtViewTreeOverlayModel >> childScopeElement [
 	| aPath |
 	aPath := self primaryPath.
-	^ aPath ifNil: [ nil ] ifNotNil: [ aPath selectedChildScopeElement ]
+	^ aPath ifNil: [ nil ] ifNotNil: [ aPath downstreamElements ifEmpty: [ nil ] ifNotEmpty: [ :els | els last ] ]
 ]
 
 { #category : 'testing' }

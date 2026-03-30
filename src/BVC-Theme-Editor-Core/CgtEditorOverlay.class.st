@@ -228,11 +228,22 @@ CgtEditorOverlay >> upstreamElements [
 	^ aPath ifNil: [ #() ] ifNotNil: [ aPath upstreamElements ]
 ]
 
+{ #category : 'accessing' }
+CgtEditorOverlay >> downstreamElements [
+	| aPath |
+	aPath := model primaryPath.
+	^ aPath ifNil: [ #() ] ifNotNil: [ aPath downstreamElements ]
+]
+
 { #category : 'private - rendering' }
 CgtEditorOverlay >> anchorAlphaForPresentationKind: aSymbol [
 	^ aSymbol = #primary ifTrue: [ 1.0 ] ifFalse: [ 0.55 ]
 ]
 
+{ #category : 'private - rendering' }
+CgtEditorOverlay >> downstreamAlphaForPresentationKind: aSymbol [
+	^ aSymbol = #primary ifTrue: [ 0.35 ] ifFalse: [ 0.2 ]
+]
 
 { #category : 'private - rendering' }
 CgtEditorOverlay >> scopeAlphaAtIndex: anIndex totalCount: aCount forPresentationKind: aSymbol [

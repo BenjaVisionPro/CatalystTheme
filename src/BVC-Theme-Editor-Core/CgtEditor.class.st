@@ -482,16 +482,14 @@ CgtEditor >> sceneWeight [
 
 { #category : 'private - selection' }
 CgtEditor >> synchronizeSelectionInterfaceTo: anElement [
-	self selectedElement == anElement ifTrue: [
-		anElement ifNotNil: [ self updateStyleInspectorPopoverPosition ].
-		^ self ].
 	elementsTree items: targetContainer children lazy: [ :each | each children ].
 	anElement ifNil: [
 		self hideStyleInspectorPopover.
 		^ self ].
 	elementsTree expandSuchThat: [ :aTreeNode | (anElement hasParent: aTreeNode value) or: [ anElement == aTreeNode value ] ].
 	elementsTree selectAndScrollTo: anElement.
-	self showStyleInspectorPopover
+	self showStyleInspectorPopover.
+	self updateStyleInspectorPopoverPosition
 ]
 { #category : 'private - selection' }
 CgtEditor >> refreshSelectionInterface [

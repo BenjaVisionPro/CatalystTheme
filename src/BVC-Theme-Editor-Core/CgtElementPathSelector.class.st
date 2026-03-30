@@ -109,7 +109,7 @@ CgtElementPathSelector >> rebuildForElementPath [
 
 { #category : 'private' }
 CgtElementPathSelector >> fullPathElements [
-	| anchor upstream orderedAncestors current selectedChildScope stopParent |
+	| anchor upstream orderedAncestors current downstream stopParent |
 	elementPath ifNil: [ ^ #() ].
 	anchor := elementPath anchorElement.
 	anchor ifNil: [ ^ #() ].
@@ -120,10 +120,8 @@ CgtElementPathSelector >> fullPathElements [
 		upstream add: current.
 		current := current parent ].
 	orderedAncestors := upstream reversed.
-	selectedChildScope := elementPath selectedChildScopeElement.
-	^ selectedChildScope
-		ifNil: [ orderedAncestors , { anchor } ]
-		ifNotNil: [ orderedAncestors , { anchor. selectedChildScope } ]
+	downstream := elementPath downstreamElements.
+	^ orderedAncestors , { anchor } , downstream
 ]
 
 { #category : 'private' }
