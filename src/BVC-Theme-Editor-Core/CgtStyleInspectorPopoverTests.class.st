@@ -30,15 +30,14 @@ CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionFromStyleRuleAndSele
 ]
 
 { #category : 'tests' }
-CgtStyleInspectorPopoverTests >> testElementPathStillFeedsSelectedElementIntoMatcherProjection [
-	| root selected path rule popover projection |
+CgtStyleInspectorPopoverTests >> testKeepsMatcherProjectionDrivenBySelectedElementAndRule [
+	| root selected rule popover projection |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
-	path := CgtElementPath anchorElement: selected.
 	rule := self styleRuleForSelector: (self selectorForId: #'selected').
 	popover := CgtStyleInspectorPopover new.
 	popover pathRootElement: root.
-	popover elementPath: path.
+	popover selectedElement: selected.
 	popover styleRule: rule.
 	projection := popover selectorWidget projection.
 	self assert: projection notNil.

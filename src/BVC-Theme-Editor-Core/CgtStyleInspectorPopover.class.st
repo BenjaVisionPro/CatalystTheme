@@ -9,7 +9,6 @@ Class {
 		'styleRule',
 		'selectorWidget',
 		'selectorScrollPane',
-		'elementPath',
 		'pathRootElement',
 		'selectedElement'
 	],
@@ -58,17 +57,6 @@ CgtStyleInspectorPopover >> initialize [
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> selectorWidget [
 	^ selectorWidget
-]
-
-{ #category : 'accessing' }
-CgtStyleInspectorPopover >> elementPath [
-	^ elementPath
-]
-
-{ #category : 'accessing' }
-CgtStyleInspectorPopover >> elementPath: aCgtElementPath [
-	elementPath := aCgtElementPath.
-	self selectedElement: (aCgtElementPath ifNil: [ nil ] ifNotNil: [ aCgtElementPath anchorElement ])
 ]
 
 { #category : 'accessing' }

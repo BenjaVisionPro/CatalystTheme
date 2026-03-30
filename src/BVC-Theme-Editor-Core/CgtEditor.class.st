@@ -676,14 +676,10 @@ CgtEditor >> showStyleInspectorPopover [
 
 { #category : 'private - style inspector' }
 CgtEditor >> styleRuleForStyleInspector [
-	^ CgtThemeStyleRule fromElementPath: self styleInspectorElementPath
+	^ CgtThemeStyleRuleBootstrapBuilder
+		ruleForSelectedElement: self selectedElement
+		withinHierarchyRoot: self styleInspectorPathRootElement
 ]
-
-{ #category : 'private - style inspector' }
-CgtEditor >> styleInspectorElementPath [
-	^ self selectedElementPath ifNil: [ self selectedElement ifNil: [ nil ] ifNotNil: [ CgtElementPath anchorElement: self selectedElement ] ]
-]
-
 
 { #category : 'private - style inspector' }
 CgtEditor >> styleInspectorPathRootElement [
