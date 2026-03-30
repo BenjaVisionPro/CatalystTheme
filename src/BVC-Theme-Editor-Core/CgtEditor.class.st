@@ -685,13 +685,10 @@ CgtEditor >> showStyleInspectorPopover [
 		ifTrue: [ styleInspectorRule ]
 		ifFalse: [ styleInspectorRule := self styleRuleForStyleInspector ].
 	aPopover
-		childWithId: #styleInspectorElementLabel
-		ifFound: [ :aLabel | aLabel text: self selectedElement class name ]
-		ifNone: [ ].
-	aPopover pathRootElement: self styleInspectorPathRootElement.
-	aPopover selectedElement: self selectedElement.
-	aPopover relatedStyleRules: self relatedStyleRulesForStyleInspector.
-	aPopover styleRule: aRule.
+		configureForStyleRule: aRule
+		selectedElement: self selectedElement
+		pathRootElement: self styleInspectorPathRootElement
+		relatedStyleRules: self relatedStyleRulesForStyleInspector.
 	aPopover visibility: BlVisibility visible.
 	self updateStyleInspectorPopoverPosition
 ]

@@ -1,17 +1,13 @@
 "
 #Style Inspector Popover
-I am the popover attached to the selected element in the Theme Editor. I am responsible for presenting style-oriented controls for the current selection, including the Mondrian matcher widget for editing the current selector rule in live hierarchy context. I host UI; I do not decide selection or hover semantics.
+I am the popover attached to the selected element in the Theme Editor. I host the selector widget and derive my displayed labels from that widget's current context instead of duplicating matcher state locally.
 "
 Class {
 	#name : 'CgtStyleInspectorPopover',
 	#superclass : 'BrVerticalPane',
 	#instVars : [
-		'styleRule',
 		'selectorWidget',
-		'selectorScrollPane',
-		'pathRootElement',
-		'selectedElement',
-		'relatedStyleRules'
+		'selectorScrollPane'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -63,74 +59,93 @@ CgtStyleInspectorPopover >> selectorWidget [
 ]
 
 { #category : 'accessing' }
+CgtStyleInspectorPopover >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement pathRootElement: aRootElement relatedStyleRules: aCollection [
+	selectorWidget
+		configureForStyleRule: aCgtThemeStyleRule
+		selectedElement: anElement
+		pathRootElement: aRootElement
+		relatedStyleRules: aCollection.
+	self updateLabels.
+	^ self
+]
+
+{ #category : 'accessing' }
 CgtStyleInspectorPopover >> selectedElement [
-	^ selectedElement
+	^ selectorWidget selectedElement
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> selectedElement: anElement [
-	selectedElement := anElement.
-	self refreshMatcherProjection
+	selectorWidget selectedElement: anElement.
+	self updateLabels.
+	^ self
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> pathRootElement [
-	^ pathRootElement
+	^ selectorWidget pathRootElement
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> pathRootElement: anElement [
-	pathRootElement := anElement.
-	self refreshMatcherProjection
+	selectorWidget pathRootElement: anElement.
+	self updateLabels.
+	^ self
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> relatedStyleRules [
-	^ relatedStyleRules ifNil: [ #() ]
+	^ selectorWidget relatedStyleRules
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> relatedStyleRules: aCollection [
-	relatedStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
-	self refreshMatcherProjection
+	selectorWidget relatedStyleRules: aCollection.
+	self updateLabels.
+	^ self
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> styleRule [
-	^ styleRule
+	^ selectorWidget currentStyleRule
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> styleRule: aCgtThemeStyleRule [
-	styleRule := aCgtThemeStyleRule.
-	self refreshMatcherProjection.
-	self updateScopeLabel
-]
-
-{ #category : 'private - matcher' }
-CgtStyleInspectorPopover >> refreshMatcherProjection [
-	selectorWidget
-		configureForStyleRule: styleRule
-		selectedElement: selectedElement
-		pathRootElement: pathRootElement
-		relatedStyleRules: self relatedStyleRules.
-	self updateScopeLabel
+	selectorWidget styleRule: aCgtThemeStyleRule.
+	self updateLabels.
+	^ self
 ]
 
 { #category : 'event handling' }
 CgtStyleInspectorPopover >> matcherSelectorChangedEvent: anEvent [
-	styleRule := selectorWidget currentStyleRule.
+	self updateLabels
+]
+
+{ #category : 'private - labels' }
+CgtStyleInspectorPopover >> updateLabels [
+	self updateElementLabel.
 	self updateScopeLabel
 ]
 
+{ #category : 'private - labels' }
+CgtStyleInspectorPopover >> updateElementLabel [
+	self
+		childWithId: #styleInspectorElementLabel
+		ifFound: [ :aLabel |
+			aLabel text: (self selectedElement
+				ifNil: [ '' ]
+				ifNotNil: [ self selectedElement class name ]) ]
+		ifNone: [ ]
+]
 
-{ #category : 'private - matcher' }
+{ #category : 'private - labels' }
 CgtStyleInspectorPopover >> updateScopeLabel [
 	self
 		childWithId: #styleInspectorScopeLabel
 		ifFound: [ :aLabel |
-			aLabel text: (styleRule
+			aLabel text: (self styleRule
 				ifNil: [ '' ]
-				ifNotNil: [ styleRule selector ifNil: [ '' ] ifNotNil: [ styleRule selector displayString ] ]) ]
+				ifNotNil: [ self styleRule selector ifNil: [ '' ] ifNotNil: [ self styleRule selector displayString ] ]) ]
 		ifNone: [ ]
 ]

@@ -1,6 +1,6 @@
 "
 #Style Inspector Popover Tests
-I verify that the style inspector popover now projects a selector rule through the Mondrian matcher widget and keeps the rule display synchronized with matcher edits.
+I verify that the style inspector popover now delegates matcher context ownership to the selector widget and keeps displayed labels synchronized from that widget state.
 "
 Class {
 	#name : 'CgtStyleInspectorPopoverTests',
@@ -19,14 +19,41 @@ CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionFromStyleRuleAndSele
 		combinator: #child
 		right: (self selectorForId: #'selected')).
 	popover := CgtStyleInspectorPopover new.
-	popover pathRootElement: root.
-	popover selectedElement: selected.
-	popover styleRule: rule.
+	popover
+		configureForStyleRule: rule
+		selectedElement: selected
+		pathRootElement: root
+		relatedStyleRules: #().
 	projection := popover selectorWidget projection.
 	self assert: projection notNil.
 	self assert: projection selectedElement identicalTo: selected.
 	self assert: projection nodes size equals: 2.
 	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#root > #selected'
+]
+
+{ #category : 'tests' }
+CgtStyleInspectorPopoverTests >> testConfigureForStyleRuleSelectedElementPathRootElementRelatedStyleRulesDelegatesToSelectorWidgetAndUpdatesLabels [
+	| root selected currentRule relatedRule popover projection |
+	root := self newTestElementWithId: #'root'.
+	selected := root addChild: (self newTestElementWithId: #'selected').
+	currentRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	relatedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	popover := CgtStyleInspectorPopover new.
+	popover
+		configureForStyleRule: currentRule
+		selectedElement: selected
+		pathRootElement: root
+		relatedStyleRules: { relatedRule }.
+	projection := popover selectorWidget projection.
+	self assert: projection notNil.
+	self assert: popover styleRule identicalTo: currentRule.
+	self assert: popover selectedElement identicalTo: selected.
+	self assert: projection relatedStyleRules size equals: 1.
+	self assert: (popover childWithId: #styleInspectorElementLabel) text asString equals: selected class name.
+	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#selected'
 ]
 
 { #category : 'tests' }
@@ -87,7 +114,6 @@ CgtStyleInspectorPopoverTests >> styleRuleForSelector: aSelector [
 		yourself
 ]
 
-
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testUsesThemeSelectorWidgetAsSelectorWidget [
 	| popover |
@@ -95,7 +121,6 @@ CgtStyleInspectorPopoverTests >> testUsesThemeSelectorWidgetAsSelectorWidget [
 
 	self assert: popover selectorWidget class equals: CgtThemeSelectorWidget
 ]
-
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testMatcherSelectorChangedEventUpdatesDisplayedScopeLabel [
