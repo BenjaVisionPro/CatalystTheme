@@ -15,21 +15,6 @@ CgtMatcherTransitionPolicyTests >> testDefaultExpansionDirectionIsLeft [
 ]
 
 { #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testDurationUsesRevealWhenExpandedGapCountIncreases [
-	self assert: (CgtMatcherTransitionPolicy new durationFromExpandedGapCount: 0 to: 1) equals: CgtMatcherTransitionPolicy new revealDuration
-]
-
-{ #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testDurationUsesCollapseWhenExpandedGapCountDecreases [
-	self assert: (CgtMatcherTransitionPolicy new durationFromExpandedGapCount: 2 to: 1) equals: CgtMatcherTransitionPolicy new collapseDuration
-]
-
-{ #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testLeadingMarginUsesLeftInsetForHorizontalCorridor [
-	self assert: (CgtMatcherTransitionPolicy new leadingMarginForProgress: 0.0) left > 0
-]
-
-{ #category : 'tests' }
 CgtMatcherTransitionPolicyTests >> testKeepsFollowingNodeFixed [
 	self assert: CgtMatcherTransitionPolicy new keepsFollowingNodeFixed
 ]

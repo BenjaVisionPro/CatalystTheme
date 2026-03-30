@@ -12,8 +12,7 @@ Class {
 		'relationVisualPolicy',
 		'layoutPolicy',
 		'transitionPolicy',
-		'structuralRefreshAnimationToken',
-		'previousExpandedGapCount'
+		'structuralRefreshAnimationToken'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -30,8 +29,7 @@ CgtThemeMatcherMondrianWidget >> initialize [
 		padding: layoutPolicy widgetPadding.
 	relationVisualPolicy := CgtMatcherRelationVisualPolicy new.
 	transitionPolicy := CgtMatcherTransitionPolicy new.
-	structuralRefreshAnimationToken := 0.
-	previousExpandedGapCount := 0
+	structuralRefreshAnimationToken := 0
 ]
 
 { #category : 'accessing' }
@@ -89,7 +87,7 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 	view := GtMondrian new.
 	view nodes
 		stencil: [ :aProjectionNode | self newGraphElementFor: aProjectionNode ];
-		with: self orderedNodesForRendering asArray.
+		with: self orderedNodesForRendering.
 	projection relations ifNotEmpty: [
 		view edges
 			fromCenterBottom;
@@ -110,18 +108,14 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 
 { #category : 'private - animation' }
 CgtThemeMatcherMondrianWidget >> animateStructuralRefreshFor: aLegendElement and: aGraphElement [
-	| token startOpacity endOpacity duration currentExpandedGapCount |
+	| token startOpacity endOpacity offsetX duration |
 	token := structuralRefreshAnimationToken := structuralRefreshAnimationToken + 1.
 	startOpacity := transitionPolicy graphRevealStartOpacity.
 	endOpacity := transitionPolicy graphRevealEndOpacity.
-	currentExpandedGapCount := self expandedGapCountForAnimation.
-	duration := transitionPolicy
-		durationFromExpandedGapCount: previousExpandedGapCount
-		to: currentExpandedGapCount.
-	previousExpandedGapCount := currentExpandedGapCount.
+	offsetX := transitionPolicy graphRevealOffsetX.
+	duration := transitionPolicy structuralRefreshDuration.
 	{ aLegendElement. aGraphElement } do: [ :each |
-		each opacity: startOpacity.
-		each margin: (transitionPolicy leadingMarginForProgress: 0.0) ].
+		each opacity: startOpacity ].
 	self addAnimation: (BlNumberTransition new
 			from: 0.0;
 			to: 1.0;
@@ -129,14 +123,13 @@ CgtThemeMatcherMondrianWidget >> animateStructuralRefreshFor: aLegendElement and
 			easing: CgtFastInSlowOutEasing new;
 			onStepDo: [ :aProgress :aWidget |
 				aWidget structuralRefreshAnimationToken = token ifTrue: [
-					| currentOpacity currentMargin |
+					| currentOpacity |
 					currentOpacity := startOpacity + ((endOpacity - startOpacity) * aProgress).
-					currentMargin := transitionPolicy leadingMarginForProgress: aProgress.
-					aLegendElement opacity: currentOpacity; margin: currentMargin.
-					aGraphElement opacity: currentOpacity; margin: currentMargin ] ];
+					aLegendElement opacity: currentOpacity.
+					aGraphElement opacity: currentOpacity ] ];
 			onFinishedDo: [ self structuralRefreshAnimationToken = token ifTrue: [
-				aLegendElement opacity: endOpacity; margin: (transitionPolicy leadingMarginForProgress: 1.0).
-				aGraphElement opacity: endOpacity; margin: (transitionPolicy leadingMarginForProgress: 1.0) ] ];
+				aLegendElement opacity: endOpacity.
+				aGraphElement opacity: endOpacity ] ];
 			yourself)
 ]
 
@@ -187,83 +180,15 @@ CgtThemeMatcherMondrianWidget >> newNodeElementFor: aProjectionNode [
 	^ nodeElement
 ]
 
-
-{ #category : 'private - animation' }
-CgtThemeMatcherMondrianWidget >> expandedGapCountForAnimation [
-	projection ifNil: [ ^ 0 ].
-	^ projection nodes count: [ :each | each isCompactedSection ]
-]
-
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> orderedNodesForRendering [
-	| corridorNodes remainingNodes |
-	corridorNodes := self primaryCorridorNodesForRendering.
-	remainingNodes := projection nodes reject: [ :each | corridorNodes includes: each ].
-	^ corridorNodes, (remainingNodes asSortedCollection: [ :a :b |
+	^ projection nodes asSortedCollection: [ :a :b |
 		| aPriority bPriority |
 		aPriority := self nodeSortPriorityFor: a.
 		bPriority := self nodeSortPriorityFor: b.
 		aPriority = bPriority
 			ifTrue: [ (a className ifNil: [ '' ]) <= (b className ifNil: [ '' ]) ]
-			ifFalse: [ aPriority < bPriority ] ]) asArray
-]
-
-{ #category : 'rendering' }
-CgtThemeMatcherMondrianWidget >> primaryCorridorNodesForRendering [
-	| ordered startNode visited currentNode nextRelation |
-	projection ifNil: [ ^ #() ].
-	startNode := self startingCorridorNodeForRendering.
-	startNode ifNil: [ ^ #() ].
-	ordered := OrderedCollection new.
-	visited := IdentitySet new.
-	currentNode := startNode.
-	[ currentNode notNil and: [ (visited includes: currentNode) not ] ] whileTrue: [
-		ordered add: currentNode.
-		visited add: currentNode.
-		nextRelation := self nextCorridorRelationFrom: currentNode excludingVisited: visited.
-		currentNode := nextRelation ifNil: [ nil ] ifNotNil: [ nextRelation toNode ] ].
-	^ ordered asArray
-]
-
-{ #category : 'rendering' }
-CgtThemeMatcherMondrianWidget >> startingCorridorNodeForRendering [
-	| candidates |
-	projection ifNil: [ ^ nil ].
-	candidates := projection nodes select: [ :each |
-		(self isCorridorNodeForRendering: each)
-			and: [ (self incomingCorridorRelationsForRenderingTo: each) isEmpty ] ].
-	candidates ifEmpty: [
-		candidates := projection currentRuleNodes ].
-	candidates ifEmpty: [ ^ nil ].
-	^ (candidates asSortedCollection: [ :a :b | self nodeSortPriorityFor: a < self nodeSortPriorityFor: b ]) first
-]
-
-{ #category : 'rendering' }
-CgtThemeMatcherMondrianWidget >> isCorridorNodeForRendering: aProjectionNode [
-	^ aProjectionNode isInCurrentRule or: [ aProjectionNode isCompactedSection ]
-]
-
-{ #category : 'rendering' }
-CgtThemeMatcherMondrianWidget >> incomingCorridorRelationsForRenderingTo: aProjectionNode [
-	projection ifNil: [ ^ #() ].
-	^ (projection relationsToNode: aProjectionNode)
-		select: [ :each | self isCorridorRelationForRendering: each ]
-]
-
-{ #category : 'rendering' }
-CgtThemeMatcherMondrianWidget >> nextCorridorRelationFrom: aProjectionNode excludingVisited: aSet [
-	| candidates |
-	projection ifNil: [ ^ nil ].
-	candidates := (projection relationsFromNode: aProjectionNode)
-		select: [ :each | (self isCorridorRelationForRendering: each) and: [ (aSet includes: each toNode) not ] ].
-	candidates ifEmpty: [ ^ nil ].
-	^ (candidates asSortedCollection: [ :a :b | (self nodeSortPriorityFor: a toNode) < (self nodeSortPriorityFor: b toNode) ]) first
-]
-
-{ #category : 'rendering' }
-CgtThemeMatcherMondrianWidget >> isCorridorRelationForRendering: aRelation [
-	^ (#(#matcher #compaction #context) includes: aRelation kind)
-		and: [ (self isCorridorNodeForRendering: aRelation fromNode) and: [ self isCorridorNodeForRendering: aRelation toNode ] ]
+			ifFalse: [ aPriority < bPriority ] ]
 ]
 
 { #category : 'rendering' }

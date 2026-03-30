@@ -10,11 +10,6 @@ Class {
 }
 
 { #category : 'accessing' }
-CgtMatcherTransitionPolicy >> corridorOrientation [
-	^ #horizontal
-]
-
-{ #category : 'accessing' }
 CgtMatcherTransitionPolicy >> structuralRefreshDuration [
 	^ 220 milliSeconds
 ]
@@ -57,19 +52,4 @@ CgtMatcherTransitionPolicy >> keepsFollowingNodeFixed [
 { #category : 'accessing' }
 CgtMatcherTransitionPolicy >> expansionDirection [
 	^ #left
-]
-
-
-{ #category : 'accessing' }
-CgtMatcherTransitionPolicy >> durationFromExpandedGapCount: aPreviousCount to: aCurrentCount [
-	aCurrentCount > aPreviousCount ifTrue: [ ^ self revealDuration ].
-	aCurrentCount < aPreviousCount ifTrue: [ ^ self collapseDuration ].
-	^ self structuralRefreshDuration
-]
-
-{ #category : 'accessing' }
-CgtMatcherTransitionPolicy >> leadingMarginForProgress: aNumber [
-	self corridorOrientation = #vertical ifTrue: [
-		^ BlInsets top: ((1.0 - aNumber) * self graphRevealOffsetX abs) asInteger right: 0 bottom: 0 left: 0 ].
-	^ BlInsets top: 0 right: 0 bottom: 0 left: ((1.0 - aNumber) * self graphRevealOffsetX abs) asInteger
 ]
