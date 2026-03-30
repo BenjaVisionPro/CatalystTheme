@@ -726,7 +726,7 @@ CgtEditor >> elementPathNodeSelectedEvent: anEvent [
 ]
 
 { #category : 'private - overlay' }
-CgtEditor >> overlayDo: aBlock [
+CgtEditor >> withOverlayDo: aBlock [
 	self overlayContainer
 		childWithId: CgtEditorEventHandler themeEditorOverlayId
 		ifFound: aBlock
@@ -735,7 +735,7 @@ CgtEditor >> overlayDo: aBlock [
 
 { #category : 'private - overlay' }
 CgtEditor >> refreshOverlayState [
-	self overlayDo: [ :anOverlay |
+	self withOverlayDo: [ :anOverlay |
 		anOverlay hoverElement: interactionState effectiveHoverElement.
 		anOverlay stateChanged ]
 ]
@@ -746,13 +746,13 @@ CgtEditor >> refreshInterfaceFromInteractionState [
 ]
 { #category : 'event handling - preview' }
 CgtEditor >> beginHoverTracking [
-	self overlayDo: [ :anOverlay | anOverlay beginHoverTracking ]
+	self withOverlayDo: [ :anOverlay | anOverlay beginHoverTracking ]
 ]
 
 { #category : 'event handling - preview' }
 CgtEditor >> endHoverTracking [
 	interactionState hasPathWidgetHover ifTrue: [ ^ self ].
-	self overlayDo: [ :anOverlay | anOverlay endHoverTracking ]
+	self withOverlayDo: [ :anOverlay | anOverlay endHoverTracking ]
 ]
 { #category : 'private - hover' }
 CgtEditor >> setPreviewHoverElement: anElement [
@@ -792,7 +792,7 @@ CgtEditor >> previewClickedElement: anElement [
 
 { #category : 'private - selection' }
 CgtEditor >> synchronizeSelectionInterfaceFromInteractionState [
-	interactionState synchronizeSelectionState.
+	interactionState refreshSelectionState.
 	self refreshSelectionInterface.
 	self refreshOverlayState
 ]

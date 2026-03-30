@@ -114,19 +114,19 @@ CgtEditorInteractionState >> requestSelectionOf: anElement [
 	anElement
 		ifNil: [ self clearSelection ]
 		ifNotNil: [ self selectAnchorElement: anElement ].
-	self synchronizeSelectionState.
+	self refreshSelectionState.
 	^ true
 ]
 
 { #category : 'event handling - selection' }
 CgtEditorInteractionState >> applySelectionInteractionWith: anElement [
 	self updateSelectionWithInteractedElement: anElement.
-	self synchronizeSelectionState.
+	self refreshSelectionState.
 	^ true
 ]
 
 { #category : 'private - selection' }
-CgtEditorInteractionState >> synchronizeSelectionState [
+CgtEditorInteractionState >> refreshSelectionState [
 	selectedElementPath := overlayModel primaryPath.
 	selectedElement := overlayModel anchorElement
 ]
