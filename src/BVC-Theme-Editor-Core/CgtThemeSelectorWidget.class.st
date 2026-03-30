@@ -16,6 +16,15 @@ Class {
 }
 
 
+{ #category : 'initialization' }
+CgtThemeSelectorWidget >> initialize [
+	super initialize.
+	self when: CgtMatcherSelectorChangedEvent do: [ :anEvent |
+		self matcherSelectorChangedEvent: anEvent ]
+]
+
+
+
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement pathRootElement: aRootElement relatedStyleRules: aCollection [
 	styleRule := aCgtThemeStyleRule.
@@ -78,6 +87,18 @@ CgtThemeSelectorWidget >> relatedStyleRules: aCollection [
 CgtThemeSelectorWidget >> selector [
 	^ styleRule ifNil: [ nil ] ifNotNil: [ styleRule selector ]
 ]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> currentStyleRule [
+	^ styleRule
+]
+
+{ #category : 'event handling' }
+CgtThemeSelectorWidget >> matcherSelectorChangedEvent: anEvent [
+	styleRule ifNil: [ styleRule := CgtThemeStyleRule new ].
+	styleRule selector: anEvent selector
+]
+
 
 { #category : 'private - projection' }
 CgtThemeSelectorWidget >> refreshProjection [

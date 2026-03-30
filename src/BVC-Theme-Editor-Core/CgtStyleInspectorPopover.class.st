@@ -31,6 +31,8 @@ CgtStyleInspectorPopover >> initialize [
 			c ignored horizontal alignLeft.
 			c ignored vertical alignTop ].
 	selectorWidget := CgtThemeSelectorWidget new.
+	selectorWidget when: CgtMatcherSelectorChangedEvent do: [ :anEvent |
+		self matcherSelectorChangedEvent: anEvent ].
 	selectorScrollPane := selectorWidget asScrollableElement.
 	selectorScrollPane eventDispatcher handlersDo: [ :eachHandler |
 		(eachHandler isKindOf: BlScrollableElementEventHandler)
@@ -114,6 +116,13 @@ CgtStyleInspectorPopover >> refreshMatcherProjection [
 		relatedStyleRules: self relatedStyleRules.
 	self updateScopeLabel
 ]
+
+{ #category : 'event handling' }
+CgtStyleInspectorPopover >> matcherSelectorChangedEvent: anEvent [
+	styleRule := selectorWidget currentStyleRule.
+	self updateScopeLabel
+]
+
 
 { #category : 'private - matcher' }
 CgtStyleInspectorPopover >> updateScopeLabel [

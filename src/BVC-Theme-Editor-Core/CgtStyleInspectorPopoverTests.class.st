@@ -95,3 +95,29 @@ CgtStyleInspectorPopoverTests >> testUsesThemeSelectorWidgetAsSelectorWidget [
 
 	self assert: popover selectorWidget class equals: CgtThemeSelectorWidget
 ]
+
+
+{ #category : 'tests' }
+CgtStyleInspectorPopoverTests >> testMatcherSelectorChangedEventUpdatesDisplayedScopeLabel [
+	| root selected rule popover newSelector event |
+	root := self newTestElementWithId: #'root'.
+	selected := root addChild: (self newTestElementWithId: #'selected').
+	rule := self styleRuleForSelector: (self selectorForId: #'selected').
+	popover := CgtStyleInspectorPopover new.
+	popover pathRootElement: root.
+	popover selectedElement: selected.
+	popover styleRule: rule.
+	newSelector := (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	event := CgtMatcherSelectorChangedEvent new
+		selector: newSelector;
+		yourself.
+
+	popover selectorWidget matcherSelectorChangedEvent: event.
+	popover matcherSelectorChangedEvent: event.
+
+	self assert: popover styleRule selector identicalTo: newSelector.
+	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#root > #selected'
+]

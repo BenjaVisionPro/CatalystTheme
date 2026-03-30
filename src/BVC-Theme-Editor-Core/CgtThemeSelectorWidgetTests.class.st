@@ -79,3 +79,33 @@ CgtThemeSelectorWidgetTests >> testConfigureForStyleRuleSelectedElementPathRootE
 	self assert: widget projection selectedElement == child.
 	self assert: widget projection relatedStyleRules size equals: 1
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyleRule [
+	| root selected originalRule widget newSelector event |
+	root := self newTestElementWithId: #root.
+	selected := self newTestElementWithId: #selected.
+	root addChild: selected.
+	originalRule := CgtThemeStyleRule new
+		selector: (CgtThemeSelector new
+			predicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	widget := CgtThemeSelectorWidget new
+		configureForStyleRule: originalRule
+		selectedElement: selected
+		pathRootElement: root
+		relatedStyleRules: #().
+	newSelector := CgtThemeSelector new
+		predicate: (CgtThemeClassPredicate elementClass: CgtThemeSelectorTestElement);
+		yourself.
+	event := CgtMatcherSelectorChangedEvent new
+		selector: newSelector;
+		yourself.
+
+	widget matcherSelectorChangedEvent: event.
+
+	self assert: widget currentStyleRule identicalTo: originalRule.
+	self assert: widget currentStyleRule selector identicalTo: newSelector
+]
