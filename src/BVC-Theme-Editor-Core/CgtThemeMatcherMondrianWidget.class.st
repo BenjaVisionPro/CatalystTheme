@@ -108,14 +108,15 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 
 { #category : 'private - animation' }
 CgtThemeMatcherMondrianWidget >> animateStructuralRefreshFor: aLegendElement and: aGraphElement [
-	| token startOpacity endOpacity offsetX duration |
+	| token startOpacity endOpacity duration startMargin |
 	token := structuralRefreshAnimationToken := structuralRefreshAnimationToken + 1.
 	startOpacity := transitionPolicy graphRevealStartOpacity.
 	endOpacity := transitionPolicy graphRevealEndOpacity.
-	offsetX := transitionPolicy graphRevealOffsetX.
+	startMargin := transitionPolicy leadingMarginForProgress: 0.0.
 	duration := transitionPolicy structuralRefreshDuration.
 	{ aLegendElement. aGraphElement } do: [ :each |
-		each opacity: startOpacity ].
+		each opacity: startOpacity.
+		self applyStructuralRefreshMargin: startMargin to: each ].
 	self addAnimation: (BlNumberTransition new
 			from: 0.0;
 			to: 1.0;
@@ -123,14 +124,30 @@ CgtThemeMatcherMondrianWidget >> animateStructuralRefreshFor: aLegendElement and
 			easing: CgtFastInSlowOutEasing new;
 			onStepDo: [ :aProgress :aWidget |
 				aWidget structuralRefreshAnimationToken = token ifTrue: [
-					| currentOpacity |
+					| currentOpacity currentMargin |
 					currentOpacity := startOpacity + ((endOpacity - startOpacity) * aProgress).
+					currentMargin := transitionPolicy leadingMarginForProgress: aProgress.
 					aLegendElement opacity: currentOpacity.
-					aGraphElement opacity: currentOpacity ] ];
+					aGraphElement opacity: currentOpacity.
+					aWidget applyStructuralRefreshMargin: currentMargin to: aLegendElement.
+					aWidget applyStructuralRefreshMargin: currentMargin to: aGraphElement ] ];
 			onFinishedDo: [ self structuralRefreshAnimationToken = token ifTrue: [
 				aLegendElement opacity: endOpacity.
-				aGraphElement opacity: endOpacity ] ];
+				aGraphElement opacity: endOpacity.
+				self resetStructuralRefreshMarginFor: aLegendElement.
+				self resetStructuralRefreshMarginFor: aGraphElement ] ];
 			yourself)
+]
+
+{ #category : 'private - animation' }
+CgtThemeMatcherMondrianWidget >> applyStructuralRefreshMargin: anInsets to: anElement [
+	anElement constraintsDo: [ :c | c margin: anInsets ].
+	anElement requestLayout
+]
+
+{ #category : 'private - animation' }
+CgtThemeMatcherMondrianWidget >> resetStructuralRefreshMarginFor: anElement [
+	self applyStructuralRefreshMargin: (BlInsets top: 0 left: 0 bottom: 0 right: 0) to: anElement
 ]
 
 { #category : 'accessing' }

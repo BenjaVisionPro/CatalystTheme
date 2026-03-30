@@ -1,7 +1,3 @@
-"
-#Matcher Transition Policy Tests
-I verify matcher transition policy defaults used by the matcher visual transitions.
-"
 Class {
 	#name : 'CgtMatcherTransitionPolicyTests',
 	#superclass : 'TestCase',
@@ -10,11 +6,14 @@ Class {
 }
 
 { #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testDefaultExpansionDirectionIsLeft [
-	self assert: CgtMatcherTransitionPolicy new expansionDirection equals: #left
+CgtMatcherTransitionPolicyTests >> testExpansionDirectionFollowsVerticalCorridorOrientation [
+	self assert: CgtMatcherTransitionPolicy new expansionDirection equals: #up
 ]
 
 { #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testKeepsFollowingNodeFixed [
-	self assert: CgtMatcherTransitionPolicy new keepsFollowingNodeFixed
+CgtMatcherTransitionPolicyTests >> testLeadingMarginUsesTopInsetForVerticalCorridor [
+	| margin |
+	margin := CgtMatcherTransitionPolicy new leadingMarginForProgress: 0.0.
+	self assert: margin top equals: -24.
+	self assert: margin left equals: 0
 ]

@@ -31,7 +31,16 @@ CgtMatcherTransitionPolicy >> collapseDuration [
 
 { #category : 'accessing' }
 CgtMatcherTransitionPolicy >> graphRevealOffsetX [
-	^ -24
+	^ self corridorOrientation = #horizontal
+		ifTrue: [ -24 ]
+		ifFalse: [ 0 ]
+]
+
+{ #category : 'accessing' }
+CgtMatcherTransitionPolicy >> graphRevealOffsetY [
+	^ self corridorOrientation = #vertical
+		ifTrue: [ -24 ]
+		ifFalse: [ 0 ]
 ]
 
 { #category : 'accessing' }
@@ -50,6 +59,21 @@ CgtMatcherTransitionPolicy >> keepsFollowingNodeFixed [
 ]
 
 { #category : 'accessing' }
+CgtMatcherTransitionPolicy >> corridorOrientation [
+	^ #vertical
+]
+
+{ #category : 'accessing' }
 CgtMatcherTransitionPolicy >> expansionDirection [
-	^ #left
+	^ self corridorOrientation = #horizontal
+		ifTrue: [ #left ]
+		ifFalse: [ #up ]
+]
+
+{ #category : 'accessing' }
+CgtMatcherTransitionPolicy >> leadingMarginForProgress: aProgress [
+	| left top |
+	left := self graphRevealOffsetX * (1.0 - aProgress).
+	top := self graphRevealOffsetY * (1.0 - aProgress).
+	^ BlInsets top: top left: left bottom: 0 right: 0
 ]
