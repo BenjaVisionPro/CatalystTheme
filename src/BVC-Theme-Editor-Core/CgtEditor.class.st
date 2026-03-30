@@ -25,7 +25,8 @@ Class {
 		'detailsWeightAnimation',
 		'closeButton',
 		'styleInspectorPopover',
-		'interactionState'
+		'interactionState',
+		'styleInspectorRule'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -509,6 +510,7 @@ CgtEditor >> sceneWeight [
 CgtEditor >> synchronizeSelectionInterfaceTo: anElement [
 	elementsTree items: targetContainer children lazy: [ :each | each children ].
 	anElement ifNil: [
+		styleInspectorRule := nil.
 		self hideStyleInspectorPopover.
 		^ self ].
 	elementsTree expandSuchThat: [ :aTreeNode | (anElement hasParent: aTreeNode value) or: [ anElement == aTreeNode value ] ].
@@ -658,14 +660,16 @@ CgtEditor >> showStyleInspectorPopover [
 	| aPopover aRule |
 	self selectedElement ifNil: [ ^ self hideStyleInspectorPopover ].
 	aPopover := self ensureStyleInspectorPopover.
-	aRule := self styleRuleForStyleInspector.
+	aRule := (aPopover selectedElement == self selectedElement and: [ styleInspectorRule notNil ])
+		ifTrue: [ styleInspectorRule ]
+		ifFalse: [ styleInspectorRule := self styleRuleForStyleInspector ].
 	aPopover
 		childWithId: #styleInspectorElementLabel
 		ifFound: [ :aLabel | aLabel text: self selectedElement class name ]
 		ifNone: [ ].
-	aPopover styleRule: aRule.
 	aPopover pathRootElement: self styleInspectorPathRootElement.
-	aPopover elementPath: self styleInspectorElementPath.
+	aPopover selectedElement: self selectedElement.
+	aPopover styleRule: aRule.
 	aPopover visibility: BlVisibility visible.
 	self updateStyleInspectorPopoverPosition
 ]
@@ -724,12 +728,10 @@ CgtEditor >> updateStyleInspectorPopoverPosition [
 CgtEditor >> wireStyleInspectorPopover: aStyleInspectorPopover [
 	| aSelectorWidget |
 	aSelectorWidget := aStyleInspectorPopover selectorWidget.
-	aSelectorWidget when: CgtElementPathNodeSelectedEvent do: [ :anEvent |
-		self elementPathNodeSelectedEvent: anEvent ].
-	aSelectorWidget when: CgtElementPathNodeHoveredEvent do: [ :anEvent |
-		self elementPathNodeHoveredEvent: anEvent ].
-	aSelectorWidget when: CgtElementPathNodeUnhoveredEvent do: [ :anEvent |
-		self elementPathNodeUnhoveredEvent: anEvent ]
+	aSelectorWidget when: CgtMatcherNodeSelectedEvent do: [ :anEvent |
+		self matcherNodeSelectedEvent: anEvent ].
+	aSelectorWidget when: CgtMatcherSelectorChangedEvent do: [ :anEvent |
+		self matcherSelectorChangedEvent: anEvent ]
 ]
 
 { #category : 'event handling - style inspector' }
@@ -749,6 +751,22 @@ CgtEditor >> elementPathNodeUnhoveredEvent: anEvent [
 CgtEditor >> elementPathNodeSelectedEvent: anEvent [
 	self applySelectionInteractionWith: anEvent element
 ]
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> matcherNodeSelectedEvent: anEvent [
+	| anElement |
+	anElement := anEvent projectionNode representedElement.
+	anElement ifNil: [ ^ self ].
+	self applySelectionInteractionWith: anElement
+]
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> matcherSelectorChangedEvent: anEvent [
+	styleInspectorRule ifNil: [ styleInspectorRule := CgtThemeStyleRule new ].
+	styleInspectorRule selector: anEvent selector.
+	styleInspectorPopover ifNotNil: [ styleInspectorPopover styleRule: styleInspectorRule ]
+]
+
 
 { #category : 'private - overlay' }
 CgtEditor >> withOverlayDo: aBlock [

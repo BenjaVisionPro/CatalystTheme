@@ -1,6 +1,6 @@
 "
 #Style Inspector Popover
-I am the popover attached to the selected element in the Theme Editor. I am responsible for presenting style-oriented controls for the current selection, including the path selector. I host UI; I do not decide selection or hover semantics.
+I am the popover attached to the selected element in the Theme Editor. I am responsible for presenting style-oriented controls for the current selection, including the Mondrian matcher widget for editing the current selector rule in live hierarchy context. I host UI; I do not decide selection or hover semantics.
 "
 Class {
 	#name : 'CgtStyleInspectorPopover',
@@ -10,7 +10,8 @@ Class {
 		'selectorWidget',
 		'selectorScrollPane',
 		'elementPath',
-		'pathRootElement'
+		'pathRootElement',
+		'selectedElement'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -29,17 +30,15 @@ CgtStyleInspectorPopover >> initialize [
 			c ignoreByLayout.
 			c ignored horizontal alignLeft.
 			c ignored vertical alignTop ].
-	selectorWidget := CgtElementPathSelector new.
+	selectorWidget := CgtThemeMatcherMondrianWidget new.
 	selectorScrollPane := selectorWidget asScrollableElement.
 	selectorScrollPane eventDispatcher handlersDo: [ :eachHandler |
 		(eachHandler isKindOf: BlScrollableElementEventHandler)
 			ifTrue: [ selectorScrollPane removeEventHandler: eachHandler ] ].
 	selectorScrollPane addEventHandler: CgtHorizontalScrollableElementEventHandler new.
-	selectorScrollPane
-		size: 1 @ 24;
-		constraintsDo: [ :c |
-			c horizontal matchParent.
-			c vertical exact: 24 ].
+	selectorScrollPane constraintsDo: [ :c |
+		c horizontal matchParent.
+		c vertical fitContent ].
 	self addChildren: {
 		(BrLabel new
 			id: #styleInspectorTitle;
@@ -56,9 +55,6 @@ CgtStyleInspectorPopover >> initialize [
 			text: '') }
 ]
 
-
-
-
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> selectorWidget [
 	^ selectorWidget
@@ -72,9 +68,19 @@ CgtStyleInspectorPopover >> elementPath [
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> elementPath: aCgtElementPath [
 	elementPath := aCgtElementPath.
-	selectorWidget elementPath: aCgtElementPath
+	self selectedElement: (aCgtElementPath ifNil: [ nil ] ifNotNil: [ aCgtElementPath anchorElement ])
 ]
 
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> selectedElement [
+	^ selectedElement
+]
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> selectedElement: anElement [
+	selectedElement := anElement.
+	self refreshMatcherProjection
+]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> pathRootElement [
@@ -84,8 +90,9 @@ CgtStyleInspectorPopover >> pathRootElement [
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> pathRootElement: anElement [
 	pathRootElement := anElement.
-	selectorWidget pathRootElement: anElement
+	self refreshMatcherProjection
 ]
+
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> styleRule [
 	^ styleRule
@@ -94,13 +101,31 @@ CgtStyleInspectorPopover >> styleRule [
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> styleRule: aCgtThemeStyleRule [
 	styleRule := aCgtThemeStyleRule.
-	selectorWidget selector: (styleRule ifNotNil: [ styleRule selector ]).
+	self refreshMatcherProjection.
+	self updateScopeLabel
+]
+
+{ #category : 'private - matcher' }
+CgtStyleInspectorPopover >> refreshMatcherProjection [
+	| projection |
+	(styleRule isNil or: [ selectedElement isNil ]) ifTrue: [
+		selectorWidget projection: nil.
+		^ self ].
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: styleRule
+		selectedElement: selectedElement
+		hierarchyRoot: pathRootElement.
+	selectorWidget projection: projection.
+	self updateScopeLabel
+]
+
+{ #category : 'private - matcher' }
+CgtStyleInspectorPopover >> updateScopeLabel [
 	self
 		childWithId: #styleInspectorScopeLabel
 		ifFound: [ :aLabel |
 			aLabel text: (styleRule
 				ifNil: [ '' ]
 				ifNotNil: [ styleRule selector ifNil: [ '' ] ifNotNil: [ styleRule selector displayString ] ]) ]
-		ifNone: [ ].
+		ifNone: [ ]
 ]
-
