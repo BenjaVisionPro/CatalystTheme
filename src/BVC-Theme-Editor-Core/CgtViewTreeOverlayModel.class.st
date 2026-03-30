@@ -132,7 +132,7 @@ CgtViewTreeOverlayModel >> anchorElement [
 	^ self primaryPath ifNotNil: [ :each | each anchorElement ]
 ]
 
-{ #category : 'accessing - compatibility' }
+{ #category : 'accessing' }
 CgtViewTreeOverlayModel >> childScopeElement [
 	| aPath |
 	aPath := self primaryPath.

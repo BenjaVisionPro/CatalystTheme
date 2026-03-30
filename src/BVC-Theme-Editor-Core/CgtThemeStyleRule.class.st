@@ -32,15 +32,7 @@ CgtThemeStyleRule >> selector: aCgtThemeSelector [
 	selector := aCgtThemeSelector
 ]
 
-{ #category : 'accessing - compatibility' }
-CgtThemeStyleRule >> pathMatcher [
-	^ self selector
-]
 
-{ #category : 'accessing - compatibility' }
-CgtThemeStyleRule >> pathMatcher: aCgtThemeSelector [
-	self selector: aCgtThemeSelector
-]
 
 { #category : 'accessing' }
 CgtThemeStyleRule >> styleChanges [

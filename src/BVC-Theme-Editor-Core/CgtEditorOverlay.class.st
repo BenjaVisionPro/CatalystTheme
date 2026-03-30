@@ -228,49 +228,21 @@ CgtEditorOverlay >> upstreamElements [
 	^ aPath ifNil: [ #() ] ifNotNil: [ aPath upstreamElements ]
 ]
 
-{ #category : 'accessing' }
-CgtEditorOverlay >> downstreamElements [
-	| aPath |
-	aPath := model primaryPath.
-	^ aPath ifNil: [ #() ] ifNotNil: [ aPath downstreamElements ]
-]
 
-{ #category : 'private - rendering' }
-CgtEditorOverlay >> anchorAlphaForPresentationKind: aSymbol [
-	^ aSymbol = #primary ifTrue: [ 1.0 ] ifFalse: [ 0.55 ]
-]
 
-{ #category : 'private - rendering' }
-CgtEditorOverlay >> downstreamAlphaForPresentationKind: aSymbol [
-	^ aSymbol = #primary ifTrue: [ 0.35 ] ifFalse: [ 0.2 ]
-]
 
 { #category : 'private - rendering' }
 CgtEditorOverlay >> scopeAlphaAtIndex: anIndex totalCount: aCount forPresentationKind: aSymbol [
 	^ geometryCalculator scopeAlphaAtIndex: anIndex totalCount: aCount forPresentationKind: aSymbol
 ]
 
-{ #category : 'private - rendering' }
-CgtEditorOverlay >> drawPathPresentation: aPathPresentation onSpartaCanvas: aCanvas [
-	self drawUpstreamScopesOnSpartaCanvas: aCanvas.
-	self drawSelectionOnSpartaCanvas: aCanvas
-]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> fadeAnimationToken [
 	^ fadeAnimationToken
 ]
 
-{ #category : 'accessing' }
-CgtEditorOverlay >> hideElement: anElement [
-	(self observedElements includes: anElement)
-		ifFalse: [ self stateChanged ]
-]
 
-{ #category : 'accessing' }
-CgtEditorOverlay >> highlightElement: anElementOrNil [
-	self hoverElement: anElementOrNil
-]
 
 { #category : 'accessing' }
 CgtEditorOverlay >> hoverElement [
@@ -616,15 +588,7 @@ CgtEditorOverlay >> updatePositions [
 ]
 
 
-{ #category : 'api - hover tracking' }
-CgtEditorOverlay >> beginHoverTracking [
-	self animateHoverVisibilityTo: 1.0 duration: self hoverFadeInDuration milliSeconds
-]
 
-{ #category : 'api - hover tracking' }
-CgtEditorOverlay >> endHoverTracking [
-	self animateHoverVisibilityTo: 0.0 duration: self hoverFadeOutDuration milliSeconds
-]
 
 
 
