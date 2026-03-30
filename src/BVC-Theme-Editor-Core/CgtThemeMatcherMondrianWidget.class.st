@@ -267,7 +267,7 @@ CgtThemeMatcherMondrianWidget >> startingCorridorNodeForRendering [
 	candidates ifEmpty: [
 		candidates := projection currentRuleNodes.
 		^ candidates ifEmpty: [ nil ] ifNotEmpty: [ candidates first ] ].
-	^ candidates asSortedCollection: [ :a :b | self nodeSortPriorityFor: a < self nodeSortPriorityFor: b ] first
+	^ (candidates asSortedCollection: [ :a :b | self nodeSortPriorityFor: a < self nodeSortPriorityFor: b ]) first
 ]
 
 { #category : 'rendering' }
