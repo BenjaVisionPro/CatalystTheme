@@ -335,18 +335,21 @@ CgtEditorEventHandler >> processRequestedThemeEditorStateIn: aRootElement [
 				ifTrue: [ ^ self hideThemeEditor: aRootElement ] ]
 ]
 
+
+{ #category : 'private - preview' }
+CgtEditorEventHandler >> currentPreviewHoveredElementIn: aRootElement [
+	(mousePosition isNil or: [ self interactionState externallyHighlightedElement notNil ])
+		ifTrue: [ ^ nil ].
+	^ self previewElementAt: mousePosition in: aRootElement
+]
+
 { #category : 'private - themeEditor' }
 CgtEditorEventHandler >> refreshEditorStateIn: aRootElement [
+	| aPreviewHoveredElement |
+	aPreviewHoveredElement := self currentPreviewHoveredElementIn: aRootElement.
 	self
 		themeEditorIn: aRootElement
-		do: [ :aThemeEditor | | aPreviewHoveredElement |
-			aPreviewHoveredElement := nil.
-			(aThemeEditor interactionState externallyHighlightedElement isNil and: [ mousePosition notNil ])
-				ifTrue: [ aPreviewHoveredElement := self previewElementAt: mousePosition in: aRootElement ].
-			aThemeEditor refreshInterfaceFromInteractionState.
-			aPreviewHoveredElement
-				ifNil: [ aThemeEditor clearPreviewHover ]
-				ifNotNil: [ aThemeEditor previewHoveredElement: aPreviewHoveredElement ] ]
+		do: [ :aThemeEditor | aThemeEditor refreshInterfaceFromCurrentPreviewHover: aPreviewHoveredElement ]
 ]
 
 { #category : 'event handling' }

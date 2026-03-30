@@ -758,6 +758,13 @@ CgtEditor >> refreshOverlayState [
 		anOverlay hoverElement: interactionState effectiveHoverElement.
 		anOverlay stateChanged ]
 ]
+
+{ #category : 'private - interface refresh' }
+CgtEditor >> refreshInterfaceFromCurrentPreviewHover: anElement [
+	self refreshInterfaceFromInteractionState.
+	self refreshPreviewHoverWith: anElement
+]
+
 { #category : 'private - overlay' }
 CgtEditor >> refreshInterfaceFromInteractionState [
 	self refreshSelectionInterface.
@@ -789,6 +796,14 @@ CgtEditor >> clearPreviewHover [
 	(interactionState clearPreviewHover)
 		ifTrue: [ self refreshOverlayState ]
 ]
+
+{ #category : 'private - preview' }
+CgtEditor >> refreshPreviewHoverWith: anElement [
+	anElement
+		ifNil: [ self clearPreviewHover ]
+		ifNotNil: [ self previewHoveredElement: anElement ]
+]
+
 { #category : 'event handling - external' }
 CgtEditor >> highlightedElement: anElement [
 	(interactionState highlightedElement: anElement)
