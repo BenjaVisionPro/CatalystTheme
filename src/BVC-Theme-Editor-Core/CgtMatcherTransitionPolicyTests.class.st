@@ -6,14 +6,22 @@ Class {
 }
 
 { #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testExpansionDirectionFollowsVerticalCorridorOrientation [
-	self assert: CgtMatcherTransitionPolicy new expansionDirection equals: #up
+CgtMatcherTransitionPolicyTests >> testExpansionDirectionFollowsHorizontalCorridorOrientation [
+	self assert: CgtMatcherTransitionPolicy new expansionDirection equals: #left
 ]
 
 { #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testLeadingMarginUsesTopInsetForVerticalCorridor [
+CgtMatcherTransitionPolicyTests >> testLeadingMarginUsesLeftInsetForHorizontalCorridor [
 	| margin |
 	margin := CgtMatcherTransitionPolicy new leadingMarginForProgress: 0.0.
-	self assert: margin top equals: -24.
-	self assert: margin left equals: 0
+	self assert: margin left equals: -24.
+	self assert: margin top equals: 0
+]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testCanStillSwitchToVerticalCorridor [
+	| policy |
+	policy := CgtMatcherTransitionPolicy new.
+	policy corridorOrientation: #vertical.
+	self assert: policy expansionDirection equals: #up
 ]

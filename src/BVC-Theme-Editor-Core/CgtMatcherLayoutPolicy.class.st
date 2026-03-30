@@ -10,6 +10,11 @@ Class {
 }
 
 { #category : 'layout' }
+CgtMatcherLayoutPolicy >> corridorOrientation [
+	^ #horizontal
+]
+
+{ #category : 'layout' }
 CgtMatcherLayoutPolicy >> widgetPadding [
 	^ BlInsets all: 8
 ]
@@ -47,4 +52,14 @@ CgtMatcherLayoutPolicy >> legendCellSpacing [
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> popoverMatcherHeight [
 	^ 260
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> treeHorizontalGap [
+	^ 22
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> treeVerticalGap [
+	^ 12
 ]

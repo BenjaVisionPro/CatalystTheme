@@ -28,7 +28,9 @@ CgtThemeMatcherMondrianWidget >> initialize [
 		cellSpacing: layoutPolicy widgetCellSpacing;
 		padding: layoutPolicy widgetPadding.
 	relationVisualPolicy := CgtMatcherRelationVisualPolicy new.
-	transitionPolicy := CgtMatcherTransitionPolicy new.
+	transitionPolicy := CgtMatcherTransitionPolicy new
+		corridorOrientation: layoutPolicy corridorOrientation;
+		yourself.
 	structuralRefreshAnimationToken := 0
 ]
 
@@ -81,6 +83,27 @@ CgtThemeMatcherMondrianWidget >> refreshContents [
 	shouldAnimate ifTrue: [ self animateStructuralRefreshFor: newLegend and: newGraph ]
 ]
 
+
+{ #category : 'rendering' }
+CgtThemeMatcherMondrianWidget >> applyCorridorLayoutToMondrian: aMondrian [
+	aMondrian root layout: (GtGraphTreeLayout new
+		verticalGap: layoutPolicy treeVerticalGap;
+		horizontalGap: layoutPolicy treeHorizontalGap)
+]
+
+{ #category : 'rendering' }
+CgtThemeMatcherMondrianWidget >> configureEdgeAnchorsOn: aMondrian [
+	layoutPolicy corridorOrientation = #horizontal
+		ifTrue: [
+			aMondrian edges
+				fromCenterRight;
+				toCenterLeft ]
+		ifFalse: [
+			aMondrian edges
+				fromCenterBottom;
+				toCenterTop ]
+]
+
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> buildMondrian [
 	| view |
@@ -89,9 +112,8 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 		stencil: [ :aProjectionNode | self newGraphElementFor: aProjectionNode ];
 		with: self orderedNodesForRendering.
 	projection relations ifNotEmpty: [
+		self configureEdgeAnchorsOn: view.
 		view edges
-			fromCenterBottom;
-			toCenterTop;
 			stencil: [ :aRelation |
 				BlLineElement new
 					zIndex: -1;
@@ -99,10 +121,9 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 			connect: projection relations
 			from: [ :aRelation | aRelation fromNode ]
 			to: [ :aRelation | aRelation toNode ] ].
-	view layout tree.
+	self applyCorridorLayoutToMondrian: view.
 	^ view
 ]
-
 
 
 

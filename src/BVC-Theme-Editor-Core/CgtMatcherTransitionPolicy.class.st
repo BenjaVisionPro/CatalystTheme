@@ -5,9 +5,18 @@ I provide timing and motion policy for matcher structural transitions. I am resp
 Class {
 	#name : 'CgtMatcherTransitionPolicy',
 	#superclass : 'Object',
+	#instVars : [
+		'corridorOrientation'
+	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
 }
+
+{ #category : 'initialization' }
+CgtMatcherTransitionPolicy >> initialize [
+	super initialize.
+	corridorOrientation := #horizontal
+]
 
 { #category : 'accessing' }
 CgtMatcherTransitionPolicy >> structuralRefreshDuration [
@@ -60,7 +69,13 @@ CgtMatcherTransitionPolicy >> keepsFollowingNodeFixed [
 
 { #category : 'accessing' }
 CgtMatcherTransitionPolicy >> corridorOrientation [
-	^ #vertical
+	^ corridorOrientation ifNil: [ #horizontal ]
+]
+
+{ #category : 'accessing' }
+CgtMatcherTransitionPolicy >> corridorOrientation: aSymbol [
+	corridorOrientation := aSymbol.
+	^ self
 ]
 
 { #category : 'accessing' }

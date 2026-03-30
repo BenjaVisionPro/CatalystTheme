@@ -10,6 +10,11 @@ Class {
 }
 
 { #category : 'tests' }
+CgtMatcherLayoutPolicyTests >> testCorridorDefaultsToHorizontal [
+	self assert: CgtMatcherLayoutPolicy new corridorOrientation equals: #horizontal
+]
+
+{ #category : 'tests' }
 CgtMatcherLayoutPolicyTests >> testNodeWidthIsCompact [
 	self assert: CgtMatcherLayoutPolicy new nodeWidth equals: 180
 ]
