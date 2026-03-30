@@ -19,7 +19,7 @@ CgtStyleInspectorPopover >> initialize [
 	self
 		vFitContent;
 		visibility: BlVisibility gone;
-		padding: (BlInsets all: 12);
+		padding: (BlInsets all: 10);
 		background: self theme default contentBackground;
 		addAptitude: BrShadowAptitude new beLarge;
 		constraintsDo: [ :c |
@@ -40,15 +40,18 @@ CgtStyleInspectorPopover >> initialize [
 	self addChildren: {
 		(BrLabel new
 			id: #styleInspectorTitle;
+			beSmallSize;
 			aptitude: BrGlamorousLabelAptitude;
 			text: 'Style').
 		(BrLabel new
 			id: #styleInspectorElementLabel;
+			beTinySize;
 			aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
 			text: '').
 		selectorScrollPane.
 		(BrLabel new
 			id: #styleInspectorScopeLabel;
+			beTinySize;
 			aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
 			text: '') }
 ]

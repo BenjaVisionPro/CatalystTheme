@@ -11,40 +11,60 @@ Class {
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> widgetPadding [
-	^ BlInsets all: 8
-]
-
-{ #category : 'layout' }
-CgtMatcherLayoutPolicy >> widgetCellSpacing [
-	^ 8
-]
-
-{ #category : 'layout' }
-CgtMatcherLayoutPolicy >> nodePadding [
 	^ BlInsets all: 6
 ]
 
 { #category : 'layout' }
+CgtMatcherLayoutPolicy >> widgetCellSpacing [
+	^ 6
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> nodePadding [
+	^ BlInsets top: 5 right: 6 bottom: 5 left: 6
+]
+
+{ #category : 'layout' }
 CgtMatcherLayoutPolicy >> nodeCellSpacing [
-	^ 4
-]
-
-{ #category : 'layout' }
-CgtMatcherLayoutPolicy >> nodeWidth [
-	^ 180
-]
-
-{ #category : 'layout' }
-CgtMatcherLayoutPolicy >> legendPadding [
-	^ BlInsets top: 4 right: 6 bottom: 4 left: 6
-]
-
-{ #category : 'layout' }
-CgtMatcherLayoutPolicy >> legendCellSpacing [
 	^ 3
 ]
 
 { #category : 'layout' }
+CgtMatcherLayoutPolicy >> nodeWidth [
+	^ 165
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> badgePadding [
+	^ BlInsets top: 1 right: 4 bottom: 1 left: 4
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> compactButtonPaddingScale [
+	^ 0.45
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> compactButtonHeightScale [
+	^ 0.72
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> compactButtonCornerRadius [
+	^ 4
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> legendPadding [
+	^ BlInsets top: 3 right: 5 bottom: 3 left: 5
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> legendCellSpacing [
+	^ 2
+]
+
+{ #category : 'layout' }
 CgtMatcherLayoutPolicy >> popoverMatcherHeight [
-	^ 260
+	^ 230
 ]
