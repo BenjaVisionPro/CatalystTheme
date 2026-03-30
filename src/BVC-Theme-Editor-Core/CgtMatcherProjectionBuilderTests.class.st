@@ -199,3 +199,69 @@ CgtMatcherProjectionBuilderTests >> testBuildsLeadingAndTrailingCompactedSection
 	self assert: (projection relations anySatisfy: [ :each |
 		each kind = #compaction and: [ each fromNode kind = #selectedElement ] ])
 ]
+
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testKeepsDescendantGapCompactedByDefaultWhenVisibilityStateIsCollapsed [
+	| root middle selected rule projection compactedNode state |
+	root := self newTestElementWithId: #'root'.
+	middle := root addChild: (self newTestElementWithId: #'middle').
+	selected := middle addChild: (self newTestElementWithId: #'selected').
+	rule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #descendant
+		right: (self selectorForId: #'selected')).
+	state := CgtMatcherVisibilityState new.
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: #()
+		visibilityState: state.
+	compactedNode := projection nodes detect: [ :each | each kind = #compactedSection ].
+	self assert: compactedNode representedElements asArray equals: { middle }
+]
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testRevealsDescendantGapWhenVisibilityStateMarksGapExpanded [
+	| root middle selected rule projection state |
+	root := self newTestElementWithId: #'root'.
+	middle := root addChild: (self newTestElementWithId: #'middle').
+	selected := middle addChild: (self newTestElementWithId: #'selected').
+	rule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #descendant
+		right: (self selectorForId: #'selected')).
+	state := CgtMatcherVisibilityState new
+		expandElements: { middle };
+		yourself.
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: #()
+		visibilityState: state.
+	self assert: (projection nodes noneSatisfy: [ :each | each kind = #compactedSection ]).
+	self assert: (projection nodes anySatisfy: [ :each | each representedElement == middle and: [ each isEditable ] ])
+]
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testHidesOtherRuleContextByDefaultThroughVisibilityState [
+	| root selected other currentRule relatedRule projection state |
+	root := self newTestElementWithId: #'root'.
+	selected := root addChild: (self newTestElementWithId: #'selected').
+	other := selected addChild: (self newTestElementWithId: #'otherChild').
+	currentRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	relatedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'selected')
+		combinator: #child
+		right: (self selectorForId: #'otherChild')).
+	state := CgtMatcherVisibilityState new.
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: currentRule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: { relatedRule }
+		visibilityState: state.
+	self assert: projection otherRuleNodes isEmpty
+]

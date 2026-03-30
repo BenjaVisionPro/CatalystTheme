@@ -9,7 +9,8 @@ Class {
 		'styleRule',
 		'selectedElement',
 		'hierarchyRoot',
-		'relatedStyleRules'
+		'relatedStyleRules',
+		'visibilityState'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -26,11 +27,22 @@ CgtMatcherProjectionBuilder class >> projectionForStyleRule: aCgtThemeStyleRule 
 
 { #category : 'instance creation' }
 CgtMatcherProjectionBuilder class >> projectionForStyleRule: aCgtThemeStyleRule selectedElement: anElement hierarchyRoot: aHierarchyRoot relatedStyleRules: aCollection [
+	^ self
+		projectionForStyleRule: aCgtThemeStyleRule
+		selectedElement: anElement
+		hierarchyRoot: aHierarchyRoot
+		relatedStyleRules: aCollection
+		visibilityState: CgtMatcherVisibilityState new
+]
+
+{ #category : 'instance creation' }
+CgtMatcherProjectionBuilder class >> projectionForStyleRule: aCgtThemeStyleRule selectedElement: anElement hierarchyRoot: aHierarchyRoot relatedStyleRules: aCollection visibilityState: aCgtMatcherVisibilityState [
 	^ self new
 		styleRule: aCgtThemeStyleRule;
 		selectedElement: anElement;
 		hierarchyRoot: aHierarchyRoot;
 		relatedStyleRules: aCollection;
+		visibilityState: aCgtMatcherVisibilityState;
 		buildProjection
 ]
 
@@ -58,6 +70,12 @@ CgtMatcherProjectionBuilder >> relatedStyleRules: aCollection [
 	^ self
 ]
 
+{ #category : 'accessing' }
+CgtMatcherProjectionBuilder >> visibilityState: aCgtMatcherVisibilityState [
+	visibilityState := aCgtMatcherVisibilityState ifNil: [ CgtMatcherVisibilityState new ].
+	^ self
+]
+
 { #category : 'building' }
 CgtMatcherProjectionBuilder >> buildProjection [
 	| projection matchedElements |
@@ -66,6 +84,7 @@ CgtMatcherProjectionBuilder >> buildProjection [
 	projection selectedElement: selectedElement.
 	projection hierarchyRoot: hierarchyRoot.
 	projection relatedStyleRules: relatedStyleRules.
+	projection visibilityState: visibilityState.
 	matchedElements := self matchedElementsForStyleRule: styleRule.
 	matchedElements
 		ifNil: [ self addFallbackSelectedNodeTo: projection ]
@@ -163,6 +182,14 @@ CgtMatcherProjectionBuilder >> connectPreviousDisplayNode: aPreviousDisplayNode 
 	previousElement := matchedElements at: anIndex - 1.
 	currentElement := matchedElements at: anIndex.
 	(combinator = #descendant and: [ (hiddenElements := self elementsBetweenAncestor: previousElement andDescendant: currentElement) notEmpty ]) ifTrue: [
+		(self shouldRevealElements: hiddenElements)
+			ifTrue: [ ^ self
+				addRevealedGapElements: hiddenElements
+				between: aPreviousDisplayNode
+				and: aCurrentNode
+				relationKind: (isOtherRule ifTrue: [ #otherRule ] ifFalse: [ #matcher ])
+				combinator: combinator
+				toProjection: aProjection ].
 		compactedNode := self compactedNodeForElements: hiddenElements.
 		aProjection addNode: compactedNode.
 		aProjection addRelation: (CgtMatcherProjectionRelation from: aPreviousDisplayNode to: compactedNode kind: #compaction).
@@ -174,6 +201,55 @@ CgtMatcherProjectionBuilder >> connectPreviousDisplayNode: aPreviousDisplayNode 
 		combinator: combinator;
 		yourself).
 	^ aCurrentNode
+]
+
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilder >> shouldRevealElements: aCollection [
+	^ visibilityState notNil and: [ visibilityState isExpandedForElements: aCollection ]
+]
+
+{ #category : 'building' }
+CgtMatcherProjectionBuilder >> addRevealedGapElements: hiddenElements between: aPreviousDisplayNode and: aCurrentNode relationKind: aRelationKind combinator: aCombinator toProjection: aProjection [
+	| previousLinkNode revealedNodes |
+	revealedNodes := hiddenElements collect: [ :each | self revealedContextNodeForElement: each ].
+	revealedNodes do: [ :each | aProjection addNode: each ].
+	previousLinkNode := aPreviousDisplayNode.
+	revealedNodes do: [ :eachNode |
+		aProjection addRelation: (CgtMatcherProjectionRelation from: previousLinkNode to: eachNode kind: #context).
+		previousLinkNode := eachNode ].
+	aProjection addRelation: ((CgtMatcherProjectionRelation from: previousLinkNode to: aCurrentNode kind: aRelationKind)
+		combinator: aCombinator;
+		yourself).
+	^ aCurrentNode
+]
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilder >> revealedContextNodeForElement: anElement [
+	^ (CgtMatcherProjectionNode kind: (self kindForRevealedContextElement: anElement))
+		representedElement: anElement;
+		isEditable: true;
+		yourself
+]
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilder >> kindForRevealedContextElement: anElement [
+	anElement == selectedElement ifTrue: [ ^ #selectedElement ].
+	(self isAncestor: anElement of: selectedElement) ifTrue: [ ^ #upstreamScope ].
+	(self isAncestor: selectedElement of: anElement) ifTrue: [ ^ #downstreamScope ].
+	^ #otherRuleRelated
+]
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilder >> isAncestor: aPossibleAncestor of: anElement [
+	| current |
+	aPossibleAncestor ifNil: [ ^ false ].
+	anElement ifNil: [ ^ false ].
+	current := anElement parent.
+	[current notNil] whileTrue: [
+		current == aPossibleAncestor ifTrue: [ ^ true ].
+		current := current parent ].
+	^ false
 ]
 
 { #category : 'building' }
@@ -213,6 +289,7 @@ CgtMatcherProjectionBuilder >> kindForMatchedNodeAtIndex: anIndex selectedIndex:
 
 { #category : 'building' }
 CgtMatcherProjectionBuilder >> addOtherRuleContextTo: aProjection [
+	(visibilityState notNil and: [ visibilityState showsOtherRuleContext not ]) ifTrue: [ ^ aProjection ].
 	relatedStyleRules do: [ :eachRule |
 		(eachRule notNil and: [ eachRule ~~ styleRule ]) ifTrue: [
 			| matchedElements |
@@ -223,7 +300,8 @@ CgtMatcherProjectionBuilder >> addOtherRuleContextTo: aProjection [
 					selector: eachRule selector
 					toProjection: aProjection
 					currentRule: false
-					otherRule: true ] ] ]
+					otherRule: true ] ] ].
+	^ aProjection
 ]
 
 { #category : 'private' }

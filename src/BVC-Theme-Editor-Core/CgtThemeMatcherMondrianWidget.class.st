@@ -245,67 +245,34 @@ CgtThemeMatcherMondrianWidget >> handleIdMatchToggledEvent: anEvent [
 { #category : 'events' }
 CgtThemeMatcherMondrianWidget >> handleCompactedSectionExpandedEvent: anEvent [
 	self expandCompactedNode: anEvent projectionNode.
-	self refreshContents.
 	self fireEvent: anEvent.
 	self publishSelectorChanged
 ]
 
 { #category : 'events' }
 CgtThemeMatcherMondrianWidget >> expandCompactedNode: aProjectionNode [
-	| incomingRelations outgoingRelations hiddenNodes previousNode nextNode previousLinkNode outgoingRelation revealedNodes |
 	(projection isNil or: [ aProjectionNode isNil or: [ aProjectionNode representedElements isEmpty ] ]) ifTrue: [ ^ self ].
-	incomingRelations := projection relationsToNode: aProjectionNode.
-	outgoingRelations := projection relationsFromNode: aProjectionNode.
-	hiddenNodes := aProjectionNode representedElements collect: [ :each |
-		self revealedContextNodeForElement: each ].
-	revealedNodes := hiddenNodes asOrderedCollection.
-	revealedNodes do: [ :each | projection addNode: each ].
-	previousNode := incomingRelations ifEmpty: [ nil ] ifNotEmpty: [ incomingRelations first fromNode ].
-	nextNode := outgoingRelations ifEmpty: [ nil ] ifNotEmpty: [ outgoingRelations first toNode ].
-	previousLinkNode := previousNode.
-	revealedNodes do: [ :eachNode |
-		previousLinkNode ifNotNil: [
-			projection addRelation: (CgtMatcherProjectionRelation from: previousLinkNode to: eachNode kind: #context) ].
-		previousLinkNode := eachNode ].
-	outgoingRelation := outgoingRelations ifEmpty: [ nil ] ifNotEmpty: [ outgoingRelations first ].
-	(previousLinkNode notNil and: [ nextNode notNil ]) ifTrue: [
-		projection addRelation: ((CgtMatcherProjectionRelation from: previousLinkNode to: nextNode kind: outgoingRelation kind)
-			combinator: outgoingRelation combinator;
-			yourself) ].
-	incomingRelations do: [ :each | projection removeRelation: each ].
-	outgoingRelations do: [ :each | projection removeRelation: each ].
-	projection removeNode: aProjectionNode
+	projection visibilityState expandElements: aProjectionNode representedElements.
+	self rebuildProjectionFromState
+]
+
+{ #category : 'events' }
+CgtThemeMatcherMondrianWidget >> collapseTemporaryReveals [
+	projection ifNil: [ ^ self ].
+	projection visibilityState clearExpandedGaps.
+	self rebuildProjectionFromState
 ]
 
 { #category : 'private' }
-CgtThemeMatcherMondrianWidget >> revealedContextNodeForElement: anElement [
-	^ (CgtMatcherProjectionNode kind: (self kindForRevealedContextElement: anElement))
-		representedElement: anElement;
-		isEditable: true;
-		yourself
+CgtThemeMatcherMondrianWidget >> rebuildProjectionFromState [
+	projection ifNil: [ ^ self ].
+	self projection: (CgtMatcherProjectionBuilder
+		projectionForStyleRule: projection styleRule
+		selectedElement: projection selectedElement
+		hierarchyRoot: projection hierarchyRoot
+		relatedStyleRules: projection relatedStyleRules
+		visibilityState: projection visibilityState)
 ]
-
-{ #category : 'private' }
-CgtThemeMatcherMondrianWidget >> kindForRevealedContextElement: anElement [
-	anElement == projection selectedElement ifTrue: [ ^ #selectedElement ].
-	(self isAncestor: anElement of: projection selectedElement) ifTrue: [ ^ #upstreamScope ].
-	(self isAncestor: projection selectedElement of: anElement) ifTrue: [ ^ #downstreamScope ].
-	^ #otherRuleRelated
-]
-
-{ #category : 'private' }
-CgtThemeMatcherMondrianWidget >> isAncestor: aPossibleAncestor of: anElement [
-	| current |
-	aPossibleAncestor ifNil: [ ^ false ].
-	anElement ifNil: [ ^ false ].
-	current := anElement parent.
-	[current notNil] whileTrue: [
-		current == aPossibleAncestor ifTrue: [ ^ true ].
-		current := current parent ].
-	^ false
-]
-
-
 
 { #category : 'private' }
 CgtThemeMatcherMondrianWidget >> outgoingMatcherRelationForNode: aProjectionNode [

@@ -10,6 +10,7 @@ Class {
 		'selectedElement',
 		'hierarchyRoot',
 		'relatedStyleRules',
+		'visibilityState',
 		'nodes',
 		'relations'
 	],
@@ -54,6 +55,17 @@ CgtMatcherProjection >> hierarchyRoot [
 { #category : 'accessing' }
 CgtMatcherProjection >> relatedStyleRules [
 	^ relatedStyleRules copy
+]
+
+
+{ #category : 'accessing' }
+CgtMatcherProjection >> visibilityState [
+	^ visibilityState ifNil: [ visibilityState := CgtMatcherVisibilityState new ]
+]
+
+{ #category : 'accessing' }
+CgtMatcherProjection >> visibilityState: aCgtMatcherVisibilityState [
+	visibilityState := aCgtMatcherVisibilityState ifNil: [ CgtMatcherVisibilityState new ]
 ]
 
 { #category : 'accessing' }
