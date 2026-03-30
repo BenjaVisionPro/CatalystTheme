@@ -10,19 +10,10 @@ Class {
 }
 
 { #category : 'instance creation' }
-CgtThemeSelector class >> selectorFromElementPath: aCgtElementPath [
-	| selectors rootSelector |
-	aCgtElementPath ifNil: [ ^ nil ].
-	selectors := aCgtElementPath elements collect: [ :eachElement |
-		CgtThemeSimpleSelector defaultForElement: eachElement ].
-	selectors ifEmpty: [ ^ nil ].
-	rootSelector := selectors first.
-	selectors allButFirstDo: [ :eachSelector |
-		rootSelector := CgtThemeCombinatorSelector
-			left: rootSelector
-			combinator: #child
-			right: eachSelector ].
-	^ rootSelector
+CgtThemeSelector class >> bootstrapForSelectedElement: anElement withinHierarchyRoot: aHierarchyRoot [
+	^ CgtThemeSelectorBootstrapBuilder
+		selectorForSelectedElement: anElement
+		withinHierarchyRoot: aHierarchyRoot
 ]
 
 { #category : 'testing' }

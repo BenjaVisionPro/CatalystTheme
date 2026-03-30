@@ -13,17 +13,17 @@ Class {
 	#package : 'BVC-Theme-Editor-Core'
 }
 
+{ #category : 'instance creation' }
+CgtThemeStyleRule class >> bootstrapForSelectedElement: anElement withinHierarchyRoot: aHierarchyRoot [
+	^ CgtThemeStyleRuleBootstrapBuilder
+		ruleForSelectedElement: anElement
+		withinHierarchyRoot: aHierarchyRoot
+]
+
 { #category : 'initialization' }
 CgtThemeStyleRule >> initialize [
 	super initialize.
 	styleChanges := CgtThemeStyleChangeSet new
-]
-
-{ #category : 'instance creation' }
-CgtThemeStyleRule class >> fromElementPath: aCgtElementPath [
-	^ self new
-		selector: (CgtThemeSelector selectorFromElementPath: aCgtElementPath);
-		yourself
 ]
 
 { #category : 'accessing' }
