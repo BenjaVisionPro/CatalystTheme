@@ -93,6 +93,53 @@ CgtMatcherProjectionBuilderTests >> testFallsBackToStandaloneSelectedNodeWhenRul
 	self assert: projection relations isEmpty
 ]
 
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testMarksSelectedNodeAsInOtherRuleWhenRelatedRuleAlsoMatchesSelectedElement [
+	| root selected currentRule relatedRule projection selectedNode |
+	root := self newTestElementWithId: #'root'.
+	selected := root addChild: (self newTestElementWithId: #'selected').
+	currentRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	relatedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: currentRule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: { relatedRule }.
+	selectedNode := projection nodes detect: [ :each | each kind = #selectedElement ].
+	self assert: selectedNode isInCurrentRule.
+	self assert: selectedNode isInOtherRule
+]
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testAddsOtherRuleNodesForRelatedRuleContext [
+	| root selected sibling currentRule relatedRule projection otherRuleNode otherRelation |
+	root := self newTestElementWithId: #'root'.
+	selected := root addChild: (self newTestElementWithId: #'selected').
+	sibling := selected addChild: (self newTestElementWithId: #'otherChild').
+	currentRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	relatedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'selected')
+		combinator: #child
+		right: (self selectorForId: #'otherChild')).
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: currentRule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: { relatedRule }.
+	otherRuleNode := projection otherRuleNodes detect: [ :each | each representedElement == sibling ].
+	self deny: otherRuleNode isInCurrentRule.
+	self assert: otherRuleNode isInOtherRule.
+	self deny: otherRuleNode isEditable.
+	otherRelation := projection relations detect: [ :each | each kind = #otherRule ].
+	self assert: otherRelation fromNode representedElement identicalTo: selected.
+	self assert: otherRelation toNode representedElement identicalTo: sibling.
+	self assert: otherRelation combinator equals: #child
+]
+
 { #category : 'private' }
 CgtMatcherProjectionBuilderTests >> newTestElementWithId: aSymbol [
 	^ CgtThemeSelectorTestElement new

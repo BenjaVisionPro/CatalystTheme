@@ -8,7 +8,8 @@ Class {
 	#instVars : [
 		'styleRule',
 		'selectedElement',
-		'hierarchyRoot'
+		'hierarchyRoot',
+		'relatedStyleRules'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -16,10 +17,20 @@ Class {
 
 { #category : 'instance creation' }
 CgtMatcherProjectionBuilder class >> projectionForStyleRule: aCgtThemeStyleRule selectedElement: anElement hierarchyRoot: aHierarchyRoot [
+	^ self
+		projectionForStyleRule: aCgtThemeStyleRule
+		selectedElement: anElement
+		hierarchyRoot: aHierarchyRoot
+		relatedStyleRules: #()
+]
+
+{ #category : 'instance creation' }
+CgtMatcherProjectionBuilder class >> projectionForStyleRule: aCgtThemeStyleRule selectedElement: anElement hierarchyRoot: aHierarchyRoot relatedStyleRules: aCollection [
 	^ self new
 		styleRule: aCgtThemeStyleRule;
 		selectedElement: anElement;
 		hierarchyRoot: aHierarchyRoot;
+		relatedStyleRules: aCollection;
 		buildProjection
 ]
 
@@ -41,6 +52,12 @@ CgtMatcherProjectionBuilder >> hierarchyRoot: anElement [
 	^ self
 ]
 
+{ #category : 'accessing' }
+CgtMatcherProjectionBuilder >> relatedStyleRules: aCollection [
+	relatedStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
+	^ self
+]
+
 { #category : 'building' }
 CgtMatcherProjectionBuilder >> buildProjection [
 	| projection matchedElements |
@@ -48,10 +65,12 @@ CgtMatcherProjectionBuilder >> buildProjection [
 	projection styleRule: styleRule.
 	projection selectedElement: selectedElement.
 	projection hierarchyRoot: hierarchyRoot.
-	matchedElements := self matchedElementsForSelectedElement.
+	projection relatedStyleRules: relatedStyleRules.
+	matchedElements := self matchedElementsForStyleRule: styleRule.
 	matchedElements
 		ifNil: [ self addFallbackSelectedNodeTo: projection ]
-		ifNotNil: [ self addMatchedElements: matchedElements toProjection: projection ].
+		ifNotNil: [ self addMatchedElements: matchedElements selector: styleRule selector toProjection: projection currentRule: true otherRule: false ].
+	self addOtherRuleContextTo: projection.
 	^ projection
 ]
 
@@ -66,22 +85,37 @@ CgtMatcherProjectionBuilder >> addFallbackSelectedNodeTo: aProjection [
 ]
 
 { #category : 'building' }
-CgtMatcherProjectionBuilder >> addMatchedElements: matchedElements toProjection: aProjection [
+CgtMatcherProjectionBuilder >> addMatchedElements: matchedElements selector: aSelector toProjection: aProjection currentRule: isCurrentRule otherRule: isOtherRule [
 	| steps selectedIndex previousDisplayNode |
-	steps := CgtThemeSelectorDecomposer stepsForSelector: styleRule selector.
+	steps := CgtThemeSelectorDecomposer stepsForSelector: aSelector.
 	selectedIndex := matchedElements indexOf: selectedElement ifAbsent: [ 0 ].
 	1 to: matchedElements size do: [ :anIndex |
 		| element node |
 		element := matchedElements at: anIndex.
-		node := self nodeForMatchedElement: element atIndex: anIndex selectedIndex: selectedIndex step: (steps at: anIndex).
-		aProjection addNode: node.
-		previousDisplayNode
-			ifNil: [ previousDisplayNode := node ]
-			ifNotNil: [ previousDisplayNode := self connectPreviousDisplayNode: previousDisplayNode toCurrentNode: node betweenMatchedElementsAtIndex: anIndex matchedElements: matchedElements steps: steps projection: aProjection ] ]
+		node := self
+			nodeForMatchedElement: element
+			atIndex: anIndex
+			selectedIndex: selectedIndex
+			step: (steps at: anIndex)
+			currentRule: isCurrentRule
+			otherRule: isOtherRule
+			projection: aProjection.
+		node ifNotNil: [
+			(aProjection nodes includes: node) ifFalse: [ aProjection addNode: node ].
+			previousDisplayNode
+				ifNil: [ previousDisplayNode := node ]
+				ifNotNil: [ previousDisplayNode := self
+					connectPreviousDisplayNode: previousDisplayNode
+					toCurrentNode: node
+					betweenMatchedElementsAtIndex: anIndex
+					matchedElements: matchedElements
+					steps: steps
+					projection: aProjection
+					otherRule: isOtherRule ] ] ]
 ]
 
 { #category : 'building' }
-CgtMatcherProjectionBuilder >> connectPreviousDisplayNode: aPreviousDisplayNode toCurrentNode: aCurrentNode betweenMatchedElementsAtIndex: anIndex matchedElements: matchedElements steps: steps projection: aProjection [
+CgtMatcherProjectionBuilder >> connectPreviousDisplayNode: aPreviousDisplayNode toCurrentNode: aCurrentNode betweenMatchedElementsAtIndex: anIndex matchedElements: matchedElements steps: steps projection: aProjection otherRule: isOtherRule [
 	| combinator previousElement currentElement hiddenElements compactedNode |
 	combinator := (steps at: anIndex - 1) combinatorToNext.
 	previousElement := matchedElements at: anIndex - 1.
@@ -90,11 +124,11 @@ CgtMatcherProjectionBuilder >> connectPreviousDisplayNode: aPreviousDisplayNode 
 		compactedNode := self compactedNodeForElements: hiddenElements.
 		aProjection addNode: compactedNode.
 		aProjection addRelation: (CgtMatcherProjectionRelation from: aPreviousDisplayNode to: compactedNode kind: #compaction).
-		aProjection addRelation: ((CgtMatcherProjectionRelation from: compactedNode to: aCurrentNode kind: #matcher)
+		aProjection addRelation: ((CgtMatcherProjectionRelation from: compactedNode to: aCurrentNode kind: (isOtherRule ifTrue: [ #otherRule ] ifFalse: [ #matcher ]))
 			combinator: combinator;
 			yourself).
 		^ aCurrentNode ].
-	aProjection addRelation: ((CgtMatcherProjectionRelation from: aPreviousDisplayNode to: aCurrentNode kind: #matcher)
+	aProjection addRelation: ((CgtMatcherProjectionRelation from: aPreviousDisplayNode to: aCurrentNode kind: (isOtherRule ifTrue: [ #otherRule ] ifFalse: [ #matcher ]))
 		combinator: combinator;
 		yourself).
 	^ aCurrentNode
@@ -110,13 +144,18 @@ CgtMatcherProjectionBuilder >> compactedNodeForElements: aCollection [
 ]
 
 { #category : 'building' }
-CgtMatcherProjectionBuilder >> nodeForMatchedElement: anElement atIndex: anIndex selectedIndex: aSelectedIndex step: aSelectorStep [
-	| node |
+CgtMatcherProjectionBuilder >> nodeForMatchedElement: anElement atIndex: anIndex selectedIndex: aSelectedIndex step: aSelectorStep currentRule: isCurrentRule otherRule: isOtherRule projection: aProjection [
+	| node existingSelectedNode |
+	(anElement == selectedElement and: [ isOtherRule ]) ifTrue: [
+		existingSelectedNode := self selectedNodeIn: aProjection.
+		existingSelectedNode ifNotNil: [
+			existingSelectedNode isInOtherRule: true.
+			^ existingSelectedNode ] ].
 	node := CgtMatcherProjectionNode kind: (self kindForMatchedNodeAtIndex: anIndex selectedIndex: aSelectedIndex).
 	node representedElement: anElement.
-	node isInCurrentRule: true.
-	node isInOtherRule: false.
-	node isEditable: true.
+	node isInCurrentRule: isCurrentRule.
+	node isInOtherRule: isOtherRule.
+	node isEditable: isCurrentRule.
 	node matchByClass: (self step: aSelectorStep includesPredicateOfClass: CgtThemeClassPredicate).
 	node matchById: (self step: aSelectorStep includesPredicateOfClass: CgtThemeIdPredicate).
 	^ node
@@ -130,13 +169,35 @@ CgtMatcherProjectionBuilder >> kindForMatchedNodeAtIndex: anIndex selectedIndex:
 	^ #downstreamScope
 ]
 
+{ #category : 'building' }
+CgtMatcherProjectionBuilder >> addOtherRuleContextTo: aProjection [
+	relatedStyleRules do: [ :eachRule |
+		(eachRule notNil and: [ eachRule ~~ styleRule ]) ifTrue: [
+			| matchedElements |
+			matchedElements := self matchedElementsForStyleRule: eachRule.
+			matchedElements ifNotNil: [
+				self
+					addMatchedElements: matchedElements
+					selector: eachRule selector
+					toProjection: aProjection
+					currentRule: false
+					otherRule: true ] ] ]
+]
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilder >> selectedNodeIn: aProjection [
+	^ aProjection nodes
+		detect: [ :each | each representedElement == selectedElement and: [ each kind = #selectedElement ] ]
+		ifNone: [ nil ]
+]
+
 { #category : 'matching' }
-CgtMatcherProjectionBuilder >> matchedElementsForSelectedElement [
+CgtMatcherProjectionBuilder >> matchedElementsForStyleRule: aStyleRule [
 	| steps matchingIndexes |
 	selectedElement ifNil: [ ^ nil ].
-	styleRule ifNil: [ ^ nil ].
-	styleRule selector ifNil: [ ^ nil ].
-	steps := CgtThemeSelectorDecomposer stepsForSelector: styleRule selector.
+	aStyleRule ifNil: [ ^ nil ].
+	aStyleRule selector ifNil: [ ^ nil ].
+	steps := CgtThemeSelectorDecomposer stepsForSelector: aStyleRule selector.
 	steps ifEmpty: [ ^ nil ].
 	matchingIndexes := OrderedCollection new.
 	steps doWithIndex: [ :eachStep :anIndex |

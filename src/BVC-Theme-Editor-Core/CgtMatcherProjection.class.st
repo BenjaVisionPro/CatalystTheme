@@ -9,6 +9,7 @@ Class {
 		'styleRule',
 		'selectedElement',
 		'hierarchyRoot',
+		'relatedStyleRules',
 		'nodes',
 		'relations'
 	],
@@ -19,6 +20,7 @@ Class {
 { #category : 'initialization' }
 CgtMatcherProjection >> initialize [
 	super initialize.
+	relatedStyleRules := OrderedCollection new.
 	nodes := OrderedCollection new.
 	relations := OrderedCollection new
 ]
@@ -46,6 +48,17 @@ CgtMatcherProjection >> selectedElement: anElement [
 { #category : 'accessing' }
 CgtMatcherProjection >> hierarchyRoot [
 	^ hierarchyRoot
+]
+
+
+{ #category : 'accessing' }
+CgtMatcherProjection >> relatedStyleRules [
+	^ relatedStyleRules copy
+]
+
+{ #category : 'accessing' }
+CgtMatcherProjection >> relatedStyleRules: aCollection [
+	relatedStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection
 ]
 
 { #category : 'accessing' }

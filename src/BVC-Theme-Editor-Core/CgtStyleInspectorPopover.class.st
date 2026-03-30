@@ -10,7 +10,8 @@ Class {
 		'selectorWidget',
 		'selectorScrollPane',
 		'pathRootElement',
-		'selectedElement'
+		'selectedElement',
+		'relatedStyleRules'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -82,6 +83,17 @@ CgtStyleInspectorPopover >> pathRootElement: anElement [
 ]
 
 { #category : 'accessing' }
+CgtStyleInspectorPopover >> relatedStyleRules [
+	^ relatedStyleRules ifNil: [ #() ]
+]
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> relatedStyleRules: aCollection [
+	relatedStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
+	self refreshMatcherProjection
+]
+
+{ #category : 'accessing' }
 CgtStyleInspectorPopover >> styleRule [
 	^ styleRule
 ]
@@ -102,7 +114,8 @@ CgtStyleInspectorPopover >> refreshMatcherProjection [
 	projection := CgtMatcherProjectionBuilder
 		projectionForStyleRule: styleRule
 		selectedElement: selectedElement
-		hierarchyRoot: pathRootElement.
+		hierarchyRoot: pathRootElement
+		relatedStyleRules: self relatedStyleRules.
 	selectorWidget projection: projection.
 	self updateScopeLabel
 ]

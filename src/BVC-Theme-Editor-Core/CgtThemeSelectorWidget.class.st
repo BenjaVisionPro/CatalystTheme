@@ -8,7 +8,8 @@ Class {
 	#instVars : [
 		'styleRule',
 		'selectedElement',
-		'pathRootElement'
+		'pathRootElement',
+		'relatedStyleRules'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -51,6 +52,18 @@ CgtThemeSelectorWidget >> pathRootElement: anElement [
 ]
 
 { #category : 'accessing' }
+CgtThemeSelectorWidget >> relatedStyleRules [
+	^ relatedStyleRules ifNil: [ #() ]
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> relatedStyleRules: aCollection [
+	relatedStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
+	self refreshProjection.
+	^ self
+]
+
+{ #category : 'accessing' }
 CgtThemeSelectorWidget >> selector [
 	^ styleRule ifNil: [ nil ] ifNotNil: [ styleRule selector ]
 ]
@@ -63,5 +76,6 @@ CgtThemeSelectorWidget >> refreshProjection [
 	self projection: (CgtMatcherProjectionBuilder
 		projectionForStyleRule: styleRule
 		selectedElement: selectedElement
-		hierarchyRoot: pathRootElement)
+		hierarchyRoot: pathRootElement
+		relatedStyleRules: self relatedStyleRules)
 ]

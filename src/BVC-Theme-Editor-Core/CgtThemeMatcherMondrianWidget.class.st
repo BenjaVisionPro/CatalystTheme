@@ -147,6 +147,7 @@ CgtThemeMatcherMondrianWidget >> publishSelectorChanged [
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> edgeColorFor: aRelation [
 	aRelation kind = #compaction ifTrue: [ ^ Color gray alpha: 0.5 ].
+	aRelation kind = #otherRule ifTrue: [ ^ Color orange alpha: 0.5 ].
 	(aRelation combinator = #descendant) ifTrue: [ ^ Color darkGray alpha: 0.6 ].
 	^ Color black alpha: 0.5
 ]
