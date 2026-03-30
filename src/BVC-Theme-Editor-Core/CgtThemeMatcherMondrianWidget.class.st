@@ -94,14 +94,10 @@ CgtThemeMatcherMondrianWidget >> applyCorridorLayoutToMondrian: aMondrian [
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> configureEdgeAnchorsOn: aMondrian [
 	layoutPolicy corridorOrientation = #horizontal
-		ifTrue: [
-			aMondrian edges
-				fromCenterRight;
-				toCenterLeft ]
-		ifFalse: [
-			aMondrian edges
-				fromCenterBottom;
-				toCenterTop ]
+		ifTrue: [ ^ self ].
+	aMondrian edges
+		fromCenterBottom;
+		toCenterTop
 ]
 
 { #category : 'rendering' }
