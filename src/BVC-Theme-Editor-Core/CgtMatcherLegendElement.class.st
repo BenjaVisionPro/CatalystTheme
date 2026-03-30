@@ -7,7 +7,8 @@ Class {
 	#superclass : 'BrVerticalPane',
 	#instVars : [
 		'nodeVisualPolicy',
-		'relationVisualPolicy'
+		'relationVisualPolicy',
+		'layoutPolicy'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -18,11 +19,12 @@ CgtMatcherLegendElement >> initialize [
 	super initialize.
 	nodeVisualPolicy := CgtMatcherNodeVisualPolicy new.
 	relationVisualPolicy := CgtMatcherRelationVisualPolicy new.
+	layoutPolicy := CgtMatcherLayoutPolicy new.
 	self
 		vFitContent;
 		hMatchParent;
-		padding: (BlInsets all: 6);
-		cellSpacing: 4;
+		padding: layoutPolicy legendPadding;
+		cellSpacing: layoutPolicy legendCellSpacing;
 		background: (Color white alpha: 0.65);
 		border: (BlBorder paint: (Color gray alpha: 0.15)).
 	self refreshContents

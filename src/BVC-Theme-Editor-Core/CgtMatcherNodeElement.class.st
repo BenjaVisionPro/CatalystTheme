@@ -9,7 +9,8 @@ Class {
 		'projectionNode',
 		'incomingRelation',
 		'visualPolicy',
-		'hoverNestingCount'
+		'hoverNestingCount',
+		'layoutPolicy'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -18,14 +19,16 @@ Class {
 { #category : 'initialization' }
 CgtMatcherNodeElement >> initialize [
 	super initialize.
+	layoutPolicy := CgtMatcherLayoutPolicy new.
 	self
 		vFitContent;
 		hFitContent;
-		padding: (BlInsets all: 8);
+		cellSpacing: layoutPolicy nodeCellSpacing;
+		padding: layoutPolicy nodePadding;
 		background: (Color white alpha: 0.95);
 		border: (BlBorder paint: (Color gray alpha: 0.3));
 		constraintsDo: [ :c |
-			c horizontal exact: 220.
+			c horizontal exact: layoutPolicy nodeWidth.
 			c vertical fitContent ].
 	visualPolicy := CgtMatcherNodeVisualPolicy new.
 	hoverNestingCount := 0.

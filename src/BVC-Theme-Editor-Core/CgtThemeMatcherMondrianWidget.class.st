@@ -9,7 +9,8 @@ Class {
 		'projection',
 		'mondrian',
 		'graphElement',
-		'relationVisualPolicy'
+		'relationVisualPolicy',
+		'layoutPolicy'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -18,11 +19,12 @@ Class {
 { #category : 'initialization' }
 CgtThemeMatcherMondrianWidget >> initialize [
 	super initialize.
+	layoutPolicy := CgtMatcherLayoutPolicy new.
 	self
 		vFitContent;
 		hMatchParent;
-		cellSpacing: 6;
-		padding: (BlInsets all: 4).
+		cellSpacing: layoutPolicy widgetCellSpacing;
+		padding: layoutPolicy widgetPadding.
 	relationVisualPolicy := CgtMatcherRelationVisualPolicy new
 ]
 
