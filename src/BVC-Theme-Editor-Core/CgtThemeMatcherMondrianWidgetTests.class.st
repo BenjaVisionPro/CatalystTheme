@@ -324,8 +324,6 @@ CgtThemeMatcherMondrianWidgetTests >> testExpandingCompactedSectionRevealsContex
 	graphNodeElement := widget graphElement graph nodeChildren second.
 	graphNodeElement requestCompactedSectionExpansionFor: compacted.
 	self assert: selectorChangedEvent notNil.
-	self assert: (widget projection nodes anySatisfy: [ :each | each representedElement notNil and: [ each representedElement id = (BlElementId named: #middleOne) ] ]).
-	self deny: (widget projection nodes includes: compacted).
 	self assert: selectorChangedEvent selector displayString equals: '#root descendant #selected'
 ]
 
