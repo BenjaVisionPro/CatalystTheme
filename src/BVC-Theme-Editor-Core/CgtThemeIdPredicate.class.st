@@ -25,8 +25,9 @@ CgtThemeIdPredicate >> elementId: anElementId [ elementId := anElementId ]
 { #category : 'testing' }
 CgtThemeIdPredicate >> matchesElement: anElement [
 	^ anElement notNil
-		and: [ anElement id ~= BlElementId noId ]
-		and: [ anElement id = elementId ]
+		and: [
+			(anElement id ~= BlElementId noId)
+				and: [ anElement id = elementId ] ]
 ]
 
 { #category : 'printing' }
