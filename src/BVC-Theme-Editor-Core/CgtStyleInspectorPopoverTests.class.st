@@ -45,6 +45,27 @@ CgtStyleInspectorPopoverTests >> testKeepsMatcherProjectionDrivenBySelectedEleme
 	self assert: projection nodes first representedElement identicalTo: selected
 ]
 
+{ #category : 'tests' }
+CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionWithRelatedRuleContext [
+	| root selected currentRule relatedRule popover projection |
+	root := self newTestElementWithId: #'root'.
+	selected := root addChild: (self newTestElementWithId: #'selected').
+	currentRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	relatedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	popover := CgtStyleInspectorPopover new.
+	popover pathRootElement: root.
+	popover selectedElement: selected.
+	popover relatedStyleRules: { relatedRule }.
+	popover styleRule: currentRule.
+	projection := popover selectorWidget projection.
+	self assert: projection notNil.
+	self assert: projection relatedStyleRules size equals: 1.
+	self assert: projection otherRuleNodes isNotEmpty
+]
+
 { #category : 'private' }
 CgtStyleInspectorPopoverTests >> newTestElementWithId: aSymbol [
 	^ CgtThemeSelectorTestElement new

@@ -26,7 +26,8 @@ Class {
 		'closeButton',
 		'styleInspectorPopover',
 		'interactionState',
-		'styleInspectorRule'
+		'styleInspectorRule',
+		'styleRules'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -271,6 +272,7 @@ CgtEditor >> initializeWith: aTargetContainer [
 CgtEditor >> initializeWith: aTargetContainer interactionState: aCgtEditorInteractionState [
 	targetContainer := aTargetContainer.
 	interactionState := aCgtEditorInteractionState ifNil: [ CgtEditorInteractionState new ].
+	styleRules := OrderedCollection new.
 
 	scenePage := BlElement new
 		layout: BlLinearLayout vertical alignCenter;
@@ -638,6 +640,25 @@ CgtEditor >> newStyleInspectorPopover [
 	^ CgtStyleInspectorPopover new
 ]
 
+{ #category : 'accessing' }
+CgtEditor >> styleRules [
+	^ styleRules ifNil: [ styleRules := OrderedCollection new ]
+]
+
+{ #category : 'accessing' }
+CgtEditor >> styleRules: aCollection [
+	styleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
+	styleInspectorPopover ifNotNil: [
+		styleInspectorPopover relatedStyleRules: self relatedStyleRulesForStyleInspector ].
+	^ self
+]
+
+{ #category : 'private - style inspector' }
+CgtEditor >> relatedStyleRulesForStyleInspector [
+	^ self styleRules
+		select: [ :each | each notNil and: [ each ~~ styleInspectorRule ] ]
+]
+
 { #category : 'private - style inspector' }
 CgtEditor >> overlayBoundsForSelectedElement [
 	| theCorners minX maxX minY maxY |
@@ -669,6 +690,7 @@ CgtEditor >> showStyleInspectorPopover [
 		ifNone: [ ].
 	aPopover pathRootElement: self styleInspectorPathRootElement.
 	aPopover selectedElement: self selectedElement.
+	aPopover relatedStyleRules: self relatedStyleRulesForStyleInspector.
 	aPopover styleRule: aRule.
 	aPopover visibility: BlVisibility visible.
 	self updateStyleInspectorPopoverPosition
@@ -760,7 +782,10 @@ CgtEditor >> matcherNodeSelectedEvent: anEvent [
 CgtEditor >> matcherSelectorChangedEvent: anEvent [
 	styleInspectorRule ifNil: [ styleInspectorRule := CgtThemeStyleRule new ].
 	styleInspectorRule selector: anEvent selector.
-	styleInspectorPopover ifNotNil: [ styleInspectorPopover styleRule: styleInspectorRule ]
+	(self styleRules includes: styleInspectorRule) ifFalse: [ self styleRules add: styleInspectorRule ].
+	styleInspectorPopover ifNotNil: [
+		styleInspectorPopover relatedStyleRules: self relatedStyleRulesForStyleInspector.
+		styleInspectorPopover styleRule: styleInspectorRule ]
 ]
 
 
