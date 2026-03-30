@@ -8,7 +8,8 @@ Class {
 	#instVars : [
 		'projection',
 		'mondrian',
-		'graphElement'
+		'graphElement',
+		'relationVisualPolicy'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -20,7 +21,8 @@ CgtThemeMatcherMondrianWidget >> initialize [
 	self
 		vFitContent;
 		hMatchParent;
-		padding: (BlInsets all: 4)
+		padding: (BlInsets all: 4).
+	relationVisualPolicy := CgtMatcherRelationVisualPolicy new
 ]
 
 { #category : 'accessing' }
@@ -54,6 +56,7 @@ CgtThemeMatcherMondrianWidget >> currentSelector [
 CgtThemeMatcherMondrianWidget >> refreshContents [
 	self removeChildren.
 	projection ifNil: [ ^ self ].
+	self addChild: CgtMatcherLegendElement new.
 	mondrian := self buildMondrian.
 	graphElement := mondrian root.
 	self addChild: graphElement
@@ -73,7 +76,7 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 			stencil: [ :aRelation |
 				BlLineElement new
 					zIndex: -1;
-					border: (BlBorder paint: (self edgeColorFor: aRelation) width: 2) ];
+					border: (BlBorder paint: (relationVisualPolicy colorForRelation: aRelation) width: (relationVisualPolicy widthForRelation: aRelation)) ];
 			connect: projection relations
 			from: [ :aRelation | aRelation fromNode ]
 			to: [ :aRelation | aRelation toNode ] ].
@@ -95,7 +98,6 @@ CgtThemeMatcherMondrianWidget >> newNodeElementFor: aProjectionNode [
 	nodeElement when: CgtMatcherCompactedSectionExpandedEvent do: [ :anEvent | self handleCompactedSectionExpandedEvent: anEvent ].
 	^ nodeElement
 ]
-
 
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> orderedNodesForRendering [
@@ -138,10 +140,6 @@ CgtThemeMatcherMondrianWidget >> handleIdMatchToggledEvent: anEvent [
 	self fireEvent: anEvent.
 	self publishSelectorChanged
 ]
-
-
-
-
 
 { #category : 'events' }
 CgtThemeMatcherMondrianWidget >> handleCompactedSectionExpandedEvent: anEvent [
@@ -230,13 +228,4 @@ CgtThemeMatcherMondrianWidget >> publishSelectorChanged [
 		projection: projection;
 		selector: self currentSelector;
 		yourself)
-]
-
-{ #category : 'rendering' }
-CgtThemeMatcherMondrianWidget >> edgeColorFor: aRelation [
-	aRelation kind = #compaction ifTrue: [ ^ Color gray alpha: 0.5 ].
-	aRelation kind = #context ifTrue: [ ^ Color gray alpha: 0.28 ].
-	aRelation kind = #otherRule ifTrue: [ ^ Color orange alpha: 0.5 ].
-	(aRelation combinator = #descendant) ifTrue: [ ^ Color darkGray alpha: 0.6 ].
-	^ Color black alpha: 0.5
 ]
