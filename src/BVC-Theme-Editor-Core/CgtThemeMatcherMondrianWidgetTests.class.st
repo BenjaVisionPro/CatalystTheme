@@ -271,3 +271,40 @@ CgtThemeMatcherMondrianWidgetTests >> testForwardsCompactedSectionExpandedEvents
 	self assert: forwardedEvent notNil.
 	self assert: forwardedEvent projectionNode identicalTo: compacted
 ]
+
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherNodeHoveredEvents [
+	| node projection widget forwardedEvent graphNodeElement |
+	projection := CgtMatcherProjection new.
+	node := (CgtMatcherProjectionNode kind: #selectedElement)
+		className: 'SelectedElement';
+		yourself.
+	projection addNode: node.
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	widget when: CgtMatcherNodeHoveredEvent do: [ :anEvent | forwardedEvent := anEvent ].
+	graphNodeElement := widget graphElement graph nodeChildren first.
+	graphNodeElement onNodeHovered: nil.
+	self assert: forwardedEvent notNil.
+	self assert: forwardedEvent projectionNode identicalTo: node
+]
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherNodeUnhoveredEvents [
+	| node projection widget forwardedEvent graphNodeElement |
+	projection := CgtMatcherProjection new.
+	node := (CgtMatcherProjectionNode kind: #selectedElement)
+		className: 'SelectedElement';
+		yourself.
+	projection addNode: node.
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	widget when: CgtMatcherNodeUnhoveredEvent do: [ :anEvent | forwardedEvent := anEvent ].
+	graphNodeElement := widget graphElement graph nodeChildren first.
+	graphNodeElement onNodeUnhovered: nil.
+	self assert: forwardedEvent notNil.
+	self assert: forwardedEvent projectionNode identicalTo: node
+]

@@ -92,6 +92,8 @@ CgtThemeMatcherMondrianWidget >> newNodeElementFor: aProjectionNode [
 		incomingRelation: (self incomingMatcherRelationForNode: aProjectionNode);
 		yourself.
 	nodeElement when: CgtMatcherNodeSelectedEvent do: [ :anEvent | self forwardNodeSelectedEvent: anEvent ].
+	nodeElement when: CgtMatcherNodeHoveredEvent do: [ :anEvent | self forwardNodeHoveredEvent: anEvent ].
+	nodeElement when: CgtMatcherNodeUnhoveredEvent do: [ :anEvent | self forwardNodeUnhoveredEvent: anEvent ].
 	nodeElement when: CgtMatcherClassMatchToggledEvent do: [ :anEvent | self handleClassMatchToggledEvent: anEvent ].
 	nodeElement when: CgtMatcherIdMatchToggledEvent do: [ :anEvent | self handleIdMatchToggledEvent: anEvent ].
 	nodeElement when: CgtMatcherCombinatorChangedEvent do: [ :anEvent | self handleCombinatorChangedEvent: anEvent ].
@@ -122,6 +124,17 @@ CgtThemeMatcherMondrianWidget >> nodeSortPriorityFor: aProjectionNode [
 
 { #category : 'events' }
 CgtThemeMatcherMondrianWidget >> forwardNodeSelectedEvent: anEvent [
+	self fireEvent: anEvent
+]
+
+
+{ #category : 'events' }
+CgtThemeMatcherMondrianWidget >> forwardNodeHoveredEvent: anEvent [
+	self fireEvent: anEvent
+]
+
+{ #category : 'events' }
+CgtThemeMatcherMondrianWidget >> forwardNodeUnhoveredEvent: anEvent [
 	self fireEvent: anEvent
 ]
 

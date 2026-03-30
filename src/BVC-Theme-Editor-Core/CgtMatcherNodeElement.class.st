@@ -27,7 +27,9 @@ CgtMatcherNodeElement >> initialize [
 			c horizontal fitContent.
 			c vertical fitContent ].
 	visualPolicy := CgtMatcherNodeVisualPolicy new.
-	self when: BlClickEvent do: [ :anEvent | self onNodeClicked: anEvent ]
+	self when: BlClickEvent do: [ :anEvent | self onNodeClicked: anEvent ].
+	self when: BlElementHoveredEvent do: [ :anEvent | self onNodeHovered: anEvent ].
+	self when: BlElementUnhoveredEvent do: [ :anEvent | self onNodeUnhovered: anEvent ]
 ]
 
 { #category : 'accessing' }
@@ -67,6 +69,23 @@ CgtMatcherNodeElement >> visualPolicy: aCgtMatcherNodeVisualPolicy [
 	self refreshContents.
 	^ self
 ]
+
+{ #category : 'event handling' }
+CgtMatcherNodeElement >> onNodeHovered: anEvent [
+	projectionNode ifNil: [ ^ self ].
+	self fireEvent: (CgtMatcherNodeHoveredEvent new
+		projectionNode: projectionNode;
+		yourself)
+]
+
+{ #category : 'event handling' }
+CgtMatcherNodeElement >> onNodeUnhovered: anEvent [
+	projectionNode ifNil: [ ^ self ].
+	self fireEvent: (CgtMatcherNodeUnhoveredEvent new
+		projectionNode: projectionNode;
+		yourself)
+]
+
 
 { #category : 'rendering' }
 CgtMatcherNodeElement >> refreshContents [

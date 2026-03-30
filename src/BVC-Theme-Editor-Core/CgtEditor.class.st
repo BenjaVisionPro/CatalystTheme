@@ -748,6 +748,10 @@ CgtEditor >> wireStyleInspectorPopover: aStyleInspectorPopover [
 	aSelectorWidget := aStyleInspectorPopover selectorWidget.
 	aSelectorWidget when: CgtMatcherNodeSelectedEvent do: [ :anEvent |
 		self matcherNodeSelectedEvent: anEvent ].
+	aSelectorWidget when: CgtMatcherNodeHoveredEvent do: [ :anEvent |
+		self matcherNodeHoveredEvent: anEvent ].
+	aSelectorWidget when: CgtMatcherNodeUnhoveredEvent do: [ :anEvent |
+		self matcherNodeUnhoveredEvent: anEvent ].
 	aSelectorWidget when: CgtMatcherSelectorChangedEvent do: [ :anEvent |
 		self matcherSelectorChangedEvent: anEvent ]
 ]
@@ -768,6 +772,24 @@ CgtEditor >> elementPathNodeUnhoveredEvent: anEvent [
 { #category : 'event handling - style inspector' }
 CgtEditor >> elementPathNodeSelectedEvent: anEvent [
 	self applySelectionInteractionWith: anEvent element
+]
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> matcherNodeHoveredEvent: anEvent [
+	| anElement |
+	anElement := anEvent projectionNode representedElement.
+	anElement ifNil: [ ^ self ].
+	self beginHoverTracking.
+	(interactionState matcherWidgetHoveredElement: anElement)
+		ifTrue: [ self refreshOverlayState ]
+]
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> matcherNodeUnhoveredEvent: anEvent [
+	| didClear |
+	didClear := interactionState clearMatcherWidgetHover.
+	didClear ifTrue: [ self refreshOverlayState ].
+	(didClear and: [ interactionState hasPreviewHover not ]) ifTrue: [ self endHoverTracking ]
 ]
 
 { #category : 'event handling - style inspector' }

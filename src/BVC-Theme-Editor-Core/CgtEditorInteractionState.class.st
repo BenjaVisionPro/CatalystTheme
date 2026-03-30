@@ -11,6 +11,7 @@ Class {
 		'selectedElementPath',
 		'previewHoverElement',
 		'pathWidgetHoveredElement',
+		'matcherWidgetHoveredElement',
 		'externallyHighlightedElement'
 	],
 	#category : 'BVC-Theme-Editor-Core',
@@ -53,6 +54,10 @@ CgtEditorInteractionState >> hasPreviewHover [
 	^ previewHoverElement notNil
 ]
 
+{ #category : 'testing' }
+CgtEditorInteractionState >> hasMatcherWidgetHover [
+	^ matcherWidgetHoveredElement notNil
+]
 
 
 { #category : 'accessing' }
@@ -66,9 +71,14 @@ CgtEditorInteractionState >> previewHoverElement [
 ]
 
 { #category : 'accessing' }
+CgtEditorInteractionState >> matcherWidgetHoveredElement [
+	^ matcherWidgetHoveredElement
+]
+
+{ #category : 'accessing' }
 CgtEditorInteractionState >> effectiveHoverElement [
 	^ externallyHighlightedElement
-		ifNil: [ pathWidgetHoveredElement ifNil: [ previewHoverElement ] ]
+		ifNil: [ matcherWidgetHoveredElement ifNil: [ pathWidgetHoveredElement ifNil: [ previewHoverElement ] ] ]
 ]
 
 { #category : 'event handling - preview' }
@@ -89,6 +99,21 @@ CgtEditorInteractionState >> clearPreviewHover [
 CgtEditorInteractionState >> pathWidgetHoveredElement: anElement [
 	pathWidgetHoveredElement == anElement ifTrue: [ ^ false ].
 	pathWidgetHoveredElement := anElement.
+	^ true
+]
+
+
+{ #category : 'event handling - style inspector' }
+CgtEditorInteractionState >> matcherWidgetHoveredElement: anElement [
+	matcherWidgetHoveredElement == anElement ifTrue: [ ^ false ].
+	matcherWidgetHoveredElement := anElement.
+	^ true
+]
+
+{ #category : 'event handling - style inspector' }
+CgtEditorInteractionState >> clearMatcherWidgetHover [
+	matcherWidgetHoveredElement ifNil: [ ^ false ].
+	matcherWidgetHoveredElement := nil.
 	^ true
 ]
 
