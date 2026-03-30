@@ -1,0 +1,115 @@
+"
+#Matcher Projection Builder Tests
+I verify projection building from a selector rule, a selected element, and a live hierarchy. I am responsible for checking current-rule mapping, downstream mapping, compaction, and no-match fallback behavior.
+"
+Class {
+	#name : 'CgtMatcherProjectionBuilderTests',
+	#superclass : 'TestCase',
+	#category : 'BVC-Theme-Editor-Core',
+	#package : 'BVC-Theme-Editor-Core'
+}
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testBuildsCompactedSectionForDescendantGap [
+	| root middle selected rule projection compacted |
+	root := self newTestElementWithId: #'root'.
+	middle := root addChild: (self newTestElementWithId: #'middle').
+	selected := middle addChild: (self newTestElementWithId: #'selected').
+	rule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #descendant
+		right: (self selectorForId: #'selected')).
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root.
+	compacted := projection nodes second.
+	self assert: (projection nodes collect: [ :each | each kind ]) asArray equals: #(upstreamScope compactedSection selectedElement).
+	self assert: compacted hiddenNodeCount equals: 1.
+	self deny: compacted isEditable.
+	self assert: compacted representedElements asArray equals: { middle }.
+	self assert: projection relations size equals: 2.
+	self assert: projection relations first kind equals: #compaction.
+	self assert: projection relations second kind equals: #matcher.
+	self assert: projection relations second combinator equals: #descendant
+]
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testBuildsProjectionForSelectedElementAtTerminalRuleStep [
+	| root selected rule projection |
+	root := self newTestElementWithId: #'root'.
+	selected := root addChild: (self newTestElementWithId: #'selected').
+	rule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root.
+	self assert: (projection nodes collect: [ :each | each kind ]) asArray equals: #(upstreamScope selectedElement).
+	self assert: projection currentRuleNodes size equals: 2.
+	self assert: projection relations size equals: 1.
+	self assert: projection relations first kind equals: #matcher.
+	self assert: projection relations first combinator equals: #child
+]
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testBuildsProjectionWithDownstreamScopeWhenSelectedMatchesEarlierRuleStep [
+	| selected child rule projection |
+	selected := self newTestElementWithId: #'selected'.
+	child := selected addChild: (self newTestElementWithId: #'child').
+	rule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'selected')
+		combinator: #child
+		right: (self selectorForId: #'child')).
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: selected.
+	self assert: (projection nodes collect: [ :each | each kind ]) asArray equals: #(selectedElement downstreamScope).
+	self assert: projection currentRuleNodes size equals: 2.
+	self assert: projection relations first combinator equals: #child.
+	self assert: projection nodes second representedElement identicalTo: child
+]
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testFallsBackToStandaloneSelectedNodeWhenRuleDoesNotMatchSelectedElement [
+	| root child selected rule projection |
+	root := self newTestElementWithId: #'root'.
+	child := root addChild: (self newTestElementWithId: #'child').
+	selected := self newTestElementWithId: #'selected'.
+	rule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #child
+		right: (self selectorForId: #'child')).
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root.
+	self assert: projection nodes size equals: 1.
+	self assert: projection nodes first kind equals: #selectedElement.
+	self deny: projection nodes first isInCurrentRule.
+	self assert: projection relations isEmpty
+]
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilderTests >> newTestElementWithId: aSymbol [
+	^ CgtThemeSelectorTestElement new
+		id: (BlElementId named: aSymbol);
+		yourself
+]
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilderTests >> selectorForId: aSymbol [
+	^ CgtThemeSimpleSelector new
+		addPredicate: (CgtThemeIdPredicate elementId: (BlElementId named: aSymbol));
+		yourself
+]
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilderTests >> styleRuleForSelector: aSelector [
+	^ CgtThemeStyleRule new
+		selector: aSelector;
+		yourself
+]

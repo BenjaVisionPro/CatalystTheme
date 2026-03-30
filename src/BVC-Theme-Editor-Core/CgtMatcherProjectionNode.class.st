@@ -47,7 +47,8 @@ CgtMatcherProjectionNode >> kind [
 
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> kind: aSymbol [
-	kind := aSymbol
+	kind := aSymbol.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -57,7 +58,8 @@ CgtMatcherProjectionNode >> representedElements [
 
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> representedElements: aCollection [
-	representedElements := aCollection asOrderedCollection
+	representedElements := aCollection asOrderedCollection.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -73,7 +75,8 @@ CgtMatcherProjectionNode >> representedElement: anElement [
 		elementId := nil.
 		^ self ].
 	className := anElement class name.
-	elementId := anElement id
+	elementId := anElement id.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -83,7 +86,8 @@ CgtMatcherProjectionNode >> className [
 
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> className: aString [
-	className := aString
+	className := aString.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -93,7 +97,8 @@ CgtMatcherProjectionNode >> elementId [
 
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> elementId: anElementId [
-	elementId := anElementId
+	elementId := anElementId.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -103,7 +108,8 @@ CgtMatcherProjectionNode >> isInCurrentRule [
 
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> isInCurrentRule: aBoolean [
-	inCurrentRule := aBoolean
+	inCurrentRule := aBoolean.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -113,7 +119,8 @@ CgtMatcherProjectionNode >> isInOtherRule [
 
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> isInOtherRule: aBoolean [
-	inOtherRule := aBoolean
+	inOtherRule := aBoolean.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -123,7 +130,8 @@ CgtMatcherProjectionNode >> matchByClass [
 
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> matchByClass: aBoolean [
-	matchByClass := aBoolean
+	matchByClass := aBoolean.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -133,7 +141,8 @@ CgtMatcherProjectionNode >> matchById [
 
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> matchById: aBoolean [
-	matchById := aBoolean
+	matchById := aBoolean.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -143,7 +152,8 @@ CgtMatcherProjectionNode >> hiddenNodeCount [
 
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> hiddenNodeCount: anInteger [
-	hiddenNodeCount := anInteger
+	hiddenNodeCount := anInteger.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -153,5 +163,6 @@ CgtMatcherProjectionNode >> isEditable [
 
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> isEditable: aBoolean [
-	editable := aBoolean
+	editable := aBoolean.
+	^ self
 ]

@@ -31,7 +31,8 @@ CgtMatcherProjectionRelation >> fromNode [
 
 { #category : 'accessing' }
 CgtMatcherProjectionRelation >> fromNode: aCgtMatcherProjectionNode [
-	fromNode := aCgtMatcherProjectionNode
+	fromNode := aCgtMatcherProjectionNode.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -41,7 +42,8 @@ CgtMatcherProjectionRelation >> toNode [
 
 { #category : 'accessing' }
 CgtMatcherProjectionRelation >> toNode: aCgtMatcherProjectionNode [
-	toNode := aCgtMatcherProjectionNode
+	toNode := aCgtMatcherProjectionNode.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -51,7 +53,8 @@ CgtMatcherProjectionRelation >> kind [
 
 { #category : 'accessing' }
 CgtMatcherProjectionRelation >> kind: aSymbol [
-	kind := aSymbol
+	kind := aSymbol.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -61,5 +64,6 @@ CgtMatcherProjectionRelation >> combinator [
 
 { #category : 'accessing' }
 CgtMatcherProjectionRelation >> combinator: aSymbol [
-	combinator := aSymbol
+	combinator := aSymbol.
+	^ self
 ]
