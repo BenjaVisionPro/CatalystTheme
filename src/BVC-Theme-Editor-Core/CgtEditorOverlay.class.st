@@ -592,6 +592,17 @@ CgtEditorOverlay >> updatePositions [
 
 
 
+
+{ #category : 'api - hover tracking' }
+CgtEditorOverlay >> beginHoverTracking [
+	self animateHoverVisibilityTo: 1.0 duration: self hoverFadeInDuration milliSeconds
+]
+
+{ #category : 'api - hover tracking' }
+CgtEditorOverlay >> endHoverTracking [
+	self animateHoverVisibilityTo: 0.0 duration: self hoverFadeOutDuration milliSeconds
+]
+
 { #category : 'private - hover tracking' }
 CgtEditorOverlay >> hoverFadeInDuration [
 	^ model ifNil: [ 100 ] ifNotNil: [ model hoverFadeInDurationMs ifNil: [ 100 ] ]
