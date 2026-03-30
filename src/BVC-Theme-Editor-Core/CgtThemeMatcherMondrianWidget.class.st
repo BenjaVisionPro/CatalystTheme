@@ -86,10 +86,12 @@ CgtThemeMatcherMondrianWidget >> newNodeElementFor: aProjectionNode [
 	| nodeElement |
 	nodeElement := CgtMatcherNodeElement new
 		projectionNode: aProjectionNode;
+		incomingRelation: (self incomingMatcherRelationForNode: aProjectionNode);
 		yourself.
 	nodeElement when: CgtMatcherNodeSelectedEvent do: [ :anEvent | self forwardNodeSelectedEvent: anEvent ].
 	nodeElement when: CgtMatcherClassMatchToggledEvent do: [ :anEvent | self handleClassMatchToggledEvent: anEvent ].
 	nodeElement when: CgtMatcherIdMatchToggledEvent do: [ :anEvent | self handleIdMatchToggledEvent: anEvent ].
+	nodeElement when: CgtMatcherCombinatorChangedEvent do: [ :anEvent | self handleCombinatorChangedEvent: anEvent ].
 	^ nodeElement
 ]
 
@@ -112,6 +114,26 @@ CgtThemeMatcherMondrianWidget >> handleIdMatchToggledEvent: anEvent [
 	self refreshContents.
 	self fireEvent: anEvent.
 	self publishSelectorChanged
+]
+
+
+
+{ #category : 'events' }
+CgtThemeMatcherMondrianWidget >> handleCombinatorChangedEvent: anEvent [
+	anEvent relation combinator: anEvent combinator.
+	self refreshContents.
+	self fireEvent: anEvent.
+	self publishSelectorChanged
+]
+
+{ #category : 'private' }
+CgtThemeMatcherMondrianWidget >> incomingMatcherRelationForNode: aProjectionNode [
+	projection ifNil: [ ^ nil ].
+	^ projection relations
+		detect: [ :each |
+			each kind = #matcher
+				and: [ each toNode == aProjectionNode ] ]
+		ifNone: [ nil ]
 ]
 
 { #category : 'events' }

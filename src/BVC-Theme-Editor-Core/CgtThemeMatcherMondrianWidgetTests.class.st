@@ -105,3 +105,75 @@ CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherNodeEditEvents [
 	self assert: forwardedEvent projectionNode identicalTo: node.
 	self assert: forwardedEvent shouldMatch
 ]
+
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testPublishesSelectorChangedEventWhenCombinatorChanges [
+	| root selected projection relation widget selectorChangedEvent graphNodeElement |
+	root := (CgtMatcherProjectionNode kind: #upstreamScope)
+		representedElement: (self newTestElementWithId: #root);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: (self newTestElementWithId: #selected);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	relation := (CgtMatcherProjectionRelation from: root to: selected kind: #matcher)
+		combinator: #child;
+		yourself.
+	projection := CgtMatcherProjection new.
+	projection
+		addNode: root;
+		addNode: selected;
+		addRelation: relation.
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	widget when: CgtMatcherSelectorChangedEvent do: [ :anEvent | selectorChangedEvent := anEvent ].
+	graphNodeElement := widget graphElement graph nodeChildren second.
+	graphNodeElement requestCombinatorChange: #descendant.
+	self assert: selectorChangedEvent notNil.
+	self assert: relation combinator equals: #descendant.
+	self assert: selectorChangedEvent selector displayString equals: '#root descendant #selected'
+]
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherCombinatorChangedEvents [
+	| root selected projection relation widget forwardedEvent graphNodeElement |
+	root := (CgtMatcherProjectionNode kind: #upstreamScope)
+		representedElement: (self newTestElementWithId: #root);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: (self newTestElementWithId: #selected);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	relation := (CgtMatcherProjectionRelation from: root to: selected kind: #matcher)
+		combinator: #child;
+		yourself.
+	projection := CgtMatcherProjection new.
+	projection
+		addNode: root;
+		addNode: selected;
+		addRelation: relation.
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	widget when: CgtMatcherCombinatorChangedEvent do: [ :anEvent | forwardedEvent := anEvent ].
+	graphNodeElement := widget graphElement graph nodeChildren second.
+	graphNodeElement requestCombinatorChange: #descendant.
+	self assert: forwardedEvent notNil.
+	self assert: forwardedEvent relation identicalTo: relation.
+	self assert: forwardedEvent combinator equals: #descendant
+]
+
+{ #category : 'private' }
+CgtThemeMatcherMondrianWidgetTests >> newTestElementWithId: aSymbol [
+	^ CgtThemeSelectorTestElement new
+		id: (BlElementId named: aSymbol);
+		yourself
+]

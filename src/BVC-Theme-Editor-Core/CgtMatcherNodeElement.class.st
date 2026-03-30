@@ -6,7 +6,8 @@ Class {
 	#name : 'CgtMatcherNodeElement',
 	#superclass : 'BrVerticalPane',
 	#instVars : [
-		'projectionNode'
+		'projectionNode',
+		'incomingRelation'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -39,16 +40,30 @@ CgtMatcherNodeElement >> projectionNode: aCgtMatcherProjectionNode [
 	^ self
 ]
 
+
+{ #category : 'accessing' }
+CgtMatcherNodeElement >> incomingRelation [
+	^ incomingRelation
+]
+
+{ #category : 'accessing' }
+CgtMatcherNodeElement >> incomingRelation: aCgtMatcherProjectionRelation [
+	incomingRelation := aCgtMatcherProjectionRelation.
+	self refreshContents.
+	^ self
+]
+
 { #category : 'rendering' }
 CgtMatcherNodeElement >> refreshContents [
 	self removeChildren.
 	projectionNode ifNil: [ ^ self ].
 	self background: (self backgroundForNode: projectionNode).
-	self addChildren: {
-		(self newTitleLabelFor: projectionNode).
-		(self newElementIdLabelFor: projectionNode).
-		(self newMatchToggleRowFor: projectionNode).
-		(self newNodeStateRowFor: projectionNode) }
+	self addChild: (self newTitleLabelFor: projectionNode).
+	self addChild: (self newElementIdLabelFor: projectionNode).
+	(self shouldShowIncomingCombinatorControlsFor: projectionNode)
+		ifTrue: [ self addChild: (self newIncomingCombinatorRowFor: projectionNode) ].
+	self addChild: (self newMatchToggleRowFor: projectionNode).
+	self addChild: (self newNodeStateRowFor: projectionNode)
 ]
 
 { #category : 'rendering' }
@@ -113,6 +128,39 @@ CgtMatcherNodeElement >> newNodeStateRowFor: aProjectionNode [
 		(self newBadgeLabeled: aProjectionNode kind asString active: aProjectionNode isInCurrentRule).
 		(self newBadgeLabeled: 'Other rule' active: aProjectionNode isInOtherRule) }.
 	^ row
+]
+
+
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> shouldShowIncomingCombinatorControlsFor: aProjectionNode [
+	^ incomingRelation notNil
+		and: [ incomingRelation kind = #matcher
+		and: [ aProjectionNode isEditable
+		and: [ aProjectionNode kind ~= #compactedSection ] ] ]
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> newIncomingCombinatorRowFor: aProjectionNode [
+	| row |
+	row := BrHorizontalPane new
+		vFitContent;
+		hFitContent;
+		cellSpacing: 4.
+	row addChildren: {
+		(self newBadgeLabeled: 'Relation' active: true).
+		(self newCombinatorToggleButtonLabeled: 'Child' active: incomingRelation combinator ~= #descendant combinator: #child).
+		(self newCombinatorToggleButtonLabeled: 'Desc' active: incomingRelation combinator = #descendant combinator: #descendant) }.
+	^ row
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> newCombinatorToggleButtonLabeled: aString active: aBoolean combinator: aSymbol [
+	^ self
+		newToggleButtonLabeled: aString
+		active: aBoolean
+		enabled: true
+		action: [ self requestCombinatorChange: aSymbol ]
 ]
 
 { #category : 'rendering' }
@@ -184,6 +232,17 @@ CgtMatcherNodeElement >> onNodeClicked: aClickEvent [
 	self fireEvent: (CgtMatcherNodeSelectedEvent new
 		projectionNode: projectionNode;
 		yourself).
+]
+
+
+
+{ #category : 'events' }
+CgtMatcherNodeElement >> requestCombinatorChange: aSymbol [
+	incomingRelation ifNil: [ ^ self ].
+	self fireEvent: (CgtMatcherCombinatorChangedEvent new
+		relation: incomingRelation;
+		combinator: aSymbol;
+		yourself)
 ]
 
 { #category : 'events' }
