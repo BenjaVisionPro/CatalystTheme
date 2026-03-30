@@ -73,7 +73,7 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 	| view |
 	view := GtMondrian new.
 	view nodes
-		stencil: [ :aProjectionNode | self newNodeElementFor: aProjectionNode ];
+		stencil: [ :aProjectionNode | self newGraphElementFor: aProjectionNode ];
 		with: self orderedNodesForRendering.
 	projection relations ifNotEmpty: [
 		view edges
@@ -88,6 +88,26 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 			to: [ :aRelation | aRelation toNode ] ].
 	view layout tree.
 	^ view
+]
+
+
+
+{ #category : 'rendering' }
+CgtThemeMatcherMondrianWidget >> newGraphElementFor: aProjectionNode [
+	aProjectionNode isCompactedSection ifTrue: [ ^ self newGapElementFor: aProjectionNode ].
+	^ self newNodeElementFor: aProjectionNode
+]
+
+{ #category : 'rendering' }
+CgtThemeMatcherMondrianWidget >> newGapElementFor: aProjectionNode [
+	| gapElement |
+	gapElement := CgtMatcherGapElement new
+		projectionNode: aProjectionNode;
+		outgoingRelation: (self outgoingMatcherRelationForNode: aProjectionNode);
+		yourself.
+	gapElement when: CgtMatcherCombinatorChangedEvent do: [ :anEvent | self handleCombinatorChangedEvent: anEvent ].
+	gapElement when: CgtMatcherCompactedSectionExpandedEvent do: [ :anEvent | self handleCompactedSectionExpandedEvent: anEvent ].
+	^ gapElement
 ]
 
 { #category : 'rendering' }
@@ -283,6 +303,18 @@ CgtThemeMatcherMondrianWidget >> isAncestor: aPossibleAncestor of: anElement [
 		current == aPossibleAncestor ifTrue: [ ^ true ].
 		current := current parent ].
 	^ false
+]
+
+
+
+{ #category : 'private' }
+CgtThemeMatcherMondrianWidget >> outgoingMatcherRelationForNode: aProjectionNode [
+	projection ifNil: [ ^ nil ].
+	^ projection relations
+		detect: [ :each |
+			each fromNode == aProjectionNode
+				and: [ each combinator notNil ] ]
+		ifNone: [ nil ]
 ]
 
 { #category : 'events' }

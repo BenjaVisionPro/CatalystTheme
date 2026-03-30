@@ -385,3 +385,76 @@ CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherNodeUnhoveredEvents [
 	self assert: forwardedEvent notNil.
 	self assert: forwardedEvent projectionNode identicalTo: node
 ]
+
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testUsesGapElementForCompactedSections [
+	| root gap selected relation projection widget gapElement |
+	root := (CgtMatcherProjectionNode kind: #upstreamScope)
+		representedElement: (self newTestElementWithId: #root);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	gap := (CgtMatcherProjectionNode kind: #compactedSection)
+		hiddenNodeCount: 2;
+		representedElements: { self newTestElementWithId: #middle1. self newTestElementWithId: #middle2 };
+		isEditable: false;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: (self newTestElementWithId: #selected);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	relation := (CgtMatcherProjectionRelation from: gap to: selected kind: #matcher)
+		combinator: #descendant;
+		yourself.
+	projection := CgtMatcherProjection new.
+	projection
+		addNode: root;
+		addNode: gap;
+		addNode: selected;
+		addRelation: (CgtMatcherProjectionRelation from: root to: gap kind: #compaction);
+		addRelation: relation.
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	gapElement := widget graphElement graph nodeChildren
+		detect: [ :each | each isKindOf: CgtMatcherGapElement ]
+		ifNone: [ nil ].
+	self assert: gapElement notNil.
+	self assert: gapElement projectionNode identicalTo: gap
+]
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testGapElementForwardsCombinatorChangedEvents [
+	| gap selected projection relation widget forwardedEvent gapElement |
+	gap := (CgtMatcherProjectionNode kind: #compactedSection)
+		hiddenNodeCount: 2;
+		representedElements: { self newTestElementWithId: #middle1. self newTestElementWithId: #middle2 };
+		isEditable: false;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: (self newTestElementWithId: #selected);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	relation := (CgtMatcherProjectionRelation from: gap to: selected kind: #matcher)
+		combinator: #child;
+		yourself.
+	projection := CgtMatcherProjection new.
+	projection
+		addNode: gap;
+		addNode: selected;
+		addRelation: relation.
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	widget when: CgtMatcherCombinatorChangedEvent do: [ :anEvent | forwardedEvent := anEvent ].
+	gapElement := widget graphElement graph nodeChildren
+		detect: [ :each | each isKindOf: CgtMatcherGapElement ]
+		ifNone: [ nil ].
+	gapElement requestCombinatorChange: #descendant.
+	self assert: forwardedEvent notNil.
+	self assert: forwardedEvent relation identicalTo: relation.
+	self assert: relation combinator equals: #descendant
+]

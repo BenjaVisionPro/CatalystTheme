@@ -107,8 +107,6 @@ CgtMatcherNodeElement >> refreshContents [
 	self addChild: (self newTitleLabelFor: projectionNode).
 	self addChild: (self newElementIdLabelFor: projectionNode).
 	self addChild: (self newMatchSummaryLabelFor: projectionNode).
-	(self shouldShowIncomingCombinatorControlsFor: projectionNode)
-		ifTrue: [ self addChild: (self newIncomingCombinatorRowFor: projectionNode) ].
 	self addChild: (self newMatchToggleRowFor: projectionNode).
 	(self shouldShowCompactedSectionActionsFor: projectionNode)
 		ifTrue: [ self addChild: (self newCompactedSectionActionRowFor: projectionNode) ].
@@ -250,36 +248,6 @@ CgtMatcherNodeElement >> newCompactedSectionActionRowFor: aProjectionNode [
 ]
 
 { #category : 'rendering' }
-CgtMatcherNodeElement >> shouldShowIncomingCombinatorControlsFor: aProjectionNode [
-	^ incomingRelation notNil
-		and: [ incomingRelation kind = #matcher
-		and: [ aProjectionNode isEditable
-		and: [ aProjectionNode kind ~= #compactedSection ] ] ]
-]
-
-{ #category : 'rendering' }
-CgtMatcherNodeElement >> newIncomingCombinatorRowFor: aProjectionNode [
-	| row |
-	row := BrHorizontalPane new
-		vFitContent;
-		hFitContent;
-		cellSpacing: 4.
-	row addChildren: {
-		(self newBadgeLabeled: 'Relation' active: true).
-		(self newCombinatorToggleButtonLabeled: 'Child' active: incomingRelation combinator ~= #descendant combinator: #child).
-		(self newCombinatorToggleButtonLabeled: 'Desc' active: incomingRelation combinator = #descendant combinator: #descendant) }.
-	^ row
-]
-
-{ #category : 'rendering' }
-CgtMatcherNodeElement >> newCombinatorToggleButtonLabeled: aString active: aBoolean combinator: aSymbol [
-	^ self
-		newToggleButtonLabeled: aString
-		active: aBoolean
-		enabled: true
-		action: [ self requestCombinatorChange: aSymbol ]
-]
-
 { #category : 'rendering' }
 CgtMatcherNodeElement >> newClassToggleButtonFor: aProjectionNode [
 	^ self
