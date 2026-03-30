@@ -203,6 +203,83 @@ CgtThemeMatcherMondrianWidgetTests >> testOrdersCurrentRuleNodesBeforeContextNod
 	self assert: orderedNodes last identicalTo: context
 ]
 
+
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testIncludingContextNodePublishesSelectorChangedEvent [
+	| root middle selected projection widget selectorChangedEvent |
+	root := (CgtMatcherProjectionNode kind: #upstreamScope)
+		representedElement: (self newTestElementWithId: #root);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	middle := (CgtMatcherProjectionNode kind: #upstreamScope)
+		representedElement: (self newTestElementWithId: #middle);
+		isEditable: true;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: (self newTestElementWithId: #selected);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	projection := CgtMatcherProjection new.
+	projection
+		addNode: root;
+		addNode: middle;
+		addNode: selected;
+		addRelation: (CgtMatcherProjectionRelation from: root to: middle kind: #context);
+		addRelation: ((CgtMatcherProjectionRelation from: middle to: selected kind: #matcher)
+			combinator: #descendant;
+			yourself).
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	widget when: CgtMatcherSelectorChangedEvent do: [ :anEvent | selectorChangedEvent := anEvent ].
+	widget includeProjectionNodeInCurrentRule: middle.
+	self assert: selectorChangedEvent isNil.
+	widget publishSelectorChanged.
+	self assert: middle isInCurrentRule.
+	self assert: selectorChangedEvent notNil.
+	self assert: selectorChangedEvent selector displayString equals: '#root > CgtThemeSelectorTestElement descendant #selected'
+]
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testExcludingCurrentRuleNodeLeavesRemainingSelectorStable [
+	| root middle selected projection widget selector |
+	root := (CgtMatcherProjectionNode kind: #upstreamScope)
+		representedElement: (self newTestElementWithId: #root);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	middle := (CgtMatcherProjectionNode kind: #upstreamScope)
+		representedElement: (self newTestElementWithId: #middle);
+		isInCurrentRule: true;
+		matchByClass: true;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: (self newTestElementWithId: #selected);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	projection := CgtMatcherProjection new.
+	projection
+		addNode: root;
+		addNode: middle;
+		addNode: selected;
+		addRelation: ((CgtMatcherProjectionRelation from: root to: middle kind: #matcher)
+			combinator: #child;
+			yourself);
+		addRelation: ((CgtMatcherProjectionRelation from: middle to: selected kind: #matcher)
+			combinator: #descendant;
+			yourself).
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	widget excludeProjectionNodeFromCurrentRule: middle.
+	selector := widget currentSelector.
+	self assert: selector displayString equals: '#root descendant #selected'
+]
+
 { #category : 'private' }
 CgtThemeMatcherMondrianWidgetTests >> newTestElementWithId: aSymbol [
 	^ CgtThemeSelectorTestElement new

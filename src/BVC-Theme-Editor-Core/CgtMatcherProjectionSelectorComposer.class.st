@@ -30,8 +30,69 @@ CgtMatcherProjectionSelectorComposer >> selectorForProjection: aCgtMatcherProjec
 
 { #category : 'composing' }
 CgtMatcherProjectionSelectorComposer >> orderedCurrentRuleNodesForProjection: aCgtMatcherProjection [
-	^ aCgtMatcherProjection nodes select: [ :each |
-		each isInCurrentRule and: [ each kind ~= #compactedSection ] ]
+	| ruleNodes startNode ordered visited |
+	ruleNodes := aCgtMatcherProjection nodes select: [ :each |
+		each isInCurrentRule and: [ each kind ~= #compactedSection ] ].
+	ruleNodes isEmpty ifTrue: [ ^ #() ].
+	startNode := self startingCurrentRuleNodeIn: ruleNodes projection: aCgtMatcherProjection.
+	ordered := OrderedCollection new.
+	visited := IdentitySet new.
+	self appendCurrentRulePathFrom: startNode into: ordered visited: visited projection: aCgtMatcherProjection.
+	ruleNodes do: [ :each |
+		(visited includes: each) ifFalse: [ ordered add: each ] ].
+	^ ordered
+]
+
+{ #category : 'composing' }
+CgtMatcherProjectionSelectorComposer >> startingCurrentRuleNodeIn: aCollection projection: aCgtMatcherProjection [
+	^ aCollection
+		detect: [ :each |
+			(aCgtMatcherProjection relationsToNode: each)
+				noneSatisfy: [ :aRelation | aRelation fromNode isInCurrentRule ] ]
+		ifNone: [ aCollection first ]
+]
+
+{ #category : 'composing' }
+CgtMatcherProjectionSelectorComposer >> appendCurrentRulePathFrom: aNode into: anOrderedCollection visited: aVisitedSet projection: aCgtMatcherProjection [
+	| nextRelation nextNode |
+	aNode ifNil: [ ^ self ].
+	(aVisitedSet includes: aNode) ifTrue: [ ^ self ].
+	aVisitedSet add: aNode.
+	anOrderedCollection add: aNode.
+	nextRelation := (aCgtMatcherProjection relationsFromNode: aNode)
+		detect: [ :each |
+			each toNode isInCurrentRule
+				or: [ self pathFrom: each toNode reachesCurrentRuleNodeIn: aCgtMatcherProjection avoiding: aVisitedSet ] ]
+		ifNone: [ nil ].
+	nextRelation ifNil: [ ^ self ].
+	nextNode := self nextCurrentRuleNodeFrom: nextRelation toNode inProjection: aCgtMatcherProjection avoiding: aVisitedSet.
+	self appendCurrentRulePathFrom: nextNode into: anOrderedCollection visited: aVisitedSet projection: aCgtMatcherProjection
+]
+
+{ #category : 'composing' }
+CgtMatcherProjectionSelectorComposer >> nextCurrentRuleNodeFrom: aNode inProjection: aCgtMatcherProjection avoiding: aVisitedSet [
+	aNode ifNil: [ ^ nil ].
+	aNode isInCurrentRule ifTrue: [ ^ aNode ].
+	^ (aCgtMatcherProjection relationsFromNode: aNode)
+		inject: nil
+		into: [ :found :each |
+			found ifNotNil: [ found ] ifNil: [ self nextCurrentRuleNodeFrom: each toNode inProjection: aCgtMatcherProjection avoiding: aVisitedSet ] ]
+]
+
+{ #category : 'composing' }
+CgtMatcherProjectionSelectorComposer >> pathFrom: aNode reachesCurrentRuleNodeIn: aCgtMatcherProjection avoiding: aVisitedSet [
+	| localVisited queue |
+	aNode ifNil: [ ^ false ].
+	localVisited := aVisitedSet copy.
+	queue := OrderedCollection with: aNode.
+	[ queue isEmpty ] whileFalse: [
+		| current |
+		current := queue removeFirst.
+		(localVisited includes: current) ifFalse: [
+			current isInCurrentRule ifTrue: [ ^ true ].
+			localVisited add: current.
+			(aCgtMatcherProjection relationsFromNode: current) do: [ :each | queue addLast: each toNode ] ] ].
+	^ false
 ]
 
 { #category : 'composing' }

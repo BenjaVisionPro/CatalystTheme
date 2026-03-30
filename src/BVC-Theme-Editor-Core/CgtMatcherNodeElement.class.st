@@ -102,6 +102,8 @@ CgtMatcherNodeElement >> refreshContents [
 	self addChild: (self newMatchToggleRowFor: projectionNode).
 	(self shouldShowCompactedSectionActionsFor: projectionNode)
 		ifTrue: [ self addChild: (self newCompactedSectionActionRowFor: projectionNode) ].
+	(self shouldShowRuleMembershipActionsFor: projectionNode)
+		ifTrue: [ self addChild: (self newRuleMembershipActionRowFor: projectionNode) ].
 	self addChild: (self newNodeStateRowFor: projectionNode)
 ]
 
@@ -178,6 +180,42 @@ CgtMatcherNodeElement >> newNodeStateRowFor: aProjectionNode [
 
 
 
+
+
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> shouldShowRuleMembershipActionsFor: aProjectionNode [
+	^ aProjectionNode isCompactedSection not
+		and: [ aProjectionNode isEditable
+		and: [ aProjectionNode isInOtherRule not ] ]
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> newRuleMembershipActionRowFor: aProjectionNode [
+	| row label actionLabel |
+	row := BrHorizontalPane new
+		vFitContent;
+		hFitContent;
+		cellSpacing: 4.
+	label := aProjectionNode isInCurrentRule ifTrue: [ 'Rule' ] ifFalse: [ 'Context' ].
+	actionLabel := aProjectionNode isInCurrentRule ifTrue: [ 'Exclude' ] ifFalse: [ 'Include' ].
+	row addChildren: {
+		(self newBadgeLabeled: label active: true).
+		(self
+			newToggleButtonLabeled: actionLabel
+			active: aProjectionNode isInCurrentRule
+			enabled: (self canChangeRuleMembershipFor: aProjectionNode)
+			action: [
+				aProjectionNode isInCurrentRule
+					ifTrue: [ self requestExcludeFromRuleFor: aProjectionNode ]
+					ifFalse: [ self requestIncludeInRuleFor: aProjectionNode ] ]) }.
+	^ row
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> canChangeRuleMembershipFor: aProjectionNode [
+	^ aProjectionNode kind ~= #selectedElement
+]
 
 { #category : 'rendering' }
 CgtMatcherNodeElement >> shouldShowCompactedSectionActionsFor: aProjectionNode [
@@ -306,6 +344,22 @@ CgtMatcherNodeElement >> onNodeClicked: aClickEvent [
 
 
 
+
+
+
+{ #category : 'events' }
+CgtMatcherNodeElement >> requestIncludeInRuleFor: aProjectionNode [
+	self fireEvent: (CgtMatcherNodeIncludedInRuleEvent new
+		projectionNode: aProjectionNode;
+		yourself)
+]
+
+{ #category : 'events' }
+CgtMatcherNodeElement >> requestExcludeFromRuleFor: aProjectionNode [
+	self fireEvent: (CgtMatcherNodeExcludedFromRuleEvent new
+		projectionNode: aProjectionNode;
+		yourself)
+]
 
 { #category : 'events' }
 CgtMatcherNodeElement >> requestCompactedSectionExpansionFor: aProjectionNode [
