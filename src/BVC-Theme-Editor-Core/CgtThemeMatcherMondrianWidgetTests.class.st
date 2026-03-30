@@ -1,6 +1,6 @@
 "
 #Theme Matcher Mondrian Widget Tests
-I verify the Mondrian matcher widget skeleton. I am responsible for checking that passive matcher projections render as Mondrian nodes and explicit relations render as edges.
+I verify the Mondrian matcher widget skeleton and its explicit edit-event forwarding. I am responsible for checking that passive matcher projections render as Mondrian nodes and that matcher-node events are forwarded by the widget.
 "
 Class {
 	#name : 'CgtThemeMatcherMondrianWidgetTests',
@@ -57,4 +57,26 @@ CgtThemeMatcherMondrianWidgetTests >> testUsesCustomNodeStencilElement [
 	graphNodeElement := widget graphElement graph nodeChildren first.
 	self assert: (graphNodeElement isKindOf: CgtMatcherNodeElement).
 	self assert: graphNodeElement projectionNode identicalTo: node
+]
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherNodeEditEvents [
+	| node projection widget forwardedEvent graphNodeElement |
+	projection := CgtMatcherProjection new.
+	node := (CgtMatcherProjectionNode kind: #selectedElement)
+		className: 'SelectedElement';
+		elementId: (BlElementId named: #selected);
+		isInCurrentRule: true;
+		matchByClass: false;
+		yourself.
+	projection addNode: node.
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	widget when: CgtMatcherClassMatchToggledEvent do: [ :anEvent | forwardedEvent := anEvent ].
+	graphNodeElement := widget graphElement graph nodeChildren first.
+	graphNodeElement requestClassMatchToggleFor: node.
+	self assert: forwardedEvent notNil.
+	self assert: forwardedEvent projectionNode identicalTo: node.
+	self assert: forwardedEvent shouldMatch
 ]

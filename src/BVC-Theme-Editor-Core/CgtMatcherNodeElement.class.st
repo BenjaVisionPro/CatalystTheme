@@ -1,6 +1,6 @@
 "
 #Matcher Node Element
-I render one matcher projection node as a Bloc widget. I am responsible for presenting passive node data for the Mondrian matcher view without deciding editor semantics.
+I render one matcher projection node as a Bloc widget. I am responsible for presenting passive node data for the Mondrian matcher view and emitting explicit widget events for matcher edits without deciding editor semantics.
 "
 Class {
 	#name : 'CgtMatcherNodeElement',
@@ -23,7 +23,8 @@ CgtMatcherNodeElement >> initialize [
 		border: (BlBorder paint: (Color gray alpha: 0.3));
 		constraintsDo: [ :c |
 			c horizontal fitContent.
-			c vertical fitContent ]
+			c vertical fitContent ].
+	self when: BlClickEvent do: [ :anEvent | self onNodeClicked: anEvent ]
 ]
 
 { #category : 'accessing' }
@@ -46,7 +47,8 @@ CgtMatcherNodeElement >> refreshContents [
 	self addChildren: {
 		(self newTitleLabelFor: projectionNode).
 		(self newElementIdLabelFor: projectionNode).
-		(self newMatchStateRowFor: projectionNode) }
+		(self newMatchToggleRowFor: projectionNode).
+		(self newNodeStateRowFor: projectionNode) }
 ]
 
 { #category : 'rendering' }
@@ -88,17 +90,79 @@ CgtMatcherNodeElement >> elementIdTextFor: aProjectionNode [
 ]
 
 { #category : 'rendering' }
-CgtMatcherNodeElement >> newMatchStateRowFor: aProjectionNode [
+CgtMatcherNodeElement >> newMatchToggleRowFor: aProjectionNode [
 	| row |
 	row := BrHorizontalPane new
 		vFitContent;
 		hFitContent;
 		cellSpacing: 4.
 	row addChildren: {
-		(self newBadgeLabeled: 'Class' active: aProjectionNode matchByClass).
-		(self newBadgeLabeled: 'Id' active: aProjectionNode matchById).
-		(self newBadgeLabeled: aProjectionNode kind asString active: aProjectionNode isInCurrentRule) }.
+		(self newClassToggleButtonFor: aProjectionNode).
+		(self newIdToggleButtonFor: aProjectionNode) }.
 	^ row
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> newNodeStateRowFor: aProjectionNode [
+	| row |
+	row := BrHorizontalPane new
+		vFitContent;
+		hFitContent;
+		cellSpacing: 4.
+	row addChildren: {
+		(self newBadgeLabeled: aProjectionNode kind asString active: aProjectionNode isInCurrentRule).
+		(self newBadgeLabeled: 'Other rule' active: aProjectionNode isInOtherRule) }.
+	^ row
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> newClassToggleButtonFor: aProjectionNode [
+	^ self
+		newToggleButtonLabeled: 'Class'
+		active: aProjectionNode matchByClass
+		enabled: (aProjectionNode isEditable and: [ aProjectionNode kind ~= #compactedSection ])
+		action: [ self requestClassMatchToggleFor: aProjectionNode ]
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> newIdToggleButtonFor: aProjectionNode [
+	^ self
+		newToggleButtonLabeled: 'Id'
+		active: aProjectionNode matchById
+		enabled: (aProjectionNode isEditable and: [ aProjectionNode kind ~= #compactedSection ])
+		action: [ self requestIdMatchToggleFor: aProjectionNode ]
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> newToggleButtonLabeled: aString active: aBoolean enabled: isEnabled action: anActionBlock [
+	| button |
+	button := BrButton new
+		label: aString;
+		aptitude: (self toggleButtonAptitudeActive: aBoolean enabled: isEnabled);
+		action: [ :aButton | isEnabled ifTrue: [ anActionBlock value ] ];
+		yourself.
+	isEnabled ifFalse: [ button preventMouseEvents ].
+	^ button
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> toggleButtonAptitudeActive: aBoolean enabled: isEnabled [
+	| base activeBackground inactiveBackground |
+	base := (BrGlamorousButtonLabelAptitude new
+			hoveredColor: Color black;
+			pressedColor: Color black) +
+		(BrGlamorousButtonRectangularAptitude
+			paddingScale: 0.55
+			heightScale: 0.8
+			cornerRadius: 5).
+	activeBackground := aBoolean ifTrue: [ Color black alpha: 0.08 ] ifFalse: [ Color gray alpha: 0.06 ].
+	inactiveBackground := isEnabled
+		ifTrue: [ activeBackground ]
+		ifFalse: [ Color gray alpha: 0.03 ].
+	^ base + (BrStyleCommonAptitude new
+		default: [ :s | s background: inactiveBackground ];
+		hovered: [ :s | isEnabled ifTrue: [ s background: (inactiveBackground alpha: ((inactiveBackground alpha + 0.08) min: 1.0)) ] ];
+		pressed: [ :s | isEnabled ifTrue: [ s background: (inactiveBackground alpha: ((inactiveBackground alpha + 0.16) min: 1.0)) ] ])
 ]
 
 { #category : 'rendering' }
@@ -112,4 +176,28 @@ CgtMatcherNodeElement >> newBadgeLabeled: aString active: aBoolean [
 		aptitude: (BrGlamorousLabelAptitude new
 			foreground: (aBoolean ifTrue: [ Color black ] ifFalse: [ Color darkGray ]));
 		text: aString
+]
+
+{ #category : 'events' }
+CgtMatcherNodeElement >> onNodeClicked: aClickEvent [
+	projectionNode ifNil: [ ^ self ].
+	self fireEvent: (CgtMatcherNodeSelectedEvent new
+		projectionNode: projectionNode;
+		yourself).
+]
+
+{ #category : 'events' }
+CgtMatcherNodeElement >> requestClassMatchToggleFor: aProjectionNode [
+	self fireEvent: (CgtMatcherClassMatchToggledEvent new
+		projectionNode: aProjectionNode;
+		shouldMatch: aProjectionNode matchByClass not;
+		yourself)
+]
+
+{ #category : 'events' }
+CgtMatcherNodeElement >> requestIdMatchToggleFor: aProjectionNode [
+	self fireEvent: (CgtMatcherIdMatchToggledEvent new
+		projectionNode: aProjectionNode;
+		shouldMatch: aProjectionNode matchById not;
+		yourself)
 ]

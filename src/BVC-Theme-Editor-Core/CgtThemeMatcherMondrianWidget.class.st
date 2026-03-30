@@ -1,6 +1,6 @@
 "
 #Theme Matcher Mondrian Widget
-I render a matcher projection through Mondrian. I am responsible for building a Mondrian graph with custom node stencils from passive projection data, without taking on selector or editor semantics.
+I render a matcher projection through Mondrian. I am responsible for building a Mondrian graph with custom node stencils from passive projection data and forwarding explicit matcher widget events without taking on selector or editor semantics.
 "
 Class {
 	#name : 'CgtThemeMatcherMondrianWidget',
@@ -78,9 +78,14 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> newNodeElementFor: aProjectionNode [
-	^ CgtMatcherNodeElement new
+	| nodeElement |
+	nodeElement := CgtMatcherNodeElement new
 		projectionNode: aProjectionNode;
-		yourself
+		yourself.
+	nodeElement when: CgtMatcherNodeSelectedEvent do: [ :anEvent | self fireEvent: anEvent ].
+	nodeElement when: CgtMatcherClassMatchToggledEvent do: [ :anEvent | self fireEvent: anEvent ].
+	nodeElement when: CgtMatcherIdMatchToggledEvent do: [ :anEvent | self fireEvent: anEvent ].
+	^ nodeElement
 ]
 
 { #category : 'rendering' }
