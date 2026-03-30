@@ -77,7 +77,7 @@ CgtElementPathSelector >> selectedSimpleSelector: aCgtThemeSimpleSelector [
 ]
 
 
-{ #category : 'private' }
+{ #category : 'updating' }
 CgtElementPathSelector >> rebuild [
 	self removeAllItems.
 	elementPath ifNotNil: [ ^ self rebuildForElementPath ].
@@ -85,7 +85,7 @@ CgtElementPathSelector >> rebuild [
 	self addItems: (self allSimpleSelectors collect: [ :each | self newCrumbButtonFor: each ])
 ]
 
-{ #category : 'private' }
+{ #category : 'updating' }
 CgtElementPathSelector >> rebuildForElementPath [
 	| fullPath visibleIndexes items previousIndex hiddenLeftCount |
 	fullPath := self fullPathElements.
@@ -101,7 +101,7 @@ CgtElementPathSelector >> rebuildForElementPath [
 	self addItems: items
 ]
 
-{ #category : 'private' }
+{ #category : 'path building' }
 CgtElementPathSelector >> fullPathElements [
 	| anchor upstream orderedAncestors current downstream stopParent |
 	elementPath ifNil: [ ^ #() ].
@@ -118,7 +118,7 @@ CgtElementPathSelector >> fullPathElements [
 	^ orderedAncestors , { anchor } , downstream
 ]
 
-{ #category : 'private' }
+{ #category : 'path building' }
 CgtElementPathSelector >> visibleIndexesForFullPath: fullPath [
 	| pathElements scopeIndexes firstScopeIndex startIndex indexes |
 	elementPath ifNil: [ ^ (1 to: fullPath size) asOrderedCollection ].
@@ -135,7 +135,7 @@ CgtElementPathSelector >> visibleIndexesForFullPath: fullPath [
 	^ indexes
 ]
 
-{ #category : 'private' }
+{ #category : 'crumb building' }
 CgtElementPathSelector >> newElementCrumbFor: anElement [
 	| aButton |
 	aButton := BrButton new
@@ -151,7 +151,7 @@ CgtElementPathSelector >> newElementCrumbFor: anElement [
 	^ aButton
 ]
 
-{ #category : 'private' }
+{ #category : 'crumb building' }
 CgtElementPathSelector >> newHiddenCrumbForHiddenCount: aCount [
 	^ BrButton new
 		label: hiddenCrumbLabel;
@@ -159,14 +159,14 @@ CgtElementPathSelector >> newHiddenCrumbForHiddenCount: aCount [
 		action: [ :aButton | ancestorRevealCount := ancestorRevealCount + aCount. self rebuild ]
 ]
 
-{ #category : 'private' }
+{ #category : 'crumb building' }
 CgtElementPathSelector >> displayStringForElement: anElement [
 	^ anElement id = BlElementId noId
 		ifTrue: [ anElement class name ]
 		ifFalse: [ anElement id asSymbol printString ]
 ]
 
-{ #category : 'private' }
+{ #category : 'crumb building' }
 CgtElementPathSelector >> elementCrumbAptitudeFor: anElement [
 	| selected scope base background |
 	base := (BrGlamorousButtonLabelAptitude new
@@ -187,7 +187,7 @@ CgtElementPathSelector >> elementCrumbAptitudeFor: anElement [
 		pressed: [ :s | s background: (background alpha: ((background alpha + 0.16) min: 1.0)) ])
 ]
 
-{ #category : 'private' }
+{ #category : 'crumb building' }
 CgtElementPathSelector >> hiddenCrumbAptitude [
 	^ (BrGlamorousButtonLabelAptitude new
 			hoveredColor: Color black;
@@ -202,12 +202,12 @@ CgtElementPathSelector >> hiddenCrumbAptitude [
 			pressed: [ :s | s background: (Color gray alpha: 0.22) ])
 ]
 
-{ #category : 'private' }
+{ #category : 'selector building' }
 CgtElementPathSelector >> allSimpleSelectors [
 	^ self simpleSelectorsIn: selector into: OrderedCollection new
 ]
 
-{ #category : 'private' }
+{ #category : 'selector building' }
 CgtElementPathSelector >> simpleSelectorsIn: aCgtThemeSelector into: aCollection [
 	aCgtThemeSelector ifNil: [ ^ aCollection ].
 	(aCgtThemeSelector isKindOf: CgtThemeCombinatorSelector)
@@ -219,12 +219,12 @@ CgtElementPathSelector >> simpleSelectorsIn: aCgtThemeSelector into: aCollection
 	^ aCollection
 ]
 
-{ #category : 'private' }
+{ #category : 'selector building' }
 CgtElementPathSelector >> firstSimpleSelector [
 	^ self allSimpleSelectors ifEmpty: [ nil ] ifNotEmpty: [ :each | each first ]
 ]
 
-{ #category : 'private' }
+{ #category : 'crumb building' }
 CgtElementPathSelector >> newCrumbButtonFor: aCgtThemeSimpleSelector [
 	^ BrButton new
 		label: aCgtThemeSimpleSelector displayString;
@@ -232,7 +232,7 @@ CgtElementPathSelector >> newCrumbButtonFor: aCgtThemeSimpleSelector [
 		action: [ :aButton | self selectedSimpleSelector: aCgtThemeSimpleSelector ]
 ]
 
-{ #category : 'private' }
+{ #category : 'crumb building' }
 CgtElementPathSelector >> crumbAptitudeFor: aCgtThemeSimpleSelector [
 	| base selected |
 	base := (BrGlamorousButtonLabelAptitude new

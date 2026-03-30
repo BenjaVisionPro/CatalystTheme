@@ -21,7 +21,7 @@ Class {
 	#package : 'BVC-Theme-Editor-Core'
 }
 
-{ #category : 'private' }
+{ #category : 'observed elements' }
 CgtEditorOverlay >> addEventHandlerToObservedElement: anElement [
 	(anElement notNil and: [ (anElement hasEventHandler: eventHandler) not ])
 		ifTrue: [ anElement addEventHandler: eventHandler ]
@@ -339,7 +339,7 @@ CgtEditorOverlay >> overlayBoundsFor: anOverlayedElement layerLevel: aLayerLevel
 	^ geometryCalculator overlayBoundsFor: anOverlayedElement layerLevel: aLayerLevel
 ]
 
-{ #category : 'private' }
+{ #category : 'observed elements' }
 CgtEditorOverlay >> removeEventHandlerFromObservedElement: anElement [
 	(anElement notNil and: [ (observedElements includes: anElement) not ])
 		ifTrue: [ anElement removeEventHandler: eventHandler ]
@@ -562,14 +562,14 @@ CgtEditorOverlay >> state: aState [
 	self stateChanged
 ]
 
-{ #category : 'private' }
+{ #category : 'updating' }
 CgtEditorOverlay >> stateChanged [
 	self syncObservedElements.
 	self updatePositions.
 	self animateHoverTransition
 ]
 
-{ #category : 'private' }
+{ #category : 'observed elements' }
 CgtEditorOverlay >> syncObservedElements [
 	| theNewObservedElements |
 	theNewObservedElements := model observedElements asOrderedCollection.
