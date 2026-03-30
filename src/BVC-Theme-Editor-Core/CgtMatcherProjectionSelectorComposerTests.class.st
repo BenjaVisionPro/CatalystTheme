@@ -58,7 +58,7 @@ CgtMatcherProjectionSelectorComposerTests >> testIgnoresCompactedNodesWhenRecomp
 		addRelation: (CgtMatcherProjectionRelation from: root to: compacted kind: #compaction);
 		addRelation: ((CgtMatcherProjectionRelation from: compacted to: selected kind: #matcher)
 			combinator: #descendant;
-			yourself);
+			yourself).
 	selector := CgtMatcherProjectionSelectorComposer selectorForProjection: projection.
 	self assert: selector displayString equals: '#root descendant #selected'
 ]
