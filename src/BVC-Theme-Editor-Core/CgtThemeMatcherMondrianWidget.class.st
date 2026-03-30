@@ -21,6 +21,7 @@ CgtThemeMatcherMondrianWidget >> initialize [
 	self
 		vFitContent;
 		hMatchParent;
+		cellSpacing: 6;
 		padding: (BlInsets all: 4).
 	relationVisualPolicy := CgtMatcherRelationVisualPolicy new
 ]
@@ -59,6 +60,9 @@ CgtThemeMatcherMondrianWidget >> refreshContents [
 	self addChild: CgtMatcherLegendElement new.
 	mondrian := self buildMondrian.
 	graphElement := mondrian root.
+	graphElement constraintsDo: [ :c |
+		c horizontal fitContent.
+		c vertical fitContent ].
 	self addChild: graphElement
 ]
 

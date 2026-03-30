@@ -24,7 +24,7 @@ CgtMatcherNodeElement >> initialize [
 		background: (Color white alpha: 0.95);
 		border: (BlBorder paint: (Color gray alpha: 0.3));
 		constraintsDo: [ :c |
-			c horizontal fitContent.
+			c horizontal exact: 220.
 			c vertical fitContent ].
 	visualPolicy := CgtMatcherNodeVisualPolicy new.
 	self when: BlClickEvent do: [ :anEvent | self onNodeClicked: anEvent ].
@@ -115,26 +115,35 @@ CgtMatcherNodeElement >> borderForNode: aProjectionNode [
 	^ visualPolicy borderForNode: aProjectionNode
 ]
 
+
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> wireNodeHoverForwardingOn: anElement [
+	anElement when: BlElementHoveredEvent do: [ :anEvent | self onNodeHovered: anEvent ].
+	anElement when: BlElementUnhoveredEvent do: [ :anEvent | self onNodeUnhovered: anEvent ].
+	^ anElement
+]
+
 { #category : 'rendering' }
 CgtMatcherNodeElement >> newTitleLabelFor: aProjectionNode [
-	^ BrLabel new
+	^ self wireNodeHoverForwardingOn: (BrLabel new
 		aptitude: BrGlamorousLabelAptitude;
-		text: (visualPolicy titleForNode: aProjectionNode)
+		text: (visualPolicy titleForNode: aProjectionNode))
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeElement >> newElementIdLabelFor: aProjectionNode [
-	^ BrLabel new
+	^ self wireNodeHoverForwardingOn: (BrLabel new
 		aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
-		text: (visualPolicy elementIdTextForNode: aProjectionNode)
+		text: (visualPolicy elementIdTextForNode: aProjectionNode))
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeElement >> newMatchSummaryLabelFor: aProjectionNode [
-	^ BrLabel new
+	^ self wireNodeHoverForwardingOn: (BrLabel new
 		beSmallSize;
 		aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
-		text: (visualPolicy matchSummaryForNode: aProjectionNode)
+		text: (visualPolicy matchSummaryForNode: aProjectionNode))
 ]
 
 { #category : 'rendering' }
@@ -250,7 +259,7 @@ CgtMatcherNodeElement >> newToggleButtonLabeled: aString active: aBoolean enable
 		action: [ :aButton | isEnabled ifTrue: [ anActionBlock value ] ];
 		yourself.
 	isEnabled ifFalse: [ button preventMouseEvents ].
-	^ button
+	^ self wireNodeHoverForwardingOn: button
 ]
 
 { #category : 'rendering' }
@@ -275,7 +284,7 @@ CgtMatcherNodeElement >> toggleButtonAptitudeActive: aBoolean enabled: isEnabled
 
 { #category : 'rendering' }
 CgtMatcherNodeElement >> newBadgeLabeled: aString active: aBoolean [
-	^ BrLabel new
+	^ self wireNodeHoverForwardingOn: (BrLabel new
 		beSmallSize;
 		padding: (BlInsets top: 2 right: 5 bottom: 2 left: 5);
 		background: (aBoolean
@@ -283,7 +292,7 @@ CgtMatcherNodeElement >> newBadgeLabeled: aString active: aBoolean [
 			ifFalse: [ Color gray alpha: 0.06 ]);
 		aptitude: (BrGlamorousLabelAptitude new
 			foreground: (aBoolean ifTrue: [ Color black ] ifFalse: [ Color darkGray ]));
-		text: aString
+		text: aString)
 ]
 
 { #category : 'events' }

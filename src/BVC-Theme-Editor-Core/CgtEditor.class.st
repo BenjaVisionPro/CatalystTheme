@@ -844,7 +844,7 @@ CgtEditor >> beginHoverTracking [
 
 { #category : 'event handling - preview' }
 CgtEditor >> endHoverTracking [
-	interactionState hasPathWidgetHover ifTrue: [ ^ self ].
+	(interactionState hasPathWidgetHover or: [ interactionState hasMatcherWidgetHover ]) ifTrue: [ ^ self ].
 	self withOverlayDo: [ :anOverlay | anOverlay endHoverTracking ]
 ]
 { #category : 'private - hover' }

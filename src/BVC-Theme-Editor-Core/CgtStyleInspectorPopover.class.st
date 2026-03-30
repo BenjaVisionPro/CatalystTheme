@@ -38,7 +38,7 @@ CgtStyleInspectorPopover >> initialize [
 	selectorScrollPane addEventHandler: CgtHorizontalScrollableElementEventHandler new.
 	selectorScrollPane constraintsDo: [ :c |
 		c horizontal matchParent.
-		c vertical fitContent ].
+		c vertical exact: 320 ].
 	self addChildren: {
 		(BrLabel new
 			id: #styleInspectorTitle;
