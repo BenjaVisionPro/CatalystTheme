@@ -177,3 +177,65 @@ CgtThemeMatcherMondrianWidgetTests >> newTestElementWithId: aSymbol [
 		id: (BlElementId named: aSymbol);
 		yourself
 ]
+
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testExpandingCompactedSectionRevealsContextNodesAndPreservesSelector [
+	| root compacted selected projection relation widget selectorChangedEvent graphNodeElement |
+	root := (CgtMatcherProjectionNode kind: #upstreamScope)
+		representedElement: (self newTestElementWithId: #root);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	compacted := (CgtMatcherProjectionNode kind: #compactedSection)
+		representedElements: { (self newTestElementWithId: #middleOne). (self newTestElementWithId: #middleTwo) };
+		hiddenNodeCount: 2;
+		isEditable: false;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: (self newTestElementWithId: #selected);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	relation := (CgtMatcherProjectionRelation from: compacted to: selected kind: #matcher)
+		combinator: #descendant;
+		yourself.
+	projection := CgtMatcherProjection new.
+	projection selectedElement: selected representedElement.
+	projection
+		addNode: root;
+		addNode: compacted;
+		addNode: selected;
+		addRelation: (CgtMatcherProjectionRelation from: root to: compacted kind: #compaction);
+		addRelation: relation.
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	widget when: CgtMatcherSelectorChangedEvent do: [ :anEvent | selectorChangedEvent := anEvent ].
+	graphNodeElement := widget graphElement graph nodeChildren second.
+	graphNodeElement requestCompactedSectionExpansionFor: compacted.
+	self assert: selectorChangedEvent notNil.
+	self assert: (projection nodes anySatisfy: [ :each | each representedElement notNil and: [ each representedElement id = (BlElementId named: #middleOne) ] ]).
+	self deny: (projection nodes includes: compacted).
+	self assert: selectorChangedEvent selector displayString equals: '#root descendant #selected'
+]
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testForwardsCompactedSectionExpandedEvents [
+	| compacted projection widget forwardedEvent graphNodeElement |
+	projection := CgtMatcherProjection new.
+	compacted := (CgtMatcherProjectionNode kind: #compactedSection)
+		representedElements: { (self newTestElementWithId: #middle) };
+		hiddenNodeCount: 1;
+		isEditable: false;
+		yourself.
+	projection addNode: compacted.
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	widget when: CgtMatcherCompactedSectionExpandedEvent do: [ :anEvent | forwardedEvent := anEvent ].
+	graphNodeElement := widget graphElement graph nodeChildren first.
+	graphNodeElement requestCompactedSectionExpansionFor: compacted.
+	self assert: forwardedEvent notNil.
+	self assert: forwardedEvent projectionNode identicalTo: compacted
+]

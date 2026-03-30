@@ -156,6 +156,12 @@ CgtMatcherProjectionNode >> hiddenNodeCount: anInteger [
 	^ self
 ]
 
+
+{ #category : 'testing' }
+CgtMatcherProjectionNode >> isCompactedSection [
+	^ kind = #compactedSection
+]
+
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> isEditable [
 	^ editable

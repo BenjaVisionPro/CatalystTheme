@@ -63,6 +63,8 @@ CgtMatcherNodeElement >> refreshContents [
 	(self shouldShowIncomingCombinatorControlsFor: projectionNode)
 		ifTrue: [ self addChild: (self newIncomingCombinatorRowFor: projectionNode) ].
 	self addChild: (self newMatchToggleRowFor: projectionNode).
+	(self shouldShowCompactedSectionActionsFor: projectionNode)
+		ifTrue: [ self addChild: (self newCompactedSectionActionRowFor: projectionNode) ].
 	self addChild: (self newNodeStateRowFor: projectionNode)
 ]
 
@@ -131,6 +133,30 @@ CgtMatcherNodeElement >> newNodeStateRowFor: aProjectionNode [
 ]
 
 
+
+
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> shouldShowCompactedSectionActionsFor: aProjectionNode [
+	^ aProjectionNode isCompactedSection
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> newCompactedSectionActionRowFor: aProjectionNode [
+	| row |
+	row := BrHorizontalPane new
+		vFitContent;
+		hFitContent;
+		cellSpacing: 4.
+	row addChildren: {
+		(self newBadgeLabeled: 'Context' active: true).
+		(self
+			newToggleButtonLabeled: 'Reveal'
+			active: false
+			enabled: true
+			action: [ self requestCompactedSectionExpansionFor: aProjectionNode ]) }.
+	^ row
+]
 
 { #category : 'rendering' }
 CgtMatcherNodeElement >> shouldShowIncomingCombinatorControlsFor: aProjectionNode [
@@ -235,6 +261,15 @@ CgtMatcherNodeElement >> onNodeClicked: aClickEvent [
 ]
 
 
+
+
+
+{ #category : 'events' }
+CgtMatcherNodeElement >> requestCompactedSectionExpansionFor: aProjectionNode [
+	self fireEvent: (CgtMatcherCompactedSectionExpandedEvent new
+		projectionNode: aProjectionNode;
+		yourself)
+]
 
 { #category : 'events' }
 CgtMatcherNodeElement >> requestCombinatorChange: aSymbol [

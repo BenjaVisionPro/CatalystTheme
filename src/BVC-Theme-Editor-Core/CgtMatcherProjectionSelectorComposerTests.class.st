@@ -69,3 +69,34 @@ CgtMatcherProjectionSelectorComposerTests >> newTestElementWithId: aSymbol [
 		id: (BlElementId named: aSymbol);
 		yourself
 ]
+
+
+{ #category : 'tests' }
+CgtMatcherProjectionSelectorComposerTests >> testUsesMatcherCombinatorAcrossExpandedContextNodes [
+	| root middle selected projection selector |
+	projection := CgtMatcherProjection new.
+	root := (CgtMatcherProjectionNode kind: #upstreamScope)
+		representedElement: (self newTestElementWithId: #root);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	middle := (CgtMatcherProjectionNode kind: #upstreamScope)
+		representedElement: (self newTestElementWithId: #middle);
+		isEditable: false;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: (self newTestElementWithId: #selected);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	projection
+		addNode: root;
+		addNode: middle;
+		addNode: selected;
+		addRelation: (CgtMatcherProjectionRelation from: root to: middle kind: #context);
+		addRelation: ((CgtMatcherProjectionRelation from: middle to: selected kind: #matcher)
+			combinator: #descendant;
+			yourself).
+	selector := CgtMatcherProjectionSelectorComposer selectorForProjection: projection.
+	self assert: selector displayString equals: '#root descendant #selected'
+]

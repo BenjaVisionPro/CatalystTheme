@@ -92,6 +92,7 @@ CgtThemeMatcherMondrianWidget >> newNodeElementFor: aProjectionNode [
 	nodeElement when: CgtMatcherClassMatchToggledEvent do: [ :anEvent | self handleClassMatchToggledEvent: anEvent ].
 	nodeElement when: CgtMatcherIdMatchToggledEvent do: [ :anEvent | self handleIdMatchToggledEvent: anEvent ].
 	nodeElement when: CgtMatcherCombinatorChangedEvent do: [ :anEvent | self handleCombinatorChangedEvent: anEvent ].
+	nodeElement when: CgtMatcherCompactedSectionExpandedEvent do: [ :anEvent | self handleCompactedSectionExpandedEvent: anEvent ].
 	^ nodeElement
 ]
 
@@ -117,6 +118,71 @@ CgtThemeMatcherMondrianWidget >> handleIdMatchToggledEvent: anEvent [
 ]
 
 
+
+
+
+{ #category : 'events' }
+CgtThemeMatcherMondrianWidget >> handleCompactedSectionExpandedEvent: anEvent [
+	self expandCompactedNode: anEvent projectionNode.
+	self refreshContents.
+	self fireEvent: anEvent.
+	self publishSelectorChanged
+]
+
+{ #category : 'events' }
+CgtThemeMatcherMondrianWidget >> expandCompactedNode: aProjectionNode [
+	| incomingRelations outgoingRelations hiddenNodes previousNode nextNode previousLinkNode outgoingRelation revealedNodes |
+	(projection isNil or: [ aProjectionNode isNil or: [ aProjectionNode representedElements isEmpty ] ]) ifTrue: [ ^ self ].
+	incomingRelations := projection relationsToNode: aProjectionNode.
+	outgoingRelations := projection relationsFromNode: aProjectionNode.
+	hiddenNodes := aProjectionNode representedElements collect: [ :each |
+		self revealedContextNodeForElement: each ].
+	revealedNodes := hiddenNodes asOrderedCollection.
+	revealedNodes do: [ :each | projection addNode: each ].
+	previousNode := incomingRelations ifEmpty: [ nil ] ifNotEmpty: [ incomingRelations first fromNode ].
+	nextNode := outgoingRelations ifEmpty: [ nil ] ifNotEmpty: [ outgoingRelations first toNode ].
+	previousLinkNode := previousNode.
+	revealedNodes do: [ :eachNode |
+		previousLinkNode ifNotNil: [
+			projection addRelation: (CgtMatcherProjectionRelation from: previousLinkNode to: eachNode kind: #context) ].
+		previousLinkNode := eachNode ].
+	outgoingRelation := outgoingRelations ifEmpty: [ nil ] ifNotEmpty: [ outgoingRelations first ].
+	(previousLinkNode notNil and: [ nextNode notNil ]) ifTrue: [
+		projection addRelation: ((CgtMatcherProjectionRelation from: previousLinkNode to: nextNode kind: outgoingRelation kind)
+			combinator: outgoingRelation combinator;
+			yourself) ].
+	incomingRelations do: [ :each | projection removeRelation: each ].
+	outgoingRelations do: [ :each | projection removeRelation: each ].
+	projection removeNode: aProjectionNode
+]
+
+{ #category : 'private' }
+CgtThemeMatcherMondrianWidget >> revealedContextNodeForElement: anElement [
+	^ (CgtMatcherProjectionNode kind: (self kindForRevealedContextElement: anElement))
+		representedElement: anElement;
+		isEditable: false;
+		yourself
+]
+
+{ #category : 'private' }
+CgtThemeMatcherMondrianWidget >> kindForRevealedContextElement: anElement [
+	anElement == projection selectedElement ifTrue: [ ^ #selectedElement ].
+	(self isAncestor: anElement of: projection selectedElement) ifTrue: [ ^ #upstreamScope ].
+	(self isAncestor: projection selectedElement of: anElement) ifTrue: [ ^ #downstreamScope ].
+	^ #otherRuleRelated
+]
+
+{ #category : 'private' }
+CgtThemeMatcherMondrianWidget >> isAncestor: aPossibleAncestor of: anElement [
+	| current |
+	aPossibleAncestor ifNil: [ ^ false ].
+	anElement ifNil: [ ^ false ].
+	current := anElement parent.
+	[current notNil] whileTrue: [
+		current == aPossibleAncestor ifTrue: [ ^ true ].
+		current := current parent ].
+	^ false
+]
 
 { #category : 'events' }
 CgtThemeMatcherMondrianWidget >> handleCombinatorChangedEvent: anEvent [
@@ -147,6 +213,7 @@ CgtThemeMatcherMondrianWidget >> publishSelectorChanged [
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> edgeColorFor: aRelation [
 	aRelation kind = #compaction ifTrue: [ ^ Color gray alpha: 0.5 ].
+	aRelation kind = #context ifTrue: [ ^ Color gray alpha: 0.28 ].
 	aRelation kind = #otherRule ifTrue: [ ^ Color orange alpha: 0.5 ].
 	(aRelation combinator = #descendant) ifTrue: [ ^ Color darkGray alpha: 0.6 ].
 	^ Color black alpha: 0.5

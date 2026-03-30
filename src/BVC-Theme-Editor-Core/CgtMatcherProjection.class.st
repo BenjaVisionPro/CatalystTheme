@@ -88,6 +88,29 @@ CgtMatcherProjection >> addRelation: aCgtMatcherProjectionRelation [
 	^ aCgtMatcherProjectionRelation
 ]
 
+
+{ #category : 'removing' }
+CgtMatcherProjection >> removeNode: aCgtMatcherProjectionNode [
+	nodes remove: aCgtMatcherProjectionNode ifAbsent: [ ].
+	^ aCgtMatcherProjectionNode
+]
+
+{ #category : 'removing' }
+CgtMatcherProjection >> removeRelation: aCgtMatcherProjectionRelation [
+	relations remove: aCgtMatcherProjectionRelation ifAbsent: [ ].
+	^ aCgtMatcherProjectionRelation
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> relationsFromNode: aCgtMatcherProjectionNode [
+	^ relations select: [ :each | each fromNode == aCgtMatcherProjectionNode ]
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> relationsToNode: aCgtMatcherProjectionNode [
+	^ relations select: [ :each | each toNode == aCgtMatcherProjectionNode ]
+]
+
 { #category : 'querying' }
 CgtMatcherProjection >> currentRuleNodes [
 	^ nodes select: [ :each | each isInCurrentRule ]

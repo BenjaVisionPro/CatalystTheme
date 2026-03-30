@@ -49,16 +49,29 @@ CgtMatcherProjectionSelectorComposer >> simpleSelectorForProjectionNode: aCgtMat
 
 { #category : 'composing' }
 CgtMatcherProjectionSelectorComposer >> combinatorAfterNodeAtIndex: anIndex inNodes: aCollection projection: aCgtMatcherProjection [
-	| fromNode toNode relation |
+	| fromNode toNode |
 	anIndex = aCollection size ifTrue: [ ^ nil ].
 	fromNode := aCollection at: anIndex.
 	toNode := aCollection at: anIndex + 1.
-	relation := aCgtMatcherProjection relations
-		detect: [ :each |
-			each kind = #matcher
-				and: [ each fromNode == fromNode and: [ each toNode == toNode ] ] ]
-		ifNone: [ nil ].
-	^ relation
-		ifNil: [ #child ]
-		ifNotNil: [ relation combinator ifNil: [ #child ] ifNotNil: [ relation combinator ] ]
+	^ self combinatorFrom: fromNode toNextCurrentRuleNode: toNode inProjection: aCgtMatcherProjection
+]
+
+{ #category : 'composing' }
+CgtMatcherProjectionSelectorComposer >> combinatorFrom: aFromNode toNextCurrentRuleNode: aToNode inProjection: aCgtMatcherProjection [
+	| queue visited |
+	queue := OrderedCollection with: aFromNode.
+	visited := IdentitySet with: aFromNode.
+	[ queue isEmpty ] whileFalse: [
+		| current outgoing |
+		current := queue removeFirst.
+		outgoing := aCgtMatcherProjection relationsFromNode: current.
+		outgoing do: [ :eachRelation |
+			| nextNode |
+			nextNode := eachRelation toNode.
+			nextNode == aToNode ifTrue: [
+				^ eachRelation combinator ifNil: [ #child ] ifNotNil: [ eachRelation combinator ] ].
+			(visited includes: nextNode) ifFalse: [
+				visited add: nextNode.
+				queue addLast: nextNode ] ] ].
+	^ #child
 ]
