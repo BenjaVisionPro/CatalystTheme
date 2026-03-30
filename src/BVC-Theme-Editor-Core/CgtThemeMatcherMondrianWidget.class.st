@@ -10,7 +10,9 @@ Class {
 		'mondrian',
 		'graphElement',
 		'relationVisualPolicy',
-		'layoutPolicy'
+		'layoutPolicy',
+		'transitionPolicy',
+		'structuralRefreshAnimationToken'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -25,7 +27,9 @@ CgtThemeMatcherMondrianWidget >> initialize [
 		hMatchParent;
 		cellSpacing: layoutPolicy widgetCellSpacing;
 		padding: layoutPolicy widgetPadding.
-	relationVisualPolicy := CgtMatcherRelationVisualPolicy new
+	relationVisualPolicy := CgtMatcherRelationVisualPolicy new.
+	transitionPolicy := CgtMatcherTransitionPolicy new.
+	structuralRefreshAnimationToken := 0
 ]
 
 { #category : 'accessing' }
@@ -57,15 +61,24 @@ CgtThemeMatcherMondrianWidget >> currentSelector [
 
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> refreshContents [
-	self removeChildren.
-	projection ifNil: [ ^ self ].
-	self addChild: CgtMatcherLegendElement new.
+	| newLegend newGraph shouldAnimate |
+	projection ifNil: [
+		self removeChildren.
+		graphElement := nil.
+		mondrian := nil.
+		^ self ].
+	newLegend := CgtMatcherLegendElement new.
 	mondrian := self buildMondrian.
-	graphElement := mondrian root.
-	graphElement constraintsDo: [ :c |
+	newGraph := mondrian root.
+	newGraph constraintsDo: [ :c |
 		c horizontal fitContent.
 		c vertical fitContent ].
-	self addChild: graphElement
+	shouldAnimate := self children isNotEmpty.
+	self removeChildren.
+	self addChild: newLegend.
+	self addChild: newGraph.
+	graphElement := newGraph.
+	shouldAnimate ifTrue: [ self animateStructuralRefreshFor: newLegend and: newGraph ]
 ]
 
 { #category : 'rendering' }
@@ -91,6 +104,44 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 ]
 
 
+
+
+{ #category : 'private - animation' }
+CgtThemeMatcherMondrianWidget >> animateStructuralRefreshFor: aLegendElement and: aGraphElement [
+	| token startOpacity endOpacity offsetX duration |
+	token := structuralRefreshAnimationToken := structuralRefreshAnimationToken + 1.
+	startOpacity := transitionPolicy graphRevealStartOpacity.
+	endOpacity := transitionPolicy graphRevealEndOpacity.
+	offsetX := transitionPolicy graphRevealOffsetX.
+	duration := transitionPolicy structuralRefreshDuration.
+	{ aLegendElement. aGraphElement } do: [ :each |
+		each opacity: startOpacity ].
+	self addAnimation: (BlNumberTransition new
+			from: 0.0;
+			to: 1.0;
+			duration: duration;
+			easing: CgtFastInSlowOutEasing new;
+			onStepDo: [ :aProgress :aWidget |
+				aWidget structuralRefreshAnimationToken = token ifTrue: [
+					| currentOpacity |
+					currentOpacity := startOpacity + ((endOpacity - startOpacity) * aProgress).
+					aLegendElement opacity: currentOpacity.
+					aGraphElement opacity: currentOpacity ] ];
+			onFinishedDo: [ self structuralRefreshAnimationToken = token ifTrue: [
+				aLegendElement opacity: endOpacity.
+				aGraphElement opacity: endOpacity ] ];
+			yourself)
+]
+
+{ #category : 'accessing' }
+CgtThemeMatcherMondrianWidget >> transitionPolicy [
+	^ transitionPolicy
+]
+
+{ #category : 'accessing' }
+CgtThemeMatcherMondrianWidget >> structuralRefreshAnimationToken [
+	^ structuralRefreshAnimationToken ifNil: [ 0 ]
+]
 
 { #category : 'rendering' }
 CgtThemeMatcherMondrianWidget >> newGraphElementFor: aProjectionNode [
