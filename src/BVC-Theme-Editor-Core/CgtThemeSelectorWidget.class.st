@@ -1,10 +1,67 @@
 "
 #Theme Selector Widget
-I am a small widget used to present or edit a theme selector. I am responsible for the selector UI itself, not for editor semantics.
+I am a compatibility wrapper for the theme selector editor. I present the rule-driven Mondrian matcher widget interface while accepting selector-editor inputs in live hierarchy context. I no longer inherit the old path-selector matcher implementation.
 "
 Class {
 	#name : 'CgtThemeSelectorWidget',
-	#superclass : 'CgtElementPathSelector',
+	#superclass : 'CgtThemeMatcherMondrianWidget',
+	#instVars : [
+		'styleRule',
+		'selectedElement',
+		'pathRootElement'
+	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
 }
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> styleRule [
+	^ styleRule
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> styleRule: aCgtThemeStyleRule [
+	styleRule := aCgtThemeStyleRule.
+	self refreshProjection.
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> selectedElement [
+	^ selectedElement
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> selectedElement: anElement [
+	selectedElement := anElement.
+	self refreshProjection.
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> pathRootElement [
+	^ pathRootElement
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> pathRootElement: anElement [
+	pathRootElement := anElement.
+	self refreshProjection.
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> selector [
+	^ styleRule ifNil: [ nil ] ifNotNil: [ styleRule selector ]
+]
+
+{ #category : 'private - projection' }
+CgtThemeSelectorWidget >> refreshProjection [
+	(styleRule isNil or: [ selectedElement isNil ]) ifTrue: [
+		self projection: nil.
+		^ self ].
+	self projection: (CgtMatcherProjectionBuilder
+		projectionForStyleRule: styleRule
+		selectedElement: selectedElement
+		hierarchyRoot: pathRootElement)
+]
