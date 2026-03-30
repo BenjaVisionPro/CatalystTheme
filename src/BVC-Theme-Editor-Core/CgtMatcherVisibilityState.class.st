@@ -22,7 +22,7 @@ CgtMatcherVisibilityState >> initialize [
 
 { #category : 'private' }
 CgtMatcherVisibilityState >> keyForElements: aCollection [
-	^ (aCollection ifNil: [ #() ]) collect: [ :each | each identityHash ]
+	^ ((aCollection ifNil: [ #() ]) collect: [ :each | each identityHash ]) asArray
 ]
 
 { #category : 'accessing' }
