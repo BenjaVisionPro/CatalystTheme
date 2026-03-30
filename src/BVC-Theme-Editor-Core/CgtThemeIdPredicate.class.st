@@ -32,5 +32,10 @@ CgtThemeIdPredicate >> matchesElement: anElement [
 
 { #category : 'printing' }
 CgtThemeIdPredicate >> displayString [
-	^ '#', elementId asString
+	| idString |
+	idString := elementId ifNil: [ '' ] ifNotNil: [ elementId asString ].
+	idString isEmpty ifTrue: [ ^ '' ].
+	(idString first = $#)
+		ifTrue: [ ^ idString ]
+		ifFalse: [ ^ '#', idString ]
 ]

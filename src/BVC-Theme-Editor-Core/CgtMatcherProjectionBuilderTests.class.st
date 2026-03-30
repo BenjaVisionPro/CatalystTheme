@@ -191,7 +191,7 @@ CgtMatcherProjectionBuilderTests >> testBuildsLeadingCompactedSectionForSingleSe
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testBuildsLeadingAndTrailingCompactedSectionsAroundFocusedCorridor [
-	| root selected child grandChild rule projection compactedNodes |
+	| root selected child grandChild rule projection compactedNodes leadingGap trailingGap |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
 	child := selected addChild: (self newTestElementWithId: #'child').
@@ -202,8 +202,13 @@ CgtMatcherProjectionBuilderTests >> testBuildsLeadingAndTrailingCompactedSection
 		selectedElement: selected
 		hierarchyRoot: root.
 	compactedNodes := projection nodes select: [ :each | each kind = #compactedSection ].
-	self assert: compactedNodes size equals: 1.
-	self assert: compactedNodes first representedElements asArray equals: { child. grandChild }.
+	self assert: compactedNodes size equals: 2.
+	leadingGap := compactedNodes detect: [ :each | each representedElements asArray = { root } ].
+	trailingGap := compactedNodes detect: [ :each | each representedElements asArray = { child. grandChild } ].
+	self assert: leadingGap hiddenNodeCount equals: 1.
+	self assert: trailingGap hiddenNodeCount equals: 2.
+	self assert: (projection relations anySatisfy: [ :each |
+		each kind = #compaction and: [ each toNode kind = #selectedElement ] ]).
 	self assert: (projection relations anySatisfy: [ :each |
 		each kind = #compaction and: [ each fromNode kind = #selectedElement ] ])
 ]
@@ -249,8 +254,10 @@ CgtMatcherProjectionBuilderTests >> testRevealsDescendantGapWhenVisibilityStateM
 		hierarchyRoot: root
 		relatedStyleRules: #()
 		visibilityState: state.
-	self assert: (projection nodes noneSatisfy: [ :each | each kind = #compactedSection ]).
-	self assert: (projection nodes anySatisfy: [ :each | each representedElement == middle and: [ each isEditable ] ])
+	self assert: (projection nodes noneSatisfy: [ :each |
+		each kind = #compactedSection and: [ each representedElements includes: middle ] ]).
+	self assert: (projection nodes anySatisfy: [ :each |
+		each representedElement == middle and: [ each isEditable ] ])
 ]
 
 { #category : 'tests' }
