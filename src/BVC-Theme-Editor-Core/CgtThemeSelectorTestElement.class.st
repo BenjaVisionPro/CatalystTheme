@@ -55,8 +55,8 @@ CgtThemeSelectorTestElement >> addChild: anElement [
 
 
 { #category : 'instance creation' }
-CgtThemeSelectorTestElement class >> named: aName id: anId [
+CgtThemeSelectorTestElement class >> named: aSymbol id: anId [
 	^ self new
-		id: anId;
+		id: (BlElementId named: anId);
 		yourself
 ]

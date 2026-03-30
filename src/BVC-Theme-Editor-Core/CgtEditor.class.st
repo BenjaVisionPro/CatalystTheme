@@ -810,7 +810,10 @@ CgtEditor >> matcherSelectorChangedEvent: anEvent [
 
 { #category : 'private - overlay' }
 CgtEditor >> withOverlayDo: aBlock [
-	self overlayContainer
+	| anOverlayContainer |
+	anOverlayContainer := self overlayContainer.
+	anOverlayContainer ifNil: [ ^ self ].
+	anOverlayContainer
 		childWithId: CgtEditorEventHandler themeEditorOverlayId
 		ifFound: aBlock
 		ifNone: [ ]
