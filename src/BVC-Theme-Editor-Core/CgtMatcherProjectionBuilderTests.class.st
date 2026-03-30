@@ -96,7 +96,7 @@ CgtMatcherProjectionBuilderTests >> testFallsBackToStandaloneSelectedNodeWhenRul
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testMarksSelectedNodeAsInOtherRuleWhenRelatedRuleAlsoMatchesSelectedElement [
-	| root selected currentRule relatedRule projection selectedNode state |
+	| root selected currentRule relatedRule projection selectedNode |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
 	currentRule := self styleRuleForSelector: (self selectorForId: #'selected').
@@ -104,15 +104,12 @@ CgtMatcherProjectionBuilderTests >> testMarksSelectedNodeAsInOtherRuleWhenRelate
 		left: (self selectorForId: #'root')
 		combinator: #child
 		right: (self selectorForId: #'selected')).
-	state := CgtMatcherVisibilityState new
-		showsOtherRuleContext: true;
-		yourself.
 	projection := CgtMatcherProjectionBuilder
 		projectionForStyleRule: currentRule
 		selectedElement: selected
 		hierarchyRoot: root
 		relatedStyleRules: { relatedRule }
-		visibilityState: state.
+		visibilityState: (CgtMatcherVisibilityState new showsOtherRuleContext: true; yourself).
 	selectedNode := projection nodes detect: [ :each | each kind = #selectedElement ].
 	self assert: selectedNode isInCurrentRule.
 	self assert: selectedNode isInOtherRule
@@ -120,7 +117,7 @@ CgtMatcherProjectionBuilderTests >> testMarksSelectedNodeAsInOtherRuleWhenRelate
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testAddsOtherRuleNodesForRelatedRuleContext [
-	| root selected sibling currentRule relatedRule projection otherRuleNode otherRelation state |
+	| root selected sibling currentRule relatedRule projection otherRuleNode otherRelation |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
 	sibling := selected addChild: (self newTestElementWithId: #'otherChild').
@@ -129,15 +126,12 @@ CgtMatcherProjectionBuilderTests >> testAddsOtherRuleNodesForRelatedRuleContext 
 		left: (self selectorForId: #'selected')
 		combinator: #child
 		right: (self selectorForId: #'otherChild')).
-	state := CgtMatcherVisibilityState new
-		showsOtherRuleContext: true;
-		yourself.
 	projection := CgtMatcherProjectionBuilder
 		projectionForStyleRule: currentRule
 		selectedElement: selected
 		hierarchyRoot: root
 		relatedStyleRules: { relatedRule }
-		visibilityState: state.
+		visibilityState: (CgtMatcherVisibilityState new showsOtherRuleContext: true; yourself).
 	otherRuleNode := projection otherRuleNodes detect: [ :each | each representedElement == sibling ].
 	self deny: otherRuleNode isInCurrentRule.
 	self assert: otherRuleNode isInOtherRule.

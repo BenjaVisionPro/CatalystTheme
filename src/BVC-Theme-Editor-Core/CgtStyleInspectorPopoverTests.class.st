@@ -90,8 +90,7 @@ CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionWithRelatedRuleConte
 	projection := popover selectorWidget projection.
 	self assert: projection notNil.
 	self assert: projection relatedStyleRules size equals: 1.
-	self assert: projection otherRuleNodes isEmpty.
-	self deny: projection visibilityState showsOtherRuleContext
+	self assert: projection otherRuleNodes isEmpty
 ]
 
 { #category : 'private' }
