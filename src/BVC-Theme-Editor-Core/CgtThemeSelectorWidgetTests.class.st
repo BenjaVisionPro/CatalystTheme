@@ -23,8 +23,8 @@ CgtThemeSelectorWidgetTests >> testBuildsProjectionFromRuleAndHierarchyContext [
 	selected := self newTestElementWithId: #selected.
 	root addChild: selected.
 	rule := CgtThemeStyleRule new
-		selector: (CgtThemeSimpleSelector new
-			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+		selector: (CgtThemeSelector new
+			predicate: (CgtThemeIdPredicate elementId: #selected);
 			yourself);
 		yourself.
 	widget := CgtThemeSelectorWidget new
@@ -43,8 +43,8 @@ CgtThemeSelectorWidgetTests >> testClearsProjectionWhenSelectedElementBecomesNil
 	selected := self newTestElementWithId: #selected.
 	root addChild: selected.
 	rule := CgtThemeStyleRule new
-		selector: (CgtThemeSimpleSelector new
-			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+		selector: (CgtThemeSelector new
+			predicate: (CgtThemeIdPredicate elementId: #selected);
 			yourself);
 		yourself.
 	widget := CgtThemeSelectorWidget new
@@ -88,8 +88,8 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 	selected := self newTestElementWithId: #selected.
 	root addChild: selected.
 	originalRule := CgtThemeStyleRule new
-		selector: (CgtThemeSimpleSelector new
-			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+		selector: (CgtThemeSelector new
+			predicate: (CgtThemeIdPredicate elementId: #selected);
 			yourself);
 		yourself.
 	widget := CgtThemeSelectorWidget new
@@ -97,8 +97,8 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 		selectedElement: selected
 		pathRootElement: root
 		relatedStyleRules: #().
-	newSelector := CgtThemeSimpleSelector new
-		addPredicate: (CgtThemeClassPredicate elementClass: CgtThemeSelectorTestElement);
+	newSelector := CgtThemeSelector new
+		predicate: (CgtThemeClassPredicate elementClass: CgtThemeSelectorTestElement);
 		yourself.
 	event := CgtMatcherSelectorChangedEvent new
 		selector: newSelector;

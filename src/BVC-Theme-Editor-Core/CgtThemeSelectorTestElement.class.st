@@ -52,3 +52,11 @@ CgtThemeSelectorTestElement >> addChild: anElement [
 	anElement parent: self.
 	^ anElement
 ]
+
+
+{ #category : 'instance creation' }
+CgtThemeSelectorTestElement class >> named: aName id: anId [
+	^ self new
+		id: anId;
+		yourself
+]

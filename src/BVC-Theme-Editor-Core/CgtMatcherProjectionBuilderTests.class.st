@@ -108,8 +108,7 @@ CgtMatcherProjectionBuilderTests >> testMarksSelectedNodeAsInOtherRuleWhenRelate
 		projectionForStyleRule: currentRule
 		selectedElement: selected
 		hierarchyRoot: root
-		relatedStyleRules: { relatedRule }
-		visibilityState: (CgtMatcherVisibilityState new showsOtherRuleContext: true; yourself).
+		relatedStyleRules: { relatedRule }.
 	selectedNode := projection nodes detect: [ :each | each kind = #selectedElement ].
 	self assert: selectedNode isInCurrentRule.
 	self assert: selectedNode isInOtherRule
@@ -130,8 +129,7 @@ CgtMatcherProjectionBuilderTests >> testAddsOtherRuleNodesForRelatedRuleContext 
 		projectionForStyleRule: currentRule
 		selectedElement: selected
 		hierarchyRoot: root
-		relatedStyleRules: { relatedRule }
-		visibilityState: (CgtMatcherVisibilityState new showsOtherRuleContext: true; yourself).
+		relatedStyleRules: { relatedRule }.
 	otherRuleNode := projection otherRuleNodes detect: [ :each | each representedElement == sibling ].
 	self deny: otherRuleNode isInCurrentRule.
 	self assert: otherRuleNode isInOtherRule.
