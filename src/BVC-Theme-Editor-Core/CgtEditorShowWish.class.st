@@ -1,6 +1,6 @@
 "
-Fire the ""theme editor show wish"" from withing the graphical scene whose root has {{gtClass:CgtEditorEventHandler}} event handler to transform the scene into debug mode
-
+#Editor Show Wish
+I request that the Theme Editor be shown. I carry the information needed to open the editor in a particular scene configuration.
 "
 Class {
 	#name : 'CgtEditorShowWish',
@@ -11,7 +11,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for representing a request to show the editor. I let other objects express that intent without needing to know how the editor is mounted or animated.'
 }
 
 { #category : 'accessing' }

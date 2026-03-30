@@ -1,3 +1,7 @@
+"
+#View Tree Overlay Model
+I am the passive render state for the Theme Editor overlay. I hold the selected path, the hovered element, and the configuration values that control overlay appearance. I should describe what to render, not decide editor semantics.
+"
 Class {
 	#name : 'CgtViewTreeOverlayModel',
 	#superclass : 'Object',
@@ -26,7 +30,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for holding the passive render state and configuration for the view-tree overlay. I expose the selected path, hover target, and rendering values that the overlay and geometry calculator need, but I do not own interaction semantics.'
 }
 
 { #category : 'initialization' }

@@ -1,3 +1,7 @@
+"
+#Editor Tree Row Stencil Builder
+I build rows for the editor tree. I am responsible for the row UI used to present scene elements inside the editor tree without owning the editor’s interaction semantics.
+"
 Class {
 	#name : 'CgtEditorTreeRowStencilBuilder',
 	#superclass : 'BrGlamorousSimpleTreeSelectableRowElementStencilBuilder',
@@ -7,7 +11,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for building the visual stencil used for rows in the editor''s element tree. I encapsulate that row construction so tree presentation stays out of the higher-level editor composition code.'
 }
 
 { #category : 'accessing' }

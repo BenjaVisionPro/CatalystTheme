@@ -1,9 +1,12 @@
+"
+#Editor Examples
+I collect examples for the Theme Editor. I am responsible for small example setups that demonstrate or exercise the editor.
+"
 Class {
 	#name : 'CgtEditorExamples',
 	#superclass : 'Object',
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for providing executable examples of the theme editor. I exist to demonstrate behavior, support exploration, and give tests and debugging sessions a concrete way to exercise the editor in a realistic setup.'
 }
 
 { #category : 'examples' }

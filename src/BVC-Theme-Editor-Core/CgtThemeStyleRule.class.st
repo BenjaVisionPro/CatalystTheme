@@ -1,3 +1,7 @@
+"
+#Theme Style Rule
+I represent one style rule in the theme system. I am responsible for pairing a selector with the style changes that should apply when that selector matches.
+"
 Class {
 	#name : 'CgtThemeStyleRule',
 	#superclass : 'Object',
@@ -7,7 +11,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for representing one complete theme style rule. I combine selector matching with the set of style changes that should apply when that selector matches.'
 }
 
 { #category : 'initialization' }

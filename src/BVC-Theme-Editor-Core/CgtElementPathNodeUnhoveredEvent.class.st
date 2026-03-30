@@ -1,3 +1,7 @@
+"
+#Element Path Node Unhovered Event
+I announce that a previously hovered path node is no longer hovered. I allow the editor to clear widget-driven hover explicitly.
+"
 Class {
 	#name : 'CgtElementPathNodeUnhoveredEvent',
 	#superclass : 'BlEvent',
@@ -6,7 +10,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for announcing that path-node hover ended in the path selector. I let the editor clear widget-driven hover without hiding that behavior in callbacks.'
 }
 
 { #category : 'accessing' }

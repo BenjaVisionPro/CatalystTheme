@@ -1,3 +1,9 @@
+"
+#Theme Editor
+I am the main UI of the Theme Editor. I am responsible for composing the preview pane, the inspector, the style inspector popover, and the other visible editor pieces. I wire those pieces together and keep the interface synchronized with the current interaction state. I do not own the interaction rules themselves; that responsibility belongs to {{gtClass:CgtEditorInteractionState}}.
+##More
+See {{gtClass:CgtEditorEventHandler}} for adding me to a scene, {{gtClass:CgtEditorInteractionState}} for interaction semantics, and {{gtClass:CgtEditorOverlay}} for the overlay drawn over the preview.
+"
 Class {
 	#name : 'CgtEditor',
 	#superclass : 'BlElement',
@@ -23,7 +29,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for composing and presenting the theme editor user interface. I own the editor''s visible structure, wire together its major subcomponents, and translate semantic interaction state into concrete interface updates such as tree selection, inspector presentation, and overlay refreshes. I do not decide the meaning of interaction itself; I host and present it.'
 }
 
 { #category : 'api - animation' }

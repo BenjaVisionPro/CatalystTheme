@@ -1,3 +1,7 @@
+"
+#Element Path Node Selected Event
+I announce that a path node in the selector has been selected. I carry the concrete element represented by that node so the editor can apply its normal selection policy.
+"
 Class {
 	#name : 'CgtElementPathNodeSelectedEvent',
 	#superclass : 'BlEvent',
@@ -6,7 +10,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for announcing that a path node was selected in the path selector. I carry the represented element so the editor can apply its selection policy explicitly.'
 }
 
 { #category : 'accessing' }

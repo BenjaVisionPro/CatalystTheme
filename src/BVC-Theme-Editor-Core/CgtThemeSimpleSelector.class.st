@@ -1,3 +1,7 @@
+"
+#Theme Simple Selector
+I represent one simple selector in the theme selector model. I am responsible for the predicates that must all match at a single structural step.
+"
 Class {
 	#name : 'CgtThemeSimpleSelector',
 	#superclass : 'CgtThemeSelector',
@@ -6,7 +10,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for representing a simple selector made from one or more selector predicates. I model the directly matchable part of a theme rule before structural combinators are applied.'
 }
 
 { #category : 'initialization' }

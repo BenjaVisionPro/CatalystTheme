@@ -1,3 +1,7 @@
+"
+#Theme Id Predicate
+I match an element by identifier. I am responsible for expressing id-based selector matching.
+"
 Class {
 	#name : 'CgtThemeIdPredicate',
 	#superclass : 'CgtThemeSelectorPredicate',
@@ -6,7 +10,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for matching elements by id within the theme selector model. I represent that one predicate explicitly so selector intent stays readable and composable.'
 }
 
 { #category : 'instance creation' }

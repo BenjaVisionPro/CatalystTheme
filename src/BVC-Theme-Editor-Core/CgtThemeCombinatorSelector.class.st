@@ -1,3 +1,7 @@
+"
+#Theme Combinator Selector
+I combine selectors into a larger structural selector. I am responsible for expressing selector relationships such as path-like composition.
+"
 Class {
 	#name : 'CgtThemeCombinatorSelector',
 	#superclass : 'CgtThemeSelector',
@@ -8,7 +12,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for composing theme selectors structurally. I represent selector relationships such as ancestor or contextual combination so complex selectors can be built from simpler parts.'
 }
 
 { #category : 'instance creation' }

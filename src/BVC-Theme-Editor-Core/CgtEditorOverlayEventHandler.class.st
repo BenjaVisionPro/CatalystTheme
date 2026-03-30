@@ -1,3 +1,7 @@
+"
+#Editor Overlay Event Handler
+I am the event handler attached to the overlay itself. I am responsible for forwarding raw overlay events in the narrow way the overlay needs, without turning the overlay into an interaction brain.
+"
 Class {
 	#name : 'CgtEditorOverlayEventHandler',
 	#superclass : 'BlCustomEventHandler',
@@ -6,7 +10,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for handling low-level events that are specific to the overlay element itself. I support the overlay''s input behavior without owning editor semantics or the meaning of selection and hover.'
 }
 
 { #category : 'element handlers' }

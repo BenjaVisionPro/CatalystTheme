@@ -1,9 +1,12 @@
+"
+#Horizontal Scrollable Element Event Handler
+I add horizontal scrolling behavior to an element. I am responsible for translating relevant input into horizontal scrolling for the path selector host.
+"
 Class {
 	#name : 'CgtHorizontalScrollableElementEventHandler',
 	#superclass : 'BlScrollableElementEventHandler',
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for adapting raw scrolling input into horizontal scrolling behavior for an element. I exist so horizontal path navigation behavior stays out of unrelated UI objects.'
 }
 
 { #category : 'mouse handlers' }

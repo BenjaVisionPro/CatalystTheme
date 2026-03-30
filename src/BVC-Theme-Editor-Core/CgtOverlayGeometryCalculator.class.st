@@ -1,3 +1,7 @@
+"
+#Overlay Geometry Calculator
+I calculate the geometry used by the Theme Editor overlay. I am responsible for concentric scope layout, edge outsets, corner radius stepping, and mask opacity calculations that support the overlay rendering. I exist so that {{gtClass:CgtEditorOverlay}} can stay focused on drawing.
+"
 Class {
 	#name : 'CgtOverlayGeometryCalculator',
 	#superclass : 'Object',
@@ -7,7 +11,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for calculating overlay geometry and opacity stepping. I derive mask bounds, concentric outsets, corner radii, coincidence counts, and incremental opacity values so rendering policy stays out of the overlay element itself.'
 }
 
 { #category : 'accessing' }

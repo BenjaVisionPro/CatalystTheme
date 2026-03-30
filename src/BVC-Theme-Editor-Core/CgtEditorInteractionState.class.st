@@ -1,3 +1,7 @@
+"
+#Theme Editor Interaction State
+I am the semantic interaction state of the Theme Editor. I am responsible for selection, scope changes, hover sources, explicit highlights, and the effective hover that should be rendered. I own the interaction rules so that {{gtClass:CgtEditor}} can stay focused on UI composition.
+"
 Class {
 	#name : 'CgtEditorInteractionState',
 	#superclass : 'Object',
@@ -11,7 +15,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for the editor''s interaction semantics. I own selection, hover, explicit highlight, and the rules that resolve them into effective editor state. I mutate selection and hover meaning; I do not build UI or draw overlays.'
 }
 
 { #category : 'initialization' }

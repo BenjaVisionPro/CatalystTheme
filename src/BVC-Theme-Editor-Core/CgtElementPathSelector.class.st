@@ -1,3 +1,7 @@
+"
+#Element Path Selector
+I present the selected element path and its scopes. I am responsible for building the visible path crumbs, compacting hidden segments, and announcing user interaction with path nodes and selectors. I should expose interaction as events rather than by hiding behavior in callbacks.
+"
 Class {
 	#name : 'CgtElementPathSelector',
 	#superclass : 'BrBreadcrumb',
@@ -11,7 +15,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for presenting and interacting with a concrete element path. I build the path widget UI, reveal or collapse path segments, and announce node and selector interactions. I do not decide what those interactions mean for the editor as a whole.'
 }
 
 { #category : 'initialization' }

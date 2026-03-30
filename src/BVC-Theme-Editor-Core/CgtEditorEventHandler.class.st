@@ -1,22 +1,10 @@
 "
 #Theme Editor Event Handler
-Is used to add support of the `Theme Editor` to arbitrary elements. For the best result the element to which the `Theme Editor` is added should have a {{gtClass:BlBasicLayout}} and have `matchParent` or `exact` layout resizing strategy.
+I am used to add support for the `Theme Editor` to arbitrary elements. I am responsible for raw input handling and lifecycle actions such as opening and closing the editor. I should translate UI events into editor actions, but I should not own editor semantics.
 ##Usage
 Press `control-option-tab` to toggle the `Theme Editor` open and closed.
 ##More
-See {{gtClass:CgtEditor}} for the main UI of the `Theme Editor` and {{gtClass:CgtEditorOverlay}} for an overlay over the scene that shows highlighted and selected elements.
-
-A script to create an element with a theme editor opened and a selected child element:
-```
-world := GtWorldElement new
-	addEventHandler: CgtEditorEventHandler new.
-
-world fireEvent: (CgtEditorShowWish new
-	elementToSelect: world children first children first;
-	sceneExtent: 800@600).
-world
-```
-
+See {{gtClass:CgtEditor}} for the main UI, {{gtClass:CgtEditorInteractionState}} for interaction semantics, and {{gtClass:CgtEditorOverlay}} for the overlay drawn over the preview.
 "
 Class {
 	#name : 'CgtEditorEventHandler',
@@ -40,7 +28,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for raw editor lifecycle and input handling. I react to low-level events such as keyboard and mouse activity, open and close the editor, and forward raw interaction to the editor session without owning editor semantics or render policy.'
 }
 
 { #category : 'class initialization' }

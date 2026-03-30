@@ -1,3 +1,7 @@
+"
+#Theme Class Predicate
+I match an element by class. I am responsible for class-based selector matching in a theme selector.
+"
 Class {
 	#name : 'CgtThemeClassPredicate',
 	#superclass : 'CgtThemeSelectorPredicate',
@@ -6,7 +10,6 @@ Class {
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
-	#comment : 'I am responsible for matching elements by class within the theme selector model. I express one focused selector predicate and leave selector composition to higher-level selector objects.'
 }
 
 { #category : 'instance creation' }
