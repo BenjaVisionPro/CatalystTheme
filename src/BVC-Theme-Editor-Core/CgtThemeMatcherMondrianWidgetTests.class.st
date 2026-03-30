@@ -171,6 +171,38 @@ CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherCombinatorChangedEvents
 	self assert: forwardedEvent combinator equals: #descendant
 ]
 
+
+
+{ #category : 'tests' }
+CgtThemeMatcherMondrianWidgetTests >> testOrdersCurrentRuleNodesBeforeContextNodesForRendering [
+	| upstream selected context projection widget orderedNodes |
+	upstream := (CgtMatcherProjectionNode kind: #upstreamScope)
+		className: 'Root';
+		isInCurrentRule: true;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		className: 'Selected';
+		isInCurrentRule: true;
+		yourself.
+	context := (CgtMatcherProjectionNode kind: #otherRuleRelated)
+		className: 'Context';
+		isInOtherRule: true;
+		isEditable: false;
+		yourself.
+	projection := CgtMatcherProjection new.
+	projection
+		addNode: context;
+		addNode: selected;
+		addNode: upstream.
+	widget := CgtThemeMatcherMondrianWidget new
+		projection: projection;
+		yourself.
+	orderedNodes := widget orderedNodesForRendering.
+	self assert: orderedNodes first identicalTo: upstream.
+	self assert: orderedNodes second identicalTo: selected.
+	self assert: orderedNodes last identicalTo: context
+]
+
 { #category : 'private' }
 CgtThemeMatcherMondrianWidgetTests >> newTestElementWithId: aSymbol [
 	^ CgtThemeSelectorTestElement new

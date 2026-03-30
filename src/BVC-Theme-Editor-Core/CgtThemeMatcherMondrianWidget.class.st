@@ -65,7 +65,7 @@ CgtThemeMatcherMondrianWidget >> buildMondrian [
 	view := GtMondrian new.
 	view nodes
 		stencil: [ :aProjectionNode | self newNodeElementFor: aProjectionNode ];
-		with: projection nodes.
+		with: self orderedNodesForRendering.
 	projection relations ifNotEmpty: [
 		view edges
 			fromCenterBottom;
@@ -94,6 +94,28 @@ CgtThemeMatcherMondrianWidget >> newNodeElementFor: aProjectionNode [
 	nodeElement when: CgtMatcherCombinatorChangedEvent do: [ :anEvent | self handleCombinatorChangedEvent: anEvent ].
 	nodeElement when: CgtMatcherCompactedSectionExpandedEvent do: [ :anEvent | self handleCompactedSectionExpandedEvent: anEvent ].
 	^ nodeElement
+]
+
+
+{ #category : 'rendering' }
+CgtThemeMatcherMondrianWidget >> orderedNodesForRendering [
+	^ projection nodes asSortedCollection: [ :a :b |
+		| aPriority bPriority |
+		aPriority := self nodeSortPriorityFor: a.
+		bPriority := self nodeSortPriorityFor: b.
+		aPriority = bPriority
+			ifTrue: [ (a className ifNil: [ '' ]) <= (b className ifNil: [ '' ]) ]
+			ifFalse: [ aPriority < bPriority ] ]
+]
+
+{ #category : 'rendering' }
+CgtThemeMatcherMondrianWidget >> nodeSortPriorityFor: aProjectionNode [
+	| visualPolicy priority |
+	visualPolicy := CgtMatcherNodeVisualPolicy new.
+	priority := visualPolicy nodeSortPriorityFor: aProjectionNode.
+	aProjectionNode isInCurrentRule ifTrue: [ ^ priority ].
+	aProjectionNode isInOtherRule ifTrue: [ ^ priority + 100 ].
+	^ priority + 200
 ]
 
 { #category : 'events' }

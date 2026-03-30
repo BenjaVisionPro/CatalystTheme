@@ -7,7 +7,8 @@ Class {
 	#superclass : 'BrVerticalPane',
 	#instVars : [
 		'projectionNode',
-		'incomingRelation'
+		'incomingRelation',
+		'visualPolicy'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -25,6 +26,7 @@ CgtMatcherNodeElement >> initialize [
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ].
+	visualPolicy := CgtMatcherNodeVisualPolicy new.
 	self when: BlClickEvent do: [ :anEvent | self onNodeClicked: anEvent ]
 ]
 
@@ -53,13 +55,29 @@ CgtMatcherNodeElement >> incomingRelation: aCgtMatcherProjectionRelation [
 	^ self
 ]
 
+
+{ #category : 'accessing' }
+CgtMatcherNodeElement >> visualPolicy [
+	^ visualPolicy
+]
+
+{ #category : 'accessing' }
+CgtMatcherNodeElement >> visualPolicy: aCgtMatcherNodeVisualPolicy [
+	visualPolicy := aCgtMatcherNodeVisualPolicy.
+	self refreshContents.
+	^ self
+]
+
 { #category : 'rendering' }
 CgtMatcherNodeElement >> refreshContents [
 	self removeChildren.
 	projectionNode ifNil: [ ^ self ].
-	self background: (self backgroundForNode: projectionNode).
+	self
+		background: (self backgroundForNode: projectionNode);
+		border: (self borderForNode: projectionNode).
 	self addChild: (self newTitleLabelFor: projectionNode).
 	self addChild: (self newElementIdLabelFor: projectionNode).
+	self addChild: (self newMatchSummaryLabelFor: projectionNode).
 	(self shouldShowIncomingCombinatorControlsFor: projectionNode)
 		ifTrue: [ self addChild: (self newIncomingCombinatorRowFor: projectionNode) ].
 	self addChild: (self newMatchToggleRowFor: projectionNode).
@@ -70,40 +88,34 @@ CgtMatcherNodeElement >> refreshContents [
 
 { #category : 'rendering' }
 CgtMatcherNodeElement >> backgroundForNode: aProjectionNode [
-	aProjectionNode kind = #selectedElement ifTrue: [ ^ Color veryVeryLightGray ].
-	aProjectionNode kind = #compactedSection ifTrue: [ ^ (Color gray alpha: 0.12) ].
-	aProjectionNode isInOtherRule ifTrue: [ ^ (Color orange alpha: 0.12) ].
-	^ (Color white alpha: 0.95)
+	^ visualPolicy backgroundForNode: aProjectionNode
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeElement >> borderForNode: aProjectionNode [
+	^ visualPolicy borderForNode: aProjectionNode
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeElement >> newTitleLabelFor: aProjectionNode [
 	^ BrLabel new
 		aptitude: BrGlamorousLabelAptitude;
-		text: (aProjectionNode kind = #compactedSection
-			ifTrue: [ self compactedTitleFor: aProjectionNode ]
-			ifFalse: [ aProjectionNode className ifNil: [ 'Unspecified element' ] ])
-]
-
-{ #category : 'rendering' }
-CgtMatcherNodeElement >> compactedTitleFor: aProjectionNode [
-	^ aProjectionNode hiddenNodeCount asString , ' hidden node' , (aProjectionNode hiddenNodeCount = 1 ifTrue: [ '' ] ifFalse: [ 's' ])
+		text: (visualPolicy titleForNode: aProjectionNode)
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeElement >> newElementIdLabelFor: aProjectionNode [
 	^ BrLabel new
 		aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
-		text: (aProjectionNode kind = #compactedSection
-			ifTrue: [ 'Compacted section' ]
-			ifFalse: [ self elementIdTextFor: aProjectionNode ])
+		text: (visualPolicy elementIdTextForNode: aProjectionNode)
 ]
 
 { #category : 'rendering' }
-CgtMatcherNodeElement >> elementIdTextFor: aProjectionNode [
-	^ aProjectionNode elementId
-		ifNil: [ 'No element id' ]
-		ifNotNil: [ '#' , aProjectionNode elementId asString ]
+CgtMatcherNodeElement >> newMatchSummaryLabelFor: aProjectionNode [
+	^ BrLabel new
+		beSmallSize;
+		aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
+		text: (visualPolicy matchSummaryForNode: aProjectionNode)
 ]
 
 { #category : 'rendering' }
@@ -121,14 +133,17 @@ CgtMatcherNodeElement >> newMatchToggleRowFor: aProjectionNode [
 
 { #category : 'rendering' }
 CgtMatcherNodeElement >> newNodeStateRowFor: aProjectionNode [
-	| row |
+	| row badges |
 	row := BrHorizontalPane new
 		vFitContent;
 		hFitContent;
 		cellSpacing: 4.
-	row addChildren: {
-		(self newBadgeLabeled: aProjectionNode kind asString active: aProjectionNode isInCurrentRule).
-		(self newBadgeLabeled: 'Other rule' active: aProjectionNode isInOtherRule) }.
+	badges := OrderedCollection new.
+	badges add: (self newBadgeLabeled: (visualPolicy roleLabelForNode: aProjectionNode) active: true).
+	aProjectionNode isInCurrentRule ifTrue: [ badges add: (self newBadgeLabeled: 'Current rule' active: true) ].
+	aProjectionNode isInOtherRule ifTrue: [ badges add: (self newBadgeLabeled: 'Other rule' active: true) ].
+	aProjectionNode isEditable ifFalse: [ badges add: (self newBadgeLabeled: 'Read only' active: false) ].
+	row addChildren: badges asArray.
 	^ row
 ]
 
