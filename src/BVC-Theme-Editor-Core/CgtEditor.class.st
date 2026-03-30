@@ -807,7 +807,8 @@ CgtEditor >> matcherSelectorChangedEvent: anEvent [
 	(self styleRules includes: styleInspectorRule) ifFalse: [ self styleRules add: styleInspectorRule ].
 	styleInspectorPopover ifNotNil: [
 		styleInspectorPopover relatedStyleRules: self relatedStyleRulesForStyleInspector.
-		styleInspectorPopover styleRule: styleInspectorRule ]
+		styleInspectorPopover styleRule: styleInspectorRule ].
+	self refreshOverlayState
 ]
 
 

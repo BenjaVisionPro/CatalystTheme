@@ -8,7 +8,8 @@ Class {
 	#instVars : [
 		'projectionNode',
 		'incomingRelation',
-		'visualPolicy'
+		'visualPolicy',
+		'hoverNestingCount'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -27,6 +28,7 @@ CgtMatcherNodeElement >> initialize [
 			c horizontal exact: 220.
 			c vertical fitContent ].
 	visualPolicy := CgtMatcherNodeVisualPolicy new.
+	hoverNestingCount := 0.
 	self when: BlClickEvent do: [ :anEvent | self onNodeClicked: anEvent ].
 	self when: BlElementHoveredEvent do: [ :anEvent | self onNodeHovered: anEvent ].
 	self when: BlElementUnhoveredEvent do: [ :anEvent | self onNodeUnhovered: anEvent ]
@@ -40,6 +42,7 @@ CgtMatcherNodeElement >> projectionNode [
 { #category : 'accessing' }
 CgtMatcherNodeElement >> projectionNode: aCgtMatcherProjectionNode [
 	projectionNode := aCgtMatcherProjectionNode.
+	hoverNestingCount := 0.
 	self refreshContents.
 	^ self
 ]
@@ -73,6 +76,8 @@ CgtMatcherNodeElement >> visualPolicy: aCgtMatcherNodeVisualPolicy [
 { #category : 'event handling' }
 CgtMatcherNodeElement >> onNodeHovered: anEvent [
 	projectionNode ifNil: [ ^ self ].
+	hoverNestingCount := hoverNestingCount + 1.
+	hoverNestingCount = 1 ifFalse: [ ^ self ].
 	self fireEvent: (CgtMatcherNodeHoveredEvent new
 		projectionNode: projectionNode;
 		yourself)
@@ -81,6 +86,8 @@ CgtMatcherNodeElement >> onNodeHovered: anEvent [
 { #category : 'event handling' }
 CgtMatcherNodeElement >> onNodeUnhovered: anEvent [
 	projectionNode ifNil: [ ^ self ].
+	hoverNestingCount := (hoverNestingCount - 1) max: 0.
+	hoverNestingCount = 0 ifFalse: [ ^ self ].
 	self fireEvent: (CgtMatcherNodeUnhoveredEvent new
 		projectionNode: projectionNode;
 		yourself)
