@@ -1,6 +1,6 @@
 "
 #Theme Selector Renderer Widget
-I am the abstract UI seam for selector renderers. I hold the supplied matcher projection and refresh my contents when it changes, while leaving selector semantics in CgtThemeSelectorModel.
+I am the abstract UI seam for selector renderers. I hold the supplied selector projection and refresh my contents when it changes, while leaving selector semantics in CgtThemeSelectorModel.
 "
 Class {
 	#name : 'CgtThemeSelectorRendererWidget',

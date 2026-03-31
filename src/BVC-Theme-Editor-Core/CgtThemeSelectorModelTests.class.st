@@ -1,6 +1,6 @@
 "
 #Theme Selector Model Tests
-I verify that the theme selector model owns non-visual selector state and matcher projection rebuilding without rendering concerns.
+I verify that the theme selector model owns non-visual selector state and selector projection rebuilding without rendering concerns.
 "
 Class {
 	#name : 'CgtThemeSelectorModelTests',

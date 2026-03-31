@@ -1,6 +1,6 @@
 "
 #Theme Selector Model
-I hold the selector editor's non-visual state. I own the current style rule, selected element, hierarchy root, related style-rule context, temporary matcher visibility state, and the derived matcher projection rebuilt from that context. I do not render UI.
+I hold the selector editor's non-visual state. I own the current style rule, selected element, hierarchy root, related style-rule context, temporary selector visibility state, and the derived selector projection rebuilt from that context. I do not render UI.
 "
 Class {
 	#name : 'CgtThemeSelectorModel',
@@ -161,9 +161,15 @@ CgtThemeSelectorModel >> toggleOtherRuleContext [
 ]
 
 { #category : 'private - idle collapse' }
-CgtThemeSelectorModel >> noteMatcherInteraction [
+CgtThemeSelectorModel >> noteSelectorInteraction [
 	idleCollapseGeneration := idleCollapseGeneration + 1.
 	^ idleCollapseGeneration
+]
+
+{ #category : 'private - idle collapse' }
+CgtThemeSelectorModel >> noteMatcherInteraction [
+	"Compatibility shim while matcher-era callers are removed."
+	^ self noteSelectorInteraction
 ]
 
 { #category : 'accessing' }
@@ -215,7 +221,7 @@ CgtThemeSelectorModel >> relatedStyleRules: aCollection [
 CgtThemeSelectorModel >> scheduleIdleCollapseAfter: aBlockClosure [
 	| token |
 	(self visibilityState hasExpandedGaps not) ifTrue: [ ^ self ].
-	token := self noteMatcherInteraction.
+	token := self noteSelectorInteraction.
 	[ 
 		(Delay forMilliseconds: idleCollapseDelayMilliseconds) wait.
 		(token = idleCollapseGeneration and: [ self visibilityState hasExpandedGaps ]) ifTrue: [

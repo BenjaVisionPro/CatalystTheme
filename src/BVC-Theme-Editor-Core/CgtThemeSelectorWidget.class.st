@@ -106,17 +106,15 @@ CgtThemeSelectorWidget >> selectorNodeUnhoveredEvent: anEvent [
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorClassMatchChangedEvent: anEvent [
 	model applyClassMatch: anEvent shouldMatch toProjectionNode: anEvent projectionNode.
-	self refreshProjectionFromModel.
-	self scheduleIdleCollapse.
-	self publishSelectorChanged
+	self refreshProjectionFromModelAndPublishSelectorChanged.
+	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorCombinatorChangedEvent: anEvent [
 	model applyCombinator: anEvent combinator toRelation: anEvent relation.
-	self refreshProjectionFromModel.
-	self scheduleIdleCollapse.
-	self publishSelectorChanged
+	self refreshProjectionFromModelAndPublishSelectorChanged.
+	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
@@ -129,25 +127,22 @@ CgtThemeSelectorWidget >> selectorCompactedSectionExpandedEvent: anEvent [
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorIdMatchChangedEvent: anEvent [
 	model applyIdMatch: anEvent shouldMatch toProjectionNode: anEvent projectionNode.
-	self refreshProjectionFromModel.
-	self scheduleIdleCollapse.
-	self publishSelectorChanged
+	self refreshProjectionFromModelAndPublishSelectorChanged.
+	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorNodeExcludedFromRuleEvent: anEvent [
 	model excludeProjectionNode: anEvent projectionNode.
-	self refreshProjectionFromModel.
-	self scheduleIdleCollapse.
-	self publishSelectorChanged
+	self refreshProjectionFromModelAndPublishSelectorChanged.
+	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorNodeIncludedInRuleEvent: anEvent [
 	model includeProjectionNode: anEvent projectionNode.
-	self refreshProjectionFromModel.
-	self scheduleIdleCollapse.
-	self publishSelectorChanged
+	self refreshProjectionFromModelAndPublishSelectorChanged.
+	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
@@ -159,8 +154,14 @@ CgtThemeSelectorWidget >> selectorOtherRuleContextToggledEvent: anEvent [
 ]
 
 { #category : 'private - idle collapse' }
+CgtThemeSelectorWidget >> noteSelectorInteraction [
+	^ model noteSelectorInteraction
+]
+
+{ #category : 'private - idle collapse' }
 CgtThemeSelectorWidget >> noteMatcherInteraction [
-	^ model noteMatcherInteraction
+	"Compatibility shim while matcher-era callers are removed."
+	^ self noteSelectorInteraction
 ]
 
 { #category : 'private - idle collapse' }
@@ -307,6 +308,13 @@ CgtThemeSelectorWidget >> refreshProjection [
 { #category : 'private - projection' }
 CgtThemeSelectorWidget >> refreshProjectionFromModel [
 	rendererWidget projection: model projection.
+	^ self
+]
+
+{ #category : 'private - projection' }
+CgtThemeSelectorWidget >> refreshProjectionFromModelAndPublishSelectorChanged [
+	self refreshProjectionFromModel.
+	self publishSelectorChanged.
 	^ self
 ]
 

@@ -1,6 +1,6 @@
 "
 #Theme Selector Widget Tests
-I verify that the selector host widget coordinates a selector model and concrete renderer while projecting matcher state from live hierarchy context.
+I verify that the selector host widget coordinates a selector model and concrete renderer while projecting selector state from live hierarchy context.
 "
 Class {
 	#name : 'CgtThemeSelectorWidgetTests',
