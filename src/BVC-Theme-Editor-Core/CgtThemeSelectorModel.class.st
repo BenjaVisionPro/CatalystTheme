@@ -146,18 +146,21 @@ CgtThemeSelectorModel >> applyCombinator: aSymbol toRelation: aRelation [
 { #category : 'editing' }
 CgtThemeSelectorModel >> showOtherRuleContext [
 	self visibilityState showsOtherRuleContext: true.
+	self clearTemporaryRevealState.
 	self refreshProjection
 ]
 
 { #category : 'editing' }
 CgtThemeSelectorModel >> hideOtherRuleContext [
 	self visibilityState showsOtherRuleContext: false.
+	self clearTemporaryRevealState.
 	self refreshProjection
 ]
 
 { #category : 'editing' }
 CgtThemeSelectorModel >> toggleOtherRuleContext [
 	self visibilityState showsOtherRuleContext: self visibilityState showsOtherRuleContext not.
+	self clearTemporaryRevealState.
 	self refreshProjection
 ]
 

@@ -221,6 +221,80 @@ CgtThemeSelectorModelTests >> testSelectorMutationClearsTemporaryReveals [
 	self assert: (model projection nodes anySatisfy: [ :each | each isCompactedSection ])
 ]
 
+
+{ #category : 'tests' }
+CgtThemeSelectorModelTests >> testShowingOtherRuleContextClearsTemporaryReveals [
+	| root middle selected currentRule relatedRule model compactedNode |
+	root := self newTestElementWithId: #root.
+	middle := self newTestElementWithId: #middle.
+	selected := self newTestElementWithId: #selected.
+	root addChild: middle.
+	middle addChild: selected.
+	currentRule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	relatedRule := CgtThemeStyleRule new
+		selector: (CgtThemeCombinatorSelector
+			left: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #root);
+				yourself)
+			combinator: #descendant
+			right: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #selected);
+				yourself));
+		yourself.
+	model := CgtThemeSelectorModel new
+		configureForStyleRule: currentRule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: { relatedRule }.
+	compactedNode := model projection nodes detect: [ :each | each isCompactedSection ].
+	model revealCompactedProjectionNode: compactedNode.
+	self assert: model visibilityState hasExpandedGaps.
+	model showOtherRuleContext.
+	self deny: model visibilityState hasExpandedGaps
+]
+
+{ #category : 'tests' }
+CgtThemeSelectorModelTests >> testHidingOtherRuleContextClearsTemporaryReveals [
+	| root middle selected currentRule relatedRule model compactedNode |
+	root := self newTestElementWithId: #root.
+	middle := self newTestElementWithId: #middle.
+	selected := self newTestElementWithId: #selected.
+	root addChild: middle.
+	middle addChild: selected.
+	currentRule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	relatedRule := CgtThemeStyleRule new
+		selector: (CgtThemeCombinatorSelector
+			left: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #root);
+				yourself)
+			combinator: #descendant
+			right: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #selected);
+				yourself));
+		yourself.
+	model := CgtThemeSelectorModel new
+		configureForStyleRule: currentRule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: { relatedRule }.
+	compactedNode := model projection nodes detect: [ :each | each isCompactedSection ].
+	model revealCompactedProjectionNode: compactedNode.
+	model showOtherRuleContext.
+	compactedNode := model projection nodes detect: [ :each | each isCompactedSection ] ifNone: [ nil ].
+	compactedNode ifNotNil: [ model revealCompactedProjectionNode: compactedNode ].
+	self assert: model visibilityState hasExpandedGaps.
+	model hideOtherRuleContext.
+	self deny: model visibilityState hasExpandedGaps
+]
+
 { #category : 'tests' }
 CgtThemeSelectorModelTests >> testSelectedElementChangeClearsTemporaryReveals [
 	| root middle selected sibling rule model compactedNode |
