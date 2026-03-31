@@ -177,3 +177,14 @@ CgtStyleInspectorPopoverTests >> testSelectorRendererWidgetClassDelegatesToSelec
 	self assert: popover selectorRendererWidgetClass equals: CgtThemeSelectorBreadcrumbWidget.
 	self assert: popover selectorWidget rendererWidget class equals: CgtThemeSelectorBreadcrumbWidget
 ]
+
+
+{ #category : 'tests' }
+CgtStyleInspectorPopoverTests >> testSelectorWidgetCanUseCompactRendererWithoutChangingPopoverContract [
+	| popover |
+	popover := CgtStyleInspectorPopover new.
+	popover selectorRendererWidgetClass: CgtThemeSelectorCompactWidget.
+
+	self assert: popover selectorRendererWidgetClass equals: CgtThemeSelectorCompactWidget.
+	self assert: popover selectorWidget rendererWidget class equals: CgtThemeSelectorCompactWidget
+]

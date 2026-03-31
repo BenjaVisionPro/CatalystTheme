@@ -151,3 +151,36 @@ CgtThemeSelectorWidgetTests >> testBreadcrumbRendererReceivesProjectionFromModel
 	self assert: widget rendererWidget projection identicalTo: widget projection.
 	self assert: widget rendererWidget children isNotEmpty
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testCanSwapToCompactRendererWidget [
+	| widget |
+	widget := CgtThemeSelectorWidget new.
+	widget rendererWidgetClass: CgtThemeSelectorCompactWidget.
+
+	self assert: widget rendererWidget class equals: CgtThemeSelectorCompactWidget
+]
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testCompactRendererReceivesProjectionFromModel [
+	| root selected rule widget |
+	root := self newTestElementWithId: #root.
+	selected := self newTestElementWithId: #selected.
+	root addChild: selected.
+	rule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	widget := CgtThemeSelectorWidget new.
+	widget rendererWidgetClass: CgtThemeSelectorCompactWidget.
+	widget
+		configureForStyleRule: rule
+		selectedElement: selected
+		pathRootElement: root
+		relatedStyleRules: #().
+
+	self assert: widget rendererWidget projection identicalTo: widget projection.
+	self assert: (widget rendererWidget childWithId: #compactSelectorLabel) notNil
+]
