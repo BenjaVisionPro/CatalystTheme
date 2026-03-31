@@ -306,24 +306,19 @@ CgtThemeSelectorMondrianWidgetTests >> test_projectionChangeBuildsStructuralRefr
 			kind: #compaction).
 	widget projection: newProjection.
 	self assert: widget lastStructuralRefreshPlan notNil.
-	self assert: widget lastStructuralRefreshPlan isReveal
+	self assert: widget lastStructuralRefreshPlan isReplace
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshAnimationUsesPlanSpecificDurationsAndOpacity [
-	| widget revealPlan replacePlan stablePlan |
+	| widget revealPlan stablePlan |
 	widget := CgtThemeSelectorMondrianWidget new.
 	revealPlan := CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself.
-	replacePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #replace; yourself.
 	stablePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #stable; yourself.
 	widget instVarNamed: 'lastStructuralRefreshPlan' put: revealPlan.
 	self assert: widget structuralRefreshAnimationDuration equals: widget transitionPolicy revealDuration.
 	self assert: widget structuralRefreshStartOpacity equals: widget transitionPolicy graphRevealStartOpacity.
-	widget instVarNamed: 'lastStructuralRefreshPlan' put: replacePlan.
-	self assert: widget structuralRefreshAnimationDuration equals: widget transitionPolicy replaceDuration.
-	self assert: widget structuralRefreshStartOpacity equals: widget transitionPolicy graphRevealEndOpacity.
-	self assert: widget structuralRefreshEndOpacity equals: widget transitionPolicy graphRevealEndOpacity.
 	widget instVarNamed: 'lastStructuralRefreshPlan' put: stablePlan.
 	self assert: widget structuralRefreshAnimationDuration equals: widget transitionPolicy structuralRefreshDuration.
 	self assert: widget structuralRefreshStartOpacity equals: widget transitionPolicy graphRevealEndOpacity.
@@ -356,41 +351,13 @@ CgtThemeSelectorMondrianWidgetTests >> testStableProjectionRefreshDoesNotStartSt
 	self assert: widget structuralRefreshAnimationToken equals: 0
 ]
 
-{ #category : 'tests' }
-CgtThemeSelectorMondrianWidgetTests >> test_projectionChangeBuildsReplaceStructuralRefreshPlanWhenLeadingGapIdentityChanges [
-	| widget oldProjection newProjection oldSelected newSelected oldGap newGap oldSelectedNode newSelectedNode |
-	widget := CgtThemeSelectorMondrianWidget new.
-	oldSelected := CgtThemeSelectorTestElement named: #selected id: #selected.
-	newSelected := CgtThemeSelectorTestElement named: #selected id: #selected.
-	oldProjection := CgtMatcherProjection new.
-	oldGap := (CgtMatcherProjectionNode kind: #compactedSection)
-		gapIdentity: #(leading old);
-		hiddenNodeCount: 2;
-		yourself.
-	oldSelectedNode := (CgtMatcherProjectionNode kind: #selectedElement)
-		representedElement: oldSelected;
-		yourself.
-	oldProjection
-		selectedElement: oldSelected;
-		addNode: oldGap;
-		addNode: oldSelectedNode;
-		addRelation: (CgtMatcherProjectionRelation from: oldGap to: oldSelectedNode kind: #compaction).
-	widget projection: oldProjection.
-	newProjection := CgtMatcherProjection new.
-	newGap := (CgtMatcherProjectionNode kind: #compactedSection)
-		gapIdentity: #(leading new);
-		hiddenNodeCount: 2;
-		yourself.
-	newSelectedNode := (CgtMatcherProjectionNode kind: #selectedElement)
-		representedElement: newSelected;
-		yourself.
-	newProjection
-		selectedElement: newSelected;
-		addNode: newGap;
-		addNode: newSelectedNode;
-		addRelation: (CgtMatcherProjectionRelation from: newGap to: newSelectedNode kind: #compaction).
-	widget projection: newProjection.
-	self assert: widget lastStructuralRefreshPlan notNil.
-	self assert: widget lastStructuralRefreshPlan isReplace
-]
 
+{ #category : 'tests' }
+CgtThemeSelectorMondrianWidgetTests >> testReplacePlanUsesFullOpacityAndReplaceDuration [
+	| widget |
+	widget := CgtThemeSelectorMondrianWidget new.
+	widget instVarNamed: 'lastStructuralRefreshPlan' put: (CgtMatcherStructuralRefreshPlan new transitionKind: #replace; yourself).
+	self assert: widget structuralRefreshAnimationDuration equals: widget transitionPolicy replaceDuration.
+	self assert: widget structuralRefreshStartOpacity equals: widget transitionPolicy graphRevealEndOpacity.
+	self assert: widget structuralRefreshEndOpacity equals: widget transitionPolicy graphRevealEndOpacity
+]

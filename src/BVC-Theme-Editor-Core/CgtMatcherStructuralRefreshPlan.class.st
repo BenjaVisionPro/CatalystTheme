@@ -57,13 +57,13 @@ CgtMatcherStructuralRefreshPlan >> isCollapse [
 	^ self transitionKind = #collapse
 ]
 
-{ #category : 'testing' }
-CgtMatcherStructuralRefreshPlan >> isStable [
-	^ self transitionKind = #stable
-]
 
 { #category : 'testing' }
 CgtMatcherStructuralRefreshPlan >> isReplace [
 	^ self transitionKind = #replace
 ]
 
+{ #category : 'testing' }
+CgtMatcherStructuralRefreshPlan >> isStable [
+	^ self transitionKind = #stable
+]

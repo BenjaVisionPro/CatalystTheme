@@ -62,14 +62,12 @@ CgtMatcherTransitionPolicy >> shouldAnimateStructuralRefreshPlan: aStructuralRef
 { #category : 'accessing' }
 CgtMatcherTransitionPolicy >> structuralRefreshStartOpacityForPlan: aStructuralRefreshPlan [
 	aStructuralRefreshPlan ifNil: [ ^ self graphRevealStartOpacity ].
-	aStructuralRefreshPlan isStable ifTrue: [ ^ self graphRevealEndOpacity ].
-	aStructuralRefreshPlan isReplace ifTrue: [ ^ self graphRevealEndOpacity ].
+	(aStructuralRefreshPlan isStable or: [ aStructuralRefreshPlan isReplace ]) ifTrue: [ ^ self graphRevealEndOpacity ].
 	^ self graphRevealStartOpacity
 ]
 
 { #category : 'accessing' }
 CgtMatcherTransitionPolicy >> structuralRefreshEndOpacityForPlan: aStructuralRefreshPlan [
-	aStructuralRefreshPlan isReplace ifTrue: [ ^ self graphRevealEndOpacity ].
 	^ self graphRevealEndOpacity
 ]
 
@@ -140,7 +138,7 @@ CgtMatcherTransitionPolicy >> structuralRefreshPlanFrom: anOldProjection to: aNe
 							offset := self graphRevealOffsetForOrientation: anOrientation ]
 						ifFalse: [
 							plan transitionKind: #collapse.
-							offset := (self graphRevealOffsetForOrientation: anOrientation) negated ]].
+							offset := (self graphRevealOffsetForOrientation: anOrientation) negated ] ].
 			plan revealOffset: offset ].
 	^ plan
 ]
