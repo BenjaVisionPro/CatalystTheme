@@ -1,18 +1,12 @@
 "
 #Theme Selector Widget
-I am a compatibility wrapper for the theme selector editor. I present the rule-driven Mondrian matcher widget interface while accepting selector-editor inputs in live hierarchy context. I no longer inherit the old path-selector matcher implementation.
+I am the current host widget for the theme selector editor. I still render through the Mondrian matcher widget superclass, but my non-visual selector state now lives in a dedicated CgtThemeSelectorModel.
 "
 Class {
 	#name : 'CgtThemeSelectorWidget',
 	#superclass : 'CgtThemeMatcherMondrianWidget',
 	#instVars : [
-		'styleRule',
-		'selectedElement',
-		'pathRootElement',
-		'relatedStyleRules',
-		'visibilityState',
-		'idleCollapseDelayMilliseconds',
-		'idleCollapseGeneration'
+		'model'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -22,8 +16,7 @@ Class {
 { #category : 'initialization' }
 CgtThemeSelectorWidget >> initialize [
 	super initialize.
-	idleCollapseDelayMilliseconds := 1800.
-	idleCollapseGeneration := 0.
+	model := CgtThemeSelectorModel new.
 	self when: CgtMatcherSelectorChangedEvent do: [ :anEvent |
 		self matcherSelectorChangedEvent: anEvent ].
 	self when: CgtMatcherCompactedSectionExpandedEvent do: [ :anEvent |
@@ -48,12 +41,12 @@ CgtThemeSelectorWidget >> initialize [
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement pathRootElement: aRootElement relatedStyleRules: aCollection [
-	styleRule := aCgtThemeStyleRule.
-	selectedElement := anElement.
-	pathRootElement := aRootElement.
-	relatedStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
-	visibilityState ifNil: [ visibilityState := CgtMatcherVisibilityState new ].
-	self refreshProjection.
+	model
+		configureForStyleRule: aCgtThemeStyleRule
+		selectedElement: anElement
+		pathRootElement: aRootElement
+		relatedStyleRules: aCollection.
+	self refreshProjectionFromModel.
 	^ self
 ]
 
@@ -66,122 +59,114 @@ CgtThemeSelectorWidget >> matcherInteractionEvent: anEvent [
 
 { #category : 'private - idle collapse' }
 CgtThemeSelectorWidget >> noteMatcherInteraction [
-	idleCollapseGeneration := idleCollapseGeneration + 1.
-	^ idleCollapseGeneration
+	^ model noteMatcherInteraction
 ]
 
 { #category : 'private - idle collapse' }
 CgtThemeSelectorWidget >> scheduleIdleCollapse [
-	| token |
-	(self visibilityState hasExpandedGaps not) ifTrue: [ ^ self ].
-	token := self noteMatcherInteraction.
-	[ 
-		(Delay forMilliseconds: idleCollapseDelayMilliseconds) wait.
-		(token = idleCollapseGeneration and: [ self visibilityState hasExpandedGaps ]) ifTrue: [
-			self collapseTemporaryReveals ] ] forkAt: Processor userBackgroundPriority.
+	model scheduleIdleCollapseAfter: [ self collapseTemporaryReveals ].
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> idleCollapseDelayMilliseconds [
-	^ idleCollapseDelayMilliseconds
+	^ model idleCollapseDelayMilliseconds
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> idleCollapseDelayMilliseconds: anInteger [
-	idleCollapseDelayMilliseconds := anInteger.
+	model idleCollapseDelayMilliseconds: anInteger.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> styleRule [
-	^ styleRule
+	^ model currentStyleRule
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> styleRule: aCgtThemeStyleRule [
-	styleRule := aCgtThemeStyleRule.
-	self refreshProjection.
+	model styleRule: aCgtThemeStyleRule.
+	self refreshProjectionFromModel.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selectedElement [
-	^ selectedElement
+	^ model selectedElement
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selectedElement: anElement [
-	selectedElement := anElement.
-	self refreshProjection.
+	model selectedElement: anElement.
+	self refreshProjectionFromModel.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> pathRootElement [
-	^ pathRootElement
+	^ model pathRootElement
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> pathRootElement: anElement [
-	pathRootElement := anElement.
-	self refreshProjection.
+	model pathRootElement: anElement.
+	self refreshProjectionFromModel.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> relatedStyleRules [
-	^ relatedStyleRules ifNil: [ #() ]
+	^ model relatedStyleRules
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> relatedStyleRules: aCollection [
-	relatedStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
-	visibilityState ifNil: [ visibilityState := CgtMatcherVisibilityState new ].
-	self refreshProjection.
+	model relatedStyleRules: aCollection.
+	self refreshProjectionFromModel.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selector [
-	^ styleRule ifNil: [ nil ] ifNotNil: [ styleRule selector ]
+	^ model selector
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> currentStyleRule [
-	^ styleRule
+	^ model currentStyleRule
 ]
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> matcherSelectorChangedEvent: anEvent [
-	styleRule ifNil: [ styleRule := CgtThemeStyleRule new ].
-	styleRule selector: anEvent selector.
-	self refreshProjection
+	model matcherSelectorChangedEvent: anEvent.
+	self refreshProjectionFromModel
 ]
 
 
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> model [
+	^ model
+]
+
 { #category : 'private - projection' }
 CgtThemeSelectorWidget >> refreshProjection [
-	(styleRule isNil or: [ selectedElement isNil ]) ifTrue: [
-		self projection: nil.
-		^ self ].
-	visibilityState ifNil: [ visibilityState := CgtMatcherVisibilityState new ].
-	self projection: (CgtMatcherProjectionBuilder
-		projectionForStyleRule: styleRule
-		selectedElement: selectedElement
-		hierarchyRoot: pathRootElement
-		relatedStyleRules: self relatedStyleRules
-		visibilityState: visibilityState)
+	self refreshProjectionFromModel
+]
+
+{ #category : 'private - projection' }
+CgtThemeSelectorWidget >> refreshProjectionFromModel [
+	self projection: model projection.
+	^ self
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> visibilityState [
-	^ visibilityState ifNil: [ visibilityState := CgtMatcherVisibilityState new ]
+	^ model visibilityState
 ]
 
 { #category : 'events' }
 CgtThemeSelectorWidget >> collapseTemporaryReveals [
-	self visibilityState clearExpandedGaps.
-	idleCollapseGeneration := idleCollapseGeneration + 1.
-	self refreshProjection
+	model collapseTemporaryReveals.
+	self refreshProjectionFromModel
 ]
