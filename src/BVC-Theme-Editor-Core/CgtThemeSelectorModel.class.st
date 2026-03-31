@@ -255,6 +255,74 @@ CgtThemeSelectorModel >> scheduleIdleCollapseAfter: aBlockClosure [
 	^ self
 ]
 
+
+
+{ #category : 'accessing' }
+CgtThemeSelectorModel >> activeStyleRule [
+	^ self currentStyleRule
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorModel >> currentProjection [
+	^ self projection
+]
+
+{ #category : 'querying' }
+CgtThemeSelectorModel >> hasProjection [
+	^ projection notNil
+]
+
+{ #category : 'querying' }
+CgtThemeSelectorModel >> selectedProjectionNode [
+	^ projection ifNil: [ nil ] ifNotNil: [ projection selectedProjectionNode ]
+]
+
+{ #category : 'querying' }
+CgtThemeSelectorModel >> visibleProjectionNodes [
+	^ projection ifNil: [ #() ] ifNotNil: [ projection nodes ]
+]
+
+{ #category : 'querying' }
+CgtThemeSelectorModel >> visibleProjectionRelations [
+	^ projection ifNil: [ #() ] ifNotNil: [ projection relations ]
+]
+
+{ #category : 'querying' }
+CgtThemeSelectorModel >> currentRuleProjectionNodes [
+	^ projection ifNil: [ #() ] ifNotNil: [ projection currentRuleNodes ]
+]
+
+{ #category : 'querying' }
+CgtThemeSelectorModel >> otherRuleProjectionNodes [
+	^ projection ifNil: [ #() ] ifNotNil: [ projection otherRuleNodes ]
+]
+
+{ #category : 'querying' }
+CgtThemeSelectorModel >> compactedProjectionNodes [
+	^ projection ifNil: [ #() ] ifNotNil: [ projection nodesOfKind: #compactedSection ]
+]
+
+{ #category : 'querying' }
+CgtThemeSelectorModel >> showsOtherRuleContext [
+	^ self visibilityState showsOtherRuleContext
+]
+
+{ #category : 'querying' }
+CgtThemeSelectorModel >> hasExpandedCompactedContext [
+	^ self visibilityState hasExpandedGaps
+]
+
+{ #category : 'querying' }
+CgtThemeSelectorModel >> isProjectionNodeEditable: aProjectionNode [
+	aProjectionNode ifNil: [ ^ false ].
+	^ aProjectionNode isEditable
+]
+
+{ #category : 'querying' }
+CgtThemeSelectorModel >> isProjectionRelationEditable: aRelation [
+	aRelation ifNil: [ ^ false ].
+	^ aRelation kind = #matcher
+]
 { #category : 'accessing' }
 CgtThemeSelectorModel >> selectedElement [
 	^ selectedElement

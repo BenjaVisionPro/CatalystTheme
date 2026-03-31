@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'private' }
-CgtThemeSelectorModelTests >> newTestElementWithId: anId [.
+CgtThemeSelectorModelTests >> newTestElementWithId: anId [
 	^ CgtThemeSelectorTestElement new
 		id: anId;
 		yourself
@@ -86,7 +86,7 @@ CgtThemeSelectorModelTests >> testSelectorUpdatesCurrentStyleRule [
 
 	self assert: model currentStyleRule identicalTo: originalRule.
 	self assert: model currentStyleRule selector identicalTo: newSelector.
-	^ CgtThemeSelectorModel
+	^ model
 ]
 
 
@@ -139,7 +139,7 @@ CgtThemeSelectorModelTests >> testRevealCompactedProjectionNodeUpdatesVisibility
 	self assert: (model visibilityState isExpandedForGapIdentity: compactedNode gapIdentity).
 	self assert: (model projection nodes anySatisfy: [ :each | each representedElement == middle ]).
 	self deny: (model projection leadingCompactedGapIdentity = compactedNode gapIdentity).
-	^ CgtThemeSelectorModel
+	^ model
 ]
 
 
@@ -210,7 +210,7 @@ CgtThemeSelectorModelTests >> testHideOtherRuleContextRemovesOtherRuleNodesAgain
 	model hideOtherRuleContext.
 	self deny: model visibilityState showsOtherRuleContext.
 	self assert: model projection otherRuleNodes isEmpty.
-	^ CgtThemeSelectorModel
+	^ model
 ]
 
 
@@ -239,7 +239,7 @@ CgtThemeSelectorModelTests >> testSelectorMutationClearsTemporaryReveals [
 	model applyClassMatch: true toProjectionNode: model projection selectedProjectionNode.
 	self deny: model visibilityState hasExpandedGaps.
 	self assert: (model projection nodes anySatisfy: [ :each | each isCompactedSection ]).
-	^ CgtThemeSelectorModel
+	^ model
 ]
 
 
@@ -390,3 +390,104 @@ CgtThemeSelectorModelTests >> testConfigureForStyleInspectorModelUsesInspectorSe
 	self assert: selectorModel projection notNil.
 	^ selectorModel
 ]
+
+{ #category : 'tests' }
+CgtThemeSelectorModelTests >> testExplicitQueryProtocolReflectsActiveRuleAndProjectionState [
+	<gtExample>
+	| root selected currentRule relatedRule model |
+	root := self newTestElementWithId: #root.
+	selected := self newTestElementWithId: #selected.
+	root addChild: selected.
+	currentRule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	relatedRule := CgtThemeStyleRule new
+		selector: (CgtThemeCombinatorSelector
+			left: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #root);
+				yourself)
+			combinator: #child
+			right: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #selected);
+				yourself));
+		yourself.
+	model := CgtThemeSelectorModel new
+		configureForStyleRule: currentRule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: { relatedRule }.
+	self assert: model hasProjection.
+	self assert: model activeStyleRule identicalTo: currentRule.
+	self assert: model currentProjection identicalTo: model projection.
+	self assert: model selectedProjectionNode identicalTo: model projection selectedProjectionNode.
+	self assert: model currentRuleProjectionNodes asArray equals: model projection currentRuleNodes asArray.
+	self assert: model otherRuleProjectionNodes isEmpty.
+	self assert: model compactedProjectionNodes isEmpty.
+	self deny: model showsOtherRuleContext.
+	self deny: model hasExpandedCompactedContext.
+	^ model
+]
+
+{ #category : 'tests' }
+CgtThemeSelectorModelTests >> testNodeAndRelationEditabilityQueriesUseProjectionSemantics [
+	<gtExample>
+	| root parent selected rule model relation |
+	root := self newTestElementWithId: #root.
+	parent := self newTestElementWithId: #parent.
+	selected := self newTestElementWithId: #selected.
+	root addChild: parent.
+	parent addChild: selected.
+	rule := CgtThemeStyleRule new
+		selector: (CgtThemeCombinatorSelector
+			left: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #parent);
+				yourself)
+			combinator: #child
+			right: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #selected);
+				yourself));
+		yourself.
+	model := CgtThemeSelectorModel new
+		configureForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: #().
+	relation := model visibleProjectionRelations
+		detect: [ :each | each kind = #matcher ]
+		ifNone: [ nil ].
+	self assert: (model isProjectionNodeEditable: model selectedProjectionNode).
+	self assert: (model isProjectionRelationEditable: relation).
+	self deny: (model isProjectionNodeEditable: nil).
+	self deny: (model isProjectionRelationEditable: nil).
+	^ model
+]
+
+{ #category : 'tests' }
+CgtThemeSelectorModelTests >> testExpandedContextQueryTracksTemporaryGapRevealState [
+	<gtExample>
+	| root middle selected rule model compactedNode |
+	root := self newTestElementWithId: #root.
+	middle := self newTestElementWithId: #middle.
+	selected := self newTestElementWithId: #selected.
+	root addChild: middle.
+	middle addChild: selected.
+	rule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	model := CgtThemeSelectorModel new
+		configureForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: #().
+	self deny: model hasExpandedCompactedContext.
+	compactedNode := model compactedProjectionNodes first.
+	model revealCompactedProjectionNode: compactedNode.
+	self assert: model hasExpandedCompactedContext.
+	self deny: model compactedProjectionNodes anySatisfy: [ :each | each gapIdentity = compactedNode gapIdentity ].
+	^ model
+]
+
