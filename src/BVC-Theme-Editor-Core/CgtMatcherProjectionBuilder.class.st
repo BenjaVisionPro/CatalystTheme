@@ -110,9 +110,13 @@ CgtMatcherProjectionBuilder >> addFocusedCorridorGapsTo: aProjection matchedElem
 	leadingElements := self leadingHiddenElementsBefore: firstVisible excluding: visibleElements.
 	trailingElements := self trailingHiddenElementsAfter: lastVisible excluding: visibleElements.
 	leadingElements ifNotEmpty: [
-		self addLeadingCompactedNodeForElements: leadingElements beforeNode: firstNode toProjection: aProjection ].
+		(self shouldRevealElements: leadingElements)
+			ifTrue: [ self addRevealedLeadingCorridorElements: leadingElements beforeNode: firstNode toProjection: aProjection ]
+			ifFalse: [ self addLeadingCompactedNodeForElements: leadingElements beforeNode: firstNode toProjection: aProjection ] ].
 	trailingElements ifNotEmpty: [
-		self addTrailingCompactedNodeForElements: trailingElements afterNode: lastNode toProjection: aProjection ].
+		(self shouldRevealElements: trailingElements)
+			ifTrue: [ self addRevealedTrailingCorridorElements: trailingElements afterNode: lastNode toProjection: aProjection ]
+			ifFalse: [ self addTrailingCompactedNodeForElements: trailingElements afterNode: lastNode toProjection: aProjection ] ].
 	^ aProjection
 ]
 
@@ -134,6 +138,37 @@ CgtMatcherProjectionBuilder >> addTrailingCompactedNodeForElements: aCollection 
 	aProjection addNode: compactedNode.
 	aProjection addRelation: (CgtMatcherProjectionRelation from: aProjectionNode to: compactedNode kind: #compaction).
 	^ compactedNode
+]
+
+
+{ #category : 'building' }
+CgtMatcherProjectionBuilder >> addRevealedLeadingCorridorElements: hiddenElements beforeNode: aProjectionNode toProjection: aProjection [
+	| revealedNodes previousNode |
+	aProjectionNode ifNil: [ ^ aProjection ].
+	revealedNodes := hiddenElements collect: [ :each | self revealedContextNodeForElement: each ].
+	revealedNodes do: [ :each | aProjection addNode: each ].
+	previousNode := nil.
+	revealedNodes do: [ :eachNode |
+		previousNode
+			ifNil: [ ]
+			ifNotNil: [ aProjection addRelation: (CgtMatcherProjectionRelation from: previousNode to: eachNode kind: #context) ].
+		previousNode := eachNode ].
+	revealedNodes ifNotEmpty: [
+		aProjection addRelation: (CgtMatcherProjectionRelation from: revealedNodes last to: aProjectionNode kind: #context) ].
+	^ revealedNodes ifEmpty: [ aProjection ] ifNotEmpty: [ revealedNodes last ]
+]
+
+{ #category : 'building' }
+CgtMatcherProjectionBuilder >> addRevealedTrailingCorridorElements: hiddenElements afterNode: aProjectionNode toProjection: aProjection [
+	| revealedNodes previousNode |
+	aProjectionNode ifNil: [ ^ aProjection ].
+	revealedNodes := hiddenElements collect: [ :each | self revealedContextNodeForElement: each ].
+	revealedNodes do: [ :each | aProjection addNode: each ].
+	previousNode := aProjectionNode.
+	revealedNodes do: [ :eachNode |
+		aProjection addRelation: (CgtMatcherProjectionRelation from: previousNode to: eachNode kind: #context).
+		previousNode := eachNode ].
+	^ revealedNodes ifEmpty: [ aProjection ] ifNotEmpty: [ revealedNodes last ]
 ]
 
 { #category : 'building' }

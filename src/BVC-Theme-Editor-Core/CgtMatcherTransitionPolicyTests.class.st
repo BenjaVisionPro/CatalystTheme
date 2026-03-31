@@ -88,24 +88,30 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshRevealOffsetUsesLeadingC
 
 { #category : 'tests' }
 CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesRevealWhenLeadingCompactionAppears [
-	| oldProjection newProjection plan oldSelected newSelected |
+	| oldProjection newProjection plan oldSelected newSelected leadingGap selectedNode |
 	oldSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
 	newSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
 	oldProjection := CgtMatcherProjection new.
-	oldProjection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
-		representedElement: oldSelected;
-		yourself).
+	oldProjection
+		selectedElement: oldSelected;
+		addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+			representedElement: oldSelected;
+			yourself).
 	newProjection := CgtMatcherProjection new.
-	newProjection addNode: ((CgtMatcherProjectionNode kind: #compactedSection)
+	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
 		representedElements: { CgtThemeSelectorTestElement new className: 'Hidden'; yourself };
-		yourself).
-	newProjection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+		yourself.
+	selectedNode := (CgtMatcherProjectionNode kind: #selectedElement)
 		representedElement: newSelected;
-		yourself).
-	newProjection addRelation: (CgtMatcherProjectionRelation
-		from: newProjection leadingCompactedProjectionNode
-		to: newProjection selectedProjectionNode
-		kind: #compaction).
+		yourself.
+	newProjection
+		selectedElement: newSelected;
+		addNode: leadingGap;
+		addNode: selectedNode;
+		addRelation: (CgtMatcherProjectionRelation
+			from: leadingGap
+			to: selectedNode
+			kind: #compaction).
 	plan := CgtMatcherTransitionPolicy new
 		structuralRefreshPlanFrom: oldProjection
 		to: newProjection
@@ -116,24 +122,30 @@ CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesRevealWhenLeadi
 
 { #category : 'tests' }
 CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesCollapseWhenLeadingCompactionDisappears [
-	| oldProjection newProjection plan oldSelected newSelected |
+	| oldProjection newProjection plan oldSelected newSelected leadingGap selectedNode |
 	oldSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
 	newSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
 	oldProjection := CgtMatcherProjection new.
-	oldProjection addNode: ((CgtMatcherProjectionNode kind: #compactedSection)
+	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
 		representedElements: { CgtThemeSelectorTestElement new className: 'Hidden'; yourself };
-		yourself).
-	oldProjection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+		yourself.
+	selectedNode := (CgtMatcherProjectionNode kind: #selectedElement)
 		representedElement: oldSelected;
-		yourself).
-	oldProjection addRelation: (CgtMatcherProjectionRelation
-		from: oldProjection leadingCompactedProjectionNode
-		to: oldProjection selectedProjectionNode
-		kind: #compaction).
+		yourself.
+	oldProjection
+		selectedElement: oldSelected;
+		addNode: leadingGap;
+		addNode: selectedNode;
+		addRelation: (CgtMatcherProjectionRelation
+			from: leadingGap
+			to: selectedNode
+			kind: #compaction).
 	newProjection := CgtMatcherProjection new.
-	newProjection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
-		representedElement: newSelected;
-		yourself).
+	newProjection
+		selectedElement: newSelected;
+		addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+			representedElement: newSelected;
+			yourself).
 	plan := CgtMatcherTransitionPolicy new
 		structuralRefreshPlanFrom: oldProjection
 		to: newProjection

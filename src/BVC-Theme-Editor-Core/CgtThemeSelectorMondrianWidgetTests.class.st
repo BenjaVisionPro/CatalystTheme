@@ -277,26 +277,32 @@ CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshQueriesTransitionPol
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> test_projectionChangeBuildsStructuralRefreshPlanFromPreviousProjection [
-	| widget oldProjection newProjection oldSelected newSelected |
+	| widget oldProjection newProjection oldSelected newSelected leadingGap selectedNode |
 	widget := CgtThemeSelectorMondrianWidget new.
 	oldSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
 	newSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
 	oldProjection := CgtMatcherProjection new.
-	oldProjection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
-		representedElement: oldSelected;
-		yourself).
+	oldProjection
+		selectedElement: oldSelected;
+		addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+			representedElement: oldSelected;
+			yourself).
 	widget projection: oldProjection.
 	newProjection := CgtMatcherProjection new.
-	newProjection addNode: ((CgtMatcherProjectionNode kind: #compactedSection)
+	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
 		representedElements: { CgtThemeSelectorTestElement new className: 'Hidden'; yourself };
-		yourself).
-	newProjection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+		yourself.
+	selectedNode := (CgtMatcherProjectionNode kind: #selectedElement)
 		representedElement: newSelected;
-		yourself).
-	newProjection addRelation: (CgtMatcherProjectionRelation
-		from: newProjection leadingCompactedProjectionNode
-		to: newProjection selectedProjectionNode
-		kind: #compaction).
+		yourself.
+	newProjection
+		selectedElement: newSelected;
+		addNode: leadingGap;
+		addNode: selectedNode;
+		addRelation: (CgtMatcherProjectionRelation
+			from: leadingGap
+			to: selectedNode
+			kind: #compaction).
 	widget projection: newProjection.
 	self assert: widget lastStructuralRefreshPlan notNil.
 	self assert: widget lastStructuralRefreshPlan isReveal
