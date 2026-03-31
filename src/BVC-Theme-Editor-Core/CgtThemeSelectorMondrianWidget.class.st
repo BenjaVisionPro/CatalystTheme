@@ -128,19 +128,14 @@ CgtThemeSelectorMondrianWidget >> animateStructuralRefreshFor: aLegendElement an
 
 { #category : 'private - animation' }
 CgtThemeSelectorMondrianWidget >> structuralRefreshRevealOffset [
-	projection ifNil: [ ^ 0 @ 0 ].
-	transitionPolicy keepsFollowingNodeFixed ifFalse: [
-		^ transitionPolicy graphRevealOffsetForOrientation: layoutPolicy corridorOrientation ].
-	^ projection hasLeadingCompactedProjectionNode
-		ifTrue: [ transitionPolicy graphRevealOffsetForOrientation: layoutPolicy corridorOrientation ]
-		ifFalse: [ 0 @ 0 ]
+	^ transitionPolicy
+		structuralRefreshRevealOffsetForProjection: projection
+		orientation: layoutPolicy corridorOrientation
 ]
 
 { #category : 'private - animation' }
 CgtThemeSelectorMondrianWidget >> structuralRefreshAnchorProjectionNode [
-	projection ifNil: [ ^ nil ].
-	^ projection followingProjectionNodeAfterLeadingCompaction
-		ifNil: [ projection selectedProjectionNode ]
+	^ transitionPolicy structuralRefreshAnchorProjectionNodeFor: projection
 ]
 
 { #category : 'private - animation' }

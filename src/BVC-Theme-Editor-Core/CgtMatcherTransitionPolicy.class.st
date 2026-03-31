@@ -1,6 +1,6 @@
 "
 #Matcher Transition Policy
-I provide timing and motion policy for matcher structural transitions. I am responsible for reveal/collapse animation values and orientation-aware leading-side expansion semantics, not for matcher semantics.
+I provide timing and motion policy for matcher structural transitions. I am responsible for reveal/collapse animation values, orientation-aware leading-side expansion semantics, and structural refresh anchor decisions, not for matcher semantics.
 "
 Class {
 	#name : 'CgtMatcherTransitionPolicy',
@@ -54,4 +54,22 @@ CgtMatcherTransitionPolicy >> keepsFollowingNodeFixed [
 CgtMatcherTransitionPolicy >> leadingExpansionSideForOrientation: anOrientation [
 	anOrientation = #horizontal ifTrue: [ ^ #left ].
 	^ #up
+]
+
+
+{ #category : 'querying' }
+CgtMatcherTransitionPolicy >> structuralRefreshAnchorProjectionNodeFor: aProjection [
+	aProjection ifNil: [ ^ nil ].
+	^ aProjection followingProjectionNodeAfterLeadingCompaction
+		ifNil: [ aProjection selectedProjectionNode ]
+]
+
+{ #category : 'querying' }
+CgtMatcherTransitionPolicy >> structuralRefreshRevealOffsetForProjection: aProjection orientation: anOrientation [
+	aProjection ifNil: [ ^ 0 @ 0 ].
+	self keepsFollowingNodeFixed ifFalse: [
+		^ self graphRevealOffsetForOrientation: anOrientation ].
+	^ aProjection hasLeadingCompactedProjectionNode
+		ifTrue: [ self graphRevealOffsetForOrientation: anOrientation ]
+		ifFalse: [ 0 @ 0 ]
 ]
