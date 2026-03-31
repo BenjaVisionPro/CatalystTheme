@@ -117,7 +117,7 @@ CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesRevealWhenLeadi
 		structuralRefreshPlanFrom: oldProjection
 		to: newProjection
 		orientation: #vertical.
-	self assert: plan isReplace.
+	self assert: plan isReveal.
 	self assert: plan revealOffset equals: (0 @ -24)
 ]
 
