@@ -212,6 +212,17 @@ CgtMatcherProjectionBuilder >> connectPreviousDisplayNode: aPreviousDisplayNode 
 ]
 
 
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilder >> gapIdentityForElements: aCollection [
+	^ visibilityState
+		ifNil: [ ((aCollection ifNil: [ #() ]) collect: [ :each |
+			(each respondsTo: #id)
+				ifTrue: [ each id ]
+				ifFalse: [ each identityHash ] ]) asArray ]
+		ifNotNil: [ visibilityState gapIdentityForElements: aCollection ]
+]
+
 { #category : 'private' }
 CgtMatcherProjectionBuilder >> shouldRevealElements: aCollection [
 	^ visibilityState notNil and: [ visibilityState isExpandedForGapIdentity: (self gapIdentityForElements: aCollection) ]
