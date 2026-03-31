@@ -649,14 +649,23 @@ CgtEditor >> styleRules [
 CgtEditor >> styleRules: aCollection [
 	styleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
 	styleInspectorPopover ifNotNil: [
-		styleInspectorPopover relatedStyleRules: self relatedStyleRulesForStyleInspector ].
+		styleInspectorPopover
+			configureForSelectedElement: self selectedElement
+			hierarchyRoot: self styleInspectorPathRootElement
+			selectedScopePath: interactionState selectedElementPath
+			themeStyleRules: styleRules.
+		styleInspectorRule := styleInspectorPopover styleRule ].
 	^ self
 ]
 
 { #category : 'private - style inspector' }
 CgtEditor >> relatedStyleRulesForStyleInspector [
+	| activeRule |
+	activeRule := styleInspectorPopover
+		ifNil: [ styleInspectorRule ]
+		ifNotNil: [ styleInspectorPopover styleRule ].
 	^ self styleRules
-		select: [ :each | each notNil and: [ each ~~ styleInspectorRule ] ]
+		select: [ :each | each notNil and: [ each ~~ activeRule ] ]
 ]
 
 { #category : 'private - style inspector' }
@@ -678,17 +687,15 @@ CgtEditor >> overlayBoundsForSelectedElement [
 
 { #category : 'private - style inspector' }
 CgtEditor >> showStyleInspectorPopover [
-	| aPopover aRule |
+	| aPopover |
 	self selectedElement ifNil: [ ^ self hideStyleInspectorPopover ].
 	aPopover := self ensureStyleInspectorPopover.
-	aRule := (aPopover selectedElement == self selectedElement and: [ styleInspectorRule notNil ])
-		ifTrue: [ styleInspectorRule ]
-		ifFalse: [ styleInspectorRule := self styleRuleForStyleInspector ].
 	aPopover
-		configureForStyleRule: aRule
-		selectedElement: self selectedElement
+		configureForSelectedElement: self selectedElement
 		hierarchyRoot: self styleInspectorPathRootElement
-		relatedStyleRules: self relatedStyleRulesForStyleInspector.
+		selectedScopePath: interactionState selectedElementPath
+		themeStyleRules: self styleRules.
+	styleInspectorRule := aPopover styleRule.
 	aPopover visibility: BlVisibility visible.
 	self updateStyleInspectorPopoverPosition
 ]
@@ -803,7 +810,8 @@ CgtEditor >> selectorChangedEvent: anEvent [
 	styleInspectorRule selector: anEvent selector.
 	(self styleRules includes: styleInspectorRule) ifFalse: [ self styleRules add: styleInspectorRule ].
 	styleInspectorPopover ifNotNil: [
-		styleInspectorPopover relatedStyleRules: self relatedStyleRulesForStyleInspector ].
+		styleInspectorPopover styleInspectorModel themeStyleRules: self styleRules.
+		styleInspectorRule := styleInspectorPopover styleRule ].
 	self refreshOverlayState
 ]
 

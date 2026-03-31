@@ -122,6 +122,19 @@ CgtStyleInspectorPopover >> configureForStyleInspectorModel: aCgtThemeStyleInspe
 	^ self
 ]
 
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> configureForSelectedElement: anElement hierarchyRoot: aRootElement selectedScopePath: aCgtElementPath themeStyleRules: aCollection [
+	styleInspectorModel
+		configureForSelectedElement: anElement
+		hierarchyRoot: aRootElement
+		selectedScopePath: aCgtElementPath
+		themeStyleRules: aCollection.
+	selectorWidget selectorModel: styleInspectorModel selectorModel.
+	self updateLabels.
+	^ self
+]
+
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement hierarchyRoot: aRootElement relatedStyleRules: aCollection [
 	styleInspectorModel

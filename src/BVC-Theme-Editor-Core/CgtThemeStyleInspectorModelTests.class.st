@@ -91,6 +91,35 @@ CgtThemeStyleInspectorModelTests >> testStyleInspectorModelCanBeInstalledIntoPop
 	^ popover
 ]
 
+
+{ #category : 'tests' }
+CgtThemeStyleInspectorModelTests >> testSelectedScopePathChangeResolvesDifferentActiveRule [
+	<gtExample>
+	| root middle selected simpleRule scopedRule model path |
+	root := self newTestElementWithId: #'root'.
+	middle := root addChild: (self newTestElementWithId: #'middle').
+	selected := middle addChild: (self newTestElementWithId: #'selected').
+	simpleRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	scopedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'middle')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	model := CgtThemeStyleInspectorModel new.
+	model
+		configureForSelectedElement: selected
+		hierarchyRoot: root
+		selectedScopePath: (CgtElementPath anchorElement: selected)
+		themeStyleRules: { simpleRule. scopedRule }.
+	self assert: model activeStyleRule identicalTo: simpleRule.
+	path := CgtElementPath anchorElement: selected.
+	path toggleUpstreamElement: middle.
+	model selectedScopePath: path.
+	self assert: model activeStyleRule identicalTo: scopedRule.
+	self assert: model relatedStyleRules asArray equals: { simpleRule }.
+	self assert: model selectorModel currentStyleRule identicalTo: scopedRule.
+	^ model
+]
+
 { #category : 'private' }
 CgtThemeStyleInspectorModelTests >> newTestElementWithId: aSymbol [
 	^ CgtThemeSelectorTestElement new

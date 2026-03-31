@@ -12,7 +12,8 @@ Class {
 		'selectedScopePath',
 		'activeStyleRule',
 		'relatedStyleRules',
-		'selectorModel'
+		'selectorModel',
+		'styleRuleResolver'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -23,7 +24,8 @@ CgtThemeStyleInspectorModel >> initialize [
 	super initialize.
 	themeStyleRules := OrderedCollection new.
 	relatedStyleRules := OrderedCollection new.
-	selectorModel := CgtThemeSelectorModel new
+	selectorModel := CgtThemeSelectorModel new.
+	styleRuleResolver := CgtThemeStyleRuleResolver new
 ]
 
 { #category : 'accessing' }
@@ -62,6 +64,7 @@ CgtThemeStyleInspectorModel >> hierarchyRoot [
 { #category : 'accessing' }
 CgtThemeStyleInspectorModel >> hierarchyRoot: anElement [
 	hierarchyRoot := anElement.
+	self resolveActiveStyleRule.
 	self refreshSelectorModel.
 	^ self
 ]
@@ -107,6 +110,7 @@ CgtThemeStyleInspectorModel >> selectedElement [
 CgtThemeStyleInspectorModel >> selectedElement: anElement [
 	selectedElement := anElement.
 	selectedScopePath := anElement ifNil: [ nil ] ifNotNil: [ CgtElementPath anchorElement: anElement ].
+	self resolveActiveStyleRule.
 	self refreshSelectorModel.
 	^ self
 ]
@@ -118,7 +122,9 @@ CgtThemeStyleInspectorModel >> selectedScopePath [
 
 { #category : 'accessing' }
 CgtThemeStyleInspectorModel >> selectedScopePath: aCgtElementPath [
-	selectedScopePath := aCgtElementPath.
+	selectedScopePath := aCgtElementPath ifNil: [ selectedElement ifNil: [ nil ] ifNotNil: [ CgtElementPath anchorElement: selectedElement ] ].
+	self resolveActiveStyleRule.
+	self refreshSelectorModel.
 	^ self
 ]
 
@@ -134,6 +140,46 @@ CgtThemeStyleInspectorModel >> selectorModel: aCgtThemeSelectorModel [
 	^ self
 ]
 
+
+{ #category : 'accessing' }
+CgtThemeStyleInspectorModel >> styleRuleResolver [
+	^ styleRuleResolver ifNil: [ styleRuleResolver := CgtThemeStyleRuleResolver new ]
+]
+
+{ #category : 'accessing' }
+CgtThemeStyleInspectorModel >> styleRuleResolver: aCgtThemeStyleRuleResolver [
+	styleRuleResolver := aCgtThemeStyleRuleResolver ifNil: [ CgtThemeStyleRuleResolver new ].
+	self resolveActiveStyleRule.
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtThemeStyleInspectorModel >> configureForSelectedElement: anElement hierarchyRoot: aRootElement selectedScopePath: aCgtElementPath themeStyleRules: aCollection [
+	selectedElement := anElement.
+	hierarchyRoot := aRootElement.
+	selectedScopePath := aCgtElementPath ifNil: [ anElement ifNil: [ nil ] ifNotNil: [ CgtElementPath anchorElement: anElement ] ].
+	themeStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
+	self resolveActiveStyleRule.
+	self refreshSelectorModel.
+	^ self
+]
+
+{ #category : 'private' }
+CgtThemeStyleInspectorModel >> resolveActiveStyleRule [
+	| resolution |
+	resolution := self styleRuleResolver
+		resolutionForSelectedElement: selectedElement
+		scopePath: selectedScopePath
+		withinStyleRules: self themeStyleRules
+		hierarchyRoot: hierarchyRoot.
+	activeStyleRule := resolution activeStyleRule.
+	relatedStyleRules := resolution relatedStyleRules asOrderedCollection.
+	(activeStyleRule notNil and: [ (themeStyleRules includes: activeStyleRule) not ]) ifTrue: [
+		themeStyleRules := self themeStyleRules asOrderedCollection.
+		themeStyleRules addFirst: activeStyleRule ].
+	^ self
+]
+
 { #category : 'accessing' }
 CgtThemeStyleInspectorModel >> themeStyleRules [
 	^ themeStyleRules ifNil: [ #() ]
@@ -142,7 +188,7 @@ CgtThemeStyleInspectorModel >> themeStyleRules [
 { #category : 'accessing' }
 CgtThemeStyleInspectorModel >> themeStyleRules: aCollection [
 	themeStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
-	relatedStyleRules := themeStyleRules reject: [ :each | each == activeStyleRule ].
+	self resolveActiveStyleRule.
 	self refreshSelectorModel.
 	^ self
 ]
