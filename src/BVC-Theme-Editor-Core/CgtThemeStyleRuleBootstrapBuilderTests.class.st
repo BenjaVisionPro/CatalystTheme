@@ -39,7 +39,7 @@ CgtThemeStyleRuleBootstrapBuilderTests >> testFallsBackToSelectedElementWhenHier
 ]
 
 { #category : 'private' }
-CgtThemeStyleRuleBootstrapBuilderTests >> newTestElementWithId: aSymbol [
+CgtThemeStyleRuleBootstrapBuilderTests >> newTestElementWithId: aSymbol [.
 	^ CgtThemeSelectorTestElement new
 		id: (BlElementId named: aSymbol);
 		yourself

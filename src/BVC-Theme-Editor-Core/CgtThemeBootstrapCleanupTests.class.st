@@ -41,7 +41,7 @@ CgtThemeBootstrapCleanupTests >> testStyleRuleBootstrapClassSideEntryPointBuilds
 { #category : 'tests' }
 CgtThemeBootstrapCleanupTests >> testThemeSelectorNoLongerRespondsToPathBootstrapFactory [
 	<gtExample>
-	self deny: (CgtThemeSelector class canUnderstand: #selectorFromElementPath:)
+	self deny: (CgtThemeSelector class canUnderstand: #selectorFromElementPath:).
 	^ CgtThemeSelector
 
 ]
@@ -49,13 +49,13 @@ CgtThemeBootstrapCleanupTests >> testThemeSelectorNoLongerRespondsToPathBootstra
 { #category : 'tests' }
 CgtThemeBootstrapCleanupTests >> testThemeStyleRuleNoLongerRespondsToPathBootstrapFactory [
 	<gtExample>
-	self deny: (CgtThemeStyleRule class canUnderstand: #fromElementPath:)
+	self deny: (CgtThemeStyleRule class canUnderstand: #fromElementPath:).
 	^ CgtThemeStyleRule
 
 ]
 
 { #category : 'private' }
-CgtThemeBootstrapCleanupTests >> newTestElementWithId: aSymbol [
+CgtThemeBootstrapCleanupTests >> newTestElementWithId: aSymbol [.
 	^ CgtThemeSelectorTestElement new
 		id: (BlElementId named: aSymbol);
 		yourself

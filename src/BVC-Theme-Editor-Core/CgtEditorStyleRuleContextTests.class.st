@@ -42,19 +42,19 @@ CgtEditorStyleRuleContextTests >> testMatcherSelectorChangedEventAddsInspectedRu
 ]
 
 { #category : 'private' }
-CgtEditorStyleRuleContextTests >> newEditor [
+CgtEditorStyleRuleContextTests >> newEditor [.
 	^ CgtEditor new initializeWith: BlElement new
 ]
 
 { #category : 'private' }
-CgtEditorStyleRuleContextTests >> selectorForId: aSymbol [
+CgtEditorStyleRuleContextTests >> selectorForId: aSymbol [.
 	^ CgtThemeSimpleSelector new
 		addPredicate: (CgtThemeIdPredicate elementId: (BlElementId named: aSymbol));
 		yourself
 ]
 
 { #category : 'private' }
-CgtEditorStyleRuleContextTests >> styleRuleForSelector: aSelector [
+CgtEditorStyleRuleContextTests >> styleRuleForSelector: aSelector [.
 	^ CgtThemeStyleRule new
 		selector: aSelector;
 		yourself

@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'private' }
-CgtThemeSelectorRendererWidgetTests >> newTestElementWithId: anId [
+CgtThemeSelectorRendererWidgetTests >> newTestElementWithId: anId [.
 	^ CgtThemeSelectorTestElement new
 		id: anId;
 		yourself

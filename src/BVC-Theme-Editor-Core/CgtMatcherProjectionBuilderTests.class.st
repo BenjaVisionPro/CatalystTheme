@@ -166,21 +166,21 @@ CgtMatcherProjectionBuilderTests >> testAddsOtherRuleNodesForRelatedRuleContext 
 ]
 
 { #category : 'private' }
-CgtMatcherProjectionBuilderTests >> newTestElementWithId: aSymbol [
+CgtMatcherProjectionBuilderTests >> newTestElementWithId: aSymbol [.
 	^ CgtThemeSelectorTestElement new
 		id: (BlElementId named: aSymbol);
 		yourself
 ]
 
 { #category : 'private' }
-CgtMatcherProjectionBuilderTests >> selectorForId: aSymbol [
+CgtMatcherProjectionBuilderTests >> selectorForId: aSymbol [.
 	^ CgtThemeSimpleSelector new
 		addPredicate: (CgtThemeIdPredicate elementId: (BlElementId named: aSymbol));
 		yourself
 ]
 
 { #category : 'private' }
-CgtMatcherProjectionBuilderTests >> styleRuleForSelector: aSelector [
+CgtMatcherProjectionBuilderTests >> styleRuleForSelector: aSelector [.
 	^ CgtThemeStyleRule new
 		selector: aSelector;
 		yourself
@@ -204,7 +204,7 @@ CgtMatcherProjectionBuilderTests >> testBuildsLeadingCompactedSectionForSingleSe
 	self assert: leadingGap hiddenNodeCount equals: 2.
 	self assert: leadingGap representedElements asArray equals: { root. middle }.
 	self assert: (projection relations anySatisfy: [ :each |
-		each kind = #compaction and: [ each toNode kind = #selectedElement ] ])
+		each kind = #compaction and: [ each toNode kind = #selectedElement ] ]).
 	^ projection
 
 ]
@@ -231,7 +231,7 @@ CgtMatcherProjectionBuilderTests >> testBuildsLeadingAndTrailingCompactedSection
 	self assert: (projection relations anySatisfy: [ :each |
 		each kind = #compaction and: [ each toNode kind = #selectedElement ] ]).
 	self assert: (projection relations anySatisfy: [ :each |
-		each kind = #compaction and: [ each fromNode kind = #selectedElement ] ])
+		each kind = #compaction and: [ each fromNode kind = #selectedElement ] ]).
 	^ CgtMatcherProjectionBuilder
 ]
 
@@ -284,7 +284,7 @@ CgtMatcherProjectionBuilderTests >> testRevealsDescendantGapWhenVisibilityStateM
 	self assert: (projection nodes noneSatisfy: [ :each |
 		each kind = #compactedSection and: [ each representedElements includes: middle ] ]).
 	self assert: (projection nodes anySatisfy: [ :each |
-		each representedElement == middle and: [ each isEditable ] ])
+		each representedElement == middle and: [ each isEditable ] ]).
 	^ projection
 
 ]

@@ -10,21 +10,21 @@ Class {
 }
 
 { #category : 'private' }
-CgtThemeSelectorWidgetTests >> newTestElementWithId: anId [
+CgtThemeSelectorWidgetTests >> newTestElementWithId: anId [.
 	^ CgtThemeSelectorTestElement new
 		id: anId;
 		yourself
 ]
 
 { #category : 'private' }
-CgtThemeSelectorWidgetTests >> selectorForId: aSymbol [
+CgtThemeSelectorWidgetTests >> selectorForId: aSymbol [.
 	^ CgtThemeSimpleSelector new
 		addPredicate: (CgtThemeIdPredicate elementId: aSymbol);
 		yourself
 ]
 
 { #category : 'private' }
-CgtThemeSelectorWidgetTests >> styleRuleForSelector: aSelector [
+CgtThemeSelectorWidgetTests >> styleRuleForSelector: aSelector [.
 	^ CgtThemeStyleRule new
 		selector: aSelector;
 		yourself
@@ -253,7 +253,7 @@ CgtThemeSelectorWidgetTests >> testShowOtherRuleContextDelegatesToModelAndRefres
 	self assert: widget projection otherRuleNodes isEmpty.
 	widget showOtherRuleContext.
 	self assert: widget visibilityState showsOtherRuleContext.
-	self deny: widget projection otherRuleNodes isEmpty
+	self deny: widget projection otherRuleNodes isEmpty.
 	^ CgtThemeSelectorWidget
 ]
 
@@ -279,7 +279,7 @@ CgtThemeSelectorWidgetTests >> testOtherRuleContextToggleEventDelegatesToModelAn
 	event := CgtThemeSelectorOtherRuleContextToggledEvent new.
 	widget selectorOtherRuleContextToggledEvent: event.
 	self assert: widget visibilityState showsOtherRuleContext.
-	self deny: widget projection otherRuleNodes isEmpty
+	self deny: widget projection otherRuleNodes isEmpty.
 	^ CgtThemeSelectorWidget
 ]
 

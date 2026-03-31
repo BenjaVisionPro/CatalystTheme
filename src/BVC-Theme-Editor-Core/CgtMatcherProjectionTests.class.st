@@ -90,13 +90,13 @@ CgtMatcherProjectionTests >> testProjectionSeparatesCurrentRuleNodesFromOtherRul
 	self assert: projection otherRuleNodes asArray equals: { otherRuleNode }.
 	self assert: (projection nodesOfKind: #compactedSection) asArray equals: { compactedNode }.
 	self assert: compactedNode hiddenNodeCount equals: 3.
-	self deny: compactedNode isEditable
+	self deny: compactedNode isEditable.
 	^ node
 
 ]
 
 { #category : 'private' }
-CgtMatcherProjectionTests >> newTestElementWithId: aSymbol [
+CgtMatcherProjectionTests >> newTestElementWithId: aSymbol [.
 	^ CgtThemeSelectorTestElement new
 		id: (BlElementId named: aSymbol);
 		yourself

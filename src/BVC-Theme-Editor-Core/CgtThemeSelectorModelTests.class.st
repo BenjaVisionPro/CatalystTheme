@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'private' }
-CgtThemeSelectorModelTests >> newTestElementWithId: anId [
+CgtThemeSelectorModelTests >> newTestElementWithId: anId [.
 	^ CgtThemeSelectorTestElement new
 		id: anId;
 		yourself
@@ -173,7 +173,7 @@ CgtThemeSelectorModelTests >> testShowOtherRuleContextRebuildsProjectionWithOthe
 	self assert: model projection otherRuleNodes isEmpty.
 	model showOtherRuleContext.
 	self assert: model visibilityState showsOtherRuleContext.
-	self deny: model projection otherRuleNodes isEmpty
+	self deny: model projection otherRuleNodes isEmpty.
 	^ model
 
 ]
@@ -276,7 +276,7 @@ CgtThemeSelectorModelTests >> testShowingOtherRuleContextClearsTemporaryReveals 
 	model revealCompactedProjectionNode: compactedNode.
 	self assert: model visibilityState hasExpandedGaps.
 	model showOtherRuleContext.
-	self deny: model visibilityState hasExpandedGaps
+	self deny: model visibilityState hasExpandedGaps.
 	^ model
 
 ]
@@ -317,7 +317,7 @@ CgtThemeSelectorModelTests >> testHidingOtherRuleContextClearsTemporaryReveals [
 	compactedNode ifNotNil: [ model revealCompactedProjectionNode: compactedNode ].
 	self assert: model visibilityState hasExpandedGaps.
 	model hideOtherRuleContext.
-	self deny: model visibilityState hasExpandedGaps
+	self deny: model visibilityState hasExpandedGaps.
 	^ model
 
 ]
@@ -347,7 +347,7 @@ CgtThemeSelectorModelTests >> testSelectedElementChangeClearsTemporaryReveals [
 	model revealCompactedProjectionNode: compactedNode.
 	self assert: model visibilityState hasExpandedGaps.
 	model selectedElement: sibling.
-	self deny: model visibilityState hasExpandedGaps
+	self deny: model visibilityState hasExpandedGaps.
 	^ model
 
 ]

@@ -49,7 +49,7 @@ CgtMatcherLayoutPolicyTests >> testVerticalEdgeConnectionsPointDownwardThroughCo
 	<gtExample>
 	self
 		assert: (CgtMatcherLayoutPolicy new edgeConnectionSelectorsForOrientation: #vertical)
-		equals: #(fromCenterBottom toCenterTop)
+		equals: #(fromCenterBottom toCenterTop).
 	^ CgtMatcherLayoutPolicy new
 
 ]

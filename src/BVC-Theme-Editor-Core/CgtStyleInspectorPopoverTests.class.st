@@ -106,21 +106,21 @@ CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionWithRelatedRuleConte
 ]
 
 { #category : 'private' }
-CgtStyleInspectorPopoverTests >> newTestElementWithId: aSymbol [
+CgtStyleInspectorPopoverTests >> newTestElementWithId: aSymbol [.
 	^ CgtThemeSelectorTestElement new
 		id: (BlElementId named: aSymbol);
 		yourself
 ]
 
 { #category : 'private' }
-CgtStyleInspectorPopoverTests >> selectorForId: aSymbol [
+CgtStyleInspectorPopoverTests >> selectorForId: aSymbol [.
 	^ CgtThemeSimpleSelector new
 		addPredicate: (CgtThemeIdPredicate elementId: (BlElementId named: aSymbol));
 		yourself
 ]
 
 { #category : 'private' }
-CgtStyleInspectorPopoverTests >> styleRuleForSelector: aSelector [
+CgtStyleInspectorPopoverTests >> styleRuleForSelector: aSelector [.
 	^ CgtThemeStyleRule new
 		selector: aSelector;
 		yourself
@@ -235,7 +235,7 @@ CgtStyleInspectorPopoverTests >> testShowOtherRuleContextDelegatesToSelectorWidg
 	self assert: popover selectorWidget projection otherRuleNodes isEmpty.
 	popover showOtherRuleContext.
 	self assert: popover selectorModel visibilityState showsOtherRuleContext.
-	self deny: popover selectorWidget projection otherRuleNodes isEmpty
+	self deny: popover selectorWidget projection otherRuleNodes isEmpty.
 	^ CgtStyleInspectorPopover new
 ]
 

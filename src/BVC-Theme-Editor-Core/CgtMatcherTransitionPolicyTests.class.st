@@ -14,7 +14,7 @@ CgtMatcherTransitionPolicyTests >> testHorizontalCorridorExpandsTowardLeft [
 	<gtExample>
 	self
 		assert: (CgtMatcherTransitionPolicy new leadingExpansionSideForOrientation: #horizontal)
-		equals: #left
+		equals: #left.
 	^ CgtMatcherTransitionPolicy new
 
 ]
@@ -32,7 +32,7 @@ CgtMatcherTransitionPolicyTests >> testVerticalCorridorExpandsTowardUp [
 	<gtExample>
 	self
 		assert: (CgtMatcherTransitionPolicy new leadingExpansionSideForOrientation: #vertical)
-		equals: #up
+		equals: #up.
 	^ CgtMatcherTransitionPolicy new
 
 ]
@@ -42,7 +42,7 @@ CgtMatcherTransitionPolicyTests >> testVerticalRevealOffsetMovesUpward [
 	<gtExample>
 	self
 		assert: (CgtMatcherTransitionPolicy new graphRevealOffsetForOrientation: #vertical)
-		equals: (0 @ -24)
+		equals: (0 @ -24).
 	^ CgtMatcherTransitionPolicy new
 ]
 
@@ -298,7 +298,7 @@ CgtMatcherTransitionPolicyTests >> testShouldAnimateStructuralRefreshPlanOnlyFor
 	stablePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #stable; yourself.
 	self assert: (policy shouldAnimateStructuralRefreshPlan: revealPlan).
 	self assert: (policy shouldAnimateStructuralRefreshPlan: collapsePlan).
-	self deny: (policy shouldAnimateStructuralRefreshPlan: stablePlan)
+	self deny: (policy shouldAnimateStructuralRefreshPlan: stablePlan).
 	^ CgtMatcherTransitionPolicy new
 ]
 

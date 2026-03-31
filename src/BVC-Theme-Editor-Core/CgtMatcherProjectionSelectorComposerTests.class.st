@@ -70,7 +70,7 @@ CgtMatcherProjectionSelectorComposerTests >> testIgnoresCompactedNodesWhenRecomp
 ]
 
 { #category : 'private' }
-CgtMatcherProjectionSelectorComposerTests >> newTestElementWithId: aSymbol [
+CgtMatcherProjectionSelectorComposerTests >> newTestElementWithId: aSymbol [.
 	^ CgtThemeSelectorTestElement new
 		id: (BlElementId named: aSymbol);
 		yourself

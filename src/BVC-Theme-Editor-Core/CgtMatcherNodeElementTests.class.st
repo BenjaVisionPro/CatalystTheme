@@ -36,7 +36,7 @@ CgtMatcherNodeElementTests >> testNestedHoverForwardingPublishesSingleHoverAndSi
 ]
 
 { #category : 'private' }
-CgtMatcherNodeElementTests >> newTestElementWithId: aSymbol [
+CgtMatcherNodeElementTests >> newTestElementWithId: aSymbol [.
 	^ CgtThemeSelectorTestElement new
 		id: (BlElementId named: aSymbol);
 		yourself

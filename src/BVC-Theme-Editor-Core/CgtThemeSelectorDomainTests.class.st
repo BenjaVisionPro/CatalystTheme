@@ -27,7 +27,7 @@ CgtThemeSelectorDomainTests >> testClassAndIdSimpleSelectorRoundTripsThroughStep
 	
 	self assert: (rebuiltSelector matchesElement: element).
 	self deny: (rebuiltSelector matchesElement: sameClassWrongId).
-	self deny: (rebuiltSelector matchesElement: wrongClass)
+	self deny: (rebuiltSelector matchesElement: wrongClass).
 	^ selector
 
 ]
@@ -49,7 +49,7 @@ CgtThemeSelectorDomainTests >> testChildCombinatorRoundTripsThroughSteps [
 	
 	self assert: rebuiltSelector displayString equals: selector displayString.
 	self assert: (rebuiltSelector matchesElement: child).
-	self deny: (rebuiltSelector matchesElement: grandChild)
+	self deny: (rebuiltSelector matchesElement: grandChild).
 	^ selector
 
 ]
@@ -71,20 +71,20 @@ CgtThemeSelectorDomainTests >> testDescendantCombinatorRoundTripsThroughSteps [
 	
 	self assert: rebuiltSelector displayString equals: selector displayString.
 	self assert: (rebuiltSelector matchesElement: leaf).
-	self deny: (rebuiltSelector matchesElement: middle)
+	self deny: (rebuiltSelector matchesElement: middle).
 	^ selector
 
 ]
 
 { #category : 'private' }
-CgtThemeSelectorDomainTests >> newTestElementWithId: aSymbol [
+CgtThemeSelectorDomainTests >> newTestElementWithId: aSymbol [.
 	^ CgtThemeSelectorTestElement new
 		id: (BlElementId named: aSymbol);
 		yourself
 ]
 
 { #category : 'private' }
-CgtThemeSelectorDomainTests >> selectorForId: aSymbol [
+CgtThemeSelectorDomainTests >> selectorForId: aSymbol [.
 	^ CgtThemeSimpleSelector new
 		addPredicate: (CgtThemeIdPredicate elementId: (BlElementId named: aSymbol));
 		yourself

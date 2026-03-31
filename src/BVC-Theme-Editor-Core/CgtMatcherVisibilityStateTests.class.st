@@ -29,7 +29,7 @@ CgtMatcherVisibilityStateTests >> testClearExpandedGapsRemovesExpansionState [
 	gapIdentity := #(#root #middle).
 	state expandGapIdentity: gapIdentity.
 	state clearExpandedGaps.
-	self deny: (state isExpandedForGapIdentity: gapIdentity)
+	self deny: (state isExpandedForGapIdentity: gapIdentity).
 	^ CgtMatcherVisibilityState
 ]
 

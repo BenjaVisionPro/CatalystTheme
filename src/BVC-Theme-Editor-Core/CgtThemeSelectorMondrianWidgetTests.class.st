@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'private' }
-CgtThemeSelectorMondrianWidgetTests >> newTestElementWithId: anId [
+CgtThemeSelectorMondrianWidgetTests >> newTestElementWithId: anId [.
 	^ CgtThemeSelectorTestElement new
 		id: (BlElementId named: anId);
 		yourself
@@ -93,7 +93,7 @@ CgtThemeSelectorMondrianWidgetTests >> testForwardsMatcherNodeEditEvents [
 	self assert: forwardedEvent notNil.
 	self assert: forwardedEvent projectionNode identicalTo: node.
 	self assert: forwardedEvent shouldMatch.
-	self deny: node matchByClass
+	self deny: node matchByClass.
 	^ projection
 
 ]
