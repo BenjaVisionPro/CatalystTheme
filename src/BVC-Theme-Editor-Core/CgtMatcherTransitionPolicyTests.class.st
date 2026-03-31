@@ -84,3 +84,60 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshRevealOffsetUsesLeadingC
 	self assert: (policy structuralRefreshRevealOffsetForProjection: leadingProjection orientation: #vertical) equals: (0 @ -24).
 	self assert: (policy structuralRefreshRevealOffsetForProjection: trailingProjection orientation: #vertical) equals: (0 @ 0)
 ]
+
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesRevealWhenLeadingCompactionAppears [
+	| oldProjection newProjection plan oldSelected newSelected |
+	oldSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
+	newSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
+	oldProjection := CgtMatcherProjection new.
+	oldProjection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: oldSelected;
+		yourself).
+	newProjection := CgtMatcherProjection new.
+	newProjection addNode: ((CgtMatcherProjectionNode kind: #compactedSection)
+		representedElements: { CgtThemeSelectorTestElement new className: 'Hidden'; yourself };
+		yourself).
+	newProjection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: newSelected;
+		yourself).
+	newProjection addRelation: (CgtMatcherProjectionRelation
+		from: newProjection leadingCompactedProjectionNode
+		to: newProjection selectedProjectionNode
+		kind: #compaction).
+	plan := CgtMatcherTransitionPolicy new
+		structuralRefreshPlanFrom: oldProjection
+		to: newProjection
+		orientation: #vertical.
+	self assert: plan isReveal.
+	self assert: plan revealOffset equals: (0 @ -24)
+]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesCollapseWhenLeadingCompactionDisappears [
+	| oldProjection newProjection plan oldSelected newSelected |
+	oldSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
+	newSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
+	oldProjection := CgtMatcherProjection new.
+	oldProjection addNode: ((CgtMatcherProjectionNode kind: #compactedSection)
+		representedElements: { CgtThemeSelectorTestElement new className: 'Hidden'; yourself };
+		yourself).
+	oldProjection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: oldSelected;
+		yourself).
+	oldProjection addRelation: (CgtMatcherProjectionRelation
+		from: oldProjection leadingCompactedProjectionNode
+		to: oldProjection selectedProjectionNode
+		kind: #compaction).
+	newProjection := CgtMatcherProjection new.
+	newProjection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: newSelected;
+		yourself).
+	plan := CgtMatcherTransitionPolicy new
+		structuralRefreshPlanFrom: oldProjection
+		to: newProjection
+		orientation: #vertical.
+	self assert: plan isCollapse.
+	self assert: plan revealOffset equals: (0 @ 24)
+]

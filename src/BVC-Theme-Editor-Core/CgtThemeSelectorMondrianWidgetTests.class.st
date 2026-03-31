@@ -273,3 +273,31 @@ CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshQueriesTransitionPol
 	self assert: widget structuralRefreshRevealOffset equals: (policy structuralRefreshRevealOffsetForProjection: projection orientation: #vertical).
 	self assert: widget structuralRefreshAnchorProjectionNode identicalTo: (policy structuralRefreshAnchorProjectionNodeFor: projection)
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorMondrianWidgetTests >> test_projectionChangeBuildsStructuralRefreshPlanFromPreviousProjection [
+	| widget oldProjection newProjection oldSelected newSelected |
+	widget := CgtThemeSelectorMondrianWidget new.
+	oldSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
+	newSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
+	oldProjection := CgtMatcherProjection new.
+	oldProjection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: oldSelected;
+		yourself).
+	widget projection: oldProjection.
+	newProjection := CgtMatcherProjection new.
+	newProjection addNode: ((CgtMatcherProjectionNode kind: #compactedSection)
+		representedElements: { CgtThemeSelectorTestElement new className: 'Hidden'; yourself };
+		yourself).
+	newProjection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: newSelected;
+		yourself).
+	newProjection addRelation: (CgtMatcherProjectionRelation
+		from: newProjection leadingCompactedProjectionNode
+		to: newProjection selectedProjectionNode
+		kind: #compaction).
+	widget projection: newProjection.
+	self assert: widget lastStructuralRefreshPlan notNil.
+	self assert: widget lastStructuralRefreshPlan isReveal
+]

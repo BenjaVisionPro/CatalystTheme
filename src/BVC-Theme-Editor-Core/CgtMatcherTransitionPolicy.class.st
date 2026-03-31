@@ -57,6 +57,39 @@ CgtMatcherTransitionPolicy >> leadingExpansionSideForOrientation: anOrientation 
 ]
 
 
+
+
+{ #category : 'querying' }
+CgtMatcherTransitionPolicy >> structuralRefreshPlanFrom: anOldProjection to: aNewProjection orientation: anOrientation [
+	| plan offset |
+	plan := CgtMatcherStructuralRefreshPlan new.
+	plan anchorProjectionNode: (self structuralRefreshAnchorProjectionNodeFor: aNewProjection).
+	offset := 0 @ 0.
+	(aNewProjection notNil and: [ anOldProjection isNil ]) ifTrue: [
+		offset := self structuralRefreshRevealOffsetForProjection: aNewProjection orientation: anOrientation.
+		plan transitionKind: ((offset = (0 @ 0)) ifTrue: [ #stable ] ifFalse: [ #reveal ]).
+		plan revealOffset: offset.
+		^ plan ].
+	(anOldProjection isNil or: [ aNewProjection isNil ]) ifTrue: [
+		plan transitionKind: #stable.
+		plan revealOffset: offset.
+		^ plan ].
+	(anOldProjection hasLeadingCompactedProjectionNode = aNewProjection hasLeadingCompactedProjectionNode)
+		ifTrue: [
+			plan transitionKind: #stable.
+			plan revealOffset: offset ]
+		ifFalse: [
+			aNewProjection hasLeadingCompactedProjectionNode
+				ifTrue: [
+					plan transitionKind: #reveal.
+					offset := self graphRevealOffsetForOrientation: anOrientation ]
+				ifFalse: [
+					plan transitionKind: #collapse.
+					offset := (self graphRevealOffsetForOrientation: anOrientation) negated ].
+			plan revealOffset: offset ].
+	^ plan
+]
+
 { #category : 'querying' }
 CgtMatcherTransitionPolicy >> structuralRefreshAnchorProjectionNodeFor: aProjection [
 	aProjection ifNil: [ ^ nil ].

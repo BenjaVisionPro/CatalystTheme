@@ -11,7 +11,9 @@ Class {
 		'relationVisualPolicy',
 		'layoutPolicy',
 		'transitionPolicy',
-		'structuralRefreshAnimationToken'
+		'structuralRefreshAnimationToken',
+		'previousProjection',
+		'lastStructuralRefreshPlan'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -28,7 +30,9 @@ CgtThemeSelectorMondrianWidget >> initialize [
 		padding: layoutPolicy widgetPadding.
 	relationVisualPolicy := CgtMatcherRelationVisualPolicy new.
 	transitionPolicy := CgtMatcherTransitionPolicy new.
-	structuralRefreshAnimationToken := 0
+	structuralRefreshAnimationToken := 0.
+	previousProjection := nil.
+	lastStructuralRefreshPlan := nil
 ]
 
 { #category : 'accessing' }
@@ -41,6 +45,12 @@ CgtThemeSelectorMondrianWidget >> graphElement [
 	^ graphElement
 ]
 
+{ #category : 'accessing' }
+CgtThemeSelectorMondrianWidget >> projection: aCgtMatcherProjection [
+	previousProjection := projection.
+	^ super projection: aCgtMatcherProjection
+]
+
 { #category : 'rendering' }
 CgtThemeSelectorMondrianWidget >> refreshContents [
 	| newLegend newGraph shouldAnimate |
@@ -49,6 +59,7 @@ CgtThemeSelectorMondrianWidget >> refreshContents [
 		graphElement := nil.
 		mondrian := nil.
 		^ self ].
+	lastStructuralRefreshPlan := self structuralRefreshPlan.
 	newLegend := CgtMatcherLegendElement new.
 	mondrian := self buildMondrian.
 	newGraph := mondrian root.
@@ -60,7 +71,8 @@ CgtThemeSelectorMondrianWidget >> refreshContents [
 	self addChild: newLegend.
 	self addChild: newGraph.
 	graphElement := newGraph.
-	shouldAnimate ifTrue: [ self animateStructuralRefreshFor: newLegend and: newGraph ]
+	shouldAnimate ifTrue: [ self animateStructuralRefreshFor: newLegend and: newGraph ].
+	previousProjection := projection
 ]
 
 { #category : 'rendering' }
@@ -127,15 +139,21 @@ CgtThemeSelectorMondrianWidget >> animateStructuralRefreshFor: aLegendElement an
 
 
 { #category : 'private - animation' }
-CgtThemeSelectorMondrianWidget >> structuralRefreshRevealOffset [
+CgtThemeSelectorMondrianWidget >> structuralRefreshPlan [
 	^ transitionPolicy
-		structuralRefreshRevealOffsetForProjection: projection
+		structuralRefreshPlanFrom: previousProjection
+		to: projection
 		orientation: layoutPolicy corridorOrientation
 ]
 
 { #category : 'private - animation' }
+CgtThemeSelectorMondrianWidget >> structuralRefreshRevealOffset [
+	^ (lastStructuralRefreshPlan ifNil: [ self structuralRefreshPlan ]) revealOffset
+]
+
+{ #category : 'private - animation' }
 CgtThemeSelectorMondrianWidget >> structuralRefreshAnchorProjectionNode [
-	^ transitionPolicy structuralRefreshAnchorProjectionNodeFor: projection
+	^ (lastStructuralRefreshPlan ifNil: [ self structuralRefreshPlan ]) anchorProjectionNode
 ]
 
 { #category : 'private - animation' }
@@ -162,6 +180,11 @@ CgtThemeSelectorMondrianWidget >> transitionPolicy [
 { #category : 'accessing' }
 CgtThemeSelectorMondrianWidget >> structuralRefreshAnimationToken [
 	^ structuralRefreshAnimationToken ifNil: [ 0 ]
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorMondrianWidget >> lastStructuralRefreshPlan [
+	^ lastStructuralRefreshPlan
 ]
 
 { #category : 'rendering' }
