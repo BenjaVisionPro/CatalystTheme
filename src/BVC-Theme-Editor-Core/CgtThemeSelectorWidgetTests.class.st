@@ -125,6 +125,15 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 ]
 
 
+
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testDefaultRendererSuperclassIsSelectorRendererWidget [
+	self assert: CgtThemeSelectorMondrianWidget superclass equals: CgtThemeSelectorRendererWidget.
+	self assert: CgtThemeSelectorBreadcrumbWidget superclass equals: CgtThemeSelectorRendererWidget.
+	self assert: CgtThemeSelectorCompactWidget superclass equals: CgtThemeSelectorRendererWidget
+]
+
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testHostsConcreteSelectorRendererWidget [
 	| widget |

@@ -4,10 +4,7 @@ I am an early compact custom renderer for the theme selector seam. I render a su
 "
 Class {
 	#name : 'CgtThemeSelectorCompactWidget',
-	#superclass : 'BrVerticalPane',
-	#instVars : [
-		'projection'
-	],
+	#superclass : 'CgtThemeSelectorRendererWidget',
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
 }
@@ -19,18 +16,6 @@ CgtThemeSelectorCompactWidget >> initialize [
 		vFitContent;
 		hMatchParent;
 		cellSpacing: 4
-]
-
-{ #category : 'accessing' }
-CgtThemeSelectorCompactWidget >> projection [
-	^ projection
-]
-
-{ #category : 'accessing' }
-CgtThemeSelectorCompactWidget >> projection: aCgtMatcherProjection [
-	projection := aCgtMatcherProjection.
-	self refreshContents.
-	^ self
 ]
 
 { #category : 'rendering' }

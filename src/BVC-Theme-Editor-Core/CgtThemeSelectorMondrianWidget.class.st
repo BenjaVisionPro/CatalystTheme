@@ -4,9 +4,8 @@ I am the Mondrian-based concrete renderer for the theme selector UI seam. I rend
 "
 Class {
 	#name : 'CgtThemeSelectorMondrianWidget',
-	#superclass : 'BrVerticalPane',
+	#superclass : 'CgtThemeSelectorRendererWidget',
 	#instVars : [
-		'projection',
 		'mondrian',
 		'graphElement',
 		'relationVisualPolicy',
@@ -33,18 +32,6 @@ CgtThemeSelectorMondrianWidget >> initialize [
 ]
 
 { #category : 'accessing' }
-CgtThemeSelectorMondrianWidget >> projection [
-	^ projection
-]
-
-{ #category : 'accessing' }
-CgtThemeSelectorMondrianWidget >> projection: aCgtMatcherProjection [
-	projection := aCgtMatcherProjection.
-	self refreshContents.
-	^ self
-]
-
-{ #category : 'accessing' }
 CgtThemeSelectorMondrianWidget >> mondrian [
 	^ mondrian
 ]
@@ -52,11 +39,6 @@ CgtThemeSelectorMondrianWidget >> mondrian [
 { #category : 'accessing' }
 CgtThemeSelectorMondrianWidget >> graphElement [
 	^ graphElement
-]
-
-{ #category : 'accessing' }
-CgtThemeSelectorMondrianWidget >> currentSelector [
-	^ CgtMatcherProjectionSelectorComposer selectorForProjection: projection
 ]
 
 { #category : 'rendering' }

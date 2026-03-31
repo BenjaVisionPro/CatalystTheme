@@ -30,6 +30,8 @@ CgtThemeSelectorWidget >> initialize [
 
 { #category : 'initialization' }
 CgtThemeSelectorWidget >> buildRendererWidget [
+	(rendererWidgetClass inheritsFrom: CgtThemeSelectorRendererWidget) ifFalse: [
+		self error: 'Selector renderer widgets must subclass CgtThemeSelectorRendererWidget' ].
 	^ rendererWidgetClass new
 ]
 

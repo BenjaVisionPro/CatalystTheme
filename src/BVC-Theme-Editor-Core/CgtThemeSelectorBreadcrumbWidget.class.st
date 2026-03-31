@@ -4,10 +4,7 @@ I am a simple non-Mondrian renderer for the theme selector model seam. I render 
 "
 Class {
 	#name : 'CgtThemeSelectorBreadcrumbWidget',
-	#superclass : 'BrHorizontalPane',
-	#instVars : [
-		'projection'
-	],
+	#superclass : 'CgtThemeSelectorRendererWidget',
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
 }
@@ -19,18 +16,6 @@ CgtThemeSelectorBreadcrumbWidget >> initialize [
 		vFitContent;
 		hMatchParent;
 		cellSpacing: 6
-]
-
-{ #category : 'accessing' }
-CgtThemeSelectorBreadcrumbWidget >> projection [
-	^ projection
-]
-
-{ #category : 'accessing' }
-CgtThemeSelectorBreadcrumbWidget >> projection: aCgtMatcherProjection [
-	projection := aCgtMatcherProjection.
-	self refreshContents.
-	^ self
 ]
 
 { #category : 'rendering' }
