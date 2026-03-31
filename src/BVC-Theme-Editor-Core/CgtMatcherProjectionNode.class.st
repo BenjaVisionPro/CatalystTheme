@@ -76,7 +76,9 @@ CgtMatcherProjectionNode >> representedElement: anElement [
 		elementId := nil.
 		^ self ].
 	className := anElement class name.
-	elementId := anElement id.
+	elementId := (anElement respondsTo: #id)
+		ifTrue: [ anElement id ]
+		ifFalse: [ nil ].
 	^ self
 ]
 

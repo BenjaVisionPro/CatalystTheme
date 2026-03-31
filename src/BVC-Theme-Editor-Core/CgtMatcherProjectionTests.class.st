@@ -50,6 +50,18 @@ CgtMatcherProjectionTests >> testProjectionNodeCarriesRuleMembershipAndMatchStat
 	self assert: node matchById
 ]
 
+
+
+{ #category : 'tests' }
+CgtMatcherProjectionTests >> testProjectionNodeAllowsGenericRepresentedElementWithoutId [
+	| element node |
+	element := Object new.
+	node := CgtMatcherProjectionNode kind: #selectedElement.
+	node representedElement: element.
+	self assert: node representedElement identicalTo: element.
+	self assert: node className equals: Object name.
+	self assert: node elementId isNil
+]
 { #category : 'tests' }
 CgtMatcherProjectionTests >> testProjectionSeparatesCurrentRuleNodesFromOtherRuleNodes [
 	| projection selectedNode otherRuleNode compactedNode |

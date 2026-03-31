@@ -43,7 +43,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshAnchorUsesFollowingVisib
 		hiddenNodeCount: 2;
 		yourself.
 	selected := (CgtMatcherProjectionNode kind: #selectedElement)
-		representedElement: Object new;
+		representedElement: (CgtThemeSelectorTestElement named: #selected id: #selected);
 		yourself.
 	relation := CgtMatcherProjectionRelation from: leadingGap to: selected kind: #compaction.
 	projection := CgtMatcherProjection new.
@@ -60,7 +60,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshAnchorUsesFollowingVisib
 CgtMatcherTransitionPolicyTests >> testStructuralRefreshRevealOffsetUsesLeadingCompactedGapOnly [
 	| leadingProjection trailingProjection selected leadingGap trailingGap relation policy |
 	selected := (CgtMatcherProjectionNode kind: #selectedElement)
-		representedElement: Object new;
+		representedElement: (CgtThemeSelectorTestElement named: #selected id: #selected);
 		yourself.
 	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
 		hiddenNodeCount: 2;
