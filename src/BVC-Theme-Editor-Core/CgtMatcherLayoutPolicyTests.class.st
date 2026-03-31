@@ -12,7 +12,7 @@ Class {
 { #category : 'tests' }
 CgtMatcherLayoutPolicyTests >> testDefaultCorridorOrientationIsVertical [
 	<gtExample>
-	self assert: CgtMatcherLayoutPolicy new corridorOrientation equals: #vertical
+	self assert: CgtMatcherLayoutPolicy new corridorOrientation equals: #vertical.
 	^ CgtMatcherLayoutPolicy new
 
 ]
@@ -20,7 +20,7 @@ CgtMatcherLayoutPolicyTests >> testDefaultCorridorOrientationIsVertical [
 { #category : 'tests' }
 CgtMatcherLayoutPolicyTests >> testNodeWidthIsCompact [
 	<gtExample>
-	self assert: CgtMatcherLayoutPolicy new nodeWidth equals: 180
+	self assert: CgtMatcherLayoutPolicy new nodeWidth equals: 180.
 	^ CgtMatcherLayoutPolicy new
 
 ]
@@ -28,7 +28,7 @@ CgtMatcherLayoutPolicyTests >> testNodeWidthIsCompact [
 { #category : 'tests' }
 CgtMatcherLayoutPolicyTests >> testPopoverMatcherHeightLeavesRoomForLabels [
 	<gtExample>
-	self assert: CgtMatcherLayoutPolicy new popoverMatcherHeight equals: 260
+	self assert: CgtMatcherLayoutPolicy new popoverMatcherHeight equals: 260.
 	^ CgtMatcherLayoutPolicy new
 ]
 
@@ -39,7 +39,7 @@ CgtMatcherLayoutPolicyTests >> testSelectedNodeIsWiderThanContextNode [
 	| policy |
 	policy := CgtMatcherLayoutPolicy new.
 	self assert: policy selectedNodeWidth > policy contextNodeWidth.
-	self assert: policy scopeNodeWidth > policy compactedGapWidth
+	self assert: policy scopeNodeWidth > policy compactedGapWidth.
 	^ CgtMatcherLayoutPolicy new
 
 ]

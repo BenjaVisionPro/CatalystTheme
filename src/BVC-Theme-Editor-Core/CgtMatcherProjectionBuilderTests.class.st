@@ -32,7 +32,7 @@ CgtMatcherProjectionBuilderTests >> testBuildsCompactedSectionForDescendantGap [
 	self assert: projection relations size equals: 2.
 	self assert: projection relations first kind equals: #compaction.
 	self assert: projection relations second kind equals: #matcher.
-	self assert: projection relations second combinator equals: #descendant
+	self assert: projection relations second combinator equals: #descendant.
 	^ projection
 
 ]
@@ -55,7 +55,7 @@ CgtMatcherProjectionBuilderTests >> testBuildsProjectionForSelectedElementAtTerm
 	self assert: projection currentRuleNodes size equals: 2.
 	self assert: projection relations size equals: 1.
 	self assert: projection relations first kind equals: #matcher.
-	self assert: projection relations first combinator equals: #child
+	self assert: projection relations first combinator equals: #child.
 	^ projection
 
 ]
@@ -77,7 +77,7 @@ CgtMatcherProjectionBuilderTests >> testBuildsProjectionWithDownstreamScopeWhenS
 	self assert: (projection nodes collect: [ :each | each kind ]) asArray equals: #(selectedElement selectedChildScope).
 	self assert: projection currentRuleNodes size equals: 2.
 	self assert: projection relations first combinator equals: #child.
-	self assert: projection nodes second representedElement identicalTo: child
+	self assert: projection nodes second representedElement identicalTo: child.
 	^ projection
 
 ]
@@ -100,7 +100,7 @@ CgtMatcherProjectionBuilderTests >> testFallsBackToStandaloneSelectedNodeWhenRul
 	self assert: projection nodes size equals: 1.
 	self assert: projection nodes first kind equals: #selectedElement.
 	self deny: projection nodes first isInCurrentRule.
-	self assert: projection relations isEmpty
+	self assert: projection relations isEmpty.
 	^ CgtMatcherProjectionBuilder
 ]
 
@@ -127,7 +127,7 @@ CgtMatcherProjectionBuilderTests >> testMarksSelectedNodeAsInOtherRuleWhenRelate
 		visibilityState: visibilityState.
 	selectedNode := projection nodes detect: [ :each | each kind = #selectedElement ].
 	self assert: selectedNode isInCurrentRule.
-	self assert: selectedNode isInOtherRule
+	self assert: selectedNode isInOtherRule.
 	^ projection
 
 ]
@@ -160,7 +160,7 @@ CgtMatcherProjectionBuilderTests >> testAddsOtherRuleNodesForRelatedRuleContext 
 	otherRelation := projection relations detect: [ :each | each kind = #otherRule ].
 	self assert: otherRelation fromNode representedElement identicalTo: selected.
 	self assert: otherRelation toNode representedElement identicalTo: sibling.
-	self assert: otherRelation combinator equals: #child
+	self assert: otherRelation combinator equals: #child.
 	^ projection
 
 ]
@@ -256,7 +256,7 @@ CgtMatcherProjectionBuilderTests >> testKeepsDescendantGapCompactedByDefaultWhen
 		visibilityState: state.
 	compactedNode := projection nodes detect: [ :each | each kind = #compactedSection ].
 	self assert: compactedNode representedElements asArray equals: { middle }.
-	self assert: compactedNode gapIdentity equals: (state gapIdentityForElements: { middle })
+	self assert: compactedNode gapIdentity equals: (state gapIdentityForElements: { middle }).
 	^ projection
 
 ]
@@ -308,7 +308,7 @@ CgtMatcherProjectionBuilderTests >> testHidesOtherRuleContextByDefaultThroughVis
 		hierarchyRoot: root
 		relatedStyleRules: { relatedRule }
 		visibilityState: state.
-	self assert: projection otherRuleNodes isEmpty
+	self assert: projection otherRuleNodes isEmpty.
 	^ CgtMatcherProjectionBuilder
 ]
 
@@ -332,7 +332,7 @@ CgtMatcherProjectionBuilderTests >> testAddsOtherRuleIndicatorWhenRelatedRuleCon
 		visibilityState: CgtMatcherVisibilityState new.
 	indicatorNode := projection nodes detect: [ :each | each kind = #otherRuleIndicator ] ifNone: [ nil ].
 	self assert: indicatorNode notNil.
-	self assert: indicatorNode hiddenNodeCount equals: 1
+	self assert: indicatorNode hiddenNodeCount equals: 1.
 	^ projection
 
 ]
@@ -357,7 +357,7 @@ CgtMatcherProjectionBuilderTests >> testDoesNotAddOtherRuleIndicatorWhenOtherRul
 		hierarchyRoot: root
 		relatedStyleRules: { relatedRule }
 		visibilityState: visibilityState.
-	self assert: (projection nodes noneSatisfy: [ :each | each kind = #otherRuleIndicator ])
+	self assert: (projection nodes noneSatisfy: [ :each | each kind = #otherRuleIndicator ]).
 	^ CgtMatcherProjectionBuilder
 ]
 
@@ -381,7 +381,7 @@ CgtMatcherProjectionBuilderTests >> testCompactedNodeCarriesExplicitGapIdentity 
 		relatedStyleRules: #()
 		visibilityState: state.
 	compactedNode := projection nodes detect: [ :each | each kind = #compactedSection ].
-	self assert: compactedNode gapIdentity equals: (state gapIdentityForElements: { middle })
+	self assert: compactedNode gapIdentity equals: (state gapIdentityForElements: { middle }).
 	^ projection
 
 ]

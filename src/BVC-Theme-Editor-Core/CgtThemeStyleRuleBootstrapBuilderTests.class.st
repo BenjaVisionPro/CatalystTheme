@@ -19,7 +19,7 @@ CgtThemeStyleRuleBootstrapBuilderTests >> testBuildsRuleFromHierarchyRootToSelec
 	rule := CgtThemeStyleRuleBootstrapBuilder
 		ruleForSelectedElement: selected
 		withinHierarchyRoot: root.
-	self assert: rule selector displayString equals: '#root > #child > #selected'
+	self assert: rule selector displayString equals: '#root > #child > #selected'.
 	^ rule
 
 ]
@@ -33,7 +33,7 @@ CgtThemeStyleRuleBootstrapBuilderTests >> testFallsBackToSelectedElementWhenHier
 	rule := CgtThemeStyleRuleBootstrapBuilder
 		ruleForSelectedElement: selected
 		withinHierarchyRoot: root.
-	self assert: rule selector displayString equals: '#selected'
+	self assert: rule selector displayString equals: '#selected'.
 	^ rule
 
 ]

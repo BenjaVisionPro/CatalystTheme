@@ -16,7 +16,7 @@ CgtMatcherRelationVisualPolicyTests >> testOtherRuleRelationUsesOtherRuleLabel [
 	policy := CgtMatcherRelationVisualPolicy new.
 	relation := CgtMatcherProjectionRelation from: CgtMatcherProjectionNode new to: CgtMatcherProjectionNode new kind: #otherRule.
 	self assert: (policy labelForRelation: relation) equals: 'Other rule'.
-	self assert: (policy widthForRelation: relation) equals: 3
+	self assert: (policy widthForRelation: relation) equals: 3.
 	^ policy
 
 ]
@@ -29,7 +29,7 @@ CgtMatcherRelationVisualPolicyTests >> testDescendantMatcherRelationUsesDescenda
 	relation := (CgtMatcherProjectionRelation from: CgtMatcherProjectionNode new to: CgtMatcherProjectionNode new kind: #matcher)
 		combinator: #descendant;
 		yourself.
-	self assert: (policy labelForRelation: relation) equals: 'Descendant relation'
+	self assert: (policy labelForRelation: relation) equals: 'Descendant relation'.
 	^ policy
 
 ]

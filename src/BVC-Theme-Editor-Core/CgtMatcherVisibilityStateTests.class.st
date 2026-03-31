@@ -16,7 +16,7 @@ CgtMatcherVisibilityStateTests >> testExpandedGapIsTrackedByGapIdentity [
 	gapIdentity := #(#root #middle).
 	self deny: (state isExpandedForGapIdentity: gapIdentity).
 	state expandGapIdentity: gapIdentity.
-	self assert: (state isExpandedForGapIdentity: gapIdentity)
+	self assert: (state isExpandedForGapIdentity: gapIdentity).
 	^ state
 
 ]
@@ -45,7 +45,7 @@ CgtMatcherVisibilityStateTests >> testElementBasedTrackingStillMapsToGapIdentity
 	state := CgtMatcherVisibilityState new.
 	gapIdentity := state gapIdentityForElements: { first. second }.
 	state expandElements: { first. second }.
-	self assert: (state isExpandedForGapIdentity: gapIdentity)
+	self assert: (state isExpandedForGapIdentity: gapIdentity).
 	^ state
 
 ]

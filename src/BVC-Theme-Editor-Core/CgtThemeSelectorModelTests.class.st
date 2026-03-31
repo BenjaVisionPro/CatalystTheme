@@ -34,7 +34,7 @@ CgtThemeSelectorModelTests >> testBuildsProjectionFromRuleAndHierarchyContext [
 		styleRule: rule;
 		yourself.
 	self assert: model projection notNil.
-	self assert: model selector displayString equals: '#selected'
+	self assert: model selector displayString equals: '#selected'.
 	^ model
 
 ]
@@ -57,7 +57,7 @@ CgtThemeSelectorModelTests >> testClearsProjectionWhenSelectedElementBecomesNil 
 		styleRule: rule;
 		yourself.
 	model selectedElement: nil.
-	self assert: model projection isNil
+	self assert: model projection isNil.
 	^ model
 
 ]
@@ -85,7 +85,7 @@ CgtThemeSelectorModelTests >> testSelectorUpdatesCurrentStyleRule [
 	model selector: newSelector.
 
 	self assert: model currentStyleRule identicalTo: originalRule.
-	self assert: model currentStyleRule selector identicalTo: newSelector
+	self assert: model currentStyleRule selector identicalTo: newSelector.
 	^ CgtThemeSelectorModel
 ]
 
@@ -109,7 +109,7 @@ CgtThemeSelectorModelTests >> testApplyClassMatchUpdatesStyleRuleAndProjection [
 		relatedStyleRules: #().
 	model applyClassMatch: true toProjectionNode: model projection selectedProjectionNode.
 	self assert: model currentStyleRule selector displayString equals: 'CgtThemeSelectorTestElement#selected'.
-	self assert: model projection selectedProjectionNode matchByClass
+	self assert: model projection selectedProjectionNode matchByClass.
 	^ model
 
 ]
@@ -209,7 +209,7 @@ CgtThemeSelectorModelTests >> testHideOtherRuleContextRemovesOtherRuleNodesAgain
 	self deny: model projection otherRuleNodes isEmpty.
 	model hideOtherRuleContext.
 	self deny: model visibilityState showsOtherRuleContext.
-	self assert: model projection otherRuleNodes isEmpty
+	self assert: model projection otherRuleNodes isEmpty.
 	^ CgtThemeSelectorModel
 ]
 
@@ -238,7 +238,7 @@ CgtThemeSelectorModelTests >> testSelectorMutationClearsTemporaryReveals [
 	self assert: model visibilityState hasExpandedGaps.
 	model applyClassMatch: true toProjectionNode: model projection selectedProjectionNode.
 	self deny: model visibilityState hasExpandedGaps.
-	self assert: (model projection nodes anySatisfy: [ :each | each isCompactedSection ])
+	self assert: (model projection nodes anySatisfy: [ :each | each isCompactedSection ]).
 	^ CgtThemeSelectorModel
 ]
 

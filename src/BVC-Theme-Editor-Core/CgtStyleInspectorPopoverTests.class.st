@@ -29,7 +29,7 @@ CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionFromStyleRuleAndSele
 	self assert: projection notNil.
 	self assert: projection selectedElement identicalTo: selected.
 	self assert: projection nodes size equals: 2.
-	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#root > #selected'
+	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#root > #selected'.
 	^ projection
 
 ]
@@ -57,7 +57,7 @@ CgtStyleInspectorPopoverTests >> testConfigureForStyleRuleSelectedElementPathRoo
 	self assert: popover selectedElement identicalTo: selected.
 	self assert: projection relatedStyleRules size equals: 1.
 	self assert: (popover childWithId: #styleInspectorElementLabel) text asString equals: selected class name.
-	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#selected'
+	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#selected'.
 	^ projection
 
 ]
@@ -76,7 +76,7 @@ CgtStyleInspectorPopoverTests >> testKeepsMatcherProjectionDrivenBySelectedEleme
 	projection := popover selectorWidget projection.
 	self assert: projection notNil.
 	self assert: projection selectedElement identicalTo: selected.
-	self assert: projection nodes first representedElement identicalTo: selected
+	self assert: projection nodes first representedElement identicalTo: selected.
 	^ projection
 
 ]
@@ -100,7 +100,7 @@ CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionWithRelatedRuleConte
 	projection := popover selectorWidget projection.
 	self assert: projection notNil.
 	self assert: projection relatedStyleRules size equals: 1.
-	self assert: projection otherRuleNodes isEmpty
+	self assert: projection otherRuleNodes isEmpty.
 	^ projection
 
 ]
@@ -132,7 +132,7 @@ CgtStyleInspectorPopoverTests >> testUsesThemeSelectorWidgetAsSelectorWidget [
 	| popover |
 	popover := CgtStyleInspectorPopover new.
 
-	self assert: popover selectorWidget class equals: CgtThemeSelectorWidget
+	self assert: popover selectorWidget class equals: CgtThemeSelectorWidget.
 	^ popover
 
 ]
@@ -160,7 +160,7 @@ CgtStyleInspectorPopoverTests >> testMatcherSelectorChangedEventUpdatesDisplayed
 	popover selectorChangedEvent: event.
 
 	self assert: popover styleRule selector identicalTo: newSelector.
-	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#root > #selected'
+	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#root > #selected'.
 	^ CgtStyleInspectorPopover
 ]
 
@@ -171,7 +171,7 @@ CgtStyleInspectorPopoverTests >> testSelectorWidgetUsesConcreteMatcherRenderer [
 	| popover |
 	popover := CgtStyleInspectorPopover new.
 
-	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorMondrianWidget
+	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorMondrianWidget.
 	^ CgtStyleInspectorPopover new
 ]
 
@@ -183,7 +183,7 @@ CgtStyleInspectorPopoverTests >> testSelectorWidgetCanUseAlternateRendererWithou
 	popover := CgtStyleInspectorPopover new.
 	popover selectorWidget selectorRendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
 
-	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorBreadcrumbWidget
+	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorBreadcrumbWidget.
 	^ CgtStyleInspectorPopover new
 ]
 
@@ -197,7 +197,7 @@ CgtStyleInspectorPopoverTests >> testSelectorRendererWidgetClassDelegatesToSelec
 	popover selectorRendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
 
 	self assert: popover selectorRendererWidgetClass equals: CgtThemeSelectorBreadcrumbWidget.
-	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorBreadcrumbWidget
+	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorBreadcrumbWidget.
 	^ CgtStyleInspectorPopover new
 ]
 
@@ -210,7 +210,7 @@ CgtStyleInspectorPopoverTests >> testSelectorWidgetCanUseCompactRendererWithoutC
 	popover selectorRendererWidgetClass: CgtThemeSelectorCompactWidget.
 
 	self assert: popover selectorRendererWidgetClass equals: CgtThemeSelectorCompactWidget.
-	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorCompactWidget
+	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorCompactWidget.
 	^ CgtStyleInspectorPopover new
 ]
 
@@ -250,7 +250,7 @@ CgtStyleInspectorPopoverTests >> testSelectorChangedEventUpdatesLabels [
 	popover styleRule: rule.
 	event := CgtThemeSelectorChangedEvent new selector: rule selector; yourself.
 	popover selectorChangedEvent: event.
-	self assert: (popover childWithId: #styleInspectorScopeLabel ifFound: [ :aLabel | aLabel text asString ] ifNone: [ '' ]) = rule selector displayString
+	self assert: (popover childWithId: #styleInspectorScopeLabel ifFound: [ :aLabel | aLabel text asString ] ifNone: [ '' ]) = rule selector displayString.
 	^ popover
 
 ]

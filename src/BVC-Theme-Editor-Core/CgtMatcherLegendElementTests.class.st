@@ -14,7 +14,7 @@ CgtMatcherLegendElementTests >> testLegendInitializesPolicies [
 	<gtExample>
 	| legend |
 	legend := CgtMatcherLegendElement new.
-	self assert: legend notNil
+	self assert: legend notNil.
 	^ legend
 
 ]

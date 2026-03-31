@@ -19,7 +19,7 @@ CgtEditorMatcherHoverSyncTests >> testSelectorNodeHoverUpdatesInteractionState [
 		representedElement: element;
 		yourself.
 	editor selectorNodeHoveredEvent: (CgtThemeSelectorNodeHoveredEvent new projectionNode: node; yourself).
-	self assert: editor interactionState effectiveHoverElement identicalTo: element
+	self assert: editor interactionState effectiveHoverElement identicalTo: element.
 	^ node
 
 ]
@@ -35,7 +35,7 @@ CgtEditorMatcherHoverSyncTests >> testSelectorNodeUnhoverClearsSelectorRendererH
 		yourself.
 	editor selectorNodeHoveredEvent: (CgtThemeSelectorNodeHoveredEvent new projectionNode: node; yourself).
 	editor selectorNodeUnhoveredEvent: (CgtThemeSelectorNodeUnhoveredEvent new projectionNode: node; yourself).
-	self assert: editor interactionState hasSelectorRendererHover not
+	self assert: editor interactionState hasSelectorRendererHover not.
 	^ node
 
 ]

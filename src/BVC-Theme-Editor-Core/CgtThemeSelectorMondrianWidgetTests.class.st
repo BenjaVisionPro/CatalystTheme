@@ -45,7 +45,7 @@ CgtThemeSelectorMondrianWidgetTests >> testBuildsMondrianGraphFromProjection [
 	self assert: widget mondrian notNil.
 	self assert: widget graphElement notNil.
 	self assert: widget graphElement graph nodeChildren size equals: 2.
-	self assert: widget graphElement graph edgeChildren size equals: 1
+	self assert: widget graphElement graph edgeChildren size equals: 1.
 	^ projection
 
 ]
@@ -67,7 +67,7 @@ CgtThemeSelectorMondrianWidgetTests >> testUsesCustomNodeStencilElement [
 		yourself.
 	graphNodeElement := widget graphElement graph nodeChildren first.
 	self assert: (graphNodeElement isKindOf: CgtMatcherNodeElement).
-	self assert: graphNodeElement projectionNode identicalTo: node
+	self assert: graphNodeElement projectionNode identicalTo: node.
 	^ projection
 
 ]
@@ -129,7 +129,7 @@ CgtThemeSelectorMondrianWidgetTests >> testForwardsMatcherCombinatorChangedEvent
 	self assert: forwardedEvent notNil.
 	self assert: forwardedEvent relation identicalTo: relation.
 	self assert: forwardedEvent combinator equals: #descendant.
-	self assert: relation combinator equals: #child
+	self assert: relation combinator equals: #child.
 	^ projection
 
 ]
@@ -162,7 +162,7 @@ CgtThemeSelectorMondrianWidgetTests >> testOrdersCurrentRuleNodesBeforeContextNo
 	orderedNodes := widget orderedNodesForRendering.
 	self assert: orderedNodes first identicalTo: upstream.
 	self assert: orderedNodes second identicalTo: selected.
-	self assert: orderedNodes last identicalTo: context
+	self assert: orderedNodes last identicalTo: context.
 	^ CgtThemeSelectorMondrianWidget
 ]
 
@@ -182,7 +182,7 @@ CgtThemeSelectorMondrianWidgetTests >> testUsesOtherRuleIndicatorElementForIndic
 		yourself.
 	graphNodeElement := widget graphElement graph nodeChildren first.
 	self assert: (graphNodeElement isKindOf: CgtMatcherOtherRuleIndicatorElement).
-	self assert: graphNodeElement projectionNode identicalTo: node
+	self assert: graphNodeElement projectionNode identicalTo: node.
 	^ projection
 
 ]
@@ -203,7 +203,7 @@ CgtThemeSelectorMondrianWidgetTests >> testForwardsOtherRuleContextToggledEvents
 	widget when: CgtThemeSelectorOtherRuleContextToggledEvent do: [ :anEvent | forwardedEvent := anEvent ].
 	graphNodeElement := widget graphElement graph nodeChildren first.
 	graphNodeElement requestOtherRuleContextToggle.
-	self assert: forwardedEvent notNil
+	self assert: forwardedEvent notNil.
 	^ CgtThemeSelectorMondrianWidget
 ]
 
@@ -215,7 +215,7 @@ CgtThemeSelectorMondrianWidgetTests >> testConfigureEdgeConnectionsUsesLayoutPol
 	widget := CgtThemeSelectorMondrianWidget new.
 	policy := CgtMatcherLayoutPolicy new.
 	self assert: policy corridorOrientation equals: #vertical.
-	self assert: (policy edgeConnectionSelectorsForOrientation: policy corridorOrientation) equals: #(fromCenterBottom toCenterTop)
+	self assert: (policy edgeConnectionSelectorsForOrientation: policy corridorOrientation) equals: #(fromCenterBottom toCenterTop).
 	^ CgtThemeSelectorMondrianWidget
 ]
 
@@ -242,7 +242,7 @@ CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshRevealOffsetUsesLead
 		projection: projection;
 		yourself.
 	self assert: widget structuralRefreshRevealOffset equals: (0 @ -24).
-	self assert: widget structuralRefreshAnchorProjectionNode identicalTo: selected
+	self assert: widget structuralRefreshAnchorProjectionNode identicalTo: selected.
 	^ projection
 
 ]
@@ -269,7 +269,7 @@ CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshRevealOffsetStaysFix
 		projection: projection;
 		yourself.
 	self assert: widget structuralRefreshRevealOffset equals: (0 @ 0).
-	self assert: widget structuralRefreshAnchorProjectionNode identicalTo: selected
+	self assert: widget structuralRefreshAnchorProjectionNode identicalTo: selected.
 	^ CgtThemeSelectorMondrianWidget
 ]
 
@@ -298,7 +298,7 @@ CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshQueriesTransitionPol
 		projection: projection;
 		instVarNamed: 'transitionPolicy' put: policy.
 	self assert: widget structuralRefreshRevealOffset equals: (policy structuralRefreshRevealOffsetForProjection: projection orientation: #vertical).
-	self assert: widget structuralRefreshAnchorProjectionNode identicalTo: (policy structuralRefreshAnchorProjectionNodeFor: projection)
+	self assert: widget structuralRefreshAnchorProjectionNode identicalTo: (policy structuralRefreshAnchorProjectionNodeFor: projection).
 	^ CgtThemeSelectorMondrianWidget
 ]
 
@@ -335,7 +335,7 @@ CgtThemeSelectorMondrianWidgetTests >> test_projectionChangeBuildsStructuralRefr
 			kind: #compaction).
 	widget projection: newProjection.
 	self assert: widget lastStructuralRefreshPlan notNil.
-	self assert: widget lastStructuralRefreshPlan isReveal
+	self assert: widget lastStructuralRefreshPlan isReveal.
 	^ CgtThemeSelectorMondrianWidget
 ]
 
@@ -353,7 +353,7 @@ CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshAnimationUsesPlanSpe
 	widget instVarNamed: 'lastStructuralRefreshPlan' put: stablePlan.
 	self assert: widget structuralRefreshAnimationDuration equals: widget transitionPolicy structuralRefreshDuration.
 	self assert: widget structuralRefreshStartOpacity equals: widget transitionPolicy graphRevealEndOpacity.
-	self assert: widget structuralRefreshEndOpacity equals: widget transitionPolicy graphRevealEndOpacity
+	self assert: widget structuralRefreshEndOpacity equals: widget transitionPolicy graphRevealEndOpacity.
 	^ CgtThemeSelectorMondrianWidget
 ]
 
@@ -381,7 +381,7 @@ CgtThemeSelectorMondrianWidgetTests >> testStableProjectionRefreshDoesNotStartSt
 	widget projection: newProjection.
 	self assert: widget lastStructuralRefreshPlan notNil.
 	self assert: widget lastStructuralRefreshPlan isStable.
-	self assert: widget structuralRefreshAnimationToken equals: 0
+	self assert: widget structuralRefreshAnimationToken equals: 0.
 	^ CgtThemeSelectorMondrianWidget
 ]
 
@@ -394,7 +394,7 @@ CgtThemeSelectorMondrianWidgetTests >> testReplacePlanUsesFullOpacityAndReplaceD
 	widget instVarNamed: 'lastStructuralRefreshPlan' put: (CgtMatcherStructuralRefreshPlan new transitionKind: #replace; yourself).
 	self assert: widget structuralRefreshAnimationDuration equals: widget transitionPolicy replaceDuration.
 	self assert: widget structuralRefreshStartOpacity equals: widget transitionPolicy graphRevealEndOpacity.
-	self assert: widget structuralRefreshEndOpacity equals: widget transitionPolicy graphRevealEndOpacity
+	self assert: widget structuralRefreshEndOpacity equals: widget transitionPolicy graphRevealEndOpacity.
 	^ projection
 
 ]

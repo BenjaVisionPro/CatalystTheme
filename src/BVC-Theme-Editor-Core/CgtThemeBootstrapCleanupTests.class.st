@@ -19,7 +19,7 @@ CgtThemeBootstrapCleanupTests >> testSelectorBootstrapClassSideEntryPointBuildsF
 	selector := CgtThemeSelector
 		bootstrapForSelectedElement: selected
 		withinHierarchyRoot: root.
-	self assert: selector displayString equals: '#root > #child > #selected'
+	self assert: selector displayString equals: '#root > #child > #selected'.
 	^ selector
 
 ]
@@ -33,7 +33,7 @@ CgtThemeBootstrapCleanupTests >> testStyleRuleBootstrapClassSideEntryPointBuilds
 	rule := CgtThemeStyleRule
 		bootstrapForSelectedElement: selected
 		withinHierarchyRoot: root.
-	self assert: rule selector displayString equals: '#root > #selected'
+	self assert: rule selector displayString equals: '#root > #selected'.
 	^ rule
 
 ]

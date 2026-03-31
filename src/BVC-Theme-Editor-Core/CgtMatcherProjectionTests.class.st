@@ -27,7 +27,7 @@ CgtMatcherProjectionTests >> testProjectionKeepsRelationsExplicit [
 	self assert: projection relations first fromNode identicalTo: parentNode.
 	self assert: projection relations first toNode identicalTo: childNode.
 	self assert: projection relations first kind equals: #matcher.
-	self assert: projection relations first combinator equals: #child
+	self assert: projection relations first combinator equals: #child.
 	^ projection
 
 ]
@@ -51,7 +51,7 @@ CgtMatcherProjectionTests >> testProjectionNodeCarriesRuleMembershipAndMatchStat
 	self assert: node isInCurrentRule.
 	self deny: node isInOtherRule.
 	self assert: node matchByClass.
-	self assert: node matchById
+	self assert: node matchById.
 	^ CgtMatcherProjection
 ]
 
@@ -66,7 +66,7 @@ CgtMatcherProjectionTests >> testProjectionNodeAllowsGenericRepresentedElementWi
 	node representedElement: element.
 	self assert: node representedElement identicalTo: element.
 	self assert: node className equals: Object name.
-	self assert: node elementId isNil
+	self assert: node elementId isNil.
 	^ CgtMatcherProjection
 ]
 { #category : 'tests' }
@@ -125,7 +125,7 @@ CgtMatcherProjectionTests >> testLeadingAndTrailingCompactedProjectionQueries [
 	self assert: projection hasLeadingCompactedProjectionNode.
 	self assert: projection leadingCompactedProjectionNode identicalTo: leadingGap.
 	self assert: projection trailingCompactedProjectionNode identicalTo: trailingGap.
-	self assert: projection followingProjectionNodeAfterLeadingCompaction identicalTo: selected
+	self assert: projection followingProjectionNodeAfterLeadingCompaction identicalTo: selected.
 	^ projection
 
 ]

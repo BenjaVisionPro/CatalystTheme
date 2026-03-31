@@ -30,7 +30,7 @@ CgtMatcherNodeElementTests >> testNestedHoverForwardingPublishesSingleHoverAndSi
 	self assert: unhoverCount equals: 0.
 	element onNodeUnhovered: nil.
 	self assert: hoverCount equals: 1.
-	self assert: unhoverCount equals: 1
+	self assert: unhoverCount equals: 1.
 	^ node
 
 ]

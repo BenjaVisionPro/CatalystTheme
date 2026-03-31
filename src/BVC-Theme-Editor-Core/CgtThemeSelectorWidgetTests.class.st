@@ -48,7 +48,7 @@ CgtThemeSelectorWidgetTests >> testBuildsProjectionFromRuleAndHierarchyContext [
 		styleRule: rule;
 		yourself.
 	self assert: widget projection notNil.
-	self assert: widget currentSelector displayString equals: '#selected'
+	self assert: widget currentSelector displayString equals: '#selected'.
 	^ widget
 
 ]
@@ -71,7 +71,7 @@ CgtThemeSelectorWidgetTests >> testClearsProjectionWhenSelectedElementBecomesNil
 		styleRule: rule;
 		yourself.
 	widget selectedElement: nil.
-	self assert: widget projection isNil
+	self assert: widget projection isNil.
 	^ CgtThemeSelectorWidget
 ]
 
@@ -97,7 +97,7 @@ CgtThemeSelectorWidgetTests >> testConfigureForStyleRuleSelectedElementPathRootE
 
 	self assert: widget projection notNil.
 	self assert: widget projection selectedElement == child.
-	self assert: widget projection relatedStyleRules size equals: 1
+	self assert: widget projection relatedStyleRules size equals: 1.
 	^ CgtThemeSelectorWidget
 ]
 
@@ -129,7 +129,7 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 	widget selectorChangedEvent: event.
 
 	self assert: widget currentStyleRule identicalTo: originalRule.
-	self assert: widget currentStyleRule selector identicalTo: newSelector
+	self assert: widget currentStyleRule selector identicalTo: newSelector.
 	^ CgtThemeSelectorWidget
 ]
 
@@ -141,7 +141,7 @@ CgtThemeSelectorWidgetTests >> testDefaultRendererSuperclassIsSelectorRendererWi
 	<gtExample>
 	self assert: CgtThemeSelectorMondrianWidget superclass equals: CgtThemeSelectorRendererWidget.
 	self assert: CgtThemeSelectorBreadcrumbWidget superclass equals: CgtThemeSelectorRendererWidget.
-	self assert: CgtThemeSelectorCompactWidget superclass equals: CgtThemeSelectorRendererWidget
+	self assert: CgtThemeSelectorCompactWidget superclass equals: CgtThemeSelectorRendererWidget.
 	^ widget
 
 ]
@@ -152,7 +152,7 @@ CgtThemeSelectorWidgetTests >> testHostsConcreteSelectorRendererWidget [
 	| widget |
 	widget := CgtThemeSelectorWidget new.
 
-	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorMondrianWidget
+	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorMondrianWidget.
 	^ CgtThemeSelectorWidget
 ]
 
@@ -164,7 +164,7 @@ CgtThemeSelectorWidgetTests >> testCanSwapToBreadcrumbRendererWidget [
 	widget := CgtThemeSelectorWidget new.
 	widget selectorRendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
 
-	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorBreadcrumbWidget
+	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorBreadcrumbWidget.
 	^ widget
 
 ]
@@ -190,7 +190,7 @@ CgtThemeSelectorWidgetTests >> testBreadcrumbRendererReceivesProjectionFromModel
 		relatedStyleRules: #().
 
 	self assert: widget selectorRendererWidget projection identicalTo: widget projection.
-	self assert: widget selectorRendererWidget children isNotEmpty
+	self assert: widget selectorRendererWidget children isNotEmpty.
 	^ CgtThemeSelectorWidget
 ]
 
@@ -202,7 +202,7 @@ CgtThemeSelectorWidgetTests >> testCanSwapToCompactRendererWidget [
 	widget := CgtThemeSelectorWidget new.
 	widget selectorRendererWidgetClass: CgtThemeSelectorCompactWidget.
 
-	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorCompactWidget
+	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorCompactWidget.
 	^ widget
 
 ]
@@ -228,7 +228,7 @@ CgtThemeSelectorWidgetTests >> testCompactRendererReceivesProjectionFromModel [
 		relatedStyleRules: #().
 
 	self assert: widget selectorRendererWidget projection identicalTo: widget projection.
-	self assert: (widget selectorRendererWidget childWithId: #compactSelectorLabel) notNil
+	self assert: (widget selectorRendererWidget childWithId: #compactSelectorLabel) notNil.
 	^ CgtThemeSelectorWidget
 ]
 
@@ -294,7 +294,7 @@ CgtThemeSelectorWidgetTests >> testMatcherHoverEventIsRepublishedAsSelectorHover
 	widget when: CgtThemeSelectorNodeHoveredEvent do: [ :anEvent |
 		received := anEvent projectionNode == selected ].
 	widget selectorNodeHoveredEvent: (CgtThemeSelectorNodeHoveredEvent new projectionNode: selected; yourself).
-	self assert: received
+	self assert: received.
 	^ widget
 
 ]

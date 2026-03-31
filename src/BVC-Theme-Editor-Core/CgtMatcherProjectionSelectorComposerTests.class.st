@@ -31,7 +31,7 @@ CgtMatcherProjectionSelectorComposerTests >> testComposesChildSelectorFromProjec
 			combinator: #child;
 			yourself).
 	selector := CgtMatcherProjectionSelectorComposer selectorForProjection: projection.
-	self assert: selector displayString equals: '#root > CgtThemeSelectorTestElement'
+	self assert: selector displayString equals: '#root > CgtThemeSelectorTestElement'.
 	^ projection
 
 ]
@@ -64,7 +64,7 @@ CgtMatcherProjectionSelectorComposerTests >> testIgnoresCompactedNodesWhenRecomp
 			combinator: #descendant;
 			yourself).
 	selector := CgtMatcherProjectionSelectorComposer selectorForProjection: projection.
-	self assert: selector displayString equals: '#root descendant #selected'
+	self assert: selector displayString equals: '#root descendant #selected'.
 	^ projection
 
 ]
@@ -105,7 +105,7 @@ CgtMatcherProjectionSelectorComposerTests >> testUsesMatcherCombinatorAcrossExpa
 			combinator: #descendant;
 			yourself).
 	selector := CgtMatcherProjectionSelectorComposer selectorForProjection: projection.
-	self assert: selector displayString equals: '#root descendant #selected'
+	self assert: selector displayString equals: '#root descendant #selected'.
 	^ projection
 
 ]

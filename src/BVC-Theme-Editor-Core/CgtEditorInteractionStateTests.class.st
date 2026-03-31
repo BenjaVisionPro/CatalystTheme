@@ -18,7 +18,7 @@ CgtEditorInteractionStateTests >> testSelectorRendererHoverOverridesPreviewHover
 	matcher := BlElement new.
 	state setPreviewHoverElement: preview.
 	state selectorRendererHoveredElement: matcher.
-	self assert: state effectiveHoverElement identicalTo: matcher
+	self assert: state effectiveHoverElement identicalTo: matcher.
 	^ state
 
 ]
@@ -32,7 +32,7 @@ CgtEditorInteractionStateTests >> testPathHoverOverridesPreviewWhenSelectorRende
 	path := BlElement new.
 	state setPreviewHoverElement: preview.
 	state pathWidgetHoveredElement: path.
-	self assert: state effectiveHoverElement identicalTo: path
+	self assert: state effectiveHoverElement identicalTo: path.
 	^ state
 
 ]
@@ -52,7 +52,7 @@ CgtEditorInteractionStateTests >> testClearingSelectorRendererHoverFallsBackToPa
 	state clearSelectorRendererHover.
 	self assert: state effectiveHoverElement identicalTo: path.
 	state clearPathWidgetHover.
-	self assert: state effectiveHoverElement identicalTo: preview
+	self assert: state effectiveHoverElement identicalTo: preview.
 	^ state
 
 ]
@@ -66,7 +66,7 @@ CgtEditorInteractionStateTests >> testExplicitHighlightOverridesSelectorRenderer
 	matcher := BlElement new.
 	state selectorRendererHoveredElement: matcher.
 	state highlightedElement: highlight.
-	self assert: state effectiveHoverElement identicalTo: highlight
+	self assert: state effectiveHoverElement identicalTo: highlight.
 	^ state
 
 ]

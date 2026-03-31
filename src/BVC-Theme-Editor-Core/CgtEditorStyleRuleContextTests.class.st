@@ -18,7 +18,7 @@ CgtEditorStyleRuleContextTests >> testRelatedStyleRulesForStyleInspectorExcludeC
 	relatedRule := self styleRuleForSelector: (self selectorForId: #'root').
 	editor styleRules: { currentRule. relatedRule }.
 	editor instVarNamed: 'styleInspectorRule' put: currentRule.
-	self assert: editor relatedStyleRulesForStyleInspector asArray equals: { relatedRule }
+	self assert: editor relatedStyleRulesForStyleInspector asArray equals: { relatedRule }.
 	^ editor
 
 ]
@@ -36,7 +36,7 @@ CgtEditorStyleRuleContextTests >> testMatcherSelectorChangedEventAddsInspectedRu
 		yourself.
 	editor selectorChangedEvent: event.
 	self assert: rule selector identicalTo: selector.
-	self assert: (editor styleRules includes: rule)
+	self assert: (editor styleRules includes: rule).
 	^ selector
 
 ]

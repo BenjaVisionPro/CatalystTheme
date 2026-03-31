@@ -27,7 +27,7 @@ CgtMatcherGapElementTests >> testRequestCombinatorChangePublishesEvent [
 	element requestCombinatorChange: #descendant.
 	self assert: event notNil.
 	self assert: event relation identicalTo: relation.
-	self assert: event combinator equals: #descendant
+	self assert: event combinator equals: #descendant.
 	^ gap
 
 ]
@@ -45,7 +45,7 @@ CgtMatcherGapElementTests >> testRequestRevealPublishesExpansionEvent [
 	element when: CgtMatcherCompactedSectionExpandedEvent do: [ :anEvent | event := anEvent ].
 	element requestCompactedSectionExpansionFor: gap.
 	self assert: event notNil.
-	self assert: event projectionNode identicalTo: gap
+	self assert: event projectionNode identicalTo: gap.
 	^ gap
 
 ]

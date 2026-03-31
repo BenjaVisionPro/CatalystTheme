@@ -22,7 +22,7 @@ CgtMatcherTransitionPolicyTests >> testHorizontalCorridorExpandsTowardLeft [
 { #category : 'tests' }
 CgtMatcherTransitionPolicyTests >> testKeepsFollowingNodeFixed [
 	<gtExample>
-	self assert: CgtMatcherTransitionPolicy new keepsFollowingNodeFixed
+	self assert: CgtMatcherTransitionPolicy new keepsFollowingNodeFixed.
 	^ CgtMatcherTransitionPolicy new
 
 ]
@@ -65,7 +65,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshAnchorUsesFollowingVisib
 		addNode: selected;
 		addRelation: relation.
 	policy := CgtMatcherTransitionPolicy new.
-	self assert: (policy structuralRefreshAnchorProjectionNodeFor: projection) identicalTo: selected
+	self assert: (policy structuralRefreshAnchorProjectionNodeFor: projection) identicalTo: selected.
 	^ CgtMatcherTransitionPolicy new
 
 ]
@@ -97,7 +97,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshRevealOffsetUsesLeadingC
 		addRelation: (CgtMatcherProjectionRelation from: selected to: trailingGap kind: #compaction).
 	policy := CgtMatcherTransitionPolicy new.
 	self assert: (policy structuralRefreshRevealOffsetForProjection: leadingProjection orientation: #vertical) equals: (0 @ -24).
-	self assert: (policy structuralRefreshRevealOffsetForProjection: trailingProjection orientation: #vertical) equals: (0 @ 0)
+	self assert: (policy structuralRefreshRevealOffsetForProjection: trailingProjection orientation: #vertical) equals: (0 @ 0).
 	^ CgtMatcherTransitionPolicy new
 ]
 
@@ -135,7 +135,7 @@ CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesRevealWhenLeadi
 		to: newProjection
 		orientation: #vertical.
 	self assert: plan isReveal.
-	self assert: plan revealOffset equals: (0 @ -24)
+	self assert: plan revealOffset equals: (0 @ -24).
 	^ policy
 
 ]
@@ -173,7 +173,7 @@ CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesCollapseWhenLea
 		to: newProjection
 		orientation: #vertical.
 	self assert: plan isCollapse.
-	self assert: plan revealOffset equals: (0 @ 24)
+	self assert: plan revealOffset equals: (0 @ 24).
 	^ CgtMatcherTransitionPolicy new
 ]
 
@@ -188,7 +188,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshDurationUsesRevealAndCol
 	stablePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #stable; yourself.
 	self assert: (policy structuralRefreshDurationForPlan: revealPlan) equals: policy revealDuration.
 	self assert: (policy structuralRefreshDurationForPlan: collapsePlan) equals: policy collapseDuration.
-	self assert: (policy structuralRefreshDurationForPlan: stablePlan) equals: policy structuralRefreshDuration
+	self assert: (policy structuralRefreshDurationForPlan: stablePlan) equals: policy structuralRefreshDuration.
 	^ selectedNode
 
 ]
@@ -202,7 +202,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshOpacityUsesStableNoFadeA
 	stablePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #stable; yourself.
 	self assert: (policy structuralRefreshStartOpacityForPlan: revealPlan) equals: policy graphRevealStartOpacity.
 	self assert: (policy structuralRefreshStartOpacityForPlan: stablePlan) equals: policy graphRevealEndOpacity.
-	self assert: (policy structuralRefreshEndOpacityForPlan: stablePlan) equals: policy graphRevealEndOpacity
+	self assert: (policy structuralRefreshEndOpacityForPlan: stablePlan) equals: policy graphRevealEndOpacity.
 	^ policy
 
 ]
@@ -242,7 +242,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshPlanIsStableWhenLeadingC
 		to: newProjection
 		orientation: #vertical.
 	self assert: plan isStable.
-	self assert: plan revealOffset equals: (0 @ 0)
+	self assert: plan revealOffset equals: (0 @ 0).
 	^ newSelected
 
 ]
@@ -282,7 +282,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshPlanUsesReplaceWhenLeadi
 		to: newProjection
 		orientation: #vertical.
 	self assert: plan isReplace.
-	self assert: plan revealOffset equals: (0 @ -24)
+	self assert: plan revealOffset equals: (0 @ -24).
 	^ CgtMatcherTransitionPolicy new
 ]
 
@@ -309,7 +309,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshDurationUsesReplaceDurat
 	| policy replacePlan |
 	policy := CgtMatcherTransitionPolicy new.
 	replacePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #replace; yourself.
-	self assert: (policy structuralRefreshDurationForPlan: replacePlan) equals: policy replaceDuration
+	self assert: (policy structuralRefreshDurationForPlan: replacePlan) equals: policy replaceDuration.
 	^ newSelected
 
 ]
@@ -321,7 +321,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshOpacityUsesReplaceNoFade
 	policy := CgtMatcherTransitionPolicy new.
 	replacePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #replace; yourself.
 	self assert: (policy structuralRefreshStartOpacityForPlan: replacePlan) equals: policy graphRevealEndOpacity.
-	self assert: (policy structuralRefreshEndOpacityForPlan: replacePlan) equals: policy graphRevealEndOpacity
+	self assert: (policy structuralRefreshEndOpacityForPlan: replacePlan) equals: policy graphRevealEndOpacity.
 	^ policy
 
 ]
