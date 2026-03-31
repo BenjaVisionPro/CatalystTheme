@@ -296,8 +296,7 @@ CgtThemeMatcherMondrianWidget >> handleIdMatchToggledEvent: anEvent [
 { #category : 'events' }
 CgtThemeMatcherMondrianWidget >> handleCompactedSectionExpandedEvent: anEvent [
 	self expandCompactedNode: anEvent projectionNode.
-	self fireEvent: anEvent.
-	self publishSelectorChanged
+	self fireEvent: anEvent
 ]
 
 { #category : 'events' }
