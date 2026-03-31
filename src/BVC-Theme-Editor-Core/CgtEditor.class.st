@@ -777,14 +777,14 @@ CgtEditor >> selectorNodeHoveredEvent: anEvent [
 	anElement := anEvent projectionNode representedElement.
 	anElement ifNil: [ ^ self ].
 	self beginHoverTracking.
-	(interactionState matcherWidgetHoveredElement: anElement)
+	(interactionState selectorRendererHoveredElement: anElement)
 		ifTrue: [ self refreshOverlayState ]
 ]
 
 { #category : 'event handling - style inspector' }
 CgtEditor >> selectorNodeUnhoveredEvent: anEvent [
 	| didClear |
-	didClear := interactionState clearMatcherWidgetHover.
+	didClear := interactionState clearSelectorRendererHover.
 	didClear ifTrue: [ self refreshOverlayState ].
 	(didClear and: [ interactionState hasPreviewHover not ]) ifTrue: [ self endHoverTracking ]
 ]
@@ -845,7 +845,7 @@ CgtEditor >> beginHoverTracking [
 
 { #category : 'event handling - preview' }
 CgtEditor >> endHoverTracking [
-	(interactionState hasPathWidgetHover or: [ interactionState hasMatcherWidgetHover ]) ifTrue: [ ^ self ].
+	(interactionState hasPathWidgetHover or: [ interactionState hasSelectorRendererHover ]) ifTrue: [ ^ self ].
 	self withOverlayDo: [ :anOverlay | anOverlay endHoverTracking ]
 ]
 { #category : 'private - hover' }

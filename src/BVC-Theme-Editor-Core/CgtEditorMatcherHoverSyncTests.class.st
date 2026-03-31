@@ -1,6 +1,6 @@
 "
-#Editor Matcher Hover Sync Tests
-I verify that matcher node hover is translated into editor interaction-state hover so the live overlay can stay synchronized with the matcher widget.
+#Editor Selector Hover Sync Tests
+I verify that selector node hover is translated into editor interaction-state hover so the live overlay can stay synchronized with the selector renderer.
 "
 Class {
 	#name : 'CgtEditorMatcherHoverSyncTests',
@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'tests' }
-CgtEditorMatcherHoverSyncTests >> testMatcherNodeHoverUpdatesInteractionState [
+CgtEditorMatcherHoverSyncTests >> testSelectorNodeHoverUpdatesInteractionState [
 	| editor element node |
 	editor := CgtEditor new.
 	element := BlElement new.
@@ -22,7 +22,7 @@ CgtEditorMatcherHoverSyncTests >> testMatcherNodeHoverUpdatesInteractionState [
 ]
 
 { #category : 'tests' }
-CgtEditorMatcherHoverSyncTests >> testMatcherNodeUnhoverClearsMatcherHover [
+CgtEditorMatcherHoverSyncTests >> testSelectorNodeUnhoverClearsSelectorRendererHover [
 	| editor element node |
 	editor := CgtEditor new.
 	element := BlElement new.
@@ -31,5 +31,5 @@ CgtEditorMatcherHoverSyncTests >> testMatcherNodeUnhoverClearsMatcherHover [
 		yourself.
 	editor selectorNodeHoveredEvent: (CgtThemeSelectorNodeHoveredEvent new projectionNode: node; yourself).
 	editor selectorNodeUnhoveredEvent: (CgtThemeSelectorNodeUnhoveredEvent new projectionNode: node; yourself).
-	self assert: editor interactionState hasMatcherWidgetHover not
+	self assert: editor interactionState hasSelectorRendererHover not
 ]

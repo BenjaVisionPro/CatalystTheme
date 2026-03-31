@@ -1,6 +1,6 @@
 "
 #Editor Interaction State Tests
-I verify the effective-hover precedence rules for the Theme Editor. I am responsible for checking that matcher hover, path hover, preview hover, and explicit highlight resolve in the intended order.
+I verify the effective-hover precedence rules for the Theme Editor. I am responsible for checking that selector-renderer hover, path hover, preview hover, and explicit highlight resolve in the intended order.
 "
 Class {
 	#name : 'CgtEditorInteractionStateTests',
@@ -10,18 +10,18 @@ Class {
 }
 
 { #category : 'tests' }
-CgtEditorInteractionStateTests >> testMatcherHoverOverridesPreviewHover [
+CgtEditorInteractionStateTests >> testSelectorRendererHoverOverridesPreviewHover [
 	| state preview matcher |
 	state := CgtEditorInteractionState new.
 	preview := BlElement new.
 	matcher := BlElement new.
 	state setPreviewHoverElement: preview.
-	state matcherWidgetHoveredElement: matcher.
+	state selectorRendererHoveredElement: matcher.
 	self assert: state effectiveHoverElement identicalTo: matcher
 ]
 
 { #category : 'tests' }
-CgtEditorInteractionStateTests >> testPathHoverOverridesPreviewWhenMatcherHoverIsAbsent [
+CgtEditorInteractionStateTests >> testPathHoverOverridesPreviewWhenSelectorRendererHoverIsAbsent [
 	| state preview path |
 	state := CgtEditorInteractionState new.
 	preview := BlElement new.
@@ -32,7 +32,7 @@ CgtEditorInteractionStateTests >> testPathHoverOverridesPreviewWhenMatcherHoverI
 ]
 
 { #category : 'tests' }
-CgtEditorInteractionStateTests >> testClearingMatcherHoverFallsBackToPathThenPreview [
+CgtEditorInteractionStateTests >> testClearingSelectorRendererHoverFallsBackToPathThenPreview [
 	| state preview path matcher |
 	state := CgtEditorInteractionState new.
 	preview := BlElement new.
@@ -40,21 +40,21 @@ CgtEditorInteractionStateTests >> testClearingMatcherHoverFallsBackToPathThenPre
 	matcher := BlElement new.
 	state setPreviewHoverElement: preview.
 	state pathWidgetHoveredElement: path.
-	state matcherWidgetHoveredElement: matcher.
+	state selectorRendererHoveredElement: matcher.
 	self assert: state effectiveHoverElement identicalTo: matcher.
-	state clearMatcherWidgetHover.
+	state clearSelectorRendererHover.
 	self assert: state effectiveHoverElement identicalTo: path.
 	state clearPathWidgetHover.
 	self assert: state effectiveHoverElement identicalTo: preview
 ]
 
 { #category : 'tests' }
-CgtEditorInteractionStateTests >> testExplicitHighlightOverridesMatcherHover [
+CgtEditorInteractionStateTests >> testExplicitHighlightOverridesSelectorRendererHover [
 	| state highlight matcher |
 	state := CgtEditorInteractionState new.
 	highlight := BlElement new.
 	matcher := BlElement new.
-	state matcherWidgetHoveredElement: matcher.
+	state selectorRendererHoveredElement: matcher.
 	state highlightedElement: highlight.
 	self assert: state effectiveHoverElement identicalTo: highlight
 ]

@@ -11,7 +11,7 @@ Class {
 		'selectedElementPath',
 		'previewHoverElement',
 		'pathWidgetHoveredElement',
-		'matcherWidgetHoveredElement',
+		'selectorRendererHoveredElement',
 		'externallyHighlightedElement'
 	],
 	#category : 'BVC-Theme-Editor-Core',
@@ -55,8 +55,8 @@ CgtEditorInteractionState >> hasPreviewHover [
 ]
 
 { #category : 'testing' }
-CgtEditorInteractionState >> hasMatcherWidgetHover [
-	^ matcherWidgetHoveredElement notNil
+CgtEditorInteractionState >> hasSelectorRendererHover [
+	^ selectorRendererHoveredElement notNil
 ]
 
 
@@ -71,14 +71,14 @@ CgtEditorInteractionState >> previewHoverElement [
 ]
 
 { #category : 'accessing' }
-CgtEditorInteractionState >> matcherWidgetHoveredElement [
-	^ matcherWidgetHoveredElement
+CgtEditorInteractionState >> selectorRendererHoveredElement [
+	^ selectorRendererHoveredElement
 ]
 
 { #category : 'accessing' }
 CgtEditorInteractionState >> effectiveHoverElement [
 	^ externallyHighlightedElement
-		ifNil: [ matcherWidgetHoveredElement ifNil: [ pathWidgetHoveredElement ifNil: [ previewHoverElement ] ] ]
+		ifNil: [ selectorRendererHoveredElement ifNil: [ pathWidgetHoveredElement ifNil: [ previewHoverElement ] ] ]
 ]
 
 { #category : 'event handling - preview' }
@@ -104,16 +104,16 @@ CgtEditorInteractionState >> pathWidgetHoveredElement: anElement [
 
 
 { #category : 'event handling - style inspector' }
-CgtEditorInteractionState >> matcherWidgetHoveredElement: anElement [
-	matcherWidgetHoveredElement == anElement ifTrue: [ ^ false ].
-	matcherWidgetHoveredElement := anElement.
+CgtEditorInteractionState >> selectorRendererHoveredElement: anElement [
+	selectorRendererHoveredElement == anElement ifTrue: [ ^ false ].
+	selectorRendererHoveredElement := anElement.
 	^ true
 ]
 
 { #category : 'event handling - style inspector' }
-CgtEditorInteractionState >> clearMatcherWidgetHover [
-	matcherWidgetHoveredElement ifNil: [ ^ false ].
-	matcherWidgetHoveredElement := nil.
+CgtEditorInteractionState >> clearSelectorRendererHover [
+	selectorRendererHoveredElement ifNil: [ ^ false ].
+	selectorRendererHoveredElement := nil.
 	^ true
 ]
 
