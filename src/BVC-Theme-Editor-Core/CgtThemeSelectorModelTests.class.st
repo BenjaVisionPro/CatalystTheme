@@ -193,3 +193,57 @@ CgtThemeSelectorModelTests >> testHideOtherRuleContextRemovesOtherRuleNodesAgain
 	self deny: model visibilityState showsOtherRuleContext.
 	self assert: model projection otherRuleNodes isEmpty
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorModelTests >> testSelectorMutationClearsTemporaryReveals [
+	| root middle selected rule model compactedNode |
+	root := self newTestElementWithId: #root.
+	middle := self newTestElementWithId: #middle.
+	selected := self newTestElementWithId: #selected.
+	root addChild: middle.
+	middle addChild: selected.
+	rule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	model := CgtThemeSelectorModel new
+		configureForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: #().
+	compactedNode := model projection nodes detect: [ :each | each isCompactedSection ].
+	model revealCompactedProjectionNode: compactedNode.
+	self assert: model visibilityState hasExpandedGaps.
+	model applyClassMatch: true toProjectionNode: model projection selectedProjectionNode.
+	self deny: model visibilityState hasExpandedGaps.
+	self assert: (model projection nodes anySatisfy: [ :each | each isCompactedSection ])
+]
+
+{ #category : 'tests' }
+CgtThemeSelectorModelTests >> testSelectedElementChangeClearsTemporaryReveals [
+	| root middle selected sibling rule model compactedNode |
+	root := self newTestElementWithId: #root.
+	middle := self newTestElementWithId: #middle.
+	selected := self newTestElementWithId: #selected.
+	sibling := self newTestElementWithId: #sibling.
+	root addChild: middle.
+	middle addChild: selected.
+	root addChild: sibling.
+	rule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	model := CgtThemeSelectorModel new
+		configureForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: #().
+	compactedNode := model projection nodes detect: [ :each | each isCompactedSection ].
+	model revealCompactedProjectionNode: compactedNode.
+	self assert: model visibilityState hasExpandedGaps.
+	model selectedElement: sibling.
+	self deny: model visibilityState hasExpandedGaps
+]

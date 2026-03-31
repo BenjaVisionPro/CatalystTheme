@@ -34,6 +34,7 @@ CgtThemeSelectorModel >> configureForStyleRule: aCgtThemeStyleRule selectedEleme
 	selectedElement := anElement.
 	hierarchyRoot := aRootElement.
 	relatedStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
+	self clearTemporaryRevealState.
 	self refreshProjection.
 	^ self
 ]
@@ -45,8 +46,7 @@ CgtThemeSelectorModel >> currentStyleRule [
 
 { #category : 'events' }
 CgtThemeSelectorModel >> collapseTemporaryReveals [
-	self visibilityState clearExpandedGaps.
-	idleCollapseGeneration := idleCollapseGeneration + 1.
+	self clearTemporaryRevealState.
 	self refreshProjection
 ]
 
@@ -109,6 +109,7 @@ CgtThemeSelectorModel >> excludeProjectionNodeFromRule: aProjectionNode [
 CgtThemeSelectorModel >> selector: aCgtThemeSelector [
 	styleRule ifNil: [ styleRule := CgtThemeStyleRule new ].
 	styleRule selector: aCgtThemeSelector.
+	self clearTemporaryRevealState.
 	self refreshProjection
 ]
 
@@ -160,6 +161,13 @@ CgtThemeSelectorModel >> toggleOtherRuleContext [
 	self refreshProjection
 ]
 
+{ #category : 'private - visibility state' }
+CgtThemeSelectorModel >> clearTemporaryRevealState [
+	self visibilityState clearExpandedGaps.
+	idleCollapseGeneration := idleCollapseGeneration + 1.
+	^ self
+]
+
 { #category : 'private - idle collapse' }
 CgtThemeSelectorModel >> noteSelectorInteraction [
 	idleCollapseGeneration := idleCollapseGeneration + 1.
@@ -175,6 +183,7 @@ CgtThemeSelectorModel >> hierarchyRoot [
 { #category : 'accessing' }
 CgtThemeSelectorModel >> hierarchyRoot: anElement [
 	hierarchyRoot := anElement.
+	self clearTemporaryRevealState.
 	self refreshProjection.
 	^ self
 ]
@@ -208,6 +217,7 @@ CgtThemeSelectorModel >> relatedStyleRules [
 CgtThemeSelectorModel >> relatedStyleRules: aCollection [
 	relatedStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
 	visibilityState ifNil: [ visibilityState := CgtMatcherVisibilityState new ].
+	self clearTemporaryRevealState.
 	self refreshProjection.
 	^ self
 ]
@@ -232,6 +242,7 @@ CgtThemeSelectorModel >> selectedElement [
 { #category : 'accessing' }
 CgtThemeSelectorModel >> selectedElement: anElement [
 	selectedElement := anElement.
+	self clearTemporaryRevealState.
 	self refreshProjection.
 	^ self
 ]
@@ -249,6 +260,7 @@ CgtThemeSelectorModel >> styleRule [
 { #category : 'accessing' }
 CgtThemeSelectorModel >> styleRule: aCgtThemeStyleRule [
 	styleRule := aCgtThemeStyleRule.
+	self clearTemporaryRevealState.
 	self refreshProjection.
 	^ self
 ]
@@ -274,6 +286,7 @@ CgtThemeSelectorModel >> visibilityState [
 CgtThemeSelectorModel >> withProjectionMutationDo: aBlock [
 	projection ifNil: [ ^ self ].
 	aBlock value.
+	self clearTemporaryRevealState.
 	styleRule ifNil: [ styleRule := CgtThemeStyleRule new ].
 	styleRule selector: (CgtMatcherProjectionSelectorComposer selectorForProjection: projection).
 	self refreshProjection
