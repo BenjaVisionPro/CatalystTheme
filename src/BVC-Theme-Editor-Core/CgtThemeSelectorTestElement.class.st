@@ -8,7 +8,8 @@ Class {
 	#instVars : [
 		'id',
 		'parent',
-		'children'
+		'children',
+		'className'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -19,6 +20,17 @@ CgtThemeSelectorTestElement >> initialize [
 	super initialize.
 	id := BlElementId noId.
 	children := OrderedCollection new
+]
+
+
+{ #category : 'accessing' }
+CgtThemeSelectorTestElement >> className [
+	^ className ifNil: [ self class name ]
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorTestElement >> className: aString [
+	className := aString
 ]
 
 { #category : 'accessing' }
