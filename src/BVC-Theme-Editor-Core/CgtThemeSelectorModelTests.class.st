@@ -126,3 +126,69 @@ CgtThemeSelectorModelTests >> testRevealCompactedProjectionNodeUpdatesVisibility
 	self assert: model visibilityState hasExpandedGaps.
 	self deny: (model projection nodes anySatisfy: [ :each | each isCompactedSection ])
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorModelTests >> testShowOtherRuleContextRebuildsProjectionWithOtherRuleNodes [
+	| root selected currentRule relatedRule model |
+	root := self newTestElementWithId: #root.
+	selected := self newTestElementWithId: #selected.
+	root addChild: selected.
+	currentRule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	relatedRule := CgtThemeStyleRule new
+		selector: (CgtThemeCombinatorSelector
+			left: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #root);
+				yourself)
+			combinator: #child
+			right: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #selected);
+				yourself));
+		yourself.
+	model := CgtThemeSelectorModel new
+		configureForStyleRule: currentRule
+		selectedElement: selected
+		pathRootElement: root
+		relatedStyleRules: { relatedRule }.
+	self assert: model projection otherRuleNodes isEmpty.
+	model showOtherRuleContext.
+	self assert: model visibilityState showsOtherRuleContext.
+	self deny: model projection otherRuleNodes isEmpty
+]
+
+{ #category : 'tests' }
+CgtThemeSelectorModelTests >> testHideOtherRuleContextRemovesOtherRuleNodesAgain [
+	| root selected currentRule relatedRule model |
+	root := self newTestElementWithId: #root.
+	selected := self newTestElementWithId: #selected.
+	root addChild: selected.
+	currentRule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	relatedRule := CgtThemeStyleRule new
+		selector: (CgtThemeCombinatorSelector
+			left: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #root);
+				yourself)
+			combinator: #child
+			right: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #selected);
+				yourself));
+		yourself.
+	model := CgtThemeSelectorModel new
+		configureForStyleRule: currentRule
+		selectedElement: selected
+		pathRootElement: root
+		relatedStyleRules: { relatedRule }.
+	model showOtherRuleContext.
+	self deny: model projection otherRuleNodes isEmpty.
+	model hideOtherRuleContext.
+	self deny: model visibilityState showsOtherRuleContext.
+	self assert: model projection otherRuleNodes isEmpty
+]

@@ -16,6 +16,20 @@ CgtThemeSelectorWidgetTests >> newTestElementWithId: anId [
 		yourself
 ]
 
+{ #category : 'private' }
+CgtThemeSelectorWidgetTests >> selectorForId: aSymbol [
+	^ CgtThemeSimpleSelector new
+		addPredicate: (CgtThemeIdPredicate elementId: aSymbol);
+		yourself
+]
+
+{ #category : 'private' }
+CgtThemeSelectorWidgetTests >> styleRuleForSelector: aSelector [
+	^ CgtThemeStyleRule new
+		selector: aSelector;
+		yourself
+]
+
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testBuildsProjectionFromRuleAndHierarchyContext [
 	| root selected rule widget |
@@ -183,4 +197,27 @@ CgtThemeSelectorWidgetTests >> testCompactRendererReceivesProjectionFromModel [
 
 	self assert: widget selectorRendererWidget projection identicalTo: widget projection.
 	self assert: (widget selectorRendererWidget childWithId: #compactSelectorLabel) notNil
+]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testShowOtherRuleContextDelegatesToModelAndRefreshesProjection [
+	| root selected currentRule relatedRule widget |
+	root := self newTestElementWithId: #root.
+	selected := root addChild: (self newTestElementWithId: #selected).
+	currentRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	relatedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	widget := CgtThemeSelectorWidget new.
+	widget
+		configureForStyleRule: currentRule
+		selectedElement: selected
+		pathRootElement: root
+		relatedStyleRules: { relatedRule }.
+	self assert: widget projection otherRuleNodes isEmpty.
+	widget showOtherRuleContext.
+	self assert: widget visibilityState showsOtherRuleContext.
+	self deny: widget projection otherRuleNodes isEmpty
 ]

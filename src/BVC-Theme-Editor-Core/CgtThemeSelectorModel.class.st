@@ -140,6 +140,24 @@ CgtThemeSelectorModel >> applyCombinator: aSymbol toRelation: aRelation [
 	self changeCombinatorForRelation: aRelation to: aSymbol
 ]
 
+{ #category : 'editing' }
+CgtThemeSelectorModel >> showOtherRuleContext [
+	self visibilityState showsOtherRuleContext: true.
+	self refreshProjection
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorModel >> hideOtherRuleContext [
+	self visibilityState showsOtherRuleContext: false.
+	self refreshProjection
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorModel >> toggleOtherRuleContext [
+	self visibilityState showsOtherRuleContext: self visibilityState showsOtherRuleContext not.
+	self refreshProjection
+]
+
 { #category : 'private - idle collapse' }
 CgtThemeSelectorModel >> noteMatcherInteraction [
 	idleCollapseGeneration := idleCollapseGeneration + 1.

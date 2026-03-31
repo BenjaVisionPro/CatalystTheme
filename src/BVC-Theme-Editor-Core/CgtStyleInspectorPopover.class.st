@@ -82,6 +82,24 @@ CgtStyleInspectorPopover >> selectorRendererWidgetClass: aClass [
 	^ self
 ]
 
+{ #category : 'editing' }
+CgtStyleInspectorPopover >> showOtherRuleContext [
+	selectorWidget showOtherRuleContext.
+	^ self
+]
+
+{ #category : 'editing' }
+CgtStyleInspectorPopover >> hideOtherRuleContext [
+	selectorWidget hideOtherRuleContext.
+	^ self
+]
+
+{ #category : 'editing' }
+CgtStyleInspectorPopover >> toggleOtherRuleContext [
+	selectorWidget toggleOtherRuleContext.
+	^ self
+]
+
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement pathRootElement: aRootElement relatedStyleRules: aCollection [
 	selectorWidget

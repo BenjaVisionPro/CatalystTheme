@@ -310,6 +310,27 @@ CgtThemeSelectorWidget >> visibilityState [
 	^ model visibilityState
 ]
 
+{ #category : 'editing' }
+CgtThemeSelectorWidget >> showOtherRuleContext [
+	model showOtherRuleContext.
+	self refreshProjectionFromModel.
+	^ self
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorWidget >> hideOtherRuleContext [
+	model hideOtherRuleContext.
+	self refreshProjectionFromModel.
+	^ self
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorWidget >> toggleOtherRuleContext [
+	model toggleOtherRuleContext.
+	self refreshProjectionFromModel.
+	^ self
+]
+
 { #category : 'events' }
 CgtThemeSelectorWidget >> collapseTemporaryReveals [
 	model collapseTemporaryReveals.

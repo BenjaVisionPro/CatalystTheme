@@ -188,3 +188,26 @@ CgtStyleInspectorPopoverTests >> testSelectorWidgetCanUseCompactRendererWithoutC
 	self assert: popover selectorRendererWidgetClass equals: CgtThemeSelectorCompactWidget.
 	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorCompactWidget
 ]
+
+
+{ #category : 'tests' }
+CgtStyleInspectorPopoverTests >> testShowOtherRuleContextDelegatesToSelectorWidget [
+	| root selected currentRule relatedRule popover |
+	root := self newTestElementWithId: #'root'.
+	selected := root addChild: (self newTestElementWithId: #'selected').
+	currentRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	relatedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	popover := CgtStyleInspectorPopover new.
+	popover
+		configureForStyleRule: currentRule
+		selectedElement: selected
+		pathRootElement: root
+		relatedStyleRules: { relatedRule }.
+	self assert: popover selectorWidget projection otherRuleNodes isEmpty.
+	popover showOtherRuleContext.
+	self assert: popover selectorModel visibilityState showsOtherRuleContext.
+	self deny: popover selectorWidget projection otherRuleNodes isEmpty
+]
