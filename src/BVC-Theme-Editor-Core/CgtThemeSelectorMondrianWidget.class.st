@@ -110,12 +110,13 @@ CgtThemeSelectorMondrianWidget >> configureEdgeConnectionsOn: anEdgeBuilder [
 
 { #category : 'private - animation' }
 CgtThemeSelectorMondrianWidget >> animateStructuralRefreshFor: aLegendElement and: aGraphElement [
-	| token startOpacity endOpacity revealOffset duration |
+	| token plan startOpacity endOpacity revealOffset duration |
 	token := structuralRefreshAnimationToken := structuralRefreshAnimationToken + 1.
-	startOpacity := transitionPolicy graphRevealStartOpacity.
-	endOpacity := transitionPolicy graphRevealEndOpacity.
-	revealOffset := self structuralRefreshRevealOffset.
-	duration := transitionPolicy structuralRefreshDuration.
+	plan := lastStructuralRefreshPlan ifNil: [ self structuralRefreshPlan ].
+	startOpacity := transitionPolicy structuralRefreshStartOpacityForPlan: plan.
+	endOpacity := transitionPolicy structuralRefreshEndOpacityForPlan: plan.
+	revealOffset := plan revealOffset.
+	duration := transitionPolicy structuralRefreshDurationForPlan: plan.
 	{ aLegendElement. aGraphElement } do: [ :each |
 		each opacity: startOpacity ].
 	self addAnimation: (BlNumberTransition new
@@ -137,6 +138,23 @@ CgtThemeSelectorMondrianWidget >> animateStructuralRefreshFor: aLegendElement an
 			yourself)
 ]
 
+
+
+
+{ #category : 'private - animation' }
+CgtThemeSelectorMondrianWidget >> structuralRefreshAnimationDuration [
+	^ transitionPolicy structuralRefreshDurationForPlan: (lastStructuralRefreshPlan ifNil: [ self structuralRefreshPlan ])
+]
+
+{ #category : 'private - animation' }
+CgtThemeSelectorMondrianWidget >> structuralRefreshStartOpacity [
+	^ transitionPolicy structuralRefreshStartOpacityForPlan: (lastStructuralRefreshPlan ifNil: [ self structuralRefreshPlan ])
+]
+
+{ #category : 'private - animation' }
+CgtThemeSelectorMondrianWidget >> structuralRefreshEndOpacity [
+	^ transitionPolicy structuralRefreshEndOpacityForPlan: (lastStructuralRefreshPlan ifNil: [ self structuralRefreshPlan ])
+]
 
 { #category : 'private - animation' }
 CgtThemeSelectorMondrianWidget >> structuralRefreshPlan [

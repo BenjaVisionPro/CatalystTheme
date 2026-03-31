@@ -35,6 +35,28 @@ CgtMatcherTransitionPolicy >> graphRevealOffsetForOrientation: anOrientation [
 	^ 0 @ -24
 ]
 
+
+
+{ #category : 'accessing' }
+CgtMatcherTransitionPolicy >> structuralRefreshDurationForPlan: aStructuralRefreshPlan [
+	aStructuralRefreshPlan ifNil: [ ^ self structuralRefreshDuration ].
+	aStructuralRefreshPlan isReveal ifTrue: [ ^ self revealDuration ].
+	aStructuralRefreshPlan isCollapse ifTrue: [ ^ self collapseDuration ].
+	^ self structuralRefreshDuration
+]
+
+{ #category : 'accessing' }
+CgtMatcherTransitionPolicy >> structuralRefreshStartOpacityForPlan: aStructuralRefreshPlan [
+	aStructuralRefreshPlan ifNil: [ ^ self graphRevealStartOpacity ].
+	aStructuralRefreshPlan isStable ifTrue: [ ^ self graphRevealEndOpacity ].
+	^ self graphRevealStartOpacity
+]
+
+{ #category : 'accessing' }
+CgtMatcherTransitionPolicy >> structuralRefreshEndOpacityForPlan: aStructuralRefreshPlan [
+	^ self graphRevealEndOpacity
+]
+
 { #category : 'accessing' }
 CgtMatcherTransitionPolicy >> graphRevealStartOpacity [
 	^ 0.0

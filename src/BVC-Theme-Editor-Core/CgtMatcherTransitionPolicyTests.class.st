@@ -153,3 +153,27 @@ CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesCollapseWhenLea
 	self assert: plan isCollapse.
 	self assert: plan revealOffset equals: (0 @ 24)
 ]
+
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testStructuralRefreshDurationUsesRevealAndCollapseSpecificDurations [
+	| policy revealPlan collapsePlan stablePlan |
+	policy := CgtMatcherTransitionPolicy new.
+	revealPlan := CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself.
+	collapsePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #collapse; yourself.
+	stablePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #stable; yourself.
+	self assert: (policy structuralRefreshDurationForPlan: revealPlan) equals: policy revealDuration.
+	self assert: (policy structuralRefreshDurationForPlan: collapsePlan) equals: policy collapseDuration.
+	self assert: (policy structuralRefreshDurationForPlan: stablePlan) equals: policy structuralRefreshDuration
+]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testStructuralRefreshOpacityUsesStableNoFadeAndRevealFadeIn [
+	| policy revealPlan stablePlan |
+	policy := CgtMatcherTransitionPolicy new.
+	revealPlan := CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself.
+	stablePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #stable; yourself.
+	self assert: (policy structuralRefreshStartOpacityForPlan: revealPlan) equals: policy graphRevealStartOpacity.
+	self assert: (policy structuralRefreshStartOpacityForPlan: stablePlan) equals: policy graphRevealEndOpacity.
+	self assert: (policy structuralRefreshEndOpacityForPlan: stablePlan) equals: policy graphRevealEndOpacity
+]

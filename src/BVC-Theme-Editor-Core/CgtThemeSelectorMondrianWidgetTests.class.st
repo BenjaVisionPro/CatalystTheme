@@ -307,3 +307,19 @@ CgtThemeSelectorMondrianWidgetTests >> test_projectionChangeBuildsStructuralRefr
 	self assert: widget lastStructuralRefreshPlan notNil.
 	self assert: widget lastStructuralRefreshPlan isReveal
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshAnimationUsesPlanSpecificDurationsAndOpacity [
+	| widget revealPlan stablePlan |
+	widget := CgtThemeSelectorMondrianWidget new.
+	revealPlan := CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself.
+	stablePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #stable; yourself.
+	widget instVarNamed: 'lastStructuralRefreshPlan' put: revealPlan.
+	self assert: widget structuralRefreshAnimationDuration equals: widget transitionPolicy revealDuration.
+	self assert: widget structuralRefreshStartOpacity equals: widget transitionPolicy graphRevealStartOpacity.
+	widget instVarNamed: 'lastStructuralRefreshPlan' put: stablePlan.
+	self assert: widget structuralRefreshAnimationDuration equals: widget transitionPolicy structuralRefreshDuration.
+	self assert: widget structuralRefreshStartOpacity equals: widget transitionPolicy graphRevealEndOpacity.
+	self assert: widget structuralRefreshEndOpacity equals: widget transitionPolicy graphRevealEndOpacity
+]
