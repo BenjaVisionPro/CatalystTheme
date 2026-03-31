@@ -30,7 +30,7 @@ CgtEditorStyleRuleContextTests >> testMatcherSelectorChangedEventAddsInspectedRu
 	event := CgtThemeSelectorChangedEvent new
 		selector: selector;
 		yourself.
-	editor matcherSelectorChangedEvent: event.
+	editor selectorChangedEvent: event.
 	self assert: rule selector identicalTo: selector.
 	self assert: (editor styleRules includes: rule)
 ]

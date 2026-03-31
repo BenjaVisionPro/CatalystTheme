@@ -164,10 +164,6 @@ CgtStyleInspectorPopover >> selectorChangedEvent: anEvent [
 	self updateLabels
 ]
 
-{ #category : 'event handling' }
-CgtStyleInspectorPopover >> matcherSelectorChangedEvent: anEvent [
-	^ self selectorChangedEvent: anEvent
-]
 
 { #category : 'private - labels' }
 CgtStyleInspectorPopover >> updateLabels [

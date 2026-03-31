@@ -140,8 +140,8 @@ CgtStyleInspectorPopoverTests >> testMatcherSelectorChangedEventUpdatesDisplayed
 		selector: newSelector;
 		yourself.
 
-	popover selectorWidget matcherSelectorChangedEvent: event.
-	popover matcherSelectorChangedEvent: event.
+	popover selectorWidget selectorChangedEvent: event.
+	popover selectorChangedEvent: event.
 
 	self assert: popover styleRule selector identicalTo: newSelector.
 	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#root > #selected'

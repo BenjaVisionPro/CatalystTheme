@@ -17,7 +17,7 @@ CgtEditorMatcherHoverSyncTests >> testMatcherNodeHoverUpdatesInteractionState [
 	node := (CgtMatcherProjectionNode kind: #selectedElement)
 		representedElement: element;
 		yourself.
-	editor matcherNodeHoveredEvent: (CgtMatcherNodeHoveredEvent new projectionNode: node; yourself).
+	editor selectorNodeHoveredEvent: (CgtThemeSelectorNodeHoveredEvent new projectionNode: node; yourself).
 	self assert: editor interactionState effectiveHoverElement identicalTo: element
 ]
 
@@ -29,7 +29,7 @@ CgtEditorMatcherHoverSyncTests >> testMatcherNodeUnhoverClearsMatcherHover [
 	node := (CgtMatcherProjectionNode kind: #selectedElement)
 		representedElement: element;
 		yourself.
-	editor matcherNodeHoveredEvent: (CgtMatcherNodeHoveredEvent new projectionNode: node; yourself).
-	editor matcherNodeUnhoveredEvent: (CgtMatcherNodeUnhoveredEvent new projectionNode: node; yourself).
+	editor selectorNodeHoveredEvent: (CgtThemeSelectorNodeHoveredEvent new projectionNode: node; yourself).
+	editor selectorNodeUnhoveredEvent: (CgtThemeSelectorNodeUnhoveredEvent new projectionNode: node; yourself).
 	self assert: editor interactionState hasMatcherWidgetHover not
 ]

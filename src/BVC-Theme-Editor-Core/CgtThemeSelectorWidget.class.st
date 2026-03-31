@@ -47,26 +47,26 @@ CgtThemeSelectorWidget >> installRendererWidget [
 
 { #category : 'initialization' }
 CgtThemeSelectorWidget >> wireRendererWidget [
-	rendererWidget when: CgtMatcherCompactedSectionExpandedEvent do: [ :anEvent |
-		self matcherCompactedSectionExpandedEvent: anEvent ].
-	rendererWidget when: CgtMatcherNodeIncludedInRuleEvent do: [ :anEvent |
-		self matcherNodeIncludedInRuleEvent: anEvent ].
-	rendererWidget when: CgtMatcherNodeExcludedFromRuleEvent do: [ :anEvent |
-		self matcherNodeExcludedFromRuleEvent: anEvent ].
-	rendererWidget when: CgtMatcherClassMatchToggledEvent do: [ :anEvent |
-		self matcherClassMatchToggledEvent: anEvent ].
-	rendererWidget when: CgtMatcherIdMatchToggledEvent do: [ :anEvent |
-		self matcherIdMatchToggledEvent: anEvent ].
-	rendererWidget when: CgtMatcherCombinatorChangedEvent do: [ :anEvent |
-		self matcherCombinatorChangedEvent: anEvent ].
-	rendererWidget when: CgtMatcherNodeHoveredEvent do: [ :anEvent |
-		self matcherNodeHoveredEvent: anEvent ].
-	rendererWidget when: CgtMatcherNodeSelectedEvent do: [ :anEvent |
-		self matcherNodeSelectedEvent: anEvent ].
-	rendererWidget when: CgtMatcherNodeUnhoveredEvent do: [ :anEvent |
-		self matcherNodeUnhoveredEvent: anEvent ].
-	rendererWidget when: CgtMatcherOtherRuleContextToggledEvent do: [ :anEvent |
-		self matcherOtherRuleContextToggledEvent: anEvent ]
+	rendererWidget when: CgtThemeSelectorCompactedSectionExpandedEvent do: [ :anEvent |
+		self selectorCompactedSectionExpandedEvent: anEvent ].
+	rendererWidget when: CgtThemeSelectorNodeIncludedInRuleEvent do: [ :anEvent |
+		self selectorNodeIncludedInRuleEvent: anEvent ].
+	rendererWidget when: CgtThemeSelectorNodeExcludedFromRuleEvent do: [ :anEvent |
+		self selectorNodeExcludedFromRuleEvent: anEvent ].
+	rendererWidget when: CgtThemeSelectorClassMatchChangedEvent do: [ :anEvent |
+		self selectorClassMatchChangedEvent: anEvent ].
+	rendererWidget when: CgtThemeSelectorIdMatchChangedEvent do: [ :anEvent |
+		self selectorIdMatchChangedEvent: anEvent ].
+	rendererWidget when: CgtThemeSelectorCombinatorChangedEvent do: [ :anEvent |
+		self selectorCombinatorChangedEvent: anEvent ].
+	rendererWidget when: CgtThemeSelectorNodeHoveredEvent do: [ :anEvent |
+		self selectorNodeHoveredEvent: anEvent ].
+	rendererWidget when: CgtThemeSelectorNodeSelectedEvent do: [ :anEvent |
+		self selectorNodeSelectedEvent: anEvent ].
+	rendererWidget when: CgtThemeSelectorNodeUnhoveredEvent do: [ :anEvent |
+		self selectorNodeUnhoveredEvent: anEvent ].
+	rendererWidget when: CgtThemeSelectorOtherRuleContextToggledEvent do: [ :anEvent |
+		self selectorOtherRuleContextToggledEvent: anEvent ]
 ]
 
 { #category : 'accessing' }
@@ -81,30 +81,30 @@ CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElem
 ]
 
 { #category : 'events' }
-CgtThemeSelectorWidget >> matcherInteractionEvent: anEvent [
+CgtThemeSelectorWidget >> selectorInteractionEvent: anEvent [
 	self scheduleIdleCollapse.
-	self fireEvent: (self selectorInteractionEventFromMatcherEvent: anEvent).
+	self fireEvent: anEvent.
 	^ self
 ]
 
 { #category : 'events' }
-CgtThemeSelectorWidget >> matcherNodeHoveredEvent: anEvent [
-	^ self matcherInteractionEvent: anEvent
+CgtThemeSelectorWidget >> selectorNodeHoveredEvent: anEvent [
+	^ self selectorInteractionEvent: anEvent
 ]
 
 { #category : 'events' }
-CgtThemeSelectorWidget >> matcherNodeSelectedEvent: anEvent [
-	^ self matcherInteractionEvent: anEvent
+CgtThemeSelectorWidget >> selectorNodeSelectedEvent: anEvent [
+	^ self selectorInteractionEvent: anEvent
 ]
 
 { #category : 'events' }
-CgtThemeSelectorWidget >> matcherNodeUnhoveredEvent: anEvent [
-	self fireEvent: (self selectorInteractionEventFromMatcherEvent: anEvent).
+CgtThemeSelectorWidget >> selectorNodeUnhoveredEvent: anEvent [
+	self fireEvent: anEvent.
 	^ self
 ]
 
 { #category : 'event handling' }
-CgtThemeSelectorWidget >> matcherClassMatchToggledEvent: anEvent [
+CgtThemeSelectorWidget >> selectorClassMatchChangedEvent: anEvent [
 	model applyClassMatch: anEvent shouldMatch toProjectionNode: anEvent projectionNode.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse.
@@ -112,7 +112,7 @@ CgtThemeSelectorWidget >> matcherClassMatchToggledEvent: anEvent [
 ]
 
 { #category : 'event handling' }
-CgtThemeSelectorWidget >> matcherCombinatorChangedEvent: anEvent [
+CgtThemeSelectorWidget >> selectorCombinatorChangedEvent: anEvent [
 	model applyCombinator: anEvent combinator toRelation: anEvent relation.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse.
@@ -120,14 +120,14 @@ CgtThemeSelectorWidget >> matcherCombinatorChangedEvent: anEvent [
 ]
 
 { #category : 'event handling' }
-CgtThemeSelectorWidget >> matcherCompactedSectionExpandedEvent: anEvent [
+CgtThemeSelectorWidget >> selectorCompactedSectionExpandedEvent: anEvent [
 	model revealCompactedProjectionNode: anEvent projectionNode.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
-CgtThemeSelectorWidget >> matcherIdMatchToggledEvent: anEvent [
+CgtThemeSelectorWidget >> selectorIdMatchChangedEvent: anEvent [
 	model applyIdMatch: anEvent shouldMatch toProjectionNode: anEvent projectionNode.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse.
@@ -135,7 +135,7 @@ CgtThemeSelectorWidget >> matcherIdMatchToggledEvent: anEvent [
 ]
 
 { #category : 'event handling' }
-CgtThemeSelectorWidget >> matcherNodeExcludedFromRuleEvent: anEvent [
+CgtThemeSelectorWidget >> selectorNodeExcludedFromRuleEvent: anEvent [
 	model excludeProjectionNode: anEvent projectionNode.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse.
@@ -143,7 +143,7 @@ CgtThemeSelectorWidget >> matcherNodeExcludedFromRuleEvent: anEvent [
 ]
 
 { #category : 'event handling' }
-CgtThemeSelectorWidget >> matcherNodeIncludedInRuleEvent: anEvent [
+CgtThemeSelectorWidget >> selectorNodeIncludedInRuleEvent: anEvent [
 	model includeProjectionNode: anEvent projectionNode.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse.
@@ -151,7 +151,7 @@ CgtThemeSelectorWidget >> matcherNodeIncludedInRuleEvent: anEvent [
 ]
 
 { #category : 'event handling' }
-CgtThemeSelectorWidget >> matcherOtherRuleContextToggledEvent: anEvent [
+CgtThemeSelectorWidget >> selectorOtherRuleContextToggledEvent: anEvent [
 	model toggleOtherRuleContext.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse.
@@ -217,23 +217,6 @@ CgtThemeSelectorWidget >> hierarchyRoot: anElement [
 ]
 
 
-{ #category : 'private - events' }
-CgtThemeSelectorWidget >> selectorInteractionEventFromMatcherEvent: anEvent [
-	anEvent isNil ifTrue: [ ^ anEvent ].
-	anEvent class = CgtMatcherNodeHoveredEvent ifTrue: [
-		^ CgtThemeSelectorNodeHoveredEvent new
-			projectionNode: anEvent projectionNode;
-			yourself ].
-	anEvent class = CgtMatcherNodeSelectedEvent ifTrue: [
-		^ CgtThemeSelectorNodeSelectedEvent new
-			projectionNode: anEvent projectionNode;
-			yourself ].
-	anEvent class = CgtMatcherNodeUnhoveredEvent ifTrue: [
-		^ CgtThemeSelectorNodeUnhoveredEvent new
-			projectionNode: anEvent projectionNode;
-			yourself ].
-	^ anEvent
-]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> relatedStyleRules [
@@ -267,12 +250,6 @@ CgtThemeSelectorWidget >> selectorChangedEvent: anEvent [
 	model selector: anEvent selector.
 	self refreshProjectionFromModel
 ]
-
-{ #category : 'event handling' }
-CgtThemeSelectorWidget >> matcherSelectorChangedEvent: anEvent [
-	^ self selectorChangedEvent: anEvent
-]
-
 
 
 { #category : 'accessing' }

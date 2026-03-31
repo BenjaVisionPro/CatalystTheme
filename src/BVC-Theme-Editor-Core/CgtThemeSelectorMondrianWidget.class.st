@@ -241,30 +241,40 @@ CgtThemeSelectorMondrianWidget >> nodeSortPriorityFor: aProjectionNode [
 
 { #category : 'events' }
 CgtThemeSelectorMondrianWidget >> forwardNodeSelectedEvent: anEvent [
-	self fireEvent: anEvent
+	self fireEvent: (CgtThemeSelectorNodeSelectedEvent new
+		projectionNode: anEvent projectionNode;
+		yourself)
 ]
 
 
 { #category : 'events' }
 CgtThemeSelectorMondrianWidget >> forwardNodeHoveredEvent: anEvent [
-	self fireEvent: anEvent
+	self fireEvent: (CgtThemeSelectorNodeHoveredEvent new
+		projectionNode: anEvent projectionNode;
+		yourself)
 ]
 
 { #category : 'events' }
 CgtThemeSelectorMondrianWidget >> forwardNodeUnhoveredEvent: anEvent [
-	self fireEvent: anEvent
+	self fireEvent: (CgtThemeSelectorNodeUnhoveredEvent new
+		projectionNode: anEvent projectionNode;
+		yourself)
 ]
 
 
 
 { #category : 'events' }
 CgtThemeSelectorMondrianWidget >> handleNodeIncludedInRuleEvent: anEvent [
-	self fireEvent: anEvent
+	self fireEvent: (CgtThemeSelectorNodeIncludedInRuleEvent new
+		projectionNode: anEvent projectionNode;
+		yourself)
 ]
 
 { #category : 'events' }
 CgtThemeSelectorMondrianWidget >> handleNodeExcludedFromRuleEvent: anEvent [
-	self fireEvent: anEvent
+	self fireEvent: (CgtThemeSelectorNodeExcludedFromRuleEvent new
+		projectionNode: anEvent projectionNode;
+		yourself)
 ]
 
 { #category : 'private' }
@@ -283,22 +293,30 @@ CgtThemeSelectorMondrianWidget >> preferredOutgoingRelationForNode: aProjectionN
 
 { #category : 'events' }
 CgtThemeSelectorMondrianWidget >> handleClassMatchToggledEvent: anEvent [
-	self fireEvent: anEvent
+	self fireEvent: (CgtThemeSelectorClassMatchChangedEvent new
+		projectionNode: anEvent projectionNode;
+		shouldMatch: anEvent shouldMatch;
+		yourself)
 ]
 
 { #category : 'events' }
 CgtThemeSelectorMondrianWidget >> handleIdMatchToggledEvent: anEvent [
-	self fireEvent: anEvent
+	self fireEvent: (CgtThemeSelectorIdMatchChangedEvent new
+		projectionNode: anEvent projectionNode;
+		shouldMatch: anEvent shouldMatch;
+		yourself)
 ]
 
 { #category : 'events' }
 CgtThemeSelectorMondrianWidget >> handleCompactedSectionExpandedEvent: anEvent [
-	self fireEvent: anEvent
+	self fireEvent: (CgtThemeSelectorCompactedSectionExpandedEvent new
+		projectionNode: anEvent projectionNode;
+		yourself)
 ]
 
 { #category : 'events' }
 CgtThemeSelectorMondrianWidget >> handleOtherRuleContextToggledEvent: anEvent [
-	self fireEvent: anEvent
+	self fireEvent: CgtThemeSelectorOtherRuleContextToggledEvent new
 ]
 
 
@@ -314,7 +332,10 @@ CgtThemeSelectorMondrianWidget >> outgoingMatcherRelationForNode: aProjectionNod
 
 { #category : 'events' }
 CgtThemeSelectorMondrianWidget >> handleCombinatorChangedEvent: anEvent [
-	self fireEvent: anEvent
+	self fireEvent: (CgtThemeSelectorCombinatorChangedEvent new
+		relation: anEvent relation;
+		combinator: anEvent combinator;
+		yourself)
 ]
 
 { #category : 'private' }

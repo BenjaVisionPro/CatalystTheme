@@ -809,26 +809,6 @@ CgtEditor >> selectorChangedEvent: anEvent [
 
 
 
-{ #category : 'event handling - style inspector' }
-CgtEditor >> matcherNodeHoveredEvent: anEvent [
-	^ self selectorNodeHoveredEvent: anEvent
-]
-
-{ #category : 'event handling - style inspector' }
-CgtEditor >> matcherNodeUnhoveredEvent: anEvent [
-	^ self selectorNodeUnhoveredEvent: anEvent
-]
-
-{ #category : 'event handling - style inspector' }
-CgtEditor >> matcherNodeSelectedEvent: anEvent [
-	^ self selectorNodeSelectedEvent: anEvent
-]
-
-{ #category : 'event handling - style inspector' }
-CgtEditor >> matcherSelectorChangedEvent: anEvent [
-	^ self selectorChangedEvent: anEvent
-]
-
 { #category : 'private - overlay' }
 CgtEditor >> withOverlayDo: aBlock [
 	| anOverlayContainer |

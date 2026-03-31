@@ -80,7 +80,7 @@ CgtThemeSelectorMondrianWidgetTests >> testForwardsMatcherNodeEditEvents [
 	widget := CgtThemeSelectorMondrianWidget new
 		projection: projection;
 		yourself.
-	widget when: CgtMatcherClassMatchToggledEvent do: [ :anEvent | forwardedEvent := anEvent ].
+	widget when: CgtThemeSelectorClassMatchChangedEvent do: [ :anEvent | forwardedEvent := anEvent ].
 	graphNodeElement := widget graphElement graph nodeChildren first.
 	graphNodeElement requestClassMatchToggleFor: node.
 	self assert: forwardedEvent notNil.
@@ -113,7 +113,7 @@ CgtThemeSelectorMondrianWidgetTests >> testForwardsMatcherCombinatorChangedEvent
 	widget := CgtThemeSelectorMondrianWidget new
 		projection: projection;
 		yourself.
-	widget when: CgtMatcherCombinatorChangedEvent do: [ :anEvent | forwardedEvent := anEvent ].
+	widget when: CgtThemeSelectorCombinatorChangedEvent do: [ :anEvent | forwardedEvent := anEvent ].
 	graphNodeElement := widget graphElement graph nodeChildren second.
 	graphNodeElement requestCombinatorChange: #descendant.
 	self assert: forwardedEvent notNil.
@@ -182,7 +182,7 @@ CgtThemeSelectorMondrianWidgetTests >> testForwardsOtherRuleContextToggledEvents
 	widget := CgtThemeSelectorMondrianWidget new
 		projection: projection;
 		yourself.
-	widget when: CgtMatcherOtherRuleContextToggledEvent do: [ :anEvent | forwardedEvent := anEvent ].
+	widget when: CgtThemeSelectorOtherRuleContextToggledEvent do: [ :anEvent | forwardedEvent := anEvent ].
 	graphNodeElement := widget graphElement graph nodeChildren first.
 	graphNodeElement requestOtherRuleContextToggle.
 	self assert: forwardedEvent notNil

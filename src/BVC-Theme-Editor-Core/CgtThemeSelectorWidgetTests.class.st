@@ -118,7 +118,7 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 		selector: newSelector;
 		yourself.
 
-	widget matcherSelectorChangedEvent: event.
+	widget selectorChangedEvent: event.
 
 	self assert: widget currentStyleRule identicalTo: originalRule.
 	self assert: widget currentStyleRule selector identicalTo: newSelector
@@ -249,8 +249,8 @@ CgtThemeSelectorWidgetTests >> testOtherRuleContextToggleEventDelegatesToModelAn
 		hierarchyRoot: root
 		relatedStyleRules: { relatedRule }.
 	self deny: widget visibilityState showsOtherRuleContext.
-	event := CgtMatcherOtherRuleContextToggledEvent new.
-	widget matcherOtherRuleContextToggledEvent: event.
+	event := CgtThemeSelectorOtherRuleContextToggledEvent new.
+	widget selectorOtherRuleContextToggledEvent: event.
 	self assert: widget visibilityState showsOtherRuleContext.
 	self deny: widget projection otherRuleNodes isEmpty
 ]
@@ -264,6 +264,6 @@ CgtThemeSelectorWidgetTests >> testMatcherHoverEventIsRepublishedAsSelectorHover
 	received := false.
 	widget when: CgtThemeSelectorNodeHoveredEvent do: [ :anEvent |
 		received := anEvent projectionNode == selected ].
-	widget matcherNodeHoveredEvent: (CgtMatcherNodeHoveredEvent new projectionNode: selected; yourself).
+	widget selectorNodeHoveredEvent: (CgtThemeSelectorNodeHoveredEvent new projectionNode: selected; yourself).
 	self assert: received
 ]
