@@ -58,6 +58,19 @@ CgtStyleInspectorPopover >> selectorWidget [
 	^ selectorWidget
 ]
 
+
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> selectorRendererWidgetClass [
+	^ selectorWidget rendererWidgetClass
+]
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> selectorRendererWidgetClass: aClass [
+	selectorWidget rendererWidgetClass: aClass.
+	^ self
+]
+
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement pathRootElement: aRootElement relatedStyleRules: aCollection [
 	selectorWidget

@@ -153,7 +153,7 @@ CgtStyleInspectorPopoverTests >> testSelectorWidgetUsesConcreteMatcherRenderer [
 	| popover |
 	popover := CgtStyleInspectorPopover new.
 
-	self assert: popover selectorWidget rendererWidget class equals: CgtThemeMatcherMondrianWidget
+	self assert: popover selectorWidget rendererWidget class equals: CgtThemeSelectorMondrianWidget
 ]
 
 
@@ -163,5 +163,17 @@ CgtStyleInspectorPopoverTests >> testSelectorWidgetCanUseAlternateRendererWithou
 	popover := CgtStyleInspectorPopover new.
 	popover selectorWidget rendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
 
+	self assert: popover selectorWidget rendererWidget class equals: CgtThemeSelectorBreadcrumbWidget
+]
+
+
+
+{ #category : 'tests' }
+CgtStyleInspectorPopoverTests >> testSelectorRendererWidgetClassDelegatesToSelectorWidget [
+	| popover |
+	popover := CgtStyleInspectorPopover new.
+	popover selectorRendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
+
+	self assert: popover selectorRendererWidgetClass equals: CgtThemeSelectorBreadcrumbWidget.
 	self assert: popover selectorWidget rendererWidget class equals: CgtThemeSelectorBreadcrumbWidget
 ]

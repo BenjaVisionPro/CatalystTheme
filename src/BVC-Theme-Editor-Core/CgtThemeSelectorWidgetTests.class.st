@@ -116,7 +116,7 @@ CgtThemeSelectorWidgetTests >> testHostsConcreteMatcherRendererWidget [
 	| widget |
 	widget := CgtThemeSelectorWidget new.
 
-	self assert: widget rendererWidget class equals: CgtThemeMatcherMondrianWidget
+	self assert: widget rendererWidget class equals: CgtThemeSelectorMondrianWidget
 ]
 
 

@@ -19,7 +19,7 @@ Class {
 CgtThemeSelectorWidget >> initialize [
 	super initialize.
 	model := CgtThemeSelectorModel new.
-	rendererWidgetClass := CgtThemeMatcherMondrianWidget.
+	rendererWidgetClass := CgtThemeSelectorMondrianWidget.
 	self
 		vFitContent;
 		hMatchParent.
@@ -244,12 +244,12 @@ CgtThemeSelectorWidget >> model [
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> rendererWidgetClass [
-	^ rendererWidgetClass ifNil: [ CgtThemeMatcherMondrianWidget ]
+	^ rendererWidgetClass ifNil: [ CgtThemeSelectorMondrianWidget ]
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> rendererWidgetClass: aClass [
-	rendererWidgetClass := aClass ifNil: [ CgtThemeMatcherMondrianWidget ].
+	rendererWidgetClass := aClass ifNil: [ CgtThemeSelectorMondrianWidget ].
 	self installRendererWidget.
 	^ self
 ]
