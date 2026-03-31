@@ -291,6 +291,7 @@ CgtThemeSelectorMondrianWidgetTests >> test_projectionChangeBuildsStructuralRefr
 	newProjection := CgtMatcherProjection new.
 	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
 		representedElements: { CgtThemeSelectorTestElement new className: 'Hidden'; yourself };
+		gapIdentity: #(hiddenGap);
 		yourself.
 	selectedNode := (CgtMatcherProjectionNode kind: #selectedElement)
 		representedElement: newSelected;

@@ -100,6 +100,7 @@ CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesRevealWhenLeadi
 	newProjection := CgtMatcherProjection new.
 	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
 		representedElements: { CgtThemeSelectorTestElement new className: 'Hidden'; yourself };
+		gapIdentity: #(hiddenGap);
 		yourself.
 	selectedNode := (CgtMatcherProjectionNode kind: #selectedElement)
 		representedElement: newSelected;
@@ -128,6 +129,7 @@ CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesCollapseWhenLea
 	oldProjection := CgtMatcherProjection new.
 	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
 		representedElements: { CgtThemeSelectorTestElement new className: 'Hidden'; yourself };
+		gapIdentity: #(hiddenGap);
 		yourself.
 	selectedNode := (CgtMatcherProjectionNode kind: #selectedElement)
 		representedElement: oldSelected;

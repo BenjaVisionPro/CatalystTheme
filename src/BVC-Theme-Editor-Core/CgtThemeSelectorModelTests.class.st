@@ -125,7 +125,7 @@ CgtThemeSelectorModelTests >> testRevealCompactedProjectionNodeUpdatesVisibility
 	model revealCompactedProjectionNode: compactedNode.
 	self assert: model visibilityState hasExpandedGaps.
 	self assert: (model visibilityState isExpandedForGapIdentity: compactedNode gapIdentity).
-	self deny: (model projection nodes anySatisfy: [ :each | each isCompactedSection ])
+	self deny: (model projection nodes anySatisfy: [ :each | each isCompactedSection and: [ each gapIdentity = compactedNode gapIdentity ] ])
 ]
 
 
