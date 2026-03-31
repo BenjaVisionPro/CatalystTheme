@@ -67,7 +67,7 @@ CgtMatcherProjectionBuilderTests >> testBuildsProjectionWithDownstreamScopeWhenS
 		projectionForStyleRule: rule
 		selectedElement: selected
 		hierarchyRoot: selected.
-	self assert: (projection nodes collect: [ :each | each kind ]) asArray equals: #(selectedElement downstreamScope).
+	self assert: (projection nodes collect: [ :each | each kind ]) asArray equals: #(selectedElement selectedChildScope).
 	self assert: projection currentRuleNodes size equals: 2.
 	self assert: projection relations first combinator equals: #child.
 	self assert: projection nodes second representedElement identicalTo: child
