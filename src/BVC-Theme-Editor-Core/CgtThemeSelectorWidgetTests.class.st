@@ -72,7 +72,7 @@ CgtThemeSelectorWidgetTests >> testClearsProjectionWhenSelectedElementBecomesNil
 		yourself.
 	widget selectedElement: nil.
 	self assert: widget projection isNil.
-	^ CgtThemeSelectorWidget
+	^ widget
 ]
 
 
@@ -98,7 +98,7 @@ CgtThemeSelectorWidgetTests >> testConfigureForStyleRuleSelectedElementPathRootE
 	self assert: widget projection notNil.
 	self assert: widget projection selectedElement == child.
 	self assert: widget projection relatedStyleRules size equals: 1.
-	^ CgtThemeSelectorWidget
+	^ widget
 ]
 
 
@@ -153,7 +153,7 @@ CgtThemeSelectorWidgetTests >> testHostsConcreteSelectorRendererWidget [
 	widget := CgtThemeSelectorWidget new.
 
 	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorMondrianWidget.
-	^ CgtThemeSelectorWidget
+	^ widget
 ]
 
 
@@ -191,7 +191,7 @@ CgtThemeSelectorWidgetTests >> testBreadcrumbRendererReceivesProjectionFromModel
 
 	self assert: widget selectorRendererWidget projection identicalTo: widget projection.
 	self assert: widget selectorRendererWidget children isNotEmpty.
-	^ CgtThemeSelectorWidget
+	^ widget
 ]
 
 
@@ -229,7 +229,7 @@ CgtThemeSelectorWidgetTests >> testCompactRendererReceivesProjectionFromModel [
 
 	self assert: widget selectorRendererWidget projection identicalTo: widget projection.
 	self assert: (widget selectorRendererWidget childWithId: #compactSelectorLabel) notNil.
-	^ CgtThemeSelectorWidget
+	^ widget
 ]
 
 
@@ -254,7 +254,7 @@ CgtThemeSelectorWidgetTests >> testShowOtherRuleContextDelegatesToModelAndRefres
 	widget showOtherRuleContext.
 	self assert: widget visibilityState showsOtherRuleContext.
 	self deny: widget projection otherRuleNodes isEmpty.
-	^ CgtThemeSelectorWidget
+	^ widget
 ]
 
 
@@ -280,7 +280,7 @@ CgtThemeSelectorWidgetTests >> testOtherRuleContextToggleEventDelegatesToModelAn
 	widget selectorOtherRuleContextToggledEvent: event.
 	self assert: widget visibilityState showsOtherRuleContext.
 	self deny: widget projection otherRuleNodes isEmpty.
-	^ CgtThemeSelectorWidget
+	^ widget
 ]
 
 

@@ -136,7 +136,7 @@ CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesRevealWhenLeadi
 		orientation: #vertical.
 	self assert: plan isReveal.
 	self assert: plan revealOffset equals: (0 @ -24).
-	^ policy
+	^ plan
 
 ]
 
@@ -189,7 +189,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshDurationUsesRevealAndCol
 	self assert: (policy structuralRefreshDurationForPlan: revealPlan) equals: policy revealDuration.
 	self assert: (policy structuralRefreshDurationForPlan: collapsePlan) equals: policy collapseDuration.
 	self assert: (policy structuralRefreshDurationForPlan: stablePlan) equals: policy structuralRefreshDuration.
-	^ selectedNode
+	^ policy
 
 ]
 
@@ -243,7 +243,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshPlanIsStableWhenLeadingC
 		orientation: #vertical.
 	self assert: plan isStable.
 	self assert: plan revealOffset equals: (0 @ 0).
-	^ newSelected
+	^ plan
 
 ]
 
@@ -310,7 +310,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshDurationUsesReplaceDurat
 	policy := CgtMatcherTransitionPolicy new.
 	replacePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #replace; yourself.
 	self assert: (policy structuralRefreshDurationForPlan: replacePlan) equals: policy replaceDuration.
-	^ newSelected
+	^ policy
 
 ]
 

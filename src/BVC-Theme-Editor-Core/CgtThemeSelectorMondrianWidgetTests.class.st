@@ -46,7 +46,7 @@ CgtThemeSelectorMondrianWidgetTests >> testBuildsMondrianGraphFromProjection [
 	self assert: widget graphElement notNil.
 	self assert: widget graphElement graph nodeChildren size equals: 2.
 	self assert: widget graphElement graph edgeChildren size equals: 1.
-	^ projection
+	^ widget
 
 ]
 
@@ -395,6 +395,6 @@ CgtThemeSelectorMondrianWidgetTests >> testReplacePlanUsesFullOpacityAndReplaceD
 	self assert: widget structuralRefreshAnimationDuration equals: widget transitionPolicy replaceDuration.
 	self assert: widget structuralRefreshStartOpacity equals: widget transitionPolicy graphRevealEndOpacity.
 	self assert: widget structuralRefreshEndOpacity equals: widget transitionPolicy graphRevealEndOpacity.
-	^ projection
+	^ widget
 
 ]

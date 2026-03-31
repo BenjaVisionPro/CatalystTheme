@@ -52,7 +52,7 @@ CgtMatcherProjectionTests >> testProjectionNodeCarriesRuleMembershipAndMatchStat
 	self deny: node isInOtherRule.
 	self assert: node matchByClass.
 	self assert: node matchById.
-	^ CgtMatcherProjection
+	^ node
 ]
 
 
@@ -67,7 +67,7 @@ CgtMatcherProjectionTests >> testProjectionNodeAllowsGenericRepresentedElementWi
 	self assert: node representedElement identicalTo: element.
 	self assert: node className equals: Object name.
 	self assert: node elementId isNil.
-	^ CgtMatcherProjection
+	^ node
 ]
 { #category : 'tests' }
 CgtMatcherProjectionTests >> testProjectionSeparatesCurrentRuleNodesFromOtherRuleNodes [
@@ -91,7 +91,7 @@ CgtMatcherProjectionTests >> testProjectionSeparatesCurrentRuleNodesFromOtherRul
 	self assert: (projection nodesOfKind: #compactedSection) asArray equals: { compactedNode }.
 	self assert: compactedNode hiddenNodeCount equals: 3.
 	self deny: compactedNode isEditable.
-	^ node
+	^ projection
 
 ]
 
