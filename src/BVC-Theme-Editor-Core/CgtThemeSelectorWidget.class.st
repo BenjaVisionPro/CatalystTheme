@@ -17,20 +17,18 @@ Class {
 CgtThemeSelectorWidget >> initialize [
 	super initialize.
 	model := CgtThemeSelectorModel new.
-	self when: CgtMatcherSelectorChangedEvent do: [ :anEvent |
-		self matcherSelectorChangedEvent: anEvent ].
 	self when: CgtMatcherCompactedSectionExpandedEvent do: [ :anEvent |
-		self matcherInteractionEvent: anEvent ].
+		self matcherCompactedSectionExpandedEvent: anEvent ].
 	self when: CgtMatcherNodeIncludedInRuleEvent do: [ :anEvent |
-		self matcherInteractionEvent: anEvent ].
+		self matcherNodeIncludedInRuleEvent: anEvent ].
 	self when: CgtMatcherNodeExcludedFromRuleEvent do: [ :anEvent |
-		self matcherInteractionEvent: anEvent ].
+		self matcherNodeExcludedFromRuleEvent: anEvent ].
 	self when: CgtMatcherClassMatchToggledEvent do: [ :anEvent |
-		self matcherInteractionEvent: anEvent ].
+		self matcherClassMatchToggledEvent: anEvent ].
 	self when: CgtMatcherIdMatchToggledEvent do: [ :anEvent |
-		self matcherInteractionEvent: anEvent ].
+		self matcherIdMatchToggledEvent: anEvent ].
 	self when: CgtMatcherCombinatorChangedEvent do: [ :anEvent |
-		self matcherInteractionEvent: anEvent ].
+		self matcherCombinatorChangedEvent: anEvent ].
 	self when: CgtMatcherNodeHoveredEvent do: [ :anEvent |
 		self matcherInteractionEvent: anEvent ].
 	self when: CgtMatcherNodeSelectedEvent do: [ :anEvent |
@@ -55,6 +53,53 @@ CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElem
 CgtThemeSelectorWidget >> matcherInteractionEvent: anEvent [
 	self scheduleIdleCollapse.
 	^ self
+]
+
+{ #category : 'event handling' }
+CgtThemeSelectorWidget >> matcherClassMatchToggledEvent: anEvent [
+	model matcherClassMatchToggledEvent: anEvent.
+	self refreshProjectionFromModel.
+	self scheduleIdleCollapse.
+	self publishSelectorChanged
+]
+
+{ #category : 'event handling' }
+CgtThemeSelectorWidget >> matcherCombinatorChangedEvent: anEvent [
+	model matcherCombinatorChangedEvent: anEvent.
+	self refreshProjectionFromModel.
+	self scheduleIdleCollapse.
+	self publishSelectorChanged
+]
+
+{ #category : 'event handling' }
+CgtThemeSelectorWidget >> matcherCompactedSectionExpandedEvent: anEvent [
+	model matcherCompactedSectionExpandedEvent: anEvent.
+	self refreshProjectionFromModel.
+	self scheduleIdleCollapse
+]
+
+{ #category : 'event handling' }
+CgtThemeSelectorWidget >> matcherIdMatchToggledEvent: anEvent [
+	model matcherIdMatchToggledEvent: anEvent.
+	self refreshProjectionFromModel.
+	self scheduleIdleCollapse.
+	self publishSelectorChanged
+]
+
+{ #category : 'event handling' }
+CgtThemeSelectorWidget >> matcherNodeExcludedFromRuleEvent: anEvent [
+	model matcherNodeExcludedFromRuleEvent: anEvent.
+	self refreshProjectionFromModel.
+	self scheduleIdleCollapse.
+	self publishSelectorChanged
+]
+
+{ #category : 'event handling' }
+CgtThemeSelectorWidget >> matcherNodeIncludedInRuleEvent: anEvent [
+	model matcherNodeIncludedInRuleEvent: anEvent.
+	self refreshProjectionFromModel.
+	self scheduleIdleCollapse.
+	self publishSelectorChanged
 ]
 
 { #category : 'private - idle collapse' }
@@ -158,6 +203,14 @@ CgtThemeSelectorWidget >> refreshProjection [
 CgtThemeSelectorWidget >> refreshProjectionFromModel [
 	self projection: model projection.
 	^ self
+]
+
+{ #category : 'events' }
+CgtThemeSelectorWidget >> publishSelectorChanged [
+	self fireEvent: (CgtMatcherSelectorChangedEvent new
+		projection: self projection;
+		selector: self currentSelector;
+		yourself)
 ]
 
 { #category : 'accessing' }

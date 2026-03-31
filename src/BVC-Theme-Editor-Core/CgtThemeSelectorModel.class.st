@@ -50,6 +50,13 @@ CgtThemeSelectorModel >> collapseTemporaryReveals [
 	self refreshProjection
 ]
 
+{ #category : 'editing' }
+CgtThemeSelectorModel >> expandCompactedProjectionNode: aProjectionNode [
+	(projection isNil or: [ aProjectionNode isNil or: [ aProjectionNode representedElements isEmpty ] ]) ifTrue: [ ^ self ].
+	self visibilityState expandElements: aProjectionNode representedElements.
+	self refreshProjection
+]
+
 { #category : 'accessing' }
 CgtThemeSelectorModel >> idleCollapseDelayMilliseconds [
 	^ idleCollapseDelayMilliseconds
@@ -66,11 +73,71 @@ CgtThemeSelectorModel >> idleCollapseGeneration [
 	^ idleCollapseGeneration
 ]
 
+{ #category : 'editing' }
+CgtThemeSelectorModel >> includeProjectionNodeInRule: aProjectionNode [
+	self withProjectionMutationDo: [
+		| incoming outgoing |
+		aProjectionNode ifNil: [ ^ self ].
+		aProjectionNode isInCurrentRule: true.
+		(aProjectionNode matchByClass not and: [ aProjectionNode matchById not ]) ifTrue: [
+			aProjectionNode matchByClass: true ].
+		incoming := self preferredIncomingRelationForNode: aProjectionNode.
+		incoming ifNotNil: [
+			incoming kind: #matcher.
+			incoming combinator ifNil: [ incoming combinator: #child ] ].
+		outgoing := self preferredOutgoingRelationForNode: aProjectionNode.
+		outgoing ifNotNil: [
+			(outgoing toNode isInCurrentRule or: [ outgoing toNode kind = #selectedElement ]) ifTrue: [
+				outgoing kind: #matcher.
+				outgoing combinator ifNil: [ outgoing combinator: #child ] ] ] ]
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorModel >> excludeProjectionNodeFromRule: aProjectionNode [
+	self withProjectionMutationDo: [
+		| incoming |
+		aProjectionNode ifNil: [ ^ self ].
+		aProjectionNode kind = #selectedElement ifTrue: [ ^ self ].
+		aProjectionNode isInCurrentRule: false.
+		incoming := self preferredIncomingRelationForNode: aProjectionNode.
+		incoming ifNotNil: [ incoming kind: #context ] ]
+]
+
 { #category : 'events' }
 CgtThemeSelectorModel >> matcherSelectorChangedEvent: anEvent [
 	styleRule ifNil: [ styleRule := CgtThemeStyleRule new ].
 	styleRule selector: anEvent selector.
 	self refreshProjection
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorModel >> matcherClassMatchToggledEvent: anEvent [
+	self toggleClassMatchForProjectionNode: anEvent projectionNode shouldMatch: anEvent shouldMatch
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorModel >> matcherIdMatchToggledEvent: anEvent [
+	self toggleIdMatchForProjectionNode: anEvent projectionNode shouldMatch: anEvent shouldMatch
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorModel >> matcherNodeIncludedInRuleEvent: anEvent [
+	self includeProjectionNodeInRule: anEvent projectionNode
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorModel >> matcherNodeExcludedFromRuleEvent: anEvent [
+	self excludeProjectionNodeFromRule: anEvent projectionNode
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorModel >> matcherCompactedSectionExpandedEvent: anEvent [
+	self expandCompactedProjectionNode: anEvent projectionNode
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorModel >> matcherCombinatorChangedEvent: anEvent [
+	self changeCombinatorForRelation: anEvent relation to: anEvent combinator
 ]
 
 { #category : 'private - idle collapse' }
@@ -165,7 +232,50 @@ CgtThemeSelectorModel >> styleRule: aCgtThemeStyleRule [
 	^ self
 ]
 
+{ #category : 'editing' }
+CgtThemeSelectorModel >> toggleClassMatchForProjectionNode: aProjectionNode shouldMatch: aBoolean [
+	self withProjectionMutationDo: [
+		aProjectionNode ifNotNil: [ aProjectionNode matchByClass: aBoolean ] ]
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorModel >> toggleIdMatchForProjectionNode: aProjectionNode shouldMatch: aBoolean [
+	self withProjectionMutationDo: [
+		aProjectionNode ifNotNil: [ aProjectionNode matchById: aBoolean ] ]
+]
+
 { #category : 'accessing' }
 CgtThemeSelectorModel >> visibilityState [
 	^ visibilityState ifNil: [ visibilityState := CgtMatcherVisibilityState new ]
+]
+
+{ #category : 'private - projection' }
+CgtThemeSelectorModel >> withProjectionMutationDo: aBlock [
+	projection ifNil: [ ^ self ].
+	aBlock value.
+	styleRule ifNil: [ styleRule := CgtThemeStyleRule new ].
+	styleRule selector: (CgtMatcherProjectionSelectorComposer selectorForProjection: projection).
+	self refreshProjection
+]
+
+{ #category : 'editing' }
+CgtThemeSelectorModel >> changeCombinatorForRelation: aRelation to: aSymbol [
+	self withProjectionMutationDo: [
+		aRelation ifNotNil: [ aRelation combinator: aSymbol ] ]
+]
+
+{ #category : 'private - projection' }
+CgtThemeSelectorModel >> preferredIncomingRelationForNode: aProjectionNode [
+	| incoming |
+	projection ifNil: [ ^ nil ].
+	incoming := projection relationsToNode: aProjectionNode.
+	^ incoming ifEmpty: [ nil ] ifNotEmpty: [ incoming first ]
+]
+
+{ #category : 'private - projection' }
+CgtThemeSelectorModel >> preferredOutgoingRelationForNode: aProjectionNode [
+	| outgoing |
+	projection ifNil: [ ^ nil ].
+	outgoing := projection relationsFromNode: aProjectionNode.
+	^ outgoing ifEmpty: [ nil ] ifNotEmpty: [ outgoing first ]
 ]

@@ -221,46 +221,12 @@ CgtThemeMatcherMondrianWidget >> forwardNodeUnhoveredEvent: anEvent [
 
 { #category : 'events' }
 CgtThemeMatcherMondrianWidget >> handleNodeIncludedInRuleEvent: anEvent [
-	self includeProjectionNodeInCurrentRule: anEvent projectionNode.
-	self refreshContents.
-	self fireEvent: anEvent.
-	self publishSelectorChanged
+	self fireEvent: anEvent
 ]
 
 { #category : 'events' }
 CgtThemeMatcherMondrianWidget >> handleNodeExcludedFromRuleEvent: anEvent [
-	self excludeProjectionNodeFromCurrentRule: anEvent projectionNode.
-	self refreshContents.
-	self fireEvent: anEvent.
-	self publishSelectorChanged
-]
-
-{ #category : 'private' }
-CgtThemeMatcherMondrianWidget >> includeProjectionNodeInCurrentRule: aProjectionNode [
-	| incoming outgoing |
-	aProjectionNode ifNil: [ ^ self ].
-	aProjectionNode isInCurrentRule: true.
-	(aProjectionNode matchByClass not and: [ aProjectionNode matchById not ]) ifTrue: [
-		aProjectionNode matchByClass: true ].
-	incoming := self preferredIncomingRelationForNode: aProjectionNode.
-	incoming ifNotNil: [
-		incoming kind: #matcher.
-		incoming combinator ifNil: [ incoming combinator: #child ] ].
-	outgoing := self preferredOutgoingRelationForNode: aProjectionNode.
-	outgoing ifNotNil: [
-		(outgoing toNode isInCurrentRule or: [ outgoing toNode kind = #selectedElement ]) ifTrue: [
-			outgoing kind: #matcher.
-			outgoing combinator ifNil: [ outgoing combinator: #child ] ] ]
-]
-
-{ #category : 'private' }
-CgtThemeMatcherMondrianWidget >> excludeProjectionNodeFromCurrentRule: aProjectionNode [
-	| incoming |
-	aProjectionNode ifNil: [ ^ self ].
-	aProjectionNode kind = #selectedElement ifTrue: [ ^ self ].
-	aProjectionNode isInCurrentRule: false.
-	incoming := self preferredIncomingRelationForNode: aProjectionNode.
-	incoming ifNotNil: [ incoming kind: #context ]
+	self fireEvent: anEvent
 ]
 
 { #category : 'private' }
@@ -279,50 +245,19 @@ CgtThemeMatcherMondrianWidget >> preferredOutgoingRelationForNode: aProjectionNo
 
 { #category : 'events' }
 CgtThemeMatcherMondrianWidget >> handleClassMatchToggledEvent: anEvent [
-	anEvent projectionNode matchByClass: anEvent shouldMatch.
-	self refreshContents.
-	self fireEvent: anEvent.
-	self publishSelectorChanged
-]
-
-{ #category : 'events' }
-CgtThemeMatcherMondrianWidget >> handleIdMatchToggledEvent: anEvent [
-	anEvent projectionNode matchById: anEvent shouldMatch.
-	self refreshContents.
-	self fireEvent: anEvent.
-	self publishSelectorChanged
-]
-
-{ #category : 'events' }
-CgtThemeMatcherMondrianWidget >> handleCompactedSectionExpandedEvent: anEvent [
-	self expandCompactedNode: anEvent projectionNode.
 	self fireEvent: anEvent
 ]
 
 { #category : 'events' }
-CgtThemeMatcherMondrianWidget >> expandCompactedNode: aProjectionNode [
-	(projection isNil or: [ aProjectionNode isNil or: [ aProjectionNode representedElements isEmpty ] ]) ifTrue: [ ^ self ].
-	projection visibilityState expandElements: aProjectionNode representedElements.
-	self rebuildProjectionFromState
+CgtThemeMatcherMondrianWidget >> handleIdMatchToggledEvent: anEvent [
+	self fireEvent: anEvent
 ]
 
 { #category : 'events' }
-CgtThemeMatcherMondrianWidget >> collapseTemporaryReveals [
-	projection ifNil: [ ^ self ].
-	projection visibilityState clearExpandedGaps.
-	self rebuildProjectionFromState
+CgtThemeMatcherMondrianWidget >> handleCompactedSectionExpandedEvent: anEvent [
+	self fireEvent: anEvent
 ]
 
-{ #category : 'private' }
-CgtThemeMatcherMondrianWidget >> rebuildProjectionFromState [
-	projection ifNil: [ ^ self ].
-	self projection: (CgtMatcherProjectionBuilder
-		projectionForStyleRule: projection styleRule
-		selectedElement: projection selectedElement
-		hierarchyRoot: projection hierarchyRoot
-		relatedStyleRules: projection relatedStyleRules
-		visibilityState: projection visibilityState)
-]
 
 { #category : 'private' }
 CgtThemeMatcherMondrianWidget >> outgoingMatcherRelationForNode: aProjectionNode [
@@ -336,10 +271,7 @@ CgtThemeMatcherMondrianWidget >> outgoingMatcherRelationForNode: aProjectionNode
 
 { #category : 'events' }
 CgtThemeMatcherMondrianWidget >> handleCombinatorChangedEvent: anEvent [
-	anEvent relation combinator: anEvent combinator.
-	self refreshContents.
-	self fireEvent: anEvent.
-	self publishSelectorChanged
+	self fireEvent: anEvent
 ]
 
 { #category : 'private' }
@@ -352,10 +284,3 @@ CgtThemeMatcherMondrianWidget >> incomingMatcherRelationForNode: aProjectionNode
 		ifNone: [ nil ]
 ]
 
-{ #category : 'events' }
-CgtThemeMatcherMondrianWidget >> publishSelectorChanged [
-	self fireEvent: (CgtMatcherSelectorChangedEvent new
-		projection: projection;
-		selector: self currentSelector;
-		yourself)
-]
