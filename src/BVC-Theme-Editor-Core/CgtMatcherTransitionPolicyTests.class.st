@@ -10,11 +10,27 @@ Class {
 }
 
 { #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testDefaultExpansionDirectionIsLeft [
-	self assert: CgtMatcherTransitionPolicy new expansionDirection equals: #left
+CgtMatcherTransitionPolicyTests >> testHorizontalCorridorExpandsTowardLeft [
+	self
+		assert: (CgtMatcherTransitionPolicy new leadingExpansionSideForOrientation: #horizontal)
+		equals: #left
 ]
 
 { #category : 'tests' }
 CgtMatcherTransitionPolicyTests >> testKeepsFollowingNodeFixed [
 	self assert: CgtMatcherTransitionPolicy new keepsFollowingNodeFixed
+]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testVerticalCorridorExpandsTowardUp [
+	self
+		assert: (CgtMatcherTransitionPolicy new leadingExpansionSideForOrientation: #vertical)
+		equals: #up
+]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testVerticalRevealOffsetMovesUpward [
+	self
+		assert: (CgtMatcherTransitionPolicy new graphRevealOffsetForOrientation: #vertical)
+		equals: (0 @ -24)
 ]

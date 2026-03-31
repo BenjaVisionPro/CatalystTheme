@@ -10,6 +10,11 @@ Class {
 }
 
 { #category : 'tests' }
+CgtMatcherLayoutPolicyTests >> testDefaultCorridorOrientationIsVertical [
+	self assert: CgtMatcherLayoutPolicy new corridorOrientation equals: #vertical
+]
+
+{ #category : 'tests' }
 CgtMatcherLayoutPolicyTests >> testNodeWidthIsCompact [
 	self assert: CgtMatcherLayoutPolicy new nodeWidth equals: 180
 ]
@@ -26,4 +31,11 @@ CgtMatcherLayoutPolicyTests >> testSelectedNodeIsWiderThanContextNode [
 	policy := CgtMatcherLayoutPolicy new.
 	self assert: policy selectedNodeWidth > policy contextNodeWidth.
 	self assert: policy scopeNodeWidth > policy compactedGapWidth
+]
+
+{ #category : 'tests' }
+CgtMatcherLayoutPolicyTests >> testVerticalEdgeConnectionsPointDownwardThroughCorridor [
+	self
+		assert: (CgtMatcherLayoutPolicy new edgeConnectionSelectorsForOrientation: #vertical)
+		equals: #(fromCenterBottom toCenterTop)
 ]

@@ -1,6 +1,6 @@
 "
 #Matcher Transition Policy
-I provide timing and motion policy for matcher structural transitions. I am responsible for reveal/collapse animation values and the default expansion direction, not for matcher semantics.
+I provide timing and motion policy for matcher structural transitions. I am responsible for reveal/collapse animation values and orientation-aware leading-side expansion semantics, not for matcher semantics.
 "
 Class {
 	#name : 'CgtMatcherTransitionPolicy',
@@ -30,8 +30,9 @@ CgtMatcherTransitionPolicy >> collapseDuration [
 ]
 
 { #category : 'accessing' }
-CgtMatcherTransitionPolicy >> graphRevealOffsetX [
-	^ -24
+CgtMatcherTransitionPolicy >> graphRevealOffsetForOrientation: anOrientation [
+	anOrientation = #horizontal ifTrue: [ ^ -24 @ 0 ].
+	^ 0 @ -24
 ]
 
 { #category : 'accessing' }
@@ -50,6 +51,7 @@ CgtMatcherTransitionPolicy >> keepsFollowingNodeFixed [
 ]
 
 { #category : 'accessing' }
-CgtMatcherTransitionPolicy >> expansionDirection [
-	^ #left
+CgtMatcherTransitionPolicy >> leadingExpansionSideForOrientation: anOrientation [
+	anOrientation = #horizontal ifTrue: [ ^ #left ].
+	^ #up
 ]

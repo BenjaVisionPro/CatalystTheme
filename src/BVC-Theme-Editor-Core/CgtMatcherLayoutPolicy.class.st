@@ -1,6 +1,6 @@
 "
 #Matcher Layout Policy
-I centralize the functional layout constants for the matcher editor. I am responsible for keeping sizing, spacing, and scroll constraints explicit so visual cleanup does not leak ad-hoc numbers across the widget tree.
+I centralize the functional layout constants for the matcher editor. I am responsible for keeping sizing, spacing, corridor orientation, and connection direction explicit so visual cleanup does not leak ad-hoc numbers across the widget tree.
 "
 Class {
 	#name : 'CgtMatcherLayoutPolicy',
@@ -8,6 +8,17 @@ Class {
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
 }
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> corridorOrientation [
+	^ #vertical
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> edgeConnectionSelectorsForOrientation: anOrientation [
+	anOrientation = #horizontal ifTrue: [ ^ #(fromCenterRight toCenterLeft) ].
+	^ #(fromCenterBottom toCenterTop)
+]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> widgetPadding [

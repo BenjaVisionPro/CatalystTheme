@@ -187,3 +187,13 @@ CgtThemeSelectorMondrianWidgetTests >> testForwardsOtherRuleContextToggledEvents
 	graphNodeElement requestOtherRuleContextToggle.
 	self assert: forwardedEvent notNil
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorMondrianWidgetTests >> testConfigureEdgeConnectionsUsesLayoutPolicyOrientation [
+	| widget policy |
+	widget := CgtThemeSelectorMondrianWidget new.
+	policy := CgtMatcherLayoutPolicy new.
+	self assert: policy corridorOrientation equals: #vertical.
+	self assert: (policy edgeConnectionSelectorsForOrientation: policy corridorOrientation) equals: #(fromCenterBottom toCenterTop)
+]

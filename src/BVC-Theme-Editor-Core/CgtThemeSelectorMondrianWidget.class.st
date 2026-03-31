@@ -83,15 +83,15 @@ CgtThemeSelectorMondrianWidget >> refreshContents [
 
 { #category : 'rendering' }
 CgtThemeSelectorMondrianWidget >> buildMondrian [
-	| view |
+	| view edgeBuilder |
 	view := GtMondrian new.
 	view nodes
 		stencil: [ :aProjectionNode | self newGraphElementFor: aProjectionNode ];
 		with: self orderedNodesForRendering.
 	projection relations ifNotEmpty: [
-		view edges
-			fromCenterBottom;
-			toCenterTop;
+		edgeBuilder := view edges.
+		self configureEdgeConnectionsOn: edgeBuilder.
+		edgeBuilder
 			stencil: [ :aRelation |
 				BlLineElement new
 					zIndex: -1;
@@ -103,16 +103,24 @@ CgtThemeSelectorMondrianWidget >> buildMondrian [
 	^ view
 ]
 
+{ #category : 'rendering' }
+CgtThemeSelectorMondrianWidget >> configureEdgeConnectionsOn: anEdgeBuilder [
+	| selectors |
+	selectors := layoutPolicy edgeConnectionSelectorsForOrientation: layoutPolicy corridorOrientation.
+	anEdgeBuilder perform: selectors first.
+	anEdgeBuilder perform: selectors second
+]
+
 
 
 
 { #category : 'private - animation' }
 CgtThemeSelectorMondrianWidget >> animateStructuralRefreshFor: aLegendElement and: aGraphElement [
-	| token startOpacity endOpacity offsetX duration |
+	| token startOpacity endOpacity revealOffset duration |
 	token := structuralRefreshAnimationToken := structuralRefreshAnimationToken + 1.
 	startOpacity := transitionPolicy graphRevealStartOpacity.
 	endOpacity := transitionPolicy graphRevealEndOpacity.
-	offsetX := transitionPolicy graphRevealOffsetX.
+	revealOffset := transitionPolicy graphRevealOffsetForOrientation: layoutPolicy corridorOrientation.
 	duration := transitionPolicy structuralRefreshDuration.
 	{ aLegendElement. aGraphElement } do: [ :each |
 		each opacity: startOpacity ].
@@ -126,11 +134,29 @@ CgtThemeSelectorMondrianWidget >> animateStructuralRefreshFor: aLegendElement an
 					| currentOpacity |
 					currentOpacity := startOpacity + ((endOpacity - startOpacity) * aProgress).
 					aLegendElement opacity: currentOpacity.
-					aGraphElement opacity: currentOpacity ] ];
+					aGraphElement opacity: currentOpacity.
+					self structuralRefreshOffset: revealOffset progress: aProgress on: aGraphElement ] ];
 			onFinishedDo: [ self structuralRefreshAnimationToken = token ifTrue: [
 				aLegendElement opacity: endOpacity.
-				aGraphElement opacity: endOpacity ] ];
+				aGraphElement opacity: endOpacity.
+				self clearStructuralRefreshOffsetOn: aGraphElement ] ];
 			yourself)
+]
+
+{ #category : 'private - animation' }
+CgtThemeSelectorMondrianWidget >> structuralRefreshOffset: anOffset progress: aProgress on: anElement [
+	| currentOffset leftInset rightInset topInset bottomInset |
+	currentOffset := anOffset * (1.0 - aProgress).
+	leftInset := (currentOffset x) max: 0.
+	rightInset := (currentOffset x negated) max: 0.
+	topInset := (currentOffset y) max: 0.
+	bottomInset := (currentOffset y negated) max: 0.
+	anElement margin: (BlInsets top: topInset right: rightInset bottom: bottomInset left: leftInset)
+]
+
+{ #category : 'private - animation' }
+CgtThemeSelectorMondrianWidget >> clearStructuralRefreshOffsetOn: anElement [
+	anElement margin: (BlInsets all: 0)
 ]
 
 { #category : 'accessing' }
