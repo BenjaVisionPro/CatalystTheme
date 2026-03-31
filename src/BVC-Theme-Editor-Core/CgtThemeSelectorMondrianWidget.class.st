@@ -120,7 +120,7 @@ CgtThemeSelectorMondrianWidget >> animateStructuralRefreshFor: aLegendElement an
 	token := structuralRefreshAnimationToken := structuralRefreshAnimationToken + 1.
 	startOpacity := transitionPolicy graphRevealStartOpacity.
 	endOpacity := transitionPolicy graphRevealEndOpacity.
-	revealOffset := transitionPolicy graphRevealOffsetForOrientation: layoutPolicy corridorOrientation.
+	revealOffset := self structuralRefreshRevealOffset.
 	duration := transitionPolicy structuralRefreshDuration.
 	{ aLegendElement. aGraphElement } do: [ :each |
 		each opacity: startOpacity ].
@@ -141,6 +141,24 @@ CgtThemeSelectorMondrianWidget >> animateStructuralRefreshFor: aLegendElement an
 				aGraphElement opacity: endOpacity.
 				self clearStructuralRefreshOffsetOn: aGraphElement ] ];
 			yourself)
+]
+
+
+{ #category : 'private - animation' }
+CgtThemeSelectorMondrianWidget >> structuralRefreshRevealOffset [
+	projection ifNil: [ ^ 0 @ 0 ].
+	transitionPolicy keepsFollowingNodeFixed ifFalse: [
+		^ transitionPolicy graphRevealOffsetForOrientation: layoutPolicy corridorOrientation ].
+	^ projection hasLeadingCompactedProjectionNode
+		ifTrue: [ transitionPolicy graphRevealOffsetForOrientation: layoutPolicy corridorOrientation ]
+		ifFalse: [ 0 @ 0 ]
+]
+
+{ #category : 'private - animation' }
+CgtThemeSelectorMondrianWidget >> structuralRefreshAnchorProjectionNode [
+	projection ifNil: [ ^ nil ].
+	^ projection followingProjectionNodeAfterLeadingCompaction
+		ifNil: [ projection selectedProjectionNode ]
 ]
 
 { #category : 'private - animation' }

@@ -79,3 +79,28 @@ CgtMatcherProjectionTests >> newTestElementWithId: aSymbol [
 		id: (BlElementId named: aSymbol);
 		yourself
 ]
+
+
+{ #category : 'tests' }
+CgtMatcherProjectionTests >> testLeadingAndTrailingCompactedProjectionQueries [
+	| projection leadingGap selected trailingGap leadingRelation trailingRelation |
+	leadingGap := CgtMatcherProjectionNode kind: #compactedSection.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: CgtThemeSelectorTestElement new;
+		yourself.
+	trailingGap := CgtMatcherProjectionNode kind: #compactedSection.
+	leadingRelation := CgtMatcherProjectionRelation from: leadingGap to: selected kind: #compaction.
+	trailingRelation := CgtMatcherProjectionRelation from: selected to: trailingGap kind: #compaction.
+	projection := CgtMatcherProjection new.
+	projection
+		selectedElement: selected representedElement;
+		addNode: leadingGap;
+		addNode: selected;
+		addNode: trailingGap;
+		addRelation: leadingRelation;
+		addRelation: trailingRelation.
+	self assert: projection hasLeadingCompactedProjectionNode.
+	self assert: projection leadingCompactedProjectionNode identicalTo: leadingGap.
+	self assert: projection trailingCompactedProjectionNode identicalTo: trailingGap.
+	self assert: projection followingProjectionNodeAfterLeadingCompaction identicalTo: selected
+]

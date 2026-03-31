@@ -197,3 +197,52 @@ CgtThemeSelectorMondrianWidgetTests >> testConfigureEdgeConnectionsUsesLayoutPol
 	self assert: policy corridorOrientation equals: #vertical.
 	self assert: (policy edgeConnectionSelectorsForOrientation: policy corridorOrientation) equals: #(fromCenterBottom toCenterTop)
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshRevealOffsetUsesLeadingCompactedGapOnly [
+	| projection leadingGap selected relation widget |
+	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
+		hiddenNodeCount: 2;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: (self newTestElementWithId: #selected);
+		isInCurrentRule: true;
+		yourself.
+	relation := CgtMatcherProjectionRelation from: leadingGap to: selected kind: #compaction.
+	projection := CgtMatcherProjection new.
+	projection
+		selectedElement: selected representedElement;
+		addNode: leadingGap;
+		addNode: selected;
+		addRelation: relation.
+	widget := CgtThemeSelectorMondrianWidget new
+		projection: projection;
+		yourself.
+	self assert: widget structuralRefreshRevealOffset equals: (0 @ -24).
+	self assert: widget structuralRefreshAnchorProjectionNode identicalTo: selected
+]
+
+{ #category : 'tests' }
+CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshRevealOffsetStaysFixedForTrailingOnlyGap [
+	| projection selected trailingGap relation widget |
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: (self newTestElementWithId: #selected);
+		isInCurrentRule: true;
+		yourself.
+	trailingGap := (CgtMatcherProjectionNode kind: #compactedSection)
+		hiddenNodeCount: 2;
+		yourself.
+	relation := CgtMatcherProjectionRelation from: selected to: trailingGap kind: #compaction.
+	projection := CgtMatcherProjection new.
+	projection
+		selectedElement: selected representedElement;
+		addNode: selected;
+		addNode: trailingGap;
+		addRelation: relation.
+	widget := CgtThemeSelectorMondrianWidget new
+		projection: projection;
+		yourself.
+	self assert: widget structuralRefreshRevealOffset equals: (0 @ 0).
+	self assert: widget structuralRefreshAnchorProjectionNode identicalTo: selected
+]

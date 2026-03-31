@@ -124,6 +124,43 @@ CgtMatcherProjection >> relationsToNode: aCgtMatcherProjectionNode [
 ]
 
 
+
+{ #category : 'querying' }
+CgtMatcherProjection >> leadingCompactedProjectionNode [
+	^ nodes
+		detect: [ :each |
+			each isCompactedSection
+				and: [ (self relationsToNode: each) isEmpty
+					and: [ (self relationsFromNode: each) anySatisfy: [ :aRelation | aRelation kind = #compaction ] ] ] ]
+		ifNone: [ nil ]
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> trailingCompactedProjectionNode [
+	^ nodes
+		detect: [ :each |
+			each isCompactedSection
+				and: [ (self relationsFromNode: each) isEmpty
+					and: [ (self relationsToNode: each) anySatisfy: [ :aRelation | aRelation kind = #compaction ] ] ] ]
+		ifNone: [ nil ]
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> hasLeadingCompactedProjectionNode [
+	^ self leadingCompactedProjectionNode notNil
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> followingProjectionNodeAfterLeadingCompaction [
+	| leadingNode relation |
+	leadingNode := self leadingCompactedProjectionNode.
+	leadingNode ifNil: [ ^ nil ].
+	relation := (self relationsFromNode: leadingNode)
+		detect: [ :aRelation | aRelation kind = #compaction ]
+		ifNone: [ nil ].
+	^ relation ifNil: [ nil ] ifNotNil: [ relation toNode ]
+]
+
 { #category : 'querying' }
 CgtMatcherProjection >> selectedProjectionNode [
 	^ nodes
