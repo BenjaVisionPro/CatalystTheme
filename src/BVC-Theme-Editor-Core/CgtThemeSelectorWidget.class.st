@@ -1,13 +1,14 @@
 "
 #Theme Selector Widget
-I am the host widget for the theme selector editor. I own a non-visual CgtThemeSelectorModel and a concrete matcher renderer widget. I coordinate selector editing semantics through the model while forwarding live matcher interaction events outward.
+I am the host widget for the theme selector editor. I own a non-visual CgtThemeSelectorModel and one concrete renderer widget. I coordinate selector editing semantics through the model while keeping the renderer pluggable so different selector UIs can share the same model.
 "
 Class {
 	#name : 'CgtThemeSelectorWidget',
 	#superclass : 'BrVerticalPane',
 	#instVars : [
 		'model',
-		'rendererWidget'
+		'rendererWidget',
+		'rendererWidgetClass'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -18,12 +19,28 @@ Class {
 CgtThemeSelectorWidget >> initialize [
 	super initialize.
 	model := CgtThemeSelectorModel new.
-	rendererWidget := CgtThemeMatcherMondrianWidget new.
+	rendererWidgetClass := CgtThemeMatcherMondrianWidget.
 	self
 		vFitContent;
 		hMatchParent.
+	self installRendererWidget
+]
+
+
+
+{ #category : 'initialization' }
+CgtThemeSelectorWidget >> buildRendererWidget [
+	^ rendererWidgetClass new
+]
+
+{ #category : 'initialization' }
+CgtThemeSelectorWidget >> installRendererWidget [
+	rendererWidget ifNotNil: [ self removeChild: rendererWidget ].
+	rendererWidget := self buildRendererWidget.
 	self addChild: rendererWidget.
-	self wireRendererWidget
+	self wireRendererWidget.
+	self refreshProjectionFromModel.
+	^ self
 ]
 
 { #category : 'initialization' }
@@ -223,6 +240,18 @@ CgtThemeSelectorWidget >> matcherSelectorChangedEvent: anEvent [
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> model [
 	^ model
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> rendererWidgetClass [
+	^ rendererWidgetClass ifNil: [ CgtThemeMatcherMondrianWidget ]
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> rendererWidgetClass: aClass [
+	rendererWidgetClass := aClass ifNil: [ CgtThemeMatcherMondrianWidget ].
+	self installRendererWidget.
+	^ self
 ]
 
 { #category : 'accessing' }

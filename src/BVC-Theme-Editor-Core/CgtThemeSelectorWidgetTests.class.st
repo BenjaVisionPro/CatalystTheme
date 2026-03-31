@@ -118,3 +118,36 @@ CgtThemeSelectorWidgetTests >> testHostsConcreteMatcherRendererWidget [
 
 	self assert: widget rendererWidget class equals: CgtThemeMatcherMondrianWidget
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testCanSwapToBreadcrumbRendererWidget [
+	| widget |
+	widget := CgtThemeSelectorWidget new.
+	widget rendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
+
+	self assert: widget rendererWidget class equals: CgtThemeSelectorBreadcrumbWidget
+]
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testBreadcrumbRendererReceivesProjectionFromModel [
+	| root selected rule widget |
+	root := self newTestElementWithId: #root.
+	selected := self newTestElementWithId: #selected.
+	root addChild: selected.
+	rule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	widget := CgtThemeSelectorWidget new.
+	widget rendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
+	widget
+		configureForStyleRule: rule
+		selectedElement: selected
+		pathRootElement: root
+		relatedStyleRules: #().
+
+	self assert: widget rendererWidget projection identicalTo: widget projection.
+	self assert: widget rendererWidget children isNotEmpty
+]
