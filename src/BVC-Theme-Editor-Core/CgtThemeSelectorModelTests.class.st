@@ -424,7 +424,7 @@ CgtThemeSelectorModelTests >> testExplicitQueryProtocolReflectsActiveRuleAndProj
 	self assert: model selectedProjectionNode identicalTo: model projection selectedProjectionNode.
 	self assert: model currentRuleProjectionNodes asArray equals: model projection currentRuleNodes asArray.
 	self assert: model otherRuleProjectionNodes isEmpty.
-	self assert: model compactedProjectionNodes isEmpty.
+	self assert: model compactedProjectionNodes asArray equals: (model projection nodesOfKind: #compactedSection) asArray.
 	self deny: model showsOtherRuleContext.
 	self deny: model hasExpandedCompactedContext.
 	^ model
@@ -487,7 +487,7 @@ CgtThemeSelectorModelTests >> testExpandedContextQueryTracksTemporaryGapRevealSt
 	compactedNode := model compactedProjectionNodes first.
 	model revealCompactedProjectionNode: compactedNode.
 	self assert: model hasExpandedCompactedContext.
-	self deny: model compactedProjectionNodes anySatisfy: [ :each | each gapIdentity = compactedNode gapIdentity ].
+	self deny: (model compactedProjectionNodes anySatisfy: [ :each | each gapIdentity = compactedNode gapIdentity ]).
 	^ model
 ]
 
