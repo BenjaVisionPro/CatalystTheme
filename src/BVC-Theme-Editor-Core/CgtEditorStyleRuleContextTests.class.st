@@ -11,6 +11,7 @@ Class {
 
 { #category : 'tests' }
 CgtEditorStyleRuleContextTests >> testRelatedStyleRulesForStyleInspectorExcludeCurrentRule [
+	<gtExample>
 	| editor currentRule relatedRule |
 	editor := self newEditor.
 	currentRule := self styleRuleForSelector: (self selectorForId: #'selected').
@@ -18,10 +19,13 @@ CgtEditorStyleRuleContextTests >> testRelatedStyleRulesForStyleInspectorExcludeC
 	editor styleRules: { currentRule. relatedRule }.
 	editor instVarNamed: 'styleInspectorRule' put: currentRule.
 	self assert: editor relatedStyleRulesForStyleInspector asArray equals: { relatedRule }
+	^ editor
+
 ]
 
 { #category : 'tests' }
 CgtEditorStyleRuleContextTests >> testMatcherSelectorChangedEventAddsInspectedRuleToStyleRules [
+	<gtExample>
 	| editor rule event selector |
 	editor := self newEditor.
 	rule := CgtThemeStyleRule new.
@@ -33,6 +37,8 @@ CgtEditorStyleRuleContextTests >> testMatcherSelectorChangedEventAddsInspectedRu
 	editor selectorChangedEvent: event.
 	self assert: rule selector identicalTo: selector.
 	self assert: (editor styleRules includes: rule)
+	^ selector
+
 ]
 
 { #category : 'private' }

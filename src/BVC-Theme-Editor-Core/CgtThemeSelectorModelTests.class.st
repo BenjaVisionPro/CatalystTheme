@@ -18,6 +18,7 @@ CgtThemeSelectorModelTests >> newTestElementWithId: anId [
 
 { #category : 'tests' }
 CgtThemeSelectorModelTests >> testBuildsProjectionFromRuleAndHierarchyContext [
+	<gtExample>
 	| root selected rule model |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
@@ -34,10 +35,13 @@ CgtThemeSelectorModelTests >> testBuildsProjectionFromRuleAndHierarchyContext [
 		yourself.
 	self assert: model projection notNil.
 	self assert: model selector displayString equals: '#selected'
+	^ model
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorModelTests >> testClearsProjectionWhenSelectedElementBecomesNil [
+	<gtExample>
 	| root selected rule model |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
@@ -54,10 +58,13 @@ CgtThemeSelectorModelTests >> testClearsProjectionWhenSelectedElementBecomesNil 
 		yourself.
 	model selectedElement: nil.
 	self assert: model projection isNil
+	^ model
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorModelTests >> testSelectorUpdatesCurrentStyleRule [
+	<gtExample>
 	| root selected originalRule model newSelector |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
@@ -79,11 +86,13 @@ CgtThemeSelectorModelTests >> testSelectorUpdatesCurrentStyleRule [
 
 	self assert: model currentStyleRule identicalTo: originalRule.
 	self assert: model currentStyleRule selector identicalTo: newSelector
+	^ CgtThemeSelectorModel
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorModelTests >> testApplyClassMatchUpdatesStyleRuleAndProjection [
+	<gtExample>
 	| root selected rule model |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
@@ -101,10 +110,13 @@ CgtThemeSelectorModelTests >> testApplyClassMatchUpdatesStyleRuleAndProjection [
 	model applyClassMatch: true toProjectionNode: model projection selectedProjectionNode.
 	self assert: model currentStyleRule selector displayString equals: 'CgtThemeSelectorTestElement#selected'.
 	self assert: model projection selectedProjectionNode matchByClass
+	^ model
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorModelTests >> testRevealCompactedProjectionNodeUpdatesVisibilityStateAndProjection [
+	<gtExample>
 	| root middle selected rule model compactedNode |
 	root := self newTestElementWithId: #root.
 	middle := self newTestElementWithId: #middle.
@@ -127,11 +139,13 @@ CgtThemeSelectorModelTests >> testRevealCompactedProjectionNodeUpdatesVisibility
 	self assert: (model visibilityState isExpandedForGapIdentity: compactedNode gapIdentity).
 	self assert: (model projection nodes anySatisfy: [ :each | each representedElement == middle ]).
 	self deny: (model projection leadingCompactedGapIdentity = compactedNode gapIdentity).
+	^ CgtThemeSelectorModel
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorModelTests >> testShowOtherRuleContextRebuildsProjectionWithOtherRuleNodes [
+	<gtExample>
 	| root selected currentRule relatedRule model |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
@@ -160,10 +174,13 @@ CgtThemeSelectorModelTests >> testShowOtherRuleContextRebuildsProjectionWithOthe
 	model showOtherRuleContext.
 	self assert: model visibilityState showsOtherRuleContext.
 	self deny: model projection otherRuleNodes isEmpty
+	^ model
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorModelTests >> testHideOtherRuleContextRemovesOtherRuleNodesAgain [
+	<gtExample>
 	| root selected currentRule relatedRule model |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
@@ -193,11 +210,13 @@ CgtThemeSelectorModelTests >> testHideOtherRuleContextRemovesOtherRuleNodesAgain
 	model hideOtherRuleContext.
 	self deny: model visibilityState showsOtherRuleContext.
 	self assert: model projection otherRuleNodes isEmpty
+	^ CgtThemeSelectorModel
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorModelTests >> testSelectorMutationClearsTemporaryReveals [
+	<gtExample>
 	| root middle selected rule model compactedNode |
 	root := self newTestElementWithId: #root.
 	middle := self newTestElementWithId: #middle.
@@ -220,11 +239,13 @@ CgtThemeSelectorModelTests >> testSelectorMutationClearsTemporaryReveals [
 	model applyClassMatch: true toProjectionNode: model projection selectedProjectionNode.
 	self deny: model visibilityState hasExpandedGaps.
 	self assert: (model projection nodes anySatisfy: [ :each | each isCompactedSection ])
+	^ CgtThemeSelectorModel
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorModelTests >> testShowingOtherRuleContextClearsTemporaryReveals [
+	<gtExample>
 	| root middle selected currentRule relatedRule model compactedNode |
 	root := self newTestElementWithId: #root.
 	middle := self newTestElementWithId: #middle.
@@ -256,10 +277,13 @@ CgtThemeSelectorModelTests >> testShowingOtherRuleContextClearsTemporaryReveals 
 	self assert: model visibilityState hasExpandedGaps.
 	model showOtherRuleContext.
 	self deny: model visibilityState hasExpandedGaps
+	^ model
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorModelTests >> testHidingOtherRuleContextClearsTemporaryReveals [
+	<gtExample>
 	| root middle selected currentRule relatedRule model compactedNode |
 	root := self newTestElementWithId: #root.
 	middle := self newTestElementWithId: #middle.
@@ -294,10 +318,13 @@ CgtThemeSelectorModelTests >> testHidingOtherRuleContextClearsTemporaryReveals [
 	self assert: model visibilityState hasExpandedGaps.
 	model hideOtherRuleContext.
 	self deny: model visibilityState hasExpandedGaps
+	^ model
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorModelTests >> testSelectedElementChangeClearsTemporaryReveals [
+	<gtExample>
 	| root middle selected sibling rule model compactedNode |
 	root := self newTestElementWithId: #root.
 	middle := self newTestElementWithId: #middle.
@@ -321,4 +348,6 @@ CgtThemeSelectorModelTests >> testSelectedElementChangeClearsTemporaryReveals [
 	self assert: model visibilityState hasExpandedGaps.
 	model selectedElement: sibling.
 	self deny: model visibilityState hasExpandedGaps
+	^ model
+
 ]

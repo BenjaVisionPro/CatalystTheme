@@ -11,6 +11,7 @@ Class {
 
 { #category : 'tests' }
 CgtMatcherNodeElementTests >> testNestedHoverForwardingPublishesSingleHoverAndSingleUnhover [
+	<gtExample>
 	| node element hoverCount unhoverCount |
 	node := (CgtMatcherProjectionNode kind: #selectedElement)
 		representedElement: (self newTestElementWithId: #selected);
@@ -30,6 +31,8 @@ CgtMatcherNodeElementTests >> testNestedHoverForwardingPublishesSingleHoverAndSi
 	element onNodeUnhovered: nil.
 	self assert: hoverCount equals: 1.
 	self assert: unhoverCount equals: 1
+	^ node
+
 ]
 
 { #category : 'private' }

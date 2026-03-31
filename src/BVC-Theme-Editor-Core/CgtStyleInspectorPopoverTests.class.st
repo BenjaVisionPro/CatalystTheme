@@ -11,6 +11,7 @@ Class {
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionFromStyleRuleAndSelectedElement [
+	<gtExample>
 	| root selected rule popover projection |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
@@ -29,10 +30,13 @@ CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionFromStyleRuleAndSele
 	self assert: projection selectedElement identicalTo: selected.
 	self assert: projection nodes size equals: 2.
 	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#root > #selected'
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testConfigureForStyleRuleSelectedElementPathRootElementRelatedStyleRulesDelegatesToSelectorWidgetAndUpdatesLabels [
+	<gtExample>
 	| root selected currentRule relatedRule popover projection |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
@@ -54,10 +58,13 @@ CgtStyleInspectorPopoverTests >> testConfigureForStyleRuleSelectedElementPathRoo
 	self assert: projection relatedStyleRules size equals: 1.
 	self assert: (popover childWithId: #styleInspectorElementLabel) text asString equals: selected class name.
 	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#selected'
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testKeepsMatcherProjectionDrivenBySelectedElementAndRule [
+	<gtExample>
 	| root selected rule popover projection |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
@@ -70,10 +77,13 @@ CgtStyleInspectorPopoverTests >> testKeepsMatcherProjectionDrivenBySelectedEleme
 	self assert: projection notNil.
 	self assert: projection selectedElement identicalTo: selected.
 	self assert: projection nodes first representedElement identicalTo: selected
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionWithRelatedRuleContext [
+	<gtExample>
 	| root selected currentRule relatedRule popover projection |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
@@ -91,6 +101,8 @@ CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionWithRelatedRuleConte
 	self assert: projection notNil.
 	self assert: projection relatedStyleRules size equals: 1.
 	self assert: projection otherRuleNodes isEmpty
+	^ projection
+
 ]
 
 { #category : 'private' }
@@ -116,14 +128,18 @@ CgtStyleInspectorPopoverTests >> styleRuleForSelector: aSelector [
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testUsesThemeSelectorWidgetAsSelectorWidget [
+	<gtExample>
 	| popover |
 	popover := CgtStyleInspectorPopover new.
 
 	self assert: popover selectorWidget class equals: CgtThemeSelectorWidget
+	^ popover
+
 ]
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testMatcherSelectorChangedEventUpdatesDisplayedScopeLabel [
+	<gtExample>
 	| root selected rule popover newSelector event |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
@@ -145,53 +161,63 @@ CgtStyleInspectorPopoverTests >> testMatcherSelectorChangedEventUpdatesDisplayed
 
 	self assert: popover styleRule selector identicalTo: newSelector.
 	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#root > #selected'
+	^ CgtStyleInspectorPopover
 ]
 
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testSelectorWidgetUsesConcreteMatcherRenderer [
+	<gtExample>
 	| popover |
 	popover := CgtStyleInspectorPopover new.
 
 	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorMondrianWidget
+	^ CgtStyleInspectorPopover new
 ]
 
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testSelectorWidgetCanUseAlternateRendererWithoutChangingPopoverContract [
+	<gtExample>
 	| popover |
 	popover := CgtStyleInspectorPopover new.
 	popover selectorWidget selectorRendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
 
 	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorBreadcrumbWidget
+	^ CgtStyleInspectorPopover new
 ]
 
 
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testSelectorRendererWidgetClassDelegatesToSelectorWidget [
+	<gtExample>
 	| popover |
 	popover := CgtStyleInspectorPopover new.
 	popover selectorRendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
 
 	self assert: popover selectorRendererWidgetClass equals: CgtThemeSelectorBreadcrumbWidget.
 	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorBreadcrumbWidget
+	^ CgtStyleInspectorPopover new
 ]
 
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testSelectorWidgetCanUseCompactRendererWithoutChangingPopoverContract [
+	<gtExample>
 	| popover |
 	popover := CgtStyleInspectorPopover new.
 	popover selectorRendererWidgetClass: CgtThemeSelectorCompactWidget.
 
 	self assert: popover selectorRendererWidgetClass equals: CgtThemeSelectorCompactWidget.
 	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorCompactWidget
+	^ CgtStyleInspectorPopover new
 ]
 
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testShowOtherRuleContextDelegatesToSelectorWidget [
+	<gtExample>
 	| root selected currentRule relatedRule popover |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
@@ -210,11 +236,13 @@ CgtStyleInspectorPopoverTests >> testShowOtherRuleContextDelegatesToSelectorWidg
 	popover showOtherRuleContext.
 	self assert: popover selectorModel visibilityState showsOtherRuleContext.
 	self deny: popover selectorWidget projection otherRuleNodes isEmpty
+	^ CgtStyleInspectorPopover new
 ]
 
 
 { #category : 'tests' }
 CgtStyleInspectorPopoverTests >> testSelectorChangedEventUpdatesLabels [
+	<gtExample>
 	| popover event rule |
 	popover := CgtStyleInspectorPopover new.
 	rule := CgtThemeStyleRule new.
@@ -223,4 +251,6 @@ CgtStyleInspectorPopoverTests >> testSelectorChangedEventUpdatesLabels [
 	event := CgtThemeSelectorChangedEvent new selector: rule selector; yourself.
 	popover selectorChangedEvent: event.
 	self assert: (popover childWithId: #styleInspectorScopeLabel ifFound: [ :aLabel | aLabel text asString ] ifNone: [ '' ]) = rule selector displayString
+	^ popover
+
 ]

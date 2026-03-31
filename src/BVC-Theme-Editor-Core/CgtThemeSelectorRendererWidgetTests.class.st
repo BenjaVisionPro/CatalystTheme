@@ -18,6 +18,7 @@ CgtThemeSelectorRendererWidgetTests >> newTestElementWithId: anId [
 
 { #category : 'tests' }
 CgtThemeSelectorRendererWidgetTests >> testProjectionAccessIsSharedByConcreteRenderers [
+	<gtExample>
 	| root selected rule projection renderers |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
@@ -41,4 +42,6 @@ CgtThemeSelectorRendererWidgetTests >> testProjectionAccessIsSharedByConcreteRen
 		each projection: projection.
 		self assert: each projection identicalTo: projection.
 		self assert: each currentSelector displayString equals: #'#selected' ].
+	^ projection
+
 ]

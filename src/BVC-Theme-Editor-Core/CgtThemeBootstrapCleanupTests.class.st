@@ -11,6 +11,7 @@ Class {
 
 { #category : 'tests' }
 CgtThemeBootstrapCleanupTests >> testSelectorBootstrapClassSideEntryPointBuildsFromHierarchyContext [
+	<gtExample>
 	| root child selected selector |
 	root := self newTestElementWithId: #'root'.
 	child := root addChild: (self newTestElementWithId: #'child').
@@ -19,10 +20,13 @@ CgtThemeBootstrapCleanupTests >> testSelectorBootstrapClassSideEntryPointBuildsF
 		bootstrapForSelectedElement: selected
 		withinHierarchyRoot: root.
 	self assert: selector displayString equals: '#root > #child > #selected'
+	^ selector
+
 ]
 
 { #category : 'tests' }
 CgtThemeBootstrapCleanupTests >> testStyleRuleBootstrapClassSideEntryPointBuildsFromHierarchyContext [
+	<gtExample>
 	| root selected rule |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
@@ -30,16 +34,24 @@ CgtThemeBootstrapCleanupTests >> testStyleRuleBootstrapClassSideEntryPointBuilds
 		bootstrapForSelectedElement: selected
 		withinHierarchyRoot: root.
 	self assert: rule selector displayString equals: '#root > #selected'
+	^ rule
+
 ]
 
 { #category : 'tests' }
 CgtThemeBootstrapCleanupTests >> testThemeSelectorNoLongerRespondsToPathBootstrapFactory [
+	<gtExample>
 	self deny: (CgtThemeSelector class canUnderstand: #selectorFromElementPath:)
+	^ CgtThemeSelector
+
 ]
 
 { #category : 'tests' }
 CgtThemeBootstrapCleanupTests >> testThemeStyleRuleNoLongerRespondsToPathBootstrapFactory [
+	<gtExample>
 	self deny: (CgtThemeStyleRule class canUnderstand: #fromElementPath:)
+	^ CgtThemeStyleRule
+
 ]
 
 { #category : 'private' }

@@ -11,7 +11,10 @@ Class {
 
 { #category : 'tests' }
 CgtMatcherLegendElementTests >> testLegendInitializesPolicies [
+	<gtExample>
 	| legend |
 	legend := CgtMatcherLegendElement new.
 	self assert: legend notNil
+	^ legend
+
 ]

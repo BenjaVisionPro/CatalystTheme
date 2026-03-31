@@ -11,6 +11,7 @@ Class {
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testBuildsCompactedSectionForDescendantGap [
+	<gtExample>
 	| root middle selected rule projection compacted |
 	root := self newTestElementWithId: #'root'.
 	middle := root addChild: (self newTestElementWithId: #'middle').
@@ -32,10 +33,13 @@ CgtMatcherProjectionBuilderTests >> testBuildsCompactedSectionForDescendantGap [
 	self assert: projection relations first kind equals: #compaction.
 	self assert: projection relations second kind equals: #matcher.
 	self assert: projection relations second combinator equals: #descendant
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testBuildsProjectionForSelectedElementAtTerminalRuleStep [
+	<gtExample>
 	| root selected rule projection |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
@@ -52,10 +56,13 @@ CgtMatcherProjectionBuilderTests >> testBuildsProjectionForSelectedElementAtTerm
 	self assert: projection relations size equals: 1.
 	self assert: projection relations first kind equals: #matcher.
 	self assert: projection relations first combinator equals: #child
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testBuildsProjectionWithDownstreamScopeWhenSelectedMatchesEarlierRuleStep [
+	<gtExample>
 	| selected child rule projection |
 	selected := self newTestElementWithId: #'selected'.
 	child := selected addChild: (self newTestElementWithId: #'child').
@@ -71,10 +78,13 @@ CgtMatcherProjectionBuilderTests >> testBuildsProjectionWithDownstreamScopeWhenS
 	self assert: projection currentRuleNodes size equals: 2.
 	self assert: projection relations first combinator equals: #child.
 	self assert: projection nodes second representedElement identicalTo: child
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testFallsBackToStandaloneSelectedNodeWhenRuleDoesNotMatchSelectedElement [
+	<gtExample>
 	| root child selected rule projection |
 	root := self newTestElementWithId: #'root'.
 	child := root addChild: (self newTestElementWithId: #'child').
@@ -91,11 +101,13 @@ CgtMatcherProjectionBuilderTests >> testFallsBackToStandaloneSelectedNodeWhenRul
 	self assert: projection nodes first kind equals: #selectedElement.
 	self deny: projection nodes first isInCurrentRule.
 	self assert: projection relations isEmpty
+	^ CgtMatcherProjectionBuilder
 ]
 
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testMarksSelectedNodeAsInOtherRuleWhenRelatedRuleAlsoMatchesSelectedElement [
+	<gtExample>
 	| root selected currentRule relatedRule projection selectedNode visibilityState |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
@@ -116,10 +128,13 @@ CgtMatcherProjectionBuilderTests >> testMarksSelectedNodeAsInOtherRuleWhenRelate
 	selectedNode := projection nodes detect: [ :each | each kind = #selectedElement ].
 	self assert: selectedNode isInCurrentRule.
 	self assert: selectedNode isInOtherRule
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testAddsOtherRuleNodesForRelatedRuleContext [
+	<gtExample>
 	| root selected sibling currentRule relatedRule projection otherRuleNode otherRelation visibilityState |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
@@ -146,6 +161,8 @@ CgtMatcherProjectionBuilderTests >> testAddsOtherRuleNodesForRelatedRuleContext 
 	self assert: otherRelation fromNode representedElement identicalTo: selected.
 	self assert: otherRelation toNode representedElement identicalTo: sibling.
 	self assert: otherRelation combinator equals: #child
+	^ projection
+
 ]
 
 { #category : 'private' }
@@ -172,6 +189,7 @@ CgtMatcherProjectionBuilderTests >> styleRuleForSelector: aSelector [
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testBuildsLeadingCompactedSectionForSingleSelectedRule [
+	<gtExample>
 	| root middle selected rule projection leadingGap |
 	root := self newTestElementWithId: #'root'.
 	middle := root addChild: (self newTestElementWithId: #'middle').
@@ -187,10 +205,13 @@ CgtMatcherProjectionBuilderTests >> testBuildsLeadingCompactedSectionForSingleSe
 	self assert: leadingGap representedElements asArray equals: { root. middle }.
 	self assert: (projection relations anySatisfy: [ :each |
 		each kind = #compaction and: [ each toNode kind = #selectedElement ] ])
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testBuildsLeadingAndTrailingCompactedSectionsAroundFocusedCorridor [
+	<gtExample>
 	| root selected child grandChild rule projection compactedNodes leadingGap trailingGap |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
@@ -211,11 +232,13 @@ CgtMatcherProjectionBuilderTests >> testBuildsLeadingAndTrailingCompactedSection
 		each kind = #compaction and: [ each toNode kind = #selectedElement ] ]).
 	self assert: (projection relations anySatisfy: [ :each |
 		each kind = #compaction and: [ each fromNode kind = #selectedElement ] ])
+	^ CgtMatcherProjectionBuilder
 ]
 
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testKeepsDescendantGapCompactedByDefaultWhenVisibilityStateIsCollapsed [
+	<gtExample>
 	| root middle selected rule projection compactedNode state |
 	root := self newTestElementWithId: #'root'.
 	middle := root addChild: (self newTestElementWithId: #'middle').
@@ -234,10 +257,13 @@ CgtMatcherProjectionBuilderTests >> testKeepsDescendantGapCompactedByDefaultWhen
 	compactedNode := projection nodes detect: [ :each | each kind = #compactedSection ].
 	self assert: compactedNode representedElements asArray equals: { middle }.
 	self assert: compactedNode gapIdentity equals: (state gapIdentityForElements: { middle })
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testRevealsDescendantGapWhenVisibilityStateMarksGapExpanded [
+	<gtExample>
 	| root middle selected rule projection state |
 	root := self newTestElementWithId: #'root'.
 	middle := root addChild: (self newTestElementWithId: #'middle').
@@ -259,10 +285,13 @@ CgtMatcherProjectionBuilderTests >> testRevealsDescendantGapWhenVisibilityStateM
 		each kind = #compactedSection and: [ each representedElements includes: middle ] ]).
 	self assert: (projection nodes anySatisfy: [ :each |
 		each representedElement == middle and: [ each isEditable ] ])
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testHidesOtherRuleContextByDefaultThroughVisibilityState [
+	<gtExample>
 	| root selected other currentRule relatedRule projection state |
 	root := self newTestElementWithId: #'root'.
 	selected := root addChild: (self newTestElementWithId: #'selected').
@@ -280,11 +309,13 @@ CgtMatcherProjectionBuilderTests >> testHidesOtherRuleContextByDefaultThroughVis
 		relatedStyleRules: { relatedRule }
 		visibilityState: state.
 	self assert: projection otherRuleNodes isEmpty
+	^ CgtMatcherProjectionBuilder
 ]
 
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testAddsOtherRuleIndicatorWhenRelatedRuleContextIsHidden [
+	<gtExample>
 	| root selected currentRule relatedRule projection indicatorNode |
 	root := self newTestElementWithId: #root.
 	selected := root addChild: (self newTestElementWithId: #selected).
@@ -302,10 +333,13 @@ CgtMatcherProjectionBuilderTests >> testAddsOtherRuleIndicatorWhenRelatedRuleCon
 	indicatorNode := projection nodes detect: [ :each | each kind = #otherRuleIndicator ] ifNone: [ nil ].
 	self assert: indicatorNode notNil.
 	self assert: indicatorNode hiddenNodeCount equals: 1
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testDoesNotAddOtherRuleIndicatorWhenOtherRuleContextIsAlreadyShown [
+	<gtExample>
 	| root selected currentRule relatedRule visibilityState projection |
 	root := self newTestElementWithId: #root.
 	selected := root addChild: (self newTestElementWithId: #selected).
@@ -324,11 +358,13 @@ CgtMatcherProjectionBuilderTests >> testDoesNotAddOtherRuleIndicatorWhenOtherRul
 		relatedStyleRules: { relatedRule }
 		visibilityState: visibilityState.
 	self assert: (projection nodes noneSatisfy: [ :each | each kind = #otherRuleIndicator ])
+	^ CgtMatcherProjectionBuilder
 ]
 
 
 { #category : 'tests' }
 CgtMatcherProjectionBuilderTests >> testCompactedNodeCarriesExplicitGapIdentity [
+	<gtExample>
 	| root middle selected rule projection compactedNode state |
 	root := self newTestElementWithId: #'root'.
 	middle := root addChild: (self newTestElementWithId: #'middle').
@@ -346,4 +382,6 @@ CgtMatcherProjectionBuilderTests >> testCompactedNodeCarriesExplicitGapIdentity 
 		visibilityState: state.
 	compactedNode := projection nodes detect: [ :each | each kind = #compactedSection ].
 	self assert: compactedNode gapIdentity equals: (state gapIdentityForElements: { middle })
+	^ projection
+
 ]

@@ -11,6 +11,7 @@ Class {
 
 { #category : 'tests' }
 CgtThemeStyleRuleBootstrapBuilderTests >> testBuildsRuleFromHierarchyRootToSelectedElement [
+	<gtExample>
 	| root child selected rule |
 	root := self newTestElementWithId: #'root'.
 	child := root addChild: (self newTestElementWithId: #'child').
@@ -19,10 +20,13 @@ CgtThemeStyleRuleBootstrapBuilderTests >> testBuildsRuleFromHierarchyRootToSelec
 		ruleForSelectedElement: selected
 		withinHierarchyRoot: root.
 	self assert: rule selector displayString equals: '#root > #child > #selected'
+	^ rule
+
 ]
 
 { #category : 'tests' }
 CgtThemeStyleRuleBootstrapBuilderTests >> testFallsBackToSelectedElementWhenHierarchyRootIsNotOnAncestorChain [
+	<gtExample>
 	| root selected rule |
 	root := self newTestElementWithId: #'root'.
 	selected := self newTestElementWithId: #'selected'.
@@ -30,6 +34,8 @@ CgtThemeStyleRuleBootstrapBuilderTests >> testFallsBackToSelectedElementWhenHier
 		ruleForSelectedElement: selected
 		withinHierarchyRoot: root.
 	self assert: rule selector displayString equals: '#selected'
+	^ rule
+
 ]
 
 { #category : 'private' }

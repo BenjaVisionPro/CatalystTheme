@@ -11,19 +11,25 @@ Class {
 
 { #category : 'tests' }
 CgtMatcherRelationVisualPolicyTests >> testOtherRuleRelationUsesOtherRuleLabel [
+	<gtExample>
 	| policy relation |
 	policy := CgtMatcherRelationVisualPolicy new.
 	relation := CgtMatcherProjectionRelation from: CgtMatcherProjectionNode new to: CgtMatcherProjectionNode new kind: #otherRule.
 	self assert: (policy labelForRelation: relation) equals: 'Other rule'.
 	self assert: (policy widthForRelation: relation) equals: 3
+	^ policy
+
 ]
 
 { #category : 'tests' }
 CgtMatcherRelationVisualPolicyTests >> testDescendantMatcherRelationUsesDescendantLabel [
+	<gtExample>
 	| policy relation |
 	policy := CgtMatcherRelationVisualPolicy new.
 	relation := (CgtMatcherProjectionRelation from: CgtMatcherProjectionNode new to: CgtMatcherProjectionNode new kind: #matcher)
 		combinator: #descendant;
 		yourself.
 	self assert: (policy labelForRelation: relation) equals: 'Descendant relation'
+	^ policy
+
 ]

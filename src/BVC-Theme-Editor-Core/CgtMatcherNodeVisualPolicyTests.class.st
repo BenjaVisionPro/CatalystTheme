@@ -11,16 +11,20 @@ Class {
 
 { #category : 'tests' }
 CgtMatcherNodeVisualPolicyTests >> testRoleLabelForSelectedElementNode [
+	<gtExample>
 	| node policy |
 	policy := CgtMatcherNodeVisualPolicy new.
 	node := CgtMatcherProjectionNode new
 		kind: #selectedElement;
 		yourself.
 	self assert: (policy roleLabelForNode: node) equals: 'Selected'
+	^ policy
+
 ]
 
 { #category : 'tests' }
 CgtMatcherNodeVisualPolicyTests >> testMatchSummaryForClassAndIdNode [
+	<gtExample>
 	| node policy |
 	policy := CgtMatcherNodeVisualPolicy new.
 	node := CgtMatcherProjectionNode new
@@ -29,10 +33,13 @@ CgtMatcherNodeVisualPolicyTests >> testMatchSummaryForClassAndIdNode [
 		matchById: true;
 		yourself.
 	self assert: (policy matchSummaryForNode: node) equals: 'Class + id'
+	^ policy
+
 ]
 
 { #category : 'tests' }
 CgtMatcherNodeVisualPolicyTests >> testCompactedNodeUsesContextOnlySummary [
+	<gtExample>
 	| node policy |
 	policy := CgtMatcherNodeVisualPolicy new.
 	node := CgtMatcherProjectionNode new
@@ -42,13 +49,17 @@ CgtMatcherNodeVisualPolicyTests >> testCompactedNodeUsesContextOnlySummary [
 		yourself.
 	self assert: (policy titleForNode: node) equals: '2 hidden nodes'.
 	self assert: (policy matchSummaryForNode: node) equals: 'Context only'
+	^ CgtMatcherNodeVisualPolicy
 ]
 
 
 { #category : 'tests' }
 CgtMatcherNodeVisualPolicyTests >> testSelectedRoleLabelIsShort [
+	<gtExample>
 	| policy node |
 	policy := CgtMatcherNodeVisualPolicy new.
 	node := CgtMatcherProjectionNode kind: #selectedElement.
 	self assert: (policy roleLabelForNode: node) equals: 'Selected'
+	^ policy
+
 ]

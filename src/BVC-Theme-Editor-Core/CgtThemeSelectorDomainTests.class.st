@@ -11,6 +11,7 @@ Class {
 
 { #category : 'tests' }
 CgtThemeSelectorDomainTests >> testClassAndIdSimpleSelectorRoundTripsThroughSteps [
+	<gtExample>
 	| selector rebuiltSelector element sameClassWrongId wrongClass |
 	selector := CgtThemeSimpleSelector new.
 	selector addPredicate: (CgtThemeClassPredicate elementClass: CgtThemeSelectorTestElement).
@@ -27,10 +28,13 @@ CgtThemeSelectorDomainTests >> testClassAndIdSimpleSelectorRoundTripsThroughStep
 	self assert: (rebuiltSelector matchesElement: element).
 	self deny: (rebuiltSelector matchesElement: sameClassWrongId).
 	self deny: (rebuiltSelector matchesElement: wrongClass)
+	^ selector
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorDomainTests >> testChildCombinatorRoundTripsThroughSteps [
+	<gtExample>
 	| parent child grandChild selector rebuiltSelector |
 	parent := self newTestElementWithId: #'parent'.
 	child := parent addChild: (self newTestElementWithId: #'child').
@@ -46,10 +50,13 @@ CgtThemeSelectorDomainTests >> testChildCombinatorRoundTripsThroughSteps [
 	self assert: rebuiltSelector displayString equals: selector displayString.
 	self assert: (rebuiltSelector matchesElement: child).
 	self deny: (rebuiltSelector matchesElement: grandChild)
+	^ selector
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorDomainTests >> testDescendantCombinatorRoundTripsThroughSteps [
+	<gtExample>
 	| root middle leaf selector rebuiltSelector |
 	root := self newTestElementWithId: #'root'.
 	middle := root addChild: (self newTestElementWithId: #'middle').
@@ -65,6 +72,8 @@ CgtThemeSelectorDomainTests >> testDescendantCombinatorRoundTripsThroughSteps [
 	self assert: rebuiltSelector displayString equals: selector displayString.
 	self assert: (rebuiltSelector matchesElement: leaf).
 	self deny: (rebuiltSelector matchesElement: middle)
+	^ selector
+
 ]
 
 { #category : 'private' }

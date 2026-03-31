@@ -18,6 +18,7 @@ CgtThemeSelectorMondrianWidgetTests >> newTestElementWithId: anId [
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testBuildsMondrianGraphFromProjection [
+	<gtExample>
 	| upstreamNode selectedNode relation projection widget |
 	projection := CgtMatcherProjection new.
 	upstreamNode := (CgtMatcherProjectionNode kind: #upstreamScope)
@@ -45,10 +46,13 @@ CgtThemeSelectorMondrianWidgetTests >> testBuildsMondrianGraphFromProjection [
 	self assert: widget graphElement notNil.
 	self assert: widget graphElement graph nodeChildren size equals: 2.
 	self assert: widget graphElement graph edgeChildren size equals: 1
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testUsesCustomNodeStencilElement [
+	<gtExample>
 	| node projection widget graphNodeElement |
 	projection := CgtMatcherProjection new.
 	node := (CgtMatcherProjectionNode kind: #selectedElement)
@@ -64,10 +68,13 @@ CgtThemeSelectorMondrianWidgetTests >> testUsesCustomNodeStencilElement [
 	graphNodeElement := widget graphElement graph nodeChildren first.
 	self assert: (graphNodeElement isKindOf: CgtMatcherNodeElement).
 	self assert: graphNodeElement projectionNode identicalTo: node
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testForwardsMatcherNodeEditEvents [
+	<gtExample>
 	| node projection widget forwardedEvent graphNodeElement |
 	projection := CgtMatcherProjection new.
 	node := (CgtMatcherProjectionNode kind: #selectedElement)
@@ -87,10 +94,13 @@ CgtThemeSelectorMondrianWidgetTests >> testForwardsMatcherNodeEditEvents [
 	self assert: forwardedEvent projectionNode identicalTo: node.
 	self assert: forwardedEvent shouldMatch.
 	self deny: node matchByClass
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testForwardsMatcherCombinatorChangedEvents [
+	<gtExample>
 	| root selected projection relation widget forwardedEvent graphNodeElement |
 	root := (CgtMatcherProjectionNode kind: #upstreamScope)
 		representedElement: (self newTestElementWithId: #root);
@@ -120,10 +130,13 @@ CgtThemeSelectorMondrianWidgetTests >> testForwardsMatcherCombinatorChangedEvent
 	self assert: forwardedEvent relation identicalTo: relation.
 	self assert: forwardedEvent combinator equals: #descendant.
 	self assert: relation combinator equals: #child
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testOrdersCurrentRuleNodesBeforeContextNodesForRendering [
+	<gtExample>
 	| upstream selected context projection widget orderedNodes |
 	upstream := (CgtMatcherProjectionNode kind: #upstreamScope)
 		className: 'Root';
@@ -150,11 +163,13 @@ CgtThemeSelectorMondrianWidgetTests >> testOrdersCurrentRuleNodesBeforeContextNo
 	self assert: orderedNodes first identicalTo: upstream.
 	self assert: orderedNodes second identicalTo: selected.
 	self assert: orderedNodes last identicalTo: context
+	^ CgtThemeSelectorMondrianWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testUsesOtherRuleIndicatorElementForIndicatorNode [
+	<gtExample>
 	| projection node widget graphNodeElement |
 	projection := CgtMatcherProjection new.
 	node := (CgtMatcherProjectionNode kind: #otherRuleIndicator)
@@ -168,10 +183,13 @@ CgtThemeSelectorMondrianWidgetTests >> testUsesOtherRuleIndicatorElementForIndic
 	graphNodeElement := widget graphElement graph nodeChildren first.
 	self assert: (graphNodeElement isKindOf: CgtMatcherOtherRuleIndicatorElement).
 	self assert: graphNodeElement projectionNode identicalTo: node
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testForwardsOtherRuleContextToggledEvents [
+	<gtExample>
 	| projection node widget forwardedEvent graphNodeElement |
 	projection := CgtMatcherProjection new.
 	node := (CgtMatcherProjectionNode kind: #otherRuleIndicator)
@@ -186,21 +204,25 @@ CgtThemeSelectorMondrianWidgetTests >> testForwardsOtherRuleContextToggledEvents
 	graphNodeElement := widget graphElement graph nodeChildren first.
 	graphNodeElement requestOtherRuleContextToggle.
 	self assert: forwardedEvent notNil
+	^ CgtThemeSelectorMondrianWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testConfigureEdgeConnectionsUsesLayoutPolicyOrientation [
+	<gtExample>
 	| widget policy |
 	widget := CgtThemeSelectorMondrianWidget new.
 	policy := CgtMatcherLayoutPolicy new.
 	self assert: policy corridorOrientation equals: #vertical.
 	self assert: (policy edgeConnectionSelectorsForOrientation: policy corridorOrientation) equals: #(fromCenterBottom toCenterTop)
+	^ CgtThemeSelectorMondrianWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshRevealOffsetUsesLeadingCompactedGapOnly [
+	<gtExample>
 	| projection leadingGap selected relation widget |
 	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
 		hiddenNodeCount: 2;
@@ -221,10 +243,13 @@ CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshRevealOffsetUsesLead
 		yourself.
 	self assert: widget structuralRefreshRevealOffset equals: (0 @ -24).
 	self assert: widget structuralRefreshAnchorProjectionNode identicalTo: selected
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshRevealOffsetStaysFixedForTrailingOnlyGap [
+	<gtExample>
 	| projection selected trailingGap relation widget |
 	selected := (CgtMatcherProjectionNode kind: #selectedElement)
 		representedElement: (self newTestElementWithId: #selected);
@@ -245,11 +270,13 @@ CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshRevealOffsetStaysFix
 		yourself.
 	self assert: widget structuralRefreshRevealOffset equals: (0 @ 0).
 	self assert: widget structuralRefreshAnchorProjectionNode identicalTo: selected
+	^ CgtThemeSelectorMondrianWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshQueriesTransitionPolicyForAnchorAndOffset [
+	<gtExample>
 	| projection leadingGap selected relation widget policy |
 	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
 		hiddenNodeCount: 2;
@@ -272,11 +299,13 @@ CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshQueriesTransitionPol
 		instVarNamed: 'transitionPolicy' put: policy.
 	self assert: widget structuralRefreshRevealOffset equals: (policy structuralRefreshRevealOffsetForProjection: projection orientation: #vertical).
 	self assert: widget structuralRefreshAnchorProjectionNode identicalTo: (policy structuralRefreshAnchorProjectionNodeFor: projection)
+	^ CgtThemeSelectorMondrianWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> test_projectionChangeBuildsStructuralRefreshPlanFromPreviousProjection [
+	<gtExample>
 	| widget oldProjection newProjection oldSelected newSelected leadingGap selectedNode |
 	widget := CgtThemeSelectorMondrianWidget new.
 	oldSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
@@ -307,11 +336,13 @@ CgtThemeSelectorMondrianWidgetTests >> test_projectionChangeBuildsStructuralRefr
 	widget projection: newProjection.
 	self assert: widget lastStructuralRefreshPlan notNil.
 	self assert: widget lastStructuralRefreshPlan isReveal
+	^ CgtThemeSelectorMondrianWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshAnimationUsesPlanSpecificDurationsAndOpacity [
+	<gtExample>
 	| widget revealPlan stablePlan |
 	widget := CgtThemeSelectorMondrianWidget new.
 	revealPlan := CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself.
@@ -323,11 +354,13 @@ CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshAnimationUsesPlanSpe
 	self assert: widget structuralRefreshAnimationDuration equals: widget transitionPolicy structuralRefreshDuration.
 	self assert: widget structuralRefreshStartOpacity equals: widget transitionPolicy graphRevealEndOpacity.
 	self assert: widget structuralRefreshEndOpacity equals: widget transitionPolicy graphRevealEndOpacity
+	^ CgtThemeSelectorMondrianWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testStableProjectionRefreshDoesNotStartStructuralRefreshAnimation [
+	<gtExample>
 	| widget oldProjection newProjection oldSelected newSelected |
 	widget := CgtThemeSelectorMondrianWidget new.
 	oldSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
@@ -349,15 +382,19 @@ CgtThemeSelectorMondrianWidgetTests >> testStableProjectionRefreshDoesNotStartSt
 	self assert: widget lastStructuralRefreshPlan notNil.
 	self assert: widget lastStructuralRefreshPlan isStable.
 	self assert: widget structuralRefreshAnimationToken equals: 0
+	^ CgtThemeSelectorMondrianWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorMondrianWidgetTests >> testReplacePlanUsesFullOpacityAndReplaceDuration [
+	<gtExample>
 	| widget |
 	widget := CgtThemeSelectorMondrianWidget new.
 	widget instVarNamed: 'lastStructuralRefreshPlan' put: (CgtMatcherStructuralRefreshPlan new transitionKind: #replace; yourself).
 	self assert: widget structuralRefreshAnimationDuration equals: widget transitionPolicy replaceDuration.
 	self assert: widget structuralRefreshStartOpacity equals: widget transitionPolicy graphRevealEndOpacity.
 	self assert: widget structuralRefreshEndOpacity equals: widget transitionPolicy graphRevealEndOpacity
+	^ projection
+
 ]

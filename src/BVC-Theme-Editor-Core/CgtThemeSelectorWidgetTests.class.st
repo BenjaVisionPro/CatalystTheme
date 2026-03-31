@@ -32,6 +32,7 @@ CgtThemeSelectorWidgetTests >> styleRuleForSelector: aSelector [
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testBuildsProjectionFromRuleAndHierarchyContext [
+	<gtExample>
 	| root selected rule widget |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
@@ -48,10 +49,13 @@ CgtThemeSelectorWidgetTests >> testBuildsProjectionFromRuleAndHierarchyContext [
 		yourself.
 	self assert: widget projection notNil.
 	self assert: widget currentSelector displayString equals: '#selected'
+	^ widget
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testClearsProjectionWhenSelectedElementBecomesNil [
+	<gtExample>
 	| root selected rule widget |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
@@ -68,11 +72,13 @@ CgtThemeSelectorWidgetTests >> testClearsProjectionWhenSelectedElementBecomesNil
 		yourself.
 	widget selectedElement: nil.
 	self assert: widget projection isNil
+	^ CgtThemeSelectorWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testConfigureForStyleRuleSelectedElementPathRootElementRelatedStyleRulesRefreshesProjection [
+	<gtExample>
 	| root parent child rule widget relatedRule |
 	root := CgtThemeSelectorTestElement named: #Root id: #root.
 	parent := CgtThemeSelectorTestElement named: #Parent id: #parent.
@@ -92,11 +98,13 @@ CgtThemeSelectorWidgetTests >> testConfigureForStyleRuleSelectedElementPathRootE
 	self assert: widget projection notNil.
 	self assert: widget projection selectedElement == child.
 	self assert: widget projection relatedStyleRules size equals: 1
+	^ CgtThemeSelectorWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyleRuleViaModelSelectorProtocol [
+	<gtExample>
 	| root selected originalRule widget newSelector event |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
@@ -122,6 +130,7 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 
 	self assert: widget currentStyleRule identicalTo: originalRule.
 	self assert: widget currentStyleRule selector identicalTo: newSelector
+	^ CgtThemeSelectorWidget
 ]
 
 
@@ -129,31 +138,40 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testDefaultRendererSuperclassIsSelectorRendererWidget [
+	<gtExample>
 	self assert: CgtThemeSelectorMondrianWidget superclass equals: CgtThemeSelectorRendererWidget.
 	self assert: CgtThemeSelectorBreadcrumbWidget superclass equals: CgtThemeSelectorRendererWidget.
 	self assert: CgtThemeSelectorCompactWidget superclass equals: CgtThemeSelectorRendererWidget
+	^ widget
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testHostsConcreteSelectorRendererWidget [
+	<gtExample>
 	| widget |
 	widget := CgtThemeSelectorWidget new.
 
 	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorMondrianWidget
+	^ CgtThemeSelectorWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testCanSwapToBreadcrumbRendererWidget [
+	<gtExample>
 	| widget |
 	widget := CgtThemeSelectorWidget new.
 	widget selectorRendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
 
 	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorBreadcrumbWidget
+	^ widget
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testBreadcrumbRendererReceivesProjectionFromModel [
+	<gtExample>
 	| root selected rule widget |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
@@ -173,20 +191,25 @@ CgtThemeSelectorWidgetTests >> testBreadcrumbRendererReceivesProjectionFromModel
 
 	self assert: widget selectorRendererWidget projection identicalTo: widget projection.
 	self assert: widget selectorRendererWidget children isNotEmpty
+	^ CgtThemeSelectorWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testCanSwapToCompactRendererWidget [
+	<gtExample>
 	| widget |
 	widget := CgtThemeSelectorWidget new.
 	widget selectorRendererWidgetClass: CgtThemeSelectorCompactWidget.
 
 	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorCompactWidget
+	^ widget
+
 ]
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testCompactRendererReceivesProjectionFromModel [
+	<gtExample>
 	| root selected rule widget |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
@@ -206,11 +229,13 @@ CgtThemeSelectorWidgetTests >> testCompactRendererReceivesProjectionFromModel [
 
 	self assert: widget selectorRendererWidget projection identicalTo: widget projection.
 	self assert: (widget selectorRendererWidget childWithId: #compactSelectorLabel) notNil
+	^ CgtThemeSelectorWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testShowOtherRuleContextDelegatesToModelAndRefreshesProjection [
+	<gtExample>
 	| root selected currentRule relatedRule widget |
 	root := self newTestElementWithId: #root.
 	selected := root addChild: (self newTestElementWithId: #selected).
@@ -229,11 +254,13 @@ CgtThemeSelectorWidgetTests >> testShowOtherRuleContextDelegatesToModelAndRefres
 	widget showOtherRuleContext.
 	self assert: widget visibilityState showsOtherRuleContext.
 	self deny: widget projection otherRuleNodes isEmpty
+	^ CgtThemeSelectorWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testOtherRuleContextToggleEventDelegatesToModelAndRefreshesProjection [
+	<gtExample>
 	| root selected currentRule relatedRule widget event |
 	root := self newTestElementWithId: #root.
 	selected := root addChild: (self newTestElementWithId: #selected).
@@ -253,11 +280,13 @@ CgtThemeSelectorWidgetTests >> testOtherRuleContextToggleEventDelegatesToModelAn
 	widget selectorOtherRuleContextToggledEvent: event.
 	self assert: widget visibilityState showsOtherRuleContext.
 	self deny: widget projection otherRuleNodes isEmpty
+	^ CgtThemeSelectorWidget
 ]
 
 
 { #category : 'tests' }
 CgtThemeSelectorWidgetTests >> testMatcherHoverEventIsRepublishedAsSelectorHoverEvent [
+	<gtExample>
 	| widget selected received |
 	widget := CgtThemeSelectorWidget new.
 	selected := CgtMatcherProjectionNode kind: #selectedElement.
@@ -266,4 +295,6 @@ CgtThemeSelectorWidgetTests >> testMatcherHoverEventIsRepublishedAsSelectorHover
 		received := anEvent projectionNode == selected ].
 	widget selectorNodeHoveredEvent: (CgtThemeSelectorNodeHoveredEvent new projectionNode: selected; yourself).
 	self assert: received
+	^ widget
+
 ]

@@ -10,27 +10,33 @@ Class {
 
 { #category : 'tests' }
 CgtMatcherVisibilityStateTests >> testExpandedGapIsTrackedByGapIdentity [
+	<gtExample>
 	| state gapIdentity |
 	state := CgtMatcherVisibilityState new.
 	gapIdentity := #(#root #middle).
 	self deny: (state isExpandedForGapIdentity: gapIdentity).
 	state expandGapIdentity: gapIdentity.
 	self assert: (state isExpandedForGapIdentity: gapIdentity)
+	^ state
+
 ]
 
 { #category : 'tests' }
 CgtMatcherVisibilityStateTests >> testClearExpandedGapsRemovesExpansionState [
+	<gtExample>
 	| state gapIdentity |
 	state := CgtMatcherVisibilityState new.
 	gapIdentity := #(#root #middle).
 	state expandGapIdentity: gapIdentity.
 	state clearExpandedGaps.
 	self deny: (state isExpandedForGapIdentity: gapIdentity)
+	^ CgtMatcherVisibilityState
 ]
 
 
 { #category : 'tests' }
 CgtMatcherVisibilityStateTests >> testElementBasedTrackingStillMapsToGapIdentity [
+	<gtExample>
 	| first second state gapIdentity |
 	first := CgtThemeSelectorTestElement new.
 	first id: (BlElementId named: #first).
@@ -40,4 +46,6 @@ CgtMatcherVisibilityStateTests >> testElementBasedTrackingStillMapsToGapIdentity
 	gapIdentity := state gapIdentityForElements: { first. second }.
 	state expandElements: { first. second }.
 	self assert: (state isExpandedForGapIdentity: gapIdentity)
+	^ state
+
 ]

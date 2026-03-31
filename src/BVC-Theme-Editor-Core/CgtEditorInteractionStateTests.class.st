@@ -11,6 +11,7 @@ Class {
 
 { #category : 'tests' }
 CgtEditorInteractionStateTests >> testSelectorRendererHoverOverridesPreviewHover [
+	<gtExample>
 	| state preview matcher |
 	state := CgtEditorInteractionState new.
 	preview := BlElement new.
@@ -18,10 +19,13 @@ CgtEditorInteractionStateTests >> testSelectorRendererHoverOverridesPreviewHover
 	state setPreviewHoverElement: preview.
 	state selectorRendererHoveredElement: matcher.
 	self assert: state effectiveHoverElement identicalTo: matcher
+	^ state
+
 ]
 
 { #category : 'tests' }
 CgtEditorInteractionStateTests >> testPathHoverOverridesPreviewWhenSelectorRendererHoverIsAbsent [
+	<gtExample>
 	| state preview path |
 	state := CgtEditorInteractionState new.
 	preview := BlElement new.
@@ -29,10 +33,13 @@ CgtEditorInteractionStateTests >> testPathHoverOverridesPreviewWhenSelectorRende
 	state setPreviewHoverElement: preview.
 	state pathWidgetHoveredElement: path.
 	self assert: state effectiveHoverElement identicalTo: path
+	^ state
+
 ]
 
 { #category : 'tests' }
 CgtEditorInteractionStateTests >> testClearingSelectorRendererHoverFallsBackToPathThenPreview [
+	<gtExample>
 	| state preview path matcher |
 	state := CgtEditorInteractionState new.
 	preview := BlElement new.
@@ -46,10 +53,13 @@ CgtEditorInteractionStateTests >> testClearingSelectorRendererHoverFallsBackToPa
 	self assert: state effectiveHoverElement identicalTo: path.
 	state clearPathWidgetHover.
 	self assert: state effectiveHoverElement identicalTo: preview
+	^ state
+
 ]
 
 { #category : 'tests' }
 CgtEditorInteractionStateTests >> testExplicitHighlightOverridesSelectorRendererHover [
+	<gtExample>
 	| state highlight matcher |
 	state := CgtEditorInteractionState new.
 	highlight := BlElement new.
@@ -57,4 +67,6 @@ CgtEditorInteractionStateTests >> testExplicitHighlightOverridesSelectorRenderer
 	state selectorRendererHoveredElement: matcher.
 	state highlightedElement: highlight.
 	self assert: state effectiveHoverElement identicalTo: highlight
+	^ state
+
 ]

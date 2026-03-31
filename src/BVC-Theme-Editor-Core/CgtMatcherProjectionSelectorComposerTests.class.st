@@ -11,6 +11,7 @@ Class {
 
 { #category : 'tests' }
 CgtMatcherProjectionSelectorComposerTests >> testComposesChildSelectorFromProjectionNodes [
+	<gtExample>
 	| root child projection selector |
 	projection := CgtMatcherProjection new.
 	root := (CgtMatcherProjectionNode kind: #upstreamScope)
@@ -31,10 +32,13 @@ CgtMatcherProjectionSelectorComposerTests >> testComposesChildSelectorFromProjec
 			yourself).
 	selector := CgtMatcherProjectionSelectorComposer selectorForProjection: projection.
 	self assert: selector displayString equals: '#root > CgtThemeSelectorTestElement'
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtMatcherProjectionSelectorComposerTests >> testIgnoresCompactedNodesWhenRecomposingSelector [
+	<gtExample>
 	| root compacted selected projection selector |
 	projection := CgtMatcherProjection new.
 	root := (CgtMatcherProjectionNode kind: #upstreamScope)
@@ -61,6 +65,8 @@ CgtMatcherProjectionSelectorComposerTests >> testIgnoresCompactedNodesWhenRecomp
 			yourself).
 	selector := CgtMatcherProjectionSelectorComposer selectorForProjection: projection.
 	self assert: selector displayString equals: '#root descendant #selected'
+	^ projection
+
 ]
 
 { #category : 'private' }
@@ -73,6 +79,7 @@ CgtMatcherProjectionSelectorComposerTests >> newTestElementWithId: aSymbol [
 
 { #category : 'tests' }
 CgtMatcherProjectionSelectorComposerTests >> testUsesMatcherCombinatorAcrossExpandedContextNodes [
+	<gtExample>
 	| root middle selected projection selector |
 	projection := CgtMatcherProjection new.
 	root := (CgtMatcherProjectionNode kind: #upstreamScope)
@@ -99,4 +106,6 @@ CgtMatcherProjectionSelectorComposerTests >> testUsesMatcherCombinatorAcrossExpa
 			yourself).
 	selector := CgtMatcherProjectionSelectorComposer selectorForProjection: projection.
 	self assert: selector displayString equals: '#root descendant #selected'
+	^ projection
+
 ]

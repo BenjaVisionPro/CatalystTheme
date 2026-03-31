@@ -11,6 +11,7 @@ Class {
 
 { #category : 'tests' }
 CgtEditorMatcherHoverSyncTests >> testSelectorNodeHoverUpdatesInteractionState [
+	<gtExample>
 	| editor element node |
 	editor := CgtEditor new.
 	element := BlElement new.
@@ -19,10 +20,13 @@ CgtEditorMatcherHoverSyncTests >> testSelectorNodeHoverUpdatesInteractionState [
 		yourself.
 	editor selectorNodeHoveredEvent: (CgtThemeSelectorNodeHoveredEvent new projectionNode: node; yourself).
 	self assert: editor interactionState effectiveHoverElement identicalTo: element
+	^ node
+
 ]
 
 { #category : 'tests' }
 CgtEditorMatcherHoverSyncTests >> testSelectorNodeUnhoverClearsSelectorRendererHover [
+	<gtExample>
 	| editor element node |
 	editor := CgtEditor new.
 	element := BlElement new.
@@ -32,4 +36,6 @@ CgtEditorMatcherHoverSyncTests >> testSelectorNodeUnhoverClearsSelectorRendererH
 	editor selectorNodeHoveredEvent: (CgtThemeSelectorNodeHoveredEvent new projectionNode: node; yourself).
 	editor selectorNodeUnhoveredEvent: (CgtThemeSelectorNodeUnhoveredEvent new projectionNode: node; yourself).
 	self assert: editor interactionState hasSelectorRendererHover not
+	^ node
+
 ]

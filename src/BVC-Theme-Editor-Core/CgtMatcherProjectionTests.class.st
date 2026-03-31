@@ -11,6 +11,7 @@ Class {
 
 { #category : 'tests' }
 CgtMatcherProjectionTests >> testProjectionKeepsRelationsExplicit [
+	<gtExample>
 	| parentNode childNode relation projection |
 	projection := CgtMatcherProjection new.
 	parentNode := CgtMatcherProjectionNode kind: #upstreamScope.
@@ -27,10 +28,13 @@ CgtMatcherProjectionTests >> testProjectionKeepsRelationsExplicit [
 	self assert: projection relations first toNode identicalTo: childNode.
 	self assert: projection relations first kind equals: #matcher.
 	self assert: projection relations first combinator equals: #child
+	^ projection
+
 ]
 
 { #category : 'tests' }
 CgtMatcherProjectionTests >> testProjectionNodeCarriesRuleMembershipAndMatchState [
+	<gtExample>
 	| element node |
 	element := self newTestElementWithId: #'selected-node'.
 	node := CgtMatcherProjectionNode kind: #selectedElement.
@@ -48,12 +52,14 @@ CgtMatcherProjectionTests >> testProjectionNodeCarriesRuleMembershipAndMatchStat
 	self deny: node isInOtherRule.
 	self assert: node matchByClass.
 	self assert: node matchById
+	^ CgtMatcherProjection
 ]
 
 
 
 { #category : 'tests' }
 CgtMatcherProjectionTests >> testProjectionNodeAllowsGenericRepresentedElementWithoutId [
+	<gtExample>
 	| element node |
 	element := Object new.
 	node := CgtMatcherProjectionNode kind: #selectedElement.
@@ -61,9 +67,11 @@ CgtMatcherProjectionTests >> testProjectionNodeAllowsGenericRepresentedElementWi
 	self assert: node representedElement identicalTo: element.
 	self assert: node className equals: Object name.
 	self assert: node elementId isNil
+	^ CgtMatcherProjection
 ]
 { #category : 'tests' }
 CgtMatcherProjectionTests >> testProjectionSeparatesCurrentRuleNodesFromOtherRuleNodes [
+	<gtExample>
 	| projection selectedNode otherRuleNode compactedNode |
 	projection := CgtMatcherProjection new.
 	selectedNode := CgtMatcherProjectionNode kind: #selectedElement.
@@ -83,6 +91,8 @@ CgtMatcherProjectionTests >> testProjectionSeparatesCurrentRuleNodesFromOtherRul
 	self assert: (projection nodesOfKind: #compactedSection) asArray equals: { compactedNode }.
 	self assert: compactedNode hiddenNodeCount equals: 3.
 	self deny: compactedNode isEditable
+	^ node
+
 ]
 
 { #category : 'private' }
@@ -95,6 +105,7 @@ CgtMatcherProjectionTests >> newTestElementWithId: aSymbol [
 
 { #category : 'tests' }
 CgtMatcherProjectionTests >> testLeadingAndTrailingCompactedProjectionQueries [
+	<gtExample>
 	| projection leadingGap selected trailingGap leadingRelation trailingRelation |
 	leadingGap := CgtMatcherProjectionNode kind: #compactedSection.
 	selected := (CgtMatcherProjectionNode kind: #selectedElement)
@@ -115,4 +126,6 @@ CgtMatcherProjectionTests >> testLeadingAndTrailingCompactedProjectionQueries [
 	self assert: projection leadingCompactedProjectionNode identicalTo: leadingGap.
 	self assert: projection trailingCompactedProjectionNode identicalTo: trailingGap.
 	self assert: projection followingProjectionNodeAfterLeadingCompaction identicalTo: selected
+	^ projection
+
 ]

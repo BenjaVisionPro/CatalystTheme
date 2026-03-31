@@ -11,6 +11,7 @@ Class {
 
 { #category : 'tests' }
 CgtMatcherGapElementTests >> testRequestCombinatorChangePublishesEvent [
+	<gtExample>
 	| gap relation element event |
 	gap := (CgtMatcherProjectionNode kind: #compactedSection)
 		hiddenNodeCount: 2;
@@ -27,10 +28,13 @@ CgtMatcherGapElementTests >> testRequestCombinatorChangePublishesEvent [
 	self assert: event notNil.
 	self assert: event relation identicalTo: relation.
 	self assert: event combinator equals: #descendant
+	^ gap
+
 ]
 
 { #category : 'tests' }
 CgtMatcherGapElementTests >> testRequestRevealPublishesExpansionEvent [
+	<gtExample>
 	| gap element event |
 	gap := (CgtMatcherProjectionNode kind: #compactedSection)
 		hiddenNodeCount: 2;
@@ -42,4 +46,6 @@ CgtMatcherGapElementTests >> testRequestRevealPublishesExpansionEvent [
 	element requestCompactedSectionExpansionFor: gap.
 	self assert: event notNil.
 	self assert: event projectionNode identicalTo: gap
+	^ gap
+
 ]
