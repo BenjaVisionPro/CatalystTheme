@@ -1,6 +1,6 @@
 "
 #Theme Selector Widget
-I am the host widget for the theme selector editor. I own a non-visual CgtThemeSelectorModel and one concrete renderer widget. I coordinate selector editing semantics through the model while keeping the renderer pluggable so different selector UIs can share the same model.
+I am the host widget for the theme selector editor. I own a non-visual CgtThemeSelectorModel and one pluggable selector renderer widget. I coordinate selector editing semantics through the model while keeping rendering technology replaceable.
 "
 Class {
 	#name : 'CgtThemeSelectorWidget',
@@ -235,6 +235,28 @@ CgtThemeSelectorWidget >> currentStyleRule [
 CgtThemeSelectorWidget >> matcherSelectorChangedEvent: anEvent [
 	model matcherSelectorChangedEvent: anEvent.
 	self refreshProjectionFromModel
+]
+
+
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> selectorModel [
+	^ model
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> selectorRendererWidget [
+	^ rendererWidget
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> selectorRendererWidgetClass [
+	^ self rendererWidgetClass
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> selectorRendererWidgetClass: aClass [
+	^ self rendererWidgetClass: aClass
 ]
 
 { #category : 'accessing' }

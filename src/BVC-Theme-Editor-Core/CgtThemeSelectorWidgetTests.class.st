@@ -112,11 +112,11 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 
 
 { #category : 'tests' }
-CgtThemeSelectorWidgetTests >> testHostsConcreteMatcherRendererWidget [
+CgtThemeSelectorWidgetTests >> testHostsConcreteSelectorRendererWidget [
 	| widget |
 	widget := CgtThemeSelectorWidget new.
 
-	self assert: widget rendererWidget class equals: CgtThemeSelectorMondrianWidget
+	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorMondrianWidget
 ]
 
 
@@ -124,9 +124,9 @@ CgtThemeSelectorWidgetTests >> testHostsConcreteMatcherRendererWidget [
 CgtThemeSelectorWidgetTests >> testCanSwapToBreadcrumbRendererWidget [
 	| widget |
 	widget := CgtThemeSelectorWidget new.
-	widget rendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
+	widget selectorRendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
 
-	self assert: widget rendererWidget class equals: CgtThemeSelectorBreadcrumbWidget
+	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorBreadcrumbWidget
 ]
 
 { #category : 'tests' }
@@ -141,15 +141,15 @@ CgtThemeSelectorWidgetTests >> testBreadcrumbRendererReceivesProjectionFromModel
 			yourself);
 		yourself.
 	widget := CgtThemeSelectorWidget new.
-	widget rendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
+	widget selectorRendererWidgetClass: CgtThemeSelectorBreadcrumbWidget.
 	widget
 		configureForStyleRule: rule
 		selectedElement: selected
 		pathRootElement: root
 		relatedStyleRules: #().
 
-	self assert: widget rendererWidget projection identicalTo: widget projection.
-	self assert: widget rendererWidget children isNotEmpty
+	self assert: widget selectorRendererWidget projection identicalTo: widget projection.
+	self assert: widget selectorRendererWidget children isNotEmpty
 ]
 
 
@@ -157,9 +157,9 @@ CgtThemeSelectorWidgetTests >> testBreadcrumbRendererReceivesProjectionFromModel
 CgtThemeSelectorWidgetTests >> testCanSwapToCompactRendererWidget [
 	| widget |
 	widget := CgtThemeSelectorWidget new.
-	widget rendererWidgetClass: CgtThemeSelectorCompactWidget.
+	widget selectorRendererWidgetClass: CgtThemeSelectorCompactWidget.
 
-	self assert: widget rendererWidget class equals: CgtThemeSelectorCompactWidget
+	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorCompactWidget
 ]
 
 { #category : 'tests' }
@@ -174,13 +174,13 @@ CgtThemeSelectorWidgetTests >> testCompactRendererReceivesProjectionFromModel [
 			yourself);
 		yourself.
 	widget := CgtThemeSelectorWidget new.
-	widget rendererWidgetClass: CgtThemeSelectorCompactWidget.
+	widget selectorRendererWidgetClass: CgtThemeSelectorCompactWidget.
 	widget
 		configureForStyleRule: rule
 		selectedElement: selected
 		pathRootElement: root
 		relatedStyleRules: #().
 
-	self assert: widget rendererWidget projection identicalTo: widget projection.
-	self assert: (widget rendererWidget childWithId: #compactSelectorLabel) notNil
+	self assert: widget selectorRendererWidget projection identicalTo: widget projection.
+	self assert: (widget selectorRendererWidget childWithId: #compactSelectorLabel) notNil
 ]

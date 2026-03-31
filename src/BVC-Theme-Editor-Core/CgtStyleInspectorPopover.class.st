@@ -1,6 +1,6 @@
 "
 #Style Inspector Popover
-I am the popover attached to the selected element in the Theme Editor. I host the selector widget and derive my displayed labels from that widget's current context instead of duplicating matcher state locally.
+I am the popover attached to the selected element in the Theme Editor. I host the selector widget and derive my displayed labels from that widget's current selector context instead of duplicating selector state locally.
 "
 Class {
 	#name : 'CgtStyleInspectorPopover',
@@ -59,15 +59,26 @@ CgtStyleInspectorPopover >> selectorWidget [
 ]
 
 
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> selectorModel [
+	^ selectorWidget selectorModel
+]
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> selectorRendererWidget [
+	^ selectorWidget selectorRendererWidget
+]
+
+
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> selectorRendererWidgetClass [
-	^ selectorWidget rendererWidgetClass
+	^ selectorWidget selectorRendererWidgetClass
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> selectorRendererWidgetClass: aClass [
-	selectorWidget rendererWidgetClass: aClass.
+	selectorWidget selectorRendererWidgetClass: aClass.
 	^ self
 ]
 

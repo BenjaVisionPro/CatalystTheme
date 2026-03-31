@@ -1,23 +1,23 @@
 "
-#Theme Matcher Mondrian Widget Tests
+#Theme Selector Mondrian Widget Tests
 I verify the Mondrian matcher widget skeleton and its explicit event forwarding. I am responsible for checking that passive matcher projections render as Mondrian nodes and that matcher-node events are forwarded by the widget without mutating selector state.
 "
 Class {
-	#name : 'CgtThemeMatcherMondrianWidgetTests',
+	#name : 'CgtThemeSelectorMondrianWidgetTests',
 	#superclass : 'TestCase',
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
 }
 
 { #category : 'private' }
-CgtThemeMatcherMondrianWidgetTests >> newTestElementWithId: anId [
+CgtThemeSelectorMondrianWidgetTests >> newTestElementWithId: anId [
 	^ CgtThemeSelectorTestElement new
 		id: (BlElementId named: anId);
 		yourself
 ]
 
 { #category : 'tests' }
-CgtThemeMatcherMondrianWidgetTests >> testBuildsMondrianGraphFromProjection [
+CgtThemeSelectorMondrianWidgetTests >> testBuildsMondrianGraphFromProjection [
 	| upstreamNode selectedNode relation projection widget |
 	projection := CgtMatcherProjection new.
 	upstreamNode := (CgtMatcherProjectionNode kind: #upstreamScope)
@@ -38,7 +38,7 @@ CgtThemeMatcherMondrianWidgetTests >> testBuildsMondrianGraphFromProjection [
 	projection addNode: upstreamNode.
 	projection addNode: selectedNode.
 	projection addRelation: relation.
-	widget := CgtThemeMatcherMondrianWidget new
+	widget := CgtThemeSelectorMondrianWidget new
 		projection: projection;
 		yourself.
 	self assert: widget mondrian notNil.
@@ -48,7 +48,7 @@ CgtThemeMatcherMondrianWidgetTests >> testBuildsMondrianGraphFromProjection [
 ]
 
 { #category : 'tests' }
-CgtThemeMatcherMondrianWidgetTests >> testUsesCustomNodeStencilElement [
+CgtThemeSelectorMondrianWidgetTests >> testUsesCustomNodeStencilElement [
 	| node projection widget graphNodeElement |
 	projection := CgtMatcherProjection new.
 	node := (CgtMatcherProjectionNode kind: #selectedElement)
@@ -58,7 +58,7 @@ CgtThemeMatcherMondrianWidgetTests >> testUsesCustomNodeStencilElement [
 		matchByClass: true;
 		yourself.
 	projection addNode: node.
-	widget := CgtThemeMatcherMondrianWidget new
+	widget := CgtThemeSelectorMondrianWidget new
 		projection: projection;
 		yourself.
 	graphNodeElement := widget graphElement graph nodeChildren first.
@@ -67,7 +67,7 @@ CgtThemeMatcherMondrianWidgetTests >> testUsesCustomNodeStencilElement [
 ]
 
 { #category : 'tests' }
-CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherNodeEditEvents [
+CgtThemeSelectorMondrianWidgetTests >> testForwardsMatcherNodeEditEvents [
 	| node projection widget forwardedEvent graphNodeElement |
 	projection := CgtMatcherProjection new.
 	node := (CgtMatcherProjectionNode kind: #selectedElement)
@@ -77,7 +77,7 @@ CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherNodeEditEvents [
 		matchByClass: false;
 		yourself.
 	projection addNode: node.
-	widget := CgtThemeMatcherMondrianWidget new
+	widget := CgtThemeSelectorMondrianWidget new
 		projection: projection;
 		yourself.
 	widget when: CgtMatcherClassMatchToggledEvent do: [ :anEvent | forwardedEvent := anEvent ].
@@ -90,7 +90,7 @@ CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherNodeEditEvents [
 ]
 
 { #category : 'tests' }
-CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherCombinatorChangedEvents [
+CgtThemeSelectorMondrianWidgetTests >> testForwardsMatcherCombinatorChangedEvents [
 	| root selected projection relation widget forwardedEvent graphNodeElement |
 	root := (CgtMatcherProjectionNode kind: #upstreamScope)
 		representedElement: (self newTestElementWithId: #root);
@@ -110,7 +110,7 @@ CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherCombinatorChangedEvents
 		addNode: root;
 		addNode: selected;
 		addRelation: relation.
-	widget := CgtThemeMatcherMondrianWidget new
+	widget := CgtThemeSelectorMondrianWidget new
 		projection: projection;
 		yourself.
 	widget when: CgtMatcherCombinatorChangedEvent do: [ :anEvent | forwardedEvent := anEvent ].
@@ -123,7 +123,7 @@ CgtThemeMatcherMondrianWidgetTests >> testForwardsMatcherCombinatorChangedEvents
 ]
 
 { #category : 'tests' }
-CgtThemeMatcherMondrianWidgetTests >> testOrdersCurrentRuleNodesBeforeContextNodesForRendering [
+CgtThemeSelectorMondrianWidgetTests >> testOrdersCurrentRuleNodesBeforeContextNodesForRendering [
 	| upstream selected context projection widget orderedNodes |
 	upstream := (CgtMatcherProjectionNode kind: #upstreamScope)
 		className: 'Root';
@@ -143,7 +143,7 @@ CgtThemeMatcherMondrianWidgetTests >> testOrdersCurrentRuleNodesBeforeContextNod
 		addNode: context;
 		addNode: selected;
 		addNode: upstream.
-	widget := CgtThemeMatcherMondrianWidget new
+	widget := CgtThemeSelectorMondrianWidget new
 		projection: projection;
 		yourself.
 	orderedNodes := widget orderedNodesForRendering.
