@@ -103,41 +103,41 @@ CgtThemeSelectorModel >> excludeProjectionNodeFromRule: aProjectionNode [
 		incoming ifNotNil: [ incoming kind: #context ] ]
 ]
 
-{ #category : 'editing' }
-CgtThemeSelectorModel >> selector: aCgtThemeSelector [
+{ #category : 'events' }
+CgtThemeSelectorModel >> matcherSelectorChangedEvent: anEvent [
 	styleRule ifNil: [ styleRule := CgtThemeStyleRule new ].
-	styleRule selector: aCgtThemeSelector.
+	styleRule selector: anEvent selector.
 	self refreshProjection
 ]
 
 { #category : 'editing' }
-CgtThemeSelectorModel >> applyClassMatch: aBoolean toProjectionNode: aProjectionNode [
-	self toggleClassMatchForProjectionNode: aProjectionNode shouldMatch: aBoolean
+CgtThemeSelectorModel >> matcherClassMatchToggledEvent: anEvent [
+	self toggleClassMatchForProjectionNode: anEvent projectionNode shouldMatch: anEvent shouldMatch
 ]
 
 { #category : 'editing' }
-CgtThemeSelectorModel >> applyIdMatch: aBoolean toProjectionNode: aProjectionNode [
-	self toggleIdMatchForProjectionNode: aProjectionNode shouldMatch: aBoolean
+CgtThemeSelectorModel >> matcherIdMatchToggledEvent: anEvent [
+	self toggleIdMatchForProjectionNode: anEvent projectionNode shouldMatch: anEvent shouldMatch
 ]
 
 { #category : 'editing' }
-CgtThemeSelectorModel >> includeProjectionNode: aProjectionNode [
-	self includeProjectionNodeInRule: aProjectionNode
+CgtThemeSelectorModel >> matcherNodeIncludedInRuleEvent: anEvent [
+	self includeProjectionNodeInRule: anEvent projectionNode
 ]
 
 { #category : 'editing' }
-CgtThemeSelectorModel >> excludeProjectionNode: aProjectionNode [
-	self excludeProjectionNodeFromRule: aProjectionNode
+CgtThemeSelectorModel >> matcherNodeExcludedFromRuleEvent: anEvent [
+	self excludeProjectionNodeFromRule: anEvent projectionNode
 ]
 
 { #category : 'editing' }
-CgtThemeSelectorModel >> revealCompactedProjectionNode: aProjectionNode [
-	self expandCompactedProjectionNode: aProjectionNode
+CgtThemeSelectorModel >> matcherCompactedSectionExpandedEvent: anEvent [
+	self expandCompactedProjectionNode: anEvent projectionNode
 ]
 
 { #category : 'editing' }
-CgtThemeSelectorModel >> applyCombinator: aSymbol toRelation: aRelation [
-	self changeCombinatorForRelation: aRelation to: aSymbol
+CgtThemeSelectorModel >> matcherCombinatorChangedEvent: anEvent [
+	self changeCombinatorForRelation: anEvent relation to: anEvent combinator
 ]
 
 { #category : 'private - idle collapse' }

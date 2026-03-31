@@ -101,7 +101,7 @@ CgtThemeSelectorWidget >> matcherNodeUnhoveredEvent: anEvent [
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> matcherClassMatchToggledEvent: anEvent [
-	model applyClassMatch: anEvent shouldMatch toProjectionNode: anEvent projectionNode.
+	model matcherClassMatchToggledEvent: anEvent.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse.
 	self publishSelectorChanged
@@ -109,7 +109,7 @@ CgtThemeSelectorWidget >> matcherClassMatchToggledEvent: anEvent [
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> matcherCombinatorChangedEvent: anEvent [
-	model applyCombinator: anEvent combinator toRelation: anEvent relation.
+	model matcherCombinatorChangedEvent: anEvent.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse.
 	self publishSelectorChanged
@@ -117,14 +117,14 @@ CgtThemeSelectorWidget >> matcherCombinatorChangedEvent: anEvent [
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> matcherCompactedSectionExpandedEvent: anEvent [
-	model revealCompactedProjectionNode: anEvent projectionNode.
+	model matcherCompactedSectionExpandedEvent: anEvent.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> matcherIdMatchToggledEvent: anEvent [
-	model applyIdMatch: anEvent shouldMatch toProjectionNode: anEvent projectionNode.
+	model matcherIdMatchToggledEvent: anEvent.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse.
 	self publishSelectorChanged
@@ -132,7 +132,7 @@ CgtThemeSelectorWidget >> matcherIdMatchToggledEvent: anEvent [
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> matcherNodeExcludedFromRuleEvent: anEvent [
-	model excludeProjectionNode: anEvent projectionNode.
+	model matcherNodeExcludedFromRuleEvent: anEvent.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse.
 	self publishSelectorChanged
@@ -140,7 +140,7 @@ CgtThemeSelectorWidget >> matcherNodeExcludedFromRuleEvent: anEvent [
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> matcherNodeIncludedInRuleEvent: anEvent [
-	model includeProjectionNode: anEvent projectionNode.
+	model matcherNodeIncludedInRuleEvent: anEvent.
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse.
 	self publishSelectorChanged
@@ -233,7 +233,7 @@ CgtThemeSelectorWidget >> currentStyleRule [
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> matcherSelectorChangedEvent: anEvent [
-	model selector: anEvent selector.
+	model matcherSelectorChangedEvent: anEvent.
 	self refreshProjectionFromModel
 ]
 

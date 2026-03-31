@@ -82,7 +82,7 @@ CgtThemeSelectorWidgetTests >> testConfigureForStyleRuleSelectedElementPathRootE
 
 
 { #category : 'tests' }
-CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyleRule [
+CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyleRuleViaModelSelectorProtocol [
 	| root selected originalRule widget newSelector event |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.

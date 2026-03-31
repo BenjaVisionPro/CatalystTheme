@@ -57,8 +57,8 @@ CgtThemeSelectorModelTests >> testClearsProjectionWhenSelectedElementBecomesNil 
 ]
 
 { #category : 'tests' }
-CgtThemeSelectorModelTests >> testMatcherSelectorChangedEventUpdatesCurrentStyleRule [
-	| root selected originalRule model newSelector event |
+CgtThemeSelectorModelTests >> testSelectorUpdatesCurrentStyleRule [
+	| root selected originalRule model newSelector |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
 	root addChild: selected.
@@ -75,11 +75,7 @@ CgtThemeSelectorModelTests >> testMatcherSelectorChangedEventUpdatesCurrentStyle
 	newSelector := CgtThemeSimpleSelector new
 		addPredicate: (CgtThemeClassPredicate elementClass: CgtThemeSelectorTestElement);
 		yourself.
-	event := CgtMatcherSelectorChangedEvent new
-		selector: newSelector;
-		yourself.
-
-	model matcherSelectorChangedEvent: event.
+	model selector: newSelector.
 
 	self assert: model currentStyleRule identicalTo: originalRule.
 	self assert: model currentStyleRule selector identicalTo: newSelector
@@ -87,8 +83,8 @@ CgtThemeSelectorModelTests >> testMatcherSelectorChangedEventUpdatesCurrentStyle
 
 
 { #category : 'tests' }
-CgtThemeSelectorModelTests >> testClassMatchToggleUpdatesStyleRuleAndProjection [
-	| root selected rule model event |
+CgtThemeSelectorModelTests >> testApplyClassMatchUpdatesStyleRuleAndProjection [
+	| root selected rule model |
 	root := self newTestElementWithId: #root.
 	selected := self newTestElementWithId: #selected.
 	root addChild: selected.
@@ -102,18 +98,14 @@ CgtThemeSelectorModelTests >> testClassMatchToggleUpdatesStyleRuleAndProjection 
 		selectedElement: selected
 		pathRootElement: root
 		relatedStyleRules: #().
-	event := CgtMatcherClassMatchToggledEvent new
-		projectionNode: model projection selectedProjectionNode;
-		shouldMatch: true;
-		yourself.
-	model matcherClassMatchToggledEvent: event.
+	model applyClassMatch: true toProjectionNode: model projection selectedProjectionNode.
 	self assert: model currentStyleRule selector displayString equals: 'CgtThemeSelectorTestElement#selected'.
 	self assert: model projection selectedProjectionNode matchByClass
 ]
 
 { #category : 'tests' }
-CgtThemeSelectorModelTests >> testCompactedSectionExpansionUpdatesVisibilityStateAndProjection [
-	| root middle selected rule model compactedNode event |
+CgtThemeSelectorModelTests >> testRevealCompactedProjectionNodeUpdatesVisibilityStateAndProjection [
+	| root middle selected rule model compactedNode |
 	root := self newTestElementWithId: #root.
 	middle := self newTestElementWithId: #middle.
 	selected := self newTestElementWithId: #selected.
@@ -130,8 +122,7 @@ CgtThemeSelectorModelTests >> testCompactedSectionExpansionUpdatesVisibilityStat
 		pathRootElement: root
 		relatedStyleRules: #().
 	compactedNode := model projection nodes detect: [ :each | each isCompactedSection ].
-	event := CgtMatcherCompactedSectionExpandedEvent new projectionNode: compactedNode; yourself.
-	model matcherCompactedSectionExpandedEvent: event.
+	model revealCompactedProjectionNode: compactedNode.
 	self assert: model visibilityState hasExpandedGaps.
 	self deny: (model projection nodes anySatisfy: [ :each | each isCompactedSection ])
 ]
