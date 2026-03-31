@@ -324,3 +324,29 @@ CgtThemeSelectorMondrianWidgetTests >> testStructuralRefreshAnimationUsesPlanSpe
 	self assert: widget structuralRefreshStartOpacity equals: widget transitionPolicy graphRevealEndOpacity.
 	self assert: widget structuralRefreshEndOpacity equals: widget transitionPolicy graphRevealEndOpacity
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorMondrianWidgetTests >> testStableProjectionRefreshDoesNotStartStructuralRefreshAnimation [
+	| widget oldProjection newProjection oldSelected newSelected |
+	widget := CgtThemeSelectorMondrianWidget new.
+	oldSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
+	newSelected := CgtThemeSelectorTestElement new className: 'Selected'; yourself.
+	oldProjection := CgtMatcherProjection new.
+	oldProjection
+		selectedElement: oldSelected;
+		addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+			representedElement: oldSelected;
+			yourself).
+	widget projection: oldProjection.
+	newProjection := CgtMatcherProjection new.
+	newProjection
+		selectedElement: newSelected;
+		addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+			representedElement: newSelected;
+			yourself).
+	widget projection: newProjection.
+	self assert: widget lastStructuralRefreshPlan notNil.
+	self assert: widget lastStructuralRefreshPlan isStable.
+	self assert: widget structuralRefreshAnimationToken equals: 0
+]

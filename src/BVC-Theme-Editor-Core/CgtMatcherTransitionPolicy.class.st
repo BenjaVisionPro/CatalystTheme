@@ -45,6 +45,14 @@ CgtMatcherTransitionPolicy >> structuralRefreshDurationForPlan: aStructuralRefre
 	^ self structuralRefreshDuration
 ]
 
+
+
+{ #category : 'accessing' }
+CgtMatcherTransitionPolicy >> shouldAnimateStructuralRefreshPlan: aStructuralRefreshPlan [
+	aStructuralRefreshPlan ifNil: [ ^ false ].
+	^ aStructuralRefreshPlan isStable not
+]
+
 { #category : 'accessing' }
 CgtMatcherTransitionPolicy >> structuralRefreshStartOpacityForPlan: aStructuralRefreshPlan [
 	aStructuralRefreshPlan ifNil: [ ^ self graphRevealStartOpacity ].

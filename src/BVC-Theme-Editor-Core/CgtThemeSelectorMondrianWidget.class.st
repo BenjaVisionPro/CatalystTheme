@@ -66,7 +66,8 @@ CgtThemeSelectorMondrianWidget >> refreshContents [
 	newGraph constraintsDo: [ :c |
 		c horizontal fitContent.
 		c vertical fitContent ].
-	shouldAnimate := self children isNotEmpty.
+	shouldAnimate := self children isNotEmpty
+		and: [ transitionPolicy shouldAnimateStructuralRefreshPlan: lastStructuralRefreshPlan ].
 	self removeChildren.
 	self addChild: newLegend.
 	self addChild: newGraph.

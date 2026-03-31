@@ -254,3 +254,16 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshPlanUsesRevealWhenLeadin
 	self assert: plan revealOffset equals: (0 @ -24)
 ]
 
+
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testShouldAnimateStructuralRefreshPlanOnlyForRevealAndCollapse [
+	| policy revealPlan collapsePlan stablePlan |
+	policy := CgtMatcherTransitionPolicy new.
+	revealPlan := CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself.
+	collapsePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #collapse; yourself.
+	stablePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #stable; yourself.
+	self assert: (policy shouldAnimateStructuralRefreshPlan: revealPlan).
+	self assert: (policy shouldAnimateStructuralRefreshPlan: collapsePlan).
+	self deny: (policy shouldAnimateStructuralRefreshPlan: stablePlan)
+]
