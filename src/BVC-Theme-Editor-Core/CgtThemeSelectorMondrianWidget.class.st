@@ -146,6 +146,7 @@ CgtThemeSelectorMondrianWidget >> structuralRefreshAnimationToken [
 { #category : 'rendering' }
 CgtThemeSelectorMondrianWidget >> newGraphElementFor: aProjectionNode [
 	aProjectionNode isCompactedSection ifTrue: [ ^ self newGapElementFor: aProjectionNode ].
+	aProjectionNode isOtherRuleIndicator ifTrue: [ ^ self newOtherRuleIndicatorElementFor: aProjectionNode ].
 	^ self newNodeElementFor: aProjectionNode
 ]
 
@@ -159,6 +160,17 @@ CgtThemeSelectorMondrianWidget >> newGapElementFor: aProjectionNode [
 	gapElement when: CgtMatcherCombinatorChangedEvent do: [ :anEvent | self handleCombinatorChangedEvent: anEvent ].
 	gapElement when: CgtMatcherCompactedSectionExpandedEvent do: [ :anEvent | self handleCompactedSectionExpandedEvent: anEvent ].
 	^ gapElement
+]
+
+
+{ #category : 'rendering' }
+CgtThemeSelectorMondrianWidget >> newOtherRuleIndicatorElementFor: aProjectionNode [
+	| indicatorElement |
+	indicatorElement := CgtMatcherOtherRuleIndicatorElement new
+		projectionNode: aProjectionNode;
+		yourself.
+	indicatorElement when: CgtMatcherOtherRuleContextToggledEvent do: [ :anEvent | self handleOtherRuleContextToggledEvent: anEvent ].
+	^ indicatorElement
 ]
 
 { #category : 'rendering' }
@@ -255,6 +267,11 @@ CgtThemeSelectorMondrianWidget >> handleIdMatchToggledEvent: anEvent [
 
 { #category : 'events' }
 CgtThemeSelectorMondrianWidget >> handleCompactedSectionExpandedEvent: anEvent [
+	self fireEvent: anEvent
+]
+
+{ #category : 'events' }
+CgtThemeSelectorMondrianWidget >> handleOtherRuleContextToggledEvent: anEvent [
 	self fireEvent: anEvent
 ]
 

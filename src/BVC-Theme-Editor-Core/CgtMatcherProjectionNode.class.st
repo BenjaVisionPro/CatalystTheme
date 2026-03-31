@@ -162,6 +162,11 @@ CgtMatcherProjectionNode >> isCompactedSection [
 	^ kind = #compactedSection
 ]
 
+{ #category : 'testing' }
+CgtMatcherProjectionNode >> isOtherRuleIndicator [
+	^ kind = #otherRuleIndicator
+]
+
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> isEditable [
 	^ editable

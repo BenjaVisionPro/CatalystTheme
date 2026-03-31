@@ -62,7 +62,9 @@ CgtThemeSelectorWidget >> wireRendererWidget [
 	rendererWidget when: CgtMatcherNodeSelectedEvent do: [ :anEvent |
 		self matcherNodeSelectedEvent: anEvent ].
 	rendererWidget when: CgtMatcherNodeUnhoveredEvent do: [ :anEvent |
-		self matcherNodeUnhoveredEvent: anEvent ]
+		self matcherNodeUnhoveredEvent: anEvent ].
+	rendererWidget when: CgtMatcherOtherRuleContextToggledEvent do: [ :anEvent |
+		self matcherOtherRuleContextToggledEvent: anEvent ]
 ]
 
 { #category : 'accessing' }
@@ -144,6 +146,14 @@ CgtThemeSelectorWidget >> matcherNodeIncludedInRuleEvent: anEvent [
 	self refreshProjectionFromModel.
 	self scheduleIdleCollapse.
 	self publishSelectorChanged
+]
+
+{ #category : 'event handling' }
+CgtThemeSelectorWidget >> matcherOtherRuleContextToggledEvent: anEvent [
+	model toggleOtherRuleContext.
+	self refreshProjectionFromModel.
+	self scheduleIdleCollapse.
+	^ self
 ]
 
 { #category : 'private - idle collapse' }

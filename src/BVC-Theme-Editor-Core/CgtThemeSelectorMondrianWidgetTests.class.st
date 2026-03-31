@@ -151,3 +151,39 @@ CgtThemeSelectorMondrianWidgetTests >> testOrdersCurrentRuleNodesBeforeContextNo
 	self assert: orderedNodes second identicalTo: selected.
 	self assert: orderedNodes last identicalTo: context
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorMondrianWidgetTests >> testUsesOtherRuleIndicatorElementForIndicatorNode [
+	| projection node widget graphNodeElement |
+	projection := CgtMatcherProjection new.
+	node := (CgtMatcherProjectionNode kind: #otherRuleIndicator)
+		hiddenNodeCount: 2;
+		isEditable: false;
+		yourself.
+	projection addNode: node.
+	widget := CgtThemeSelectorMondrianWidget new
+		projection: projection;
+		yourself.
+	graphNodeElement := widget graphElement graph nodeChildren first.
+	self assert: (graphNodeElement isKindOf: CgtMatcherOtherRuleIndicatorElement).
+	self assert: graphNodeElement projectionNode identicalTo: node
+]
+
+{ #category : 'tests' }
+CgtThemeSelectorMondrianWidgetTests >> testForwardsOtherRuleContextToggledEvents [
+	| projection node widget forwardedEvent graphNodeElement |
+	projection := CgtMatcherProjection new.
+	node := (CgtMatcherProjectionNode kind: #otherRuleIndicator)
+		hiddenNodeCount: 1;
+		isEditable: false;
+		yourself.
+	projection addNode: node.
+	widget := CgtThemeSelectorMondrianWidget new
+		projection: projection;
+		yourself.
+	widget when: CgtMatcherOtherRuleContextToggledEvent do: [ :anEvent | forwardedEvent := anEvent ].
+	graphNodeElement := widget graphElement graph nodeChildren first.
+	graphNodeElement requestOtherRuleContextToggle.
+	self assert: forwardedEvent notNil
+]

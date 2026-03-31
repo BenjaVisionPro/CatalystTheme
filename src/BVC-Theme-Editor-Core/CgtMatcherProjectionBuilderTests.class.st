@@ -280,3 +280,47 @@ CgtMatcherProjectionBuilderTests >> testHidesOtherRuleContextByDefaultThroughVis
 		visibilityState: state.
 	self assert: projection otherRuleNodes isEmpty
 ]
+
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testAddsOtherRuleIndicatorWhenRelatedRuleContextIsHidden [
+	| root selected currentRule relatedRule projection indicatorNode |
+	root := self newTestElementWithId: #root.
+	selected := root addChild: (self newTestElementWithId: #selected).
+	currentRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	relatedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: currentRule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: { relatedRule }
+		visibilityState: CgtMatcherVisibilityState new.
+	indicatorNode := projection nodes detect: [ :each | each kind = #otherRuleIndicator ] ifNone: [ nil ].
+	self assert: indicatorNode notNil.
+	self assert: indicatorNode hiddenNodeCount equals: 1
+]
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testDoesNotAddOtherRuleIndicatorWhenOtherRuleContextIsAlreadyShown [
+	| root selected currentRule relatedRule visibilityState projection |
+	root := self newTestElementWithId: #root.
+	selected := root addChild: (self newTestElementWithId: #selected).
+	currentRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	relatedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	visibilityState := CgtMatcherVisibilityState new
+		showsOtherRuleContext: true;
+		yourself.
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: currentRule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: { relatedRule }
+		visibilityState: visibilityState.
+	self assert: (projection nodes noneSatisfy: [ :each | each kind = #otherRuleIndicator ])
+]

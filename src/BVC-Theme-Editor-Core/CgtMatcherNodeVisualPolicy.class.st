@@ -13,6 +13,7 @@ Class {
 CgtMatcherNodeVisualPolicy >> backgroundForNode: aProjectionNode [
 	aProjectionNode kind = #selectedElement ifTrue: [ ^ Color veryVeryLightGray ].
 	aProjectionNode kind = #compactedSection ifTrue: [ ^ (Color gray alpha: 0.12) ].
+	aProjectionNode kind = #otherRuleIndicator ifTrue: [ ^ (Color orange alpha: 0.08) ].
 	aProjectionNode isInOtherRule ifTrue: [ ^ (Color orange alpha: 0.12) ].
 	^ (Color white alpha: 0.95)
 ]
@@ -21,12 +22,14 @@ CgtMatcherNodeVisualPolicy >> backgroundForNode: aProjectionNode [
 CgtMatcherNodeVisualPolicy >> borderForNode: aProjectionNode [
 	aProjectionNode kind = #selectedElement ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.25) width: 2 ].
 	aProjectionNode kind = #compactedSection ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.35) width: 1 ].
+	aProjectionNode kind = #otherRuleIndicator ifTrue: [ ^ BlBorder paint: (Color orange alpha: 0.35) width: 1 ].
 	aProjectionNode isInOtherRule ifTrue: [ ^ BlBorder paint: (Color orange alpha: 0.45) width: 1 ].
 	^ BlBorder paint: (Color gray alpha: 0.3)
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> titleForNode: aProjectionNode [
+	aProjectionNode kind = #otherRuleIndicator ifTrue: [ ^ self otherRuleIndicatorTitleForNode: aProjectionNode ].
 	^ aProjectionNode kind = #compactedSection
 		ifTrue: [ self compactedTitleForNode: aProjectionNode ]
 		ifFalse: [ aProjectionNode className ifNil: [ 'Unspecified element' ] ]
@@ -38,8 +41,14 @@ CgtMatcherNodeVisualPolicy >> compactedTitleForNode: aProjectionNode [
 ]
 
 { #category : 'rendering' }
+CgtMatcherNodeVisualPolicy >> otherRuleIndicatorTitleForNode: aProjectionNode [
+	^ aProjectionNode hiddenNodeCount asString , ' hidden related rule path' , (aProjectionNode hiddenNodeCount = 1 ifTrue: [ '' ] ifFalse: [ 's' ])
+]
+
+{ #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> elementIdTextForNode: aProjectionNode [
 	aProjectionNode kind = #compactedSection ifTrue: [ ^ 'Compacted section' ].
+	aProjectionNode kind = #otherRuleIndicator ifTrue: [ ^ 'Other-rule context hidden' ].
 	^ aProjectionNode elementId
 		ifNil: [ 'No element id' ]
 		ifNotNil: [ '#' , aProjectionNode elementId asString ]
@@ -51,6 +60,7 @@ CgtMatcherNodeVisualPolicy >> roleLabelForNode: aProjectionNode [
 	aProjectionNode kind = #upstreamScope ifTrue: [ ^ 'Scope' ].
 	aProjectionNode kind = #selectedChildScope ifTrue: [ ^ 'Child scope' ].
 	aProjectionNode kind = #compactedSection ifTrue: [ ^ 'Between' ].
+	aProjectionNode kind = #otherRuleIndicator ifTrue: [ ^ 'Other rules' ].
 	aProjectionNode kind = #otherRuleRelated ifTrue: [ ^ 'Other rule' ].
 	^ aProjectionNode kind asString
 ]
@@ -58,6 +68,7 @@ CgtMatcherNodeVisualPolicy >> roleLabelForNode: aProjectionNode [
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> matchSummaryForNode: aProjectionNode [
 	aProjectionNode isCompactedSection ifTrue: [ ^ 'Context only' ].
+	aProjectionNode kind = #otherRuleIndicator ifTrue: [ ^ 'Reveal related rules' ].
 	(aProjectionNode matchByClass and: [ aProjectionNode matchById ]) ifTrue: [ ^ 'Class + id' ].
 	aProjectionNode matchByClass ifTrue: [ ^ 'Class' ].
 	aProjectionNode matchById ifTrue: [ ^ 'Id' ].
@@ -72,6 +83,7 @@ CgtMatcherNodeVisualPolicy >> nodeSortPriorityFor: aProjectionNode [
 	aProjectionNode kind = #selectedElement ifTrue: [ ^ 20 ].
 	aProjectionNode kind = #selectedChildScope ifTrue: [ ^ 30 ].
 	aProjectionNode kind = #compactedSection ifTrue: [ ^ 40 ].
+	aProjectionNode kind = #otherRuleIndicator ifTrue: [ ^ 45 ].
 	aProjectionNode kind = #otherRuleRelated ifTrue: [ ^ 50 ].
 	^ 100
 ]

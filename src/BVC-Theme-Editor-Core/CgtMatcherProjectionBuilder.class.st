@@ -91,6 +91,7 @@ CgtMatcherProjectionBuilder >> buildProjection [
 		ifNotNil: [ self addMatchedElements: matchedElements selector: styleRule selector toProjection: projection currentRule: true otherRule: false ].
 	self addFocusedCorridorGapsTo: projection matchedElements: matchedElements.
 	self addOtherRuleContextTo: projection.
+	self addHiddenOtherRuleIndicatorTo: projection.
 	^ projection
 ]
 
@@ -309,6 +310,33 @@ CgtMatcherProjectionBuilder >> addOtherRuleContextTo: aProjection [
 					currentRule: false
 					otherRule: true ] ] ].
 	^ aProjection
+]
+
+{ #category : 'building' }
+CgtMatcherProjectionBuilder >> addHiddenOtherRuleIndicatorTo: aProjection [
+	| hiddenRuleCount selectedNode indicatorNode |
+	(visibilityState notNil and: [ visibilityState showsOtherRuleContext ]) ifTrue: [ ^ aProjection ].
+	hiddenRuleCount := self hiddenOtherRuleMatchCount.
+	hiddenRuleCount = 0 ifTrue: [ ^ aProjection ].
+	selectedNode := self selectedNodeIn: aProjection.
+	indicatorNode := (CgtMatcherProjectionNode kind: #otherRuleIndicator)
+		hiddenNodeCount: hiddenRuleCount;
+		isEditable: false;
+		yourself.
+	aProjection addNode: indicatorNode.
+	selectedNode ifNotNil: [
+		aProjection addRelation: (CgtMatcherProjectionRelation from: selectedNode to: indicatorNode kind: #otherRule) ].
+	^ aProjection
+]
+
+{ #category : 'private' }
+CgtMatcherProjectionBuilder >> hiddenOtherRuleMatchCount [
+	| count |
+	count := 0.
+	relatedStyleRules do: [ :eachRule |
+		(eachRule notNil and: [ eachRule ~~ styleRule ]) ifTrue: [
+			(self matchedElementsForStyleRule: eachRule) ifNotNil: [ count := count + 1 ] ] ].
+	^ count
 ]
 
 { #category : 'private' }

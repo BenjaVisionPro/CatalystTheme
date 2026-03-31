@@ -221,3 +221,27 @@ CgtThemeSelectorWidgetTests >> testShowOtherRuleContextDelegatesToModelAndRefres
 	self assert: widget visibilityState showsOtherRuleContext.
 	self deny: widget projection otherRuleNodes isEmpty
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testOtherRuleContextToggleEventDelegatesToModelAndRefreshesProjection [
+	| root selected currentRule relatedRule widget event |
+	root := self newTestElementWithId: #root.
+	selected := root addChild: (self newTestElementWithId: #selected).
+	currentRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	relatedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	widget := CgtThemeSelectorWidget new.
+	widget
+		configureForStyleRule: currentRule
+		selectedElement: selected
+		pathRootElement: root
+		relatedStyleRules: { relatedRule }.
+	self deny: widget visibilityState showsOtherRuleContext.
+	event := CgtMatcherOtherRuleContextToggledEvent new.
+	widget matcherOtherRuleContextToggledEvent: event.
+	self assert: widget visibilityState showsOtherRuleContext.
+	self deny: widget projection otherRuleNodes isEmpty
+]
