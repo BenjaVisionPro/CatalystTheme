@@ -83,7 +83,7 @@ CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElem
 { #category : 'events' }
 CgtThemeSelectorWidget >> matcherInteractionEvent: anEvent [
 	self scheduleIdleCollapse.
-	self fireEvent: anEvent.
+	self fireEvent: (self selectorInteractionEventFromMatcherEvent: anEvent).
 	^ self
 ]
 
@@ -99,7 +99,7 @@ CgtThemeSelectorWidget >> matcherNodeSelectedEvent: anEvent [
 
 { #category : 'events' }
 CgtThemeSelectorWidget >> matcherNodeUnhoveredEvent: anEvent [
-	self fireEvent: anEvent.
+	self fireEvent: (self selectorInteractionEventFromMatcherEvent: anEvent).
 	^ self
 ]
 
@@ -216,6 +216,25 @@ CgtThemeSelectorWidget >> hierarchyRoot: anElement [
 	^ self
 ]
 
+
+{ #category : 'private - events' }
+CgtThemeSelectorWidget >> selectorInteractionEventFromMatcherEvent: anEvent [
+	anEvent isNil ifTrue: [ ^ anEvent ].
+	anEvent class = CgtMatcherNodeHoveredEvent ifTrue: [
+		^ CgtThemeSelectorNodeHoveredEvent new
+			projectionNode: anEvent projectionNode;
+			yourself ].
+	anEvent class = CgtMatcherNodeSelectedEvent ifTrue: [
+		^ CgtThemeSelectorNodeSelectedEvent new
+			projectionNode: anEvent projectionNode;
+			yourself ].
+	anEvent class = CgtMatcherNodeUnhoveredEvent ifTrue: [
+		^ CgtThemeSelectorNodeUnhoveredEvent new
+			projectionNode: anEvent projectionNode;
+			yourself ].
+	^ anEvent
+]
+
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> relatedStyleRules [
 	^ model relatedStyleRules
@@ -244,9 +263,14 @@ CgtThemeSelectorWidget >> currentStyleRule [
 ]
 
 { #category : 'event handling' }
-CgtThemeSelectorWidget >> matcherSelectorChangedEvent: anEvent [
+CgtThemeSelectorWidget >> selectorChangedEvent: anEvent [
 	model selector: anEvent selector.
 	self refreshProjectionFromModel
+]
+
+{ #category : 'event handling' }
+CgtThemeSelectorWidget >> matcherSelectorChangedEvent: anEvent [
+	^ self selectorChangedEvent: anEvent
 ]
 
 
@@ -311,7 +335,7 @@ CgtThemeSelectorWidget >> refreshProjectionFromModel [
 
 { #category : 'events' }
 CgtThemeSelectorWidget >> publishSelectorChanged [
-	self fireEvent: (CgtMatcherSelectorChangedEvent new
+	self fireEvent: (CgtThemeSelectorChangedEvent new
 		projection: self projection;
 		selector: self currentSelector;
 		yourself)

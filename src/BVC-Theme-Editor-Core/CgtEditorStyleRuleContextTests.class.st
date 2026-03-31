@@ -27,7 +27,7 @@ CgtEditorStyleRuleContextTests >> testMatcherSelectorChangedEventAddsInspectedRu
 	rule := CgtThemeStyleRule new.
 	editor instVarNamed: 'styleInspectorRule' put: rule.
 	selector := self selectorForId: #'selected'.
-	event := CgtMatcherSelectorChangedEvent new
+	event := CgtThemeSelectorChangedEvent new
 		selector: selector;
 		yourself.
 	editor matcherSelectorChangedEvent: event.

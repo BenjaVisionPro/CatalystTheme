@@ -114,7 +114,7 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 	newSelector := CgtThemeSimpleSelector new
 		addPredicate: (CgtThemeClassPredicate elementClass: CgtThemeSelectorTestElement);
 		yourself.
-	event := CgtMatcherSelectorChangedEvent new
+	event := CgtThemeSelectorChangedEvent new
 		selector: newSelector;
 		yourself.
 
@@ -253,4 +253,17 @@ CgtThemeSelectorWidgetTests >> testOtherRuleContextToggleEventDelegatesToModelAn
 	widget matcherOtherRuleContextToggledEvent: event.
 	self assert: widget visibilityState showsOtherRuleContext.
 	self deny: widget projection otherRuleNodes isEmpty
+]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testMatcherHoverEventIsRepublishedAsSelectorHoverEvent [
+	| widget selected received |
+	widget := CgtThemeSelectorWidget new.
+	selected := CgtMatcherProjectionNode kind: #selectedElement.
+	received := false.
+	widget when: CgtThemeSelectorNodeHoveredEvent do: [ :anEvent |
+		received := anEvent projectionNode == selected ].
+	widget matcherNodeHoveredEvent: (CgtMatcherNodeHoveredEvent new projectionNode: selected; yourself).
+	self assert: received
 ]

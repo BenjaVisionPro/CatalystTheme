@@ -743,14 +743,14 @@ CgtEditor >> updateStyleInspectorPopoverPosition [
 CgtEditor >> wireStyleInspectorPopover: aStyleInspectorPopover [
 	| aSelectorWidget |
 	aSelectorWidget := aStyleInspectorPopover selectorWidget.
-	aSelectorWidget when: CgtMatcherNodeSelectedEvent do: [ :anEvent |
-		self matcherNodeSelectedEvent: anEvent ].
-	aSelectorWidget when: CgtMatcherNodeHoveredEvent do: [ :anEvent |
-		self matcherNodeHoveredEvent: anEvent ].
-	aSelectorWidget when: CgtMatcherNodeUnhoveredEvent do: [ :anEvent |
-		self matcherNodeUnhoveredEvent: anEvent ].
-	aSelectorWidget when: CgtMatcherSelectorChangedEvent do: [ :anEvent |
-		self matcherSelectorChangedEvent: anEvent ]
+	aSelectorWidget when: CgtThemeSelectorNodeSelectedEvent do: [ :anEvent |
+		self selectorNodeSelectedEvent: anEvent ].
+	aSelectorWidget when: CgtThemeSelectorNodeHoveredEvent do: [ :anEvent |
+		self selectorNodeHoveredEvent: anEvent ].
+	aSelectorWidget when: CgtThemeSelectorNodeUnhoveredEvent do: [ :anEvent |
+		self selectorNodeUnhoveredEvent: anEvent ].
+	aSelectorWidget when: CgtThemeSelectorChangedEvent do: [ :anEvent |
+		self selectorChangedEvent: anEvent ]
 ]
 
 { #category : 'event handling - style inspector' }
@@ -772,7 +772,7 @@ CgtEditor >> elementPathNodeSelectedEvent: anEvent [
 ]
 
 { #category : 'event handling - style inspector' }
-CgtEditor >> matcherNodeHoveredEvent: anEvent [
+CgtEditor >> selectorNodeHoveredEvent: anEvent [
 	| anElement |
 	anElement := anEvent projectionNode representedElement.
 	anElement ifNil: [ ^ self ].
@@ -782,7 +782,7 @@ CgtEditor >> matcherNodeHoveredEvent: anEvent [
 ]
 
 { #category : 'event handling - style inspector' }
-CgtEditor >> matcherNodeUnhoveredEvent: anEvent [
+CgtEditor >> selectorNodeUnhoveredEvent: anEvent [
 	| didClear |
 	didClear := interactionState clearMatcherWidgetHover.
 	didClear ifTrue: [ self refreshOverlayState ].
@@ -790,7 +790,7 @@ CgtEditor >> matcherNodeUnhoveredEvent: anEvent [
 ]
 
 { #category : 'event handling - style inspector' }
-CgtEditor >> matcherNodeSelectedEvent: anEvent [
+CgtEditor >> selectorNodeSelectedEvent: anEvent [
 	| anElement |
 	anElement := anEvent projectionNode representedElement.
 	anElement ifNil: [ ^ self ].
@@ -798,7 +798,7 @@ CgtEditor >> matcherNodeSelectedEvent: anEvent [
 ]
 
 { #category : 'event handling - style inspector' }
-CgtEditor >> matcherSelectorChangedEvent: anEvent [
+CgtEditor >> selectorChangedEvent: anEvent [
 	styleInspectorRule ifNil: [ styleInspectorRule := CgtThemeStyleRule new ].
 	styleInspectorRule selector: anEvent selector.
 	(self styleRules includes: styleInspectorRule) ifFalse: [ self styleRules add: styleInspectorRule ].
@@ -807,6 +807,27 @@ CgtEditor >> matcherSelectorChangedEvent: anEvent [
 	self refreshOverlayState
 ]
 
+
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> matcherNodeHoveredEvent: anEvent [
+	^ self selectorNodeHoveredEvent: anEvent
+]
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> matcherNodeUnhoveredEvent: anEvent [
+	^ self selectorNodeUnhoveredEvent: anEvent
+]
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> matcherNodeSelectedEvent: anEvent [
+	^ self selectorNodeSelectedEvent: anEvent
+]
+
+{ #category : 'event handling - style inspector' }
+CgtEditor >> matcherSelectorChangedEvent: anEvent [
+	^ self selectorChangedEvent: anEvent
+]
 
 { #category : 'private - overlay' }
 CgtEditor >> withOverlayDo: aBlock [

@@ -136,7 +136,7 @@ CgtStyleInspectorPopoverTests >> testMatcherSelectorChangedEventUpdatesDisplayed
 		left: (self selectorForId: #'root')
 		combinator: #child
 		right: (self selectorForId: #'selected')).
-	event := CgtMatcherSelectorChangedEvent new
+	event := CgtThemeSelectorChangedEvent new
 		selector: newSelector;
 		yourself.
 
@@ -210,4 +210,17 @@ CgtStyleInspectorPopoverTests >> testShowOtherRuleContextDelegatesToSelectorWidg
 	popover showOtherRuleContext.
 	self assert: popover selectorModel visibilityState showsOtherRuleContext.
 	self deny: popover selectorWidget projection otherRuleNodes isEmpty
+]
+
+
+{ #category : 'tests' }
+CgtStyleInspectorPopoverTests >> testSelectorChangedEventUpdatesLabels [
+	| popover event rule |
+	popover := CgtStyleInspectorPopover new.
+	rule := CgtThemeStyleRule new.
+	rule selector: (CgtThemeSimpleSelector new addPredicate: (CgtThemeIdPredicate elementId: #selected); yourself).
+	popover styleRule: rule.
+	event := CgtThemeSelectorChangedEvent new selector: rule selector; yourself.
+	popover selectorChangedEvent: event.
+	self assert: (popover childWithId: #styleInspectorScopeLabel ifFound: [ :aLabel | aLabel text asString ] ifNone: [ '' ]) = rule selector displayString
 ]
