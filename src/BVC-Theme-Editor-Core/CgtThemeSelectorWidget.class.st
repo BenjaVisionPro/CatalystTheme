@@ -77,6 +77,8 @@ CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElem
 	^ self
 ]
 
+
+
 { #category : 'events' }
 CgtThemeSelectorWidget >> selectorInteractionEvent: anEvent [
 	self scheduleIdleCollapse.
@@ -244,6 +246,13 @@ CgtThemeSelectorWidget >> selectorChangedEvent: anEvent [
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selectorModel [
 	^ selectorModel
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> selectorModel: aCgtThemeSelectorModel [
+	selectorModel := aCgtThemeSelectorModel ifNil: [ CgtThemeSelectorModel new ].
+	self refreshSelectorProjectionFromModel.
+	^ self
 ]
 
 { #category : 'accessing' }

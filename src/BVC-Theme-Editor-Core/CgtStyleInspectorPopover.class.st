@@ -7,7 +7,8 @@ Class {
 	#superclass : 'BrVerticalPane',
 	#instVars : [
 		'selectorWidget',
-		'selectorScrollPane'
+		'selectorScrollPane',
+		'styleInspectorModel'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -26,7 +27,9 @@ CgtStyleInspectorPopover >> initialize [
 			c ignoreByLayout.
 			c ignored horizontal alignLeft.
 			c ignored vertical alignTop ].
+	styleInspectorModel := CgtThemeStyleInspectorModel new.
 	selectorWidget := CgtThemeSelectorWidget new.
+	selectorWidget selectorModel: styleInspectorModel selectorModel.
 	selectorWidget when: CgtThemeSelectorChangedEvent do: [ :anEvent |
 		self selectorChangedEvent: anEvent ].
 	selectorScrollPane := selectorWidget asScrollableElement.
@@ -61,7 +64,20 @@ CgtStyleInspectorPopover >> selectorWidget [
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> selectorModel [
-	^ selectorWidget selectorModel
+	^ self styleInspectorModel selectorModel
+]
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> styleInspectorModel [
+	^ styleInspectorModel
+]
+
+{ #category : 'accessing' }
+CgtStyleInspectorPopover >> styleInspectorModel: aCgtThemeStyleInspectorModel [
+	styleInspectorModel := aCgtThemeStyleInspectorModel ifNil: [ CgtThemeStyleInspectorModel new ].
+	selectorWidget selectorModel: styleInspectorModel selectorModel.
+	self updateLabels.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -101,60 +117,71 @@ CgtStyleInspectorPopover >> toggleOtherRuleContext [
 ]
 
 { #category : 'accessing' }
+CgtStyleInspectorPopover >> configureForStyleInspectorModel: aCgtThemeStyleInspectorModel [
+	self styleInspectorModel: aCgtThemeStyleInspectorModel.
+	^ self
+]
+
+{ #category : 'accessing' }
 CgtStyleInspectorPopover >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement hierarchyRoot: aRootElement relatedStyleRules: aCollection [
-	selectorWidget
+	styleInspectorModel
 		configureForStyleRule: aCgtThemeStyleRule
 		selectedElement: anElement
 		hierarchyRoot: aRootElement
 		relatedStyleRules: aCollection.
+	selectorWidget selectorModel: styleInspectorModel selectorModel.
 	self updateLabels.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> selectedElement [
-	^ selectorWidget selectedElement
+	^ self styleInspectorModel selectedElement
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> selectedElement: anElement [
-	selectorWidget selectedElement: anElement.
+	self styleInspectorModel selectedElement: anElement.
+	selectorWidget selectorModel: self styleInspectorModel selectorModel.
 	self updateLabels.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> hierarchyRoot [
-	^ selectorWidget hierarchyRoot
+	^ self styleInspectorModel hierarchyRoot
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> hierarchyRoot: anElement [
-	selectorWidget hierarchyRoot: anElement.
+	self styleInspectorModel hierarchyRoot: anElement.
+	selectorWidget selectorModel: self styleInspectorModel selectorModel.
 	self updateLabels.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> relatedStyleRules [
-	^ selectorWidget relatedStyleRules
+	^ self styleInspectorModel relatedStyleRules
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> relatedStyleRules: aCollection [
-	selectorWidget relatedStyleRules: aCollection.
+	self styleInspectorModel relatedStyleRules: aCollection.
+	selectorWidget selectorModel: self styleInspectorModel selectorModel.
 	self updateLabels.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> styleRule [
-	^ selectorWidget currentStyleRule
+	^ self styleInspectorModel activeStyleRule
 ]
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> styleRule: aCgtThemeStyleRule [
-	selectorWidget styleRule: aCgtThemeStyleRule.
+	self styleInspectorModel activeStyleRule: aCgtThemeStyleRule.
+	selectorWidget selectorModel: self styleInspectorModel selectorModel.
 	self updateLabels.
 	^ self
 ]
