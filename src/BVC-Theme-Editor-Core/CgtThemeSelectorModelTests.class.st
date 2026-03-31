@@ -28,7 +28,7 @@ CgtThemeSelectorModelTests >> testBuildsProjectionFromRuleAndHierarchyContext [
 			yourself);
 		yourself.
 	model := CgtThemeSelectorModel new
-		pathRootElement: root;
+		hierarchyRoot: root;
 		selectedElement: selected;
 		styleRule: rule;
 		yourself.
@@ -48,7 +48,7 @@ CgtThemeSelectorModelTests >> testClearsProjectionWhenSelectedElementBecomesNil 
 			yourself);
 		yourself.
 	model := CgtThemeSelectorModel new
-		pathRootElement: root;
+		hierarchyRoot: root;
 		selectedElement: selected;
 		styleRule: rule;
 		yourself.
@@ -70,7 +70,7 @@ CgtThemeSelectorModelTests >> testSelectorUpdatesCurrentStyleRule [
 	model := CgtThemeSelectorModel new
 		configureForStyleRule: originalRule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: #().
 	newSelector := CgtThemeSimpleSelector new
 		addPredicate: (CgtThemeClassPredicate elementClass: CgtThemeSelectorTestElement);
@@ -96,7 +96,7 @@ CgtThemeSelectorModelTests >> testApplyClassMatchUpdatesStyleRuleAndProjection [
 	model := CgtThemeSelectorModel new
 		configureForStyleRule: rule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: #().
 	model applyClassMatch: true toProjectionNode: model projection selectedProjectionNode.
 	self assert: model currentStyleRule selector displayString equals: 'CgtThemeSelectorTestElement#selected'.
@@ -119,7 +119,7 @@ CgtThemeSelectorModelTests >> testRevealCompactedProjectionNodeUpdatesVisibility
 	model := CgtThemeSelectorModel new
 		configureForStyleRule: rule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: #().
 	compactedNode := model projection nodes detect: [ :each | each isCompactedSection ].
 	model revealCompactedProjectionNode: compactedNode.
@@ -153,7 +153,7 @@ CgtThemeSelectorModelTests >> testShowOtherRuleContextRebuildsProjectionWithOthe
 	model := CgtThemeSelectorModel new
 		configureForStyleRule: currentRule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: { relatedRule }.
 	self assert: model projection otherRuleNodes isEmpty.
 	model showOtherRuleContext.
@@ -185,7 +185,7 @@ CgtThemeSelectorModelTests >> testHideOtherRuleContextRemovesOtherRuleNodesAgain
 	model := CgtThemeSelectorModel new
 		configureForStyleRule: currentRule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: { relatedRule }.
 	model showOtherRuleContext.
 	self deny: model projection otherRuleNodes isEmpty.

@@ -42,7 +42,7 @@ CgtThemeSelectorWidgetTests >> testBuildsProjectionFromRuleAndHierarchyContext [
 			yourself);
 		yourself.
 	widget := CgtThemeSelectorWidget new
-		pathRootElement: root;
+		hierarchyRoot: root;
 		selectedElement: selected;
 		styleRule: rule;
 		yourself.
@@ -62,7 +62,7 @@ CgtThemeSelectorWidgetTests >> testClearsProjectionWhenSelectedElementBecomesNil
 			yourself);
 		yourself.
 	widget := CgtThemeSelectorWidget new
-		pathRootElement: root;
+		hierarchyRoot: root;
 		selectedElement: selected;
 		styleRule: rule;
 		yourself.
@@ -86,7 +86,7 @@ CgtThemeSelectorWidgetTests >> testConfigureForStyleRuleSelectedElementPathRootE
 	widget
 		configureForStyleRule: rule
 		selectedElement: child
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: { relatedRule }.
 
 	self assert: widget projection notNil.
@@ -109,7 +109,7 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 	widget := CgtThemeSelectorWidget new
 		configureForStyleRule: originalRule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: #().
 	newSelector := CgtThemeSimpleSelector new
 		addPredicate: (CgtThemeClassPredicate elementClass: CgtThemeSelectorTestElement);
@@ -159,7 +159,7 @@ CgtThemeSelectorWidgetTests >> testBreadcrumbRendererReceivesProjectionFromModel
 	widget
 		configureForStyleRule: rule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: #().
 
 	self assert: widget selectorRendererWidget projection identicalTo: widget projection.
@@ -192,7 +192,7 @@ CgtThemeSelectorWidgetTests >> testCompactRendererReceivesProjectionFromModel [
 	widget
 		configureForStyleRule: rule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: #().
 
 	self assert: widget selectorRendererWidget projection identicalTo: widget projection.
@@ -214,7 +214,7 @@ CgtThemeSelectorWidgetTests >> testShowOtherRuleContextDelegatesToModelAndRefres
 	widget
 		configureForStyleRule: currentRule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: { relatedRule }.
 	self assert: widget projection otherRuleNodes isEmpty.
 	widget showOtherRuleContext.
@@ -237,7 +237,7 @@ CgtThemeSelectorWidgetTests >> testOtherRuleContextToggleEventDelegatesToModelAn
 	widget
 		configureForStyleRule: currentRule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: { relatedRule }.
 	self deny: widget visibilityState showsOtherRuleContext.
 	event := CgtMatcherOtherRuleContextToggledEvent new.

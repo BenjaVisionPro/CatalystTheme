@@ -68,11 +68,11 @@ CgtThemeSelectorWidget >> wireRendererWidget [
 ]
 
 { #category : 'accessing' }
-CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement pathRootElement: aRootElement relatedStyleRules: aCollection [
+CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement hierarchyRoot: aRootElement relatedStyleRules: aCollection [
 	model
 		configureForStyleRule: aCgtThemeStyleRule
 		selectedElement: anElement
-		pathRootElement: aRootElement
+		hierarchyRoot: aRootElement
 		relatedStyleRules: aCollection.
 	self refreshProjectionFromModel.
 	^ self
@@ -203,13 +203,13 @@ CgtThemeSelectorWidget >> selectedElement: anElement [
 ]
 
 { #category : 'accessing' }
-CgtThemeSelectorWidget >> pathRootElement [
-	^ model pathRootElement
+CgtThemeSelectorWidget >> hierarchyRoot [
+	^ model hierarchyRoot
 ]
 
 { #category : 'accessing' }
-CgtThemeSelectorWidget >> pathRootElement: anElement [
-	model pathRootElement: anElement.
+CgtThemeSelectorWidget >> hierarchyRoot: anElement [
+	model hierarchyRoot: anElement.
 	self refreshProjectionFromModel.
 	^ self
 ]

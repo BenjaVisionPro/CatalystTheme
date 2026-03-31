@@ -687,7 +687,7 @@ CgtEditor >> showStyleInspectorPopover [
 	aPopover
 		configureForStyleRule: aRule
 		selectedElement: self selectedElement
-		pathRootElement: self styleInspectorPathRootElement
+		hierarchyRoot: self styleInspectorPathRootElement
 		relatedStyleRules: self relatedStyleRulesForStyleInspector.
 	aPopover visibility: BlVisibility visible.
 	self updateStyleInspectorPopoverPosition

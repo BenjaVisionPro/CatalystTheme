@@ -101,11 +101,11 @@ CgtStyleInspectorPopover >> toggleOtherRuleContext [
 ]
 
 { #category : 'accessing' }
-CgtStyleInspectorPopover >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement pathRootElement: aRootElement relatedStyleRules: aCollection [
+CgtStyleInspectorPopover >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement hierarchyRoot: aRootElement relatedStyleRules: aCollection [
 	selectorWidget
 		configureForStyleRule: aCgtThemeStyleRule
 		selectedElement: anElement
-		pathRootElement: aRootElement
+		hierarchyRoot: aRootElement
 		relatedStyleRules: aCollection.
 	self updateLabels.
 	^ self
@@ -124,13 +124,13 @@ CgtStyleInspectorPopover >> selectedElement: anElement [
 ]
 
 { #category : 'accessing' }
-CgtStyleInspectorPopover >> pathRootElement [
-	^ selectorWidget pathRootElement
+CgtStyleInspectorPopover >> hierarchyRoot [
+	^ selectorWidget hierarchyRoot
 ]
 
 { #category : 'accessing' }
-CgtStyleInspectorPopover >> pathRootElement: anElement [
-	selectorWidget pathRootElement: anElement.
+CgtStyleInspectorPopover >> hierarchyRoot: anElement [
+	selectorWidget hierarchyRoot: anElement.
 	self updateLabels.
 	^ self
 ]

@@ -8,7 +8,7 @@ Class {
 	#instVars : [
 		'styleRule',
 		'selectedElement',
-		'pathRootElement',
+		'hierarchyRoot',
 		'relatedStyleRules',
 		'visibilityState',
 		'idleCollapseDelayMilliseconds',
@@ -29,10 +29,10 @@ CgtThemeSelectorModel >> initialize [
 ]
 
 { #category : 'accessing' }
-CgtThemeSelectorModel >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement pathRootElement: aRootElement relatedStyleRules: aCollection [
+CgtThemeSelectorModel >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement hierarchyRoot: aRootElement relatedStyleRules: aCollection [
 	styleRule := aCgtThemeStyleRule.
 	selectedElement := anElement.
-	pathRootElement := aRootElement.
+	hierarchyRoot := aRootElement.
 	relatedStyleRules := (aCollection ifNil: [ #() ]) asOrderedCollection.
 	self refreshProjection.
 	^ self
@@ -167,13 +167,13 @@ CgtThemeSelectorModel >> noteMatcherInteraction [
 ]
 
 { #category : 'accessing' }
-CgtThemeSelectorModel >> pathRootElement [
-	^ pathRootElement
+CgtThemeSelectorModel >> hierarchyRoot [
+	^ hierarchyRoot
 ]
 
 { #category : 'accessing' }
-CgtThemeSelectorModel >> pathRootElement: anElement [
-	pathRootElement := anElement.
+CgtThemeSelectorModel >> hierarchyRoot: anElement [
+	hierarchyRoot := anElement.
 	self refreshProjection.
 	^ self
 ]
@@ -192,7 +192,7 @@ CgtThemeSelectorModel >> refreshProjection [
 	projection := (CgtMatcherProjectionBuilder
 		projectionForStyleRule: styleRule
 		selectedElement: selectedElement
-		hierarchyRoot: pathRootElement
+		hierarchyRoot: hierarchyRoot
 		relatedStyleRules: self relatedStyleRules
 		visibilityState: visibilityState).
 	^ self

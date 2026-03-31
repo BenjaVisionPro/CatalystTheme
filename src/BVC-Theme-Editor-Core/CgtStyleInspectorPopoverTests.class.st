@@ -22,7 +22,7 @@ CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionFromStyleRuleAndSele
 	popover
 		configureForStyleRule: rule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: #().
 	projection := popover selectorWidget projection.
 	self assert: projection notNil.
@@ -45,7 +45,7 @@ CgtStyleInspectorPopoverTests >> testConfigureForStyleRuleSelectedElementPathRoo
 	popover
 		configureForStyleRule: currentRule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: { relatedRule }.
 	projection := popover selectorWidget projection.
 	self assert: projection notNil.
@@ -63,7 +63,7 @@ CgtStyleInspectorPopoverTests >> testKeepsMatcherProjectionDrivenBySelectedEleme
 	selected := root addChild: (self newTestElementWithId: #'selected').
 	rule := self styleRuleForSelector: (self selectorForId: #'selected').
 	popover := CgtStyleInspectorPopover new.
-	popover pathRootElement: root.
+	popover hierarchyRoot: root.
 	popover selectedElement: selected.
 	popover styleRule: rule.
 	projection := popover selectorWidget projection.
@@ -83,7 +83,7 @@ CgtStyleInspectorPopoverTests >> testBuildsMatcherProjectionWithRelatedRuleConte
 		combinator: #child
 		right: (self selectorForId: #'selected')).
 	popover := CgtStyleInspectorPopover new.
-	popover pathRootElement: root.
+	popover hierarchyRoot: root.
 	popover selectedElement: selected.
 	popover relatedStyleRules: { relatedRule }.
 	popover styleRule: currentRule.
@@ -129,7 +129,7 @@ CgtStyleInspectorPopoverTests >> testMatcherSelectorChangedEventUpdatesDisplayed
 	selected := root addChild: (self newTestElementWithId: #'selected').
 	rule := self styleRuleForSelector: (self selectorForId: #'selected').
 	popover := CgtStyleInspectorPopover new.
-	popover pathRootElement: root.
+	popover hierarchyRoot: root.
 	popover selectedElement: selected.
 	popover styleRule: rule.
 	newSelector := (CgtThemeCombinatorSelector
@@ -204,7 +204,7 @@ CgtStyleInspectorPopoverTests >> testShowOtherRuleContextDelegatesToSelectorWidg
 	popover
 		configureForStyleRule: currentRule
 		selectedElement: selected
-		pathRootElement: root
+		hierarchyRoot: root
 		relatedStyleRules: { relatedRule }.
 	self assert: popover selectorWidget projection otherRuleNodes isEmpty.
 	popover showOtherRuleContext.
