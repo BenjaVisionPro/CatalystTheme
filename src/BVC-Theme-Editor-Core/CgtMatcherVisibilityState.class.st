@@ -21,8 +21,11 @@ CgtMatcherVisibilityState >> initialize [
 ]
 
 { #category : 'private' }
-CgtMatcherVisibilityState >> keyForElements: aCollection [
-	^ ((aCollection ifNil: [ #() ]) collect: [ :each | each identityHash ]) asArray
+CgtMatcherVisibilityState >> gapIdentityForElements: aCollection [
+	^ ((aCollection ifNil: [ #() ]) collect: [ :each |
+		(each respondsTo: #id)
+			ifTrue: [ each id ]
+			ifFalse: [ each identityHash ] ]) asArray
 ]
 
 { #category : 'accessing' }
@@ -38,21 +41,17 @@ CgtMatcherVisibilityState >> showsOtherRuleContext: aBoolean [
 
 { #category : 'testing' }
 CgtMatcherVisibilityState >> isExpandedForElements: aCollection [
-	^ expandedGapKeys includes: (self keyForElements: aCollection)
+	^ self isExpandedForGapIdentity: (self gapIdentityForElements: aCollection)
 ]
 
 { #category : 'mutating' }
 CgtMatcherVisibilityState >> expandElements: aCollection [
-	| key |
-	key := self keyForElements: aCollection.
-	(expandedGapKeys includes: key) ifFalse: [ expandedGapKeys add: key ].
-	^ self
+	^ self expandGapIdentity: (self gapIdentityForElements: aCollection)
 ]
 
 { #category : 'mutating' }
 CgtMatcherVisibilityState >> collapseElements: aCollection [
-	expandedGapKeys remove: (self keyForElements: aCollection) ifAbsent: [ ].
-	^ self
+	^ self collapseGapIdentity: (self gapIdentityForElements: aCollection)
 ]
 
 
@@ -64,5 +63,24 @@ CgtMatcherVisibilityState >> hasExpandedGaps [
 { #category : 'mutating' }
 CgtMatcherVisibilityState >> clearExpandedGaps [
 	expandedGapKeys removeAll.
+	^ self
+]
+
+
+{ #category : 'testing' }
+CgtMatcherVisibilityState >> isExpandedForGapIdentity: aGapIdentity [
+	^ expandedGapKeys includes: aGapIdentity
+]
+
+{ #category : 'mutating' }
+CgtMatcherVisibilityState >> expandGapIdentity: aGapIdentity [
+	(aGapIdentity isNil or: [ aGapIdentity isEmpty ]) ifTrue: [ ^ self ].
+	(expandedGapKeys includes: aGapIdentity) ifFalse: [ expandedGapKeys add: aGapIdentity ].
+	^ self
+]
+
+{ #category : 'mutating' }
+CgtMatcherVisibilityState >> collapseGapIdentity: aGapIdentity [
+	expandedGapKeys remove: aGapIdentity ifAbsent: [ ].
 	^ self
 ]

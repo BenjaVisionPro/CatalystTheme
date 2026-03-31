@@ -214,7 +214,7 @@ CgtMatcherProjectionBuilder >> connectPreviousDisplayNode: aPreviousDisplayNode 
 
 { #category : 'private' }
 CgtMatcherProjectionBuilder >> shouldRevealElements: aCollection [
-	^ visibilityState notNil and: [ visibilityState isExpandedForElements: aCollection ]
+	^ visibilityState notNil and: [ visibilityState isExpandedForGapIdentity: (self gapIdentityForElements: aCollection) ]
 ]
 
 { #category : 'building' }
@@ -264,6 +264,7 @@ CgtMatcherProjectionBuilder >> isAncestor: aPossibleAncestor of: anElement [
 CgtMatcherProjectionBuilder >> compactedNodeForElements: aCollection [
 	^ (CgtMatcherProjectionNode kind: #compactedSection)
 		representedElements: aCollection;
+		gapIdentity: (self gapIdentityForElements: aCollection);
 		hiddenNodeCount: aCollection size;
 		isEditable: false;
 		yourself

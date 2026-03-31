@@ -15,7 +15,8 @@ Class {
 		'matchByClass',
 		'matchById',
 		'hiddenNodeCount',
-		'editable'
+		'editable',
+		'gapIdentity'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -175,5 +176,17 @@ CgtMatcherProjectionNode >> isEditable [
 { #category : 'accessing' }
 CgtMatcherProjectionNode >> isEditable: aBoolean [
 	editable := aBoolean.
+	^ self
+]
+
+
+{ #category : 'accessing' }
+CgtMatcherProjectionNode >> gapIdentity [
+	^ gapIdentity
+]
+
+{ #category : 'accessing' }
+CgtMatcherProjectionNode >> gapIdentity: anObject [
+	gapIdentity := anObject.
 	^ self
 ]

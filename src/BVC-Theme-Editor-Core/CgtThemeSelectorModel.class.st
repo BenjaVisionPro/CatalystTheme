@@ -52,8 +52,10 @@ CgtThemeSelectorModel >> collapseTemporaryReveals [
 
 { #category : 'editing' }
 CgtThemeSelectorModel >> expandCompactedProjectionNode: aProjectionNode [
+	| gapIdentity |
 	(projection isNil or: [ aProjectionNode isNil or: [ aProjectionNode representedElements isEmpty ] ]) ifTrue: [ ^ self ].
-	self visibilityState expandElements: aProjectionNode representedElements.
+	gapIdentity := aProjectionNode gapIdentity ifNil: [ self visibilityState gapIdentityForElements: aProjectionNode representedElements ].
+	self visibilityState expandGapIdentity: gapIdentity.
 	self refreshProjection
 ]
 

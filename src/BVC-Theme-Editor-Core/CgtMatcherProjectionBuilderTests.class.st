@@ -232,7 +232,8 @@ CgtMatcherProjectionBuilderTests >> testKeepsDescendantGapCompactedByDefaultWhen
 		relatedStyleRules: #()
 		visibilityState: state.
 	compactedNode := projection nodes detect: [ :each | each kind = #compactedSection ].
-	self assert: compactedNode representedElements asArray equals: { middle }
+	self assert: compactedNode representedElements asArray equals: { middle }.
+	self assert: compactedNode gapIdentity equals: (state gapIdentityForElements: { middle })
 ]
 
 { #category : 'tests' }
@@ -246,7 +247,7 @@ CgtMatcherProjectionBuilderTests >> testRevealsDescendantGapWhenVisibilityStateM
 		combinator: #descendant
 		right: (self selectorForId: #'selected')).
 	state := CgtMatcherVisibilityState new
-		expandElements: { middle };
+		expandGapIdentity: ((CgtMatcherVisibilityState new) gapIdentityForElements: { middle });
 		yourself.
 	projection := CgtMatcherProjectionBuilder
 		projectionForStyleRule: rule
@@ -323,4 +324,26 @@ CgtMatcherProjectionBuilderTests >> testDoesNotAddOtherRuleIndicatorWhenOtherRul
 		relatedStyleRules: { relatedRule }
 		visibilityState: visibilityState.
 	self assert: (projection nodes noneSatisfy: [ :each | each kind = #otherRuleIndicator ])
+]
+
+
+{ #category : 'tests' }
+CgtMatcherProjectionBuilderTests >> testCompactedNodeCarriesExplicitGapIdentity [
+	| root middle selected rule projection compactedNode state |
+	root := self newTestElementWithId: #'root'.
+	middle := root addChild: (self newTestElementWithId: #'middle').
+	selected := middle addChild: (self newTestElementWithId: #'selected').
+	rule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'root')
+		combinator: #descendant
+		right: (self selectorForId: #'selected')).
+	state := CgtMatcherVisibilityState new.
+	projection := CgtMatcherProjectionBuilder
+		projectionForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: #()
+		visibilityState: state.
+	compactedNode := projection nodes detect: [ :each | each kind = #compactedSection ].
+	self assert: compactedNode gapIdentity equals: (state gapIdentityForElements: { middle })
 ]

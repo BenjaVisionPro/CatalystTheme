@@ -9,23 +9,35 @@ Class {
 }
 
 { #category : 'tests' }
-CgtMatcherVisibilityStateTests >> testExpandedGapIsTrackedByRepresentedElements [
-	| first second state |
-	first := Object new.
-	second := Object new.
+CgtMatcherVisibilityStateTests >> testExpandedGapIsTrackedByGapIdentity [
+	| state gapIdentity |
 	state := CgtMatcherVisibilityState new.
-	self deny: (state isExpandedForElements: { first. second }).
-	state expandElements: { first. second }.
-	self assert: (state isExpandedForElements: { first. second })
+	gapIdentity := #(#root #middle).
+	self deny: (state isExpandedForGapIdentity: gapIdentity).
+	state expandGapIdentity: gapIdentity.
+	self assert: (state isExpandedForGapIdentity: gapIdentity)
 ]
 
 { #category : 'tests' }
 CgtMatcherVisibilityStateTests >> testClearExpandedGapsRemovesExpansionState [
-	| first second state |
-	first := Object new.
-	second := Object new.
+	| state gapIdentity |
 	state := CgtMatcherVisibilityState new.
-	state expandElements: { first. second }.
+	gapIdentity := #(#root #middle).
+	state expandGapIdentity: gapIdentity.
 	state clearExpandedGaps.
-	self deny: (state isExpandedForElements: { first. second })
+	self deny: (state isExpandedForGapIdentity: gapIdentity)
+]
+
+
+{ #category : 'tests' }
+CgtMatcherVisibilityStateTests >> testElementBasedTrackingStillMapsToGapIdentity [
+	| first second state gapIdentity |
+	first := CgtThemeSelectorTestElement new.
+	first id: (BlElementId named: #first).
+	second := CgtThemeSelectorTestElement new.
+	second id: (BlElementId named: #second).
+	state := CgtMatcherVisibilityState new.
+	gapIdentity := state gapIdentityForElements: { first. second }.
+	state expandElements: { first. second }.
+	self assert: (state isExpandedForGapIdentity: gapIdentity)
 ]
