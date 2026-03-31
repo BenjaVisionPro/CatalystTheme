@@ -123,6 +123,15 @@ CgtMatcherProjection >> relationsToNode: aCgtMatcherProjectionNode [
 	^ relations select: [ :each | each toNode == aCgtMatcherProjectionNode ]
 ]
 
+
+{ #category : 'querying' }
+CgtMatcherProjection >> selectedProjectionNode [
+	^ nodes
+		detect: [ :each | each kind = #selectedElement and: [ each representedElement == selectedElement ] ]
+		ifNone: [
+			nodes detect: [ :each | each kind = #selectedElement ] ifNone: [ nil ] ]
+]
+
 { #category : 'querying' }
 CgtMatcherProjection >> currentRuleNodes [
 	^ nodes select: [ :each | each isInCurrentRule ]
