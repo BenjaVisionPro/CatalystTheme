@@ -190,6 +190,6 @@ CgtEditorInteractionState >> updateSelectionWithInteractedElement: anElement [
 	(anchor hasParent: anElement)
 		ifTrue: [ ^ aPath toggleUpstreamElement: anElement ].
 	(anElement hasParent: anchor)
-		ifTrue: [ ^ aPath setDownstreamElement: anElement ].
+		ifTrue: [ ^ aPath selectedChildScopeElement: anElement ].
 	self selectAnchorElement: anElement
 ]

@@ -126,7 +126,7 @@ CgtMatcherNodeElement >> refreshContents [
 { #category : 'rendering' }
 CgtMatcherNodeElement >> widthForNode: aProjectionNode [
 	aProjectionNode kind = #selectedElement ifTrue: [ ^ layoutPolicy selectedNodeWidth ].
-	(aProjectionNode kind = #upstreamScope or: [ aProjectionNode kind = #downstreamScope ]) ifTrue: [ ^ layoutPolicy scopeNodeWidth ].
+	(aProjectionNode kind = #upstreamScope or: [ aProjectionNode kind = #selectedChildScope ]) ifTrue: [ ^ layoutPolicy scopeNodeWidth ].
 	aProjectionNode kind = #compactedSection ifTrue: [ ^ layoutPolicy compactedGapWidth ].
 	^ layoutPolicy contextNodeWidth
 ]

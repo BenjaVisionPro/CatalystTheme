@@ -49,7 +49,7 @@ CgtMatcherNodeVisualPolicy >> elementIdTextForNode: aProjectionNode [
 CgtMatcherNodeVisualPolicy >> roleLabelForNode: aProjectionNode [
 	aProjectionNode kind = #selectedElement ifTrue: [ ^ 'Selected' ].
 	aProjectionNode kind = #upstreamScope ifTrue: [ ^ 'Scope' ].
-	aProjectionNode kind = #downstreamScope ifTrue: [ ^ 'Scope' ].
+	aProjectionNode kind = #selectedChildScope ifTrue: [ ^ 'Child scope' ].
 	aProjectionNode kind = #compactedSection ifTrue: [ ^ 'Between' ].
 	aProjectionNode kind = #otherRuleRelated ifTrue: [ ^ 'Other rule' ].
 	^ aProjectionNode kind asString
@@ -70,7 +70,7 @@ CgtMatcherNodeVisualPolicy >> matchSummaryForNode: aProjectionNode [
 CgtMatcherNodeVisualPolicy >> nodeSortPriorityFor: aProjectionNode [
 	aProjectionNode kind = #upstreamScope ifTrue: [ ^ 10 ].
 	aProjectionNode kind = #selectedElement ifTrue: [ ^ 20 ].
-	aProjectionNode kind = #downstreamScope ifTrue: [ ^ 30 ].
+	aProjectionNode kind = #selectedChildScope ifTrue: [ ^ 30 ].
 	aProjectionNode kind = #compactedSection ifTrue: [ ^ 40 ].
 	aProjectionNode kind = #otherRuleRelated ifTrue: [ ^ 50 ].
 	^ 100

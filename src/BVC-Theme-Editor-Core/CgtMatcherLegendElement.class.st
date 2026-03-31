@@ -55,7 +55,7 @@ CgtMatcherLegendElement >> newRoleLegendRow [
 	row addChildren: {
 		(self newRoleBadgeLabeled: (nodeVisualPolicy roleLabelForNode: (CgtMatcherProjectionNode kind: #selectedElement))).
 		(self newRoleBadgeLabeled: (nodeVisualPolicy roleLabelForNode: (CgtMatcherProjectionNode kind: #upstreamScope))).
-		(self newRoleBadgeLabeled: (nodeVisualPolicy roleLabelForNode: (CgtMatcherProjectionNode kind: #downstreamScope))).
+		(self newRoleBadgeLabeled: (nodeVisualPolicy roleLabelForNode: (CgtMatcherProjectionNode kind: #selectedChildScope))).
 		(self newRoleBadgeLabeled: (nodeVisualPolicy roleLabelForNode: (CgtMatcherProjectionNode kind: #compactedSection))).
 		(self newRoleBadgeLabeled: (nodeVisualPolicy roleLabelForNode: (CgtMatcherProjectionNode kind: #otherRuleRelated))) }.
 	^ row

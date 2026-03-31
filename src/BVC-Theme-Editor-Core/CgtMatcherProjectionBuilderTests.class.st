@@ -1,6 +1,6 @@
 "
 #Matcher Projection Builder Tests
-I verify projection building from a selector rule, a selected element, and a live hierarchy. I am responsible for checking current-rule mapping, downstream mapping, compaction, and no-match fallback behavior.
+I verify projection building from a selector rule, a selected element, and a live hierarchy. I am responsible for checking current-rule mapping, selected-child-scope mapping, compaction, and no-match fallback behavior.
 "
 Class {
 	#name : 'CgtMatcherProjectionBuilderTests',

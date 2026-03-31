@@ -118,7 +118,7 @@ CgtElementPathSelector >> fullPathElements [
 		upstream add: current.
 		current := current parent ].
 	orderedAncestors := upstream reversed.
-	downstream := elementPath downstreamElements.
+	downstream := elementPath selectedChildScopeElements.
 	^ orderedAncestors , { anchor } , downstream
 ]
 

@@ -243,7 +243,7 @@ CgtMatcherProjectionBuilder >> revealedContextNodeForElement: anElement [
 CgtMatcherProjectionBuilder >> kindForRevealedContextElement: anElement [
 	anElement == selectedElement ifTrue: [ ^ #selectedElement ].
 	(self isAncestor: anElement of: selectedElement) ifTrue: [ ^ #upstreamScope ].
-	(self isAncestor: selectedElement of: anElement) ifTrue: [ ^ #downstreamScope ].
+	(self isAncestor: selectedElement of: anElement) ifTrue: [ ^ #selectedChildScope ].
 	^ #otherRuleRelated
 ]
 
@@ -291,7 +291,7 @@ CgtMatcherProjectionBuilder >> kindForMatchedNodeAtIndex: anIndex selectedIndex:
 	aSelectedIndex = 0 ifTrue: [ ^ #otherRuleRelated ].
 	anIndex < aSelectedIndex ifTrue: [ ^ #upstreamScope ].
 	anIndex = aSelectedIndex ifTrue: [ ^ #selectedElement ].
-	^ #downstreamScope
+	^ #selectedChildScope
 ]
 
 { #category : 'building' }
