@@ -83,7 +83,7 @@ CgtMatcherTransitionPolicy >> leadingExpansionSideForOrientation: anOrientation 
 
 { #category : 'querying' }
 CgtMatcherTransitionPolicy >> structuralRefreshPlanFrom: anOldProjection to: aNewProjection orientation: anOrientation [
-	| plan offset |
+	| plan offset oldLeadingGapIdentity newLeadingGapIdentity |
 	plan := CgtMatcherStructuralRefreshPlan new.
 	plan anchorProjectionNode: (self structuralRefreshAnchorProjectionNodeFor: aNewProjection).
 	offset := 0 @ 0.
@@ -96,12 +96,14 @@ CgtMatcherTransitionPolicy >> structuralRefreshPlanFrom: anOldProjection to: aNe
 		plan transitionKind: #stable.
 		plan revealOffset: offset.
 		^ plan ].
-	(anOldProjection hasLeadingCompactedProjectionNode = aNewProjection hasLeadingCompactedProjectionNode)
+	oldLeadingGapIdentity := anOldProjection leadingCompactedGapIdentity.
+	newLeadingGapIdentity := aNewProjection leadingCompactedGapIdentity.
+	oldLeadingGapIdentity = newLeadingGapIdentity
 		ifTrue: [
 			plan transitionKind: #stable.
 			plan revealOffset: offset ]
 		ifFalse: [
-			aNewProjection hasLeadingCompactedProjectionNode
+			newLeadingGapIdentity notNil
 				ifTrue: [
 					plan transitionKind: #reveal.
 					offset := self graphRevealOffsetForOrientation: anOrientation ]

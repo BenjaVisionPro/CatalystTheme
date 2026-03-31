@@ -177,3 +177,78 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshOpacityUsesStableNoFadeA
 	self assert: (policy structuralRefreshStartOpacityForPlan: stablePlan) equals: policy graphRevealEndOpacity.
 	self assert: (policy structuralRefreshEndOpacityForPlan: stablePlan) equals: policy graphRevealEndOpacity
 ]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testStructuralRefreshPlanIsStableWhenLeadingCompactionGapIdentityIsUnchanged [
+	| oldProjection newProjection plan oldGap newGap oldSelected newSelected |
+	oldSelected := CgtThemeSelectorTestElement named: #selected id: #selected.
+	newSelected := CgtThemeSelectorTestElement named: #selected id: #selected.
+	oldGap := (CgtMatcherProjectionNode kind: #compactedSection)
+		gapIdentity: #(leading same);
+		hiddenNodeCount: 2;
+		yourself.
+	newGap := (CgtMatcherProjectionNode kind: #compactedSection)
+		gapIdentity: #(leading same);
+		hiddenNodeCount: 3;
+		yourself.
+	oldProjection := CgtMatcherProjection new.
+	oldProjection
+		selectedElement: oldSelected;
+		addNode: oldGap;
+		addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+			representedElement: oldSelected;
+			yourself);
+		addRelation: (CgtMatcherProjectionRelation from: oldGap to: oldProjection selectedProjectionNode kind: #compaction).
+	newProjection := CgtMatcherProjection new.
+	newProjection
+		selectedElement: newSelected;
+		addNode: newGap;
+		addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+			representedElement: newSelected;
+			yourself);
+		addRelation: (CgtMatcherProjectionRelation from: newGap to: newProjection selectedProjectionNode kind: #compaction).
+	plan := CgtMatcherTransitionPolicy new
+		structuralRefreshPlanFrom: oldProjection
+		to: newProjection
+		orientation: #vertical.
+	self assert: plan isStable.
+	self assert: plan revealOffset equals: (0 @ 0)
+]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testStructuralRefreshPlanUsesRevealWhenLeadingCompactionGapIdentityChanges [
+	| oldProjection newProjection plan oldGap newGap oldSelected newSelected |
+	oldSelected := CgtThemeSelectorTestElement named: #selected id: #selected.
+	newSelected := CgtThemeSelectorTestElement named: #selected id: #selected.
+	oldGap := (CgtMatcherProjectionNode kind: #compactedSection)
+		gapIdentity: #(leading old);
+		hiddenNodeCount: 2;
+		yourself.
+	newGap := (CgtMatcherProjectionNode kind: #compactedSection)
+		gapIdentity: #(leading new);
+		hiddenNodeCount: 2;
+		yourself.
+	oldProjection := CgtMatcherProjection new.
+	oldProjection
+		selectedElement: oldSelected;
+		addNode: oldGap;
+		addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+			representedElement: oldSelected;
+			yourself);
+		addRelation: (CgtMatcherProjectionRelation from: oldGap to: oldProjection selectedProjectionNode kind: #compaction).
+	newProjection := CgtMatcherProjection new.
+	newProjection
+		selectedElement: newSelected;
+		addNode: newGap;
+		addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+			representedElement: newSelected;
+			yourself);
+		addRelation: (CgtMatcherProjectionRelation from: newGap to: newProjection selectedProjectionNode kind: #compaction).
+	plan := CgtMatcherTransitionPolicy new
+		structuralRefreshPlanFrom: oldProjection
+		to: newProjection
+		orientation: #vertical.
+	self assert: plan isReveal.
+	self assert: plan revealOffset equals: (0 @ -24)
+]
+

@@ -145,6 +145,21 @@ CgtMatcherProjection >> trailingCompactedProjectionNode [
 		ifNone: [ nil ]
 ]
 
+
+{ #category : 'querying' }
+CgtMatcherProjection >> leadingCompactedGapIdentity [
+	^ self leadingCompactedProjectionNode
+		ifNil: [ nil ]
+		ifNotNil: [ :aNode | aNode gapIdentity ]
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> trailingCompactedGapIdentity [
+	^ self trailingCompactedProjectionNode
+		ifNil: [ nil ]
+		ifNotNil: [ :aNode | aNode gapIdentity ]
+]
+
 { #category : 'querying' }
 CgtMatcherProjection >> hasLeadingCompactedProjectionNode [
 	^ self leadingCompactedProjectionNode notNil
