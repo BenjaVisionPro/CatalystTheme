@@ -306,7 +306,7 @@ CgtThemeSelectorMondrianWidgetTests >> test_projectionChangeBuildsStructuralRefr
 			kind: #compaction).
 	widget projection: newProjection.
 	self assert: widget lastStructuralRefreshPlan notNil.
-	self assert: widget lastStructuralRefreshPlan isReveal
+	self assert: widget lastStructuralRefreshPlan isReplace
 ]
 
 

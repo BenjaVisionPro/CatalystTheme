@@ -117,7 +117,7 @@ CgtMatcherTransitionPolicyTests >> test_structuralRefreshPlanUsesRevealWhenLeadi
 		structuralRefreshPlanFrom: oldProjection
 		to: newProjection
 		orientation: #vertical.
-	self assert: plan isReveal.
+	self assert: plan isReplace.
 	self assert: plan revealOffset equals: (0 @ -24)
 ]
 
@@ -218,7 +218,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshPlanIsStableWhenLeadingC
 ]
 
 { #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testStructuralRefreshPlanUsesRevealWhenLeadingCompactionGapIdentityChanges [
+CgtMatcherTransitionPolicyTests >> testStructuralRefreshPlanUsesReplaceWhenLeadingCompactionGapIdentityChanges [
 	| oldProjection newProjection plan oldGap newGap oldSelected newSelected |
 	oldSelected := CgtThemeSelectorTestElement named: #selected id: #selected.
 	newSelected := CgtThemeSelectorTestElement named: #selected id: #selected.
@@ -250,7 +250,7 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshPlanUsesRevealWhenLeadin
 		structuralRefreshPlanFrom: oldProjection
 		to: newProjection
 		orientation: #vertical.
-	self assert: plan isReveal.
+	self assert: plan isReplace.
 	self assert: plan revealOffset equals: (0 @ -24)
 ]
 
@@ -267,3 +267,20 @@ CgtMatcherTransitionPolicyTests >> testShouldAnimateStructuralRefreshPlanOnlyFor
 	self assert: (policy shouldAnimateStructuralRefreshPlan: collapsePlan).
 	self deny: (policy shouldAnimateStructuralRefreshPlan: stablePlan)
 ]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testStructuralRefreshDurationUsesReplaceSpecificDuration [
+	| policy replacePlan |
+	policy := CgtMatcherTransitionPolicy new.
+	replacePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #replace; yourself.
+	self assert: (policy structuralRefreshDurationForPlan: replacePlan) equals: policy replaceDuration
+]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testShouldAnimateStructuralRefreshPlanForReplace [
+	| policy replacePlan |
+	policy := CgtMatcherTransitionPolicy new.
+	replacePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #replace; yourself.
+	self assert: (policy shouldAnimateStructuralRefreshPlan: replacePlan)
+]
+

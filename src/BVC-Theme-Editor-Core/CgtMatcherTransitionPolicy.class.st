@@ -30,6 +30,11 @@ CgtMatcherTransitionPolicy >> collapseDuration [
 ]
 
 { #category : 'accessing' }
+CgtMatcherTransitionPolicy >> replaceDuration [
+	^ 230 milliSeconds
+]
+
+{ #category : 'accessing' }
 CgtMatcherTransitionPolicy >> graphRevealOffsetForOrientation: anOrientation [
 	anOrientation = #horizontal ifTrue: [ ^ -24 @ 0 ].
 	^ 0 @ -24
@@ -42,6 +47,7 @@ CgtMatcherTransitionPolicy >> structuralRefreshDurationForPlan: aStructuralRefre
 	aStructuralRefreshPlan ifNil: [ ^ self structuralRefreshDuration ].
 	aStructuralRefreshPlan isReveal ifTrue: [ ^ self revealDuration ].
 	aStructuralRefreshPlan isCollapse ifTrue: [ ^ self collapseDuration ].
+	aStructuralRefreshPlan isReplace ifTrue: [ ^ self replaceDuration ].
 	^ self structuralRefreshDuration
 ]
 
@@ -121,13 +127,18 @@ CgtMatcherTransitionPolicy >> structuralRefreshPlanFrom: anOldProjection to: aNe
 			plan transitionKind: #stable.
 			plan revealOffset: offset ]
 		ifFalse: [
-			newLeadingGapIdentity notNil
+			(newLeadingGapIdentity notNil and: [ oldLeadingGapIdentity notNil ])
 				ifTrue: [
-					plan transitionKind: #reveal.
+					plan transitionKind: #replace.
 					offset := self graphRevealOffsetForOrientation: anOrientation ]
 				ifFalse: [
-					plan transitionKind: #collapse.
-					offset := (self graphRevealOffsetForOrientation: anOrientation) negated ].
+					newLeadingGapIdentity notNil
+						ifTrue: [
+							plan transitionKind: #reveal.
+							offset := self graphRevealOffsetForOrientation: anOrientation ]
+						ifFalse: [
+							plan transitionKind: #collapse.
+							offset := (self graphRevealOffsetForOrientation: anOrientation) negated ]].
 			plan revealOffset: offset ].
 	^ plan
 ]
