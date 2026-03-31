@@ -146,3 +146,12 @@ CgtStyleInspectorPopoverTests >> testMatcherSelectorChangedEventUpdatesDisplayed
 	self assert: popover styleRule selector identicalTo: newSelector.
 	self assert: (popover childWithId: #styleInspectorScopeLabel) text asString equals: '#root > #selected'
 ]
+
+
+{ #category : 'tests' }
+CgtStyleInspectorPopoverTests >> testSelectorWidgetUsesConcreteMatcherRenderer [
+	| popover |
+	popover := CgtStyleInspectorPopover new.
+
+	self assert: popover selectorWidget rendererWidget class equals: CgtThemeMatcherMondrianWidget
+]

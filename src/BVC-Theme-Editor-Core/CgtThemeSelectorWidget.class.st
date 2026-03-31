@@ -1,12 +1,13 @@
 "
 #Theme Selector Widget
-I am the current host widget for the theme selector editor. I still render through the Mondrian matcher widget superclass, but my non-visual selector state now lives in a dedicated CgtThemeSelectorModel.
+I am the host widget for the theme selector editor. I own a non-visual CgtThemeSelectorModel and a concrete matcher renderer widget. I coordinate selector editing semantics through the model while forwarding live matcher interaction events outward.
 "
 Class {
 	#name : 'CgtThemeSelectorWidget',
-	#superclass : 'CgtThemeMatcherMondrianWidget',
+	#superclass : 'BrVerticalPane',
 	#instVars : [
-		'model'
+		'model',
+		'rendererWidget'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -17,25 +18,34 @@ Class {
 CgtThemeSelectorWidget >> initialize [
 	super initialize.
 	model := CgtThemeSelectorModel new.
-	self when: CgtMatcherCompactedSectionExpandedEvent do: [ :anEvent |
+	rendererWidget := CgtThemeMatcherMondrianWidget new.
+	self
+		vFitContent;
+		hMatchParent.
+	self addChild: rendererWidget.
+	self wireRendererWidget
+
+{ #category : 'initialization' }
+CgtThemeSelectorWidget >> wireRendererWidget [
+	rendererWidget when: CgtMatcherCompactedSectionExpandedEvent do: [ :anEvent |
 		self matcherCompactedSectionExpandedEvent: anEvent ].
-	self when: CgtMatcherNodeIncludedInRuleEvent do: [ :anEvent |
+	rendererWidget when: CgtMatcherNodeIncludedInRuleEvent do: [ :anEvent |
 		self matcherNodeIncludedInRuleEvent: anEvent ].
-	self when: CgtMatcherNodeExcludedFromRuleEvent do: [ :anEvent |
+	rendererWidget when: CgtMatcherNodeExcludedFromRuleEvent do: [ :anEvent |
 		self matcherNodeExcludedFromRuleEvent: anEvent ].
-	self when: CgtMatcherClassMatchToggledEvent do: [ :anEvent |
+	rendererWidget when: CgtMatcherClassMatchToggledEvent do: [ :anEvent |
 		self matcherClassMatchToggledEvent: anEvent ].
-	self when: CgtMatcherIdMatchToggledEvent do: [ :anEvent |
+	rendererWidget when: CgtMatcherIdMatchToggledEvent do: [ :anEvent |
 		self matcherIdMatchToggledEvent: anEvent ].
-	self when: CgtMatcherCombinatorChangedEvent do: [ :anEvent |
+	rendererWidget when: CgtMatcherCombinatorChangedEvent do: [ :anEvent |
 		self matcherCombinatorChangedEvent: anEvent ].
-	self when: CgtMatcherNodeHoveredEvent do: [ :anEvent |
-		self matcherInteractionEvent: anEvent ].
-	self when: CgtMatcherNodeSelectedEvent do: [ :anEvent |
-		self matcherInteractionEvent: anEvent ]
+	rendererWidget when: CgtMatcherNodeHoveredEvent do: [ :anEvent |
+		self matcherNodeHoveredEvent: anEvent ].
+	rendererWidget when: CgtMatcherNodeSelectedEvent do: [ :anEvent |
+		self matcherNodeSelectedEvent: anEvent ].
+	rendererWidget when: CgtMatcherNodeUnhoveredEvent do: [ :anEvent |
+		self matcherNodeUnhoveredEvent: anEvent ]
 ]
-
-
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement pathRootElement: aRootElement relatedStyleRules: aCollection [
@@ -48,10 +58,26 @@ CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElem
 	^ self
 ]
 
-
 { #category : 'events' }
 CgtThemeSelectorWidget >> matcherInteractionEvent: anEvent [
 	self scheduleIdleCollapse.
+	self fireEvent: anEvent.
+	^ self
+]
+
+{ #category : 'events' }
+CgtThemeSelectorWidget >> matcherNodeHoveredEvent: anEvent [
+	^ self matcherInteractionEvent: anEvent
+]
+
+{ #category : 'events' }
+CgtThemeSelectorWidget >> matcherNodeSelectedEvent: anEvent [
+	^ self matcherInteractionEvent: anEvent
+]
+
+{ #category : 'events' }
+CgtThemeSelectorWidget >> matcherNodeUnhoveredEvent: anEvent [
+	self fireEvent: anEvent.
 	^ self
 ]
 
@@ -178,6 +204,11 @@ CgtThemeSelectorWidget >> selector [
 ]
 
 { #category : 'accessing' }
+CgtThemeSelectorWidget >> currentSelector [
+	^ model selector
+]
+
+{ #category : 'accessing' }
 CgtThemeSelectorWidget >> currentStyleRule [
 	^ model currentStyleRule
 ]
@@ -188,10 +219,19 @@ CgtThemeSelectorWidget >> matcherSelectorChangedEvent: anEvent [
 	self refreshProjectionFromModel
 ]
 
-
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> model [
 	^ model
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> rendererWidget [
+	^ rendererWidget
+]
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> projection [
+	^ model projection
 ]
 
 { #category : 'private - projection' }
@@ -201,7 +241,7 @@ CgtThemeSelectorWidget >> refreshProjection [
 
 { #category : 'private - projection' }
 CgtThemeSelectorWidget >> refreshProjectionFromModel [
-	self projection: model projection.
+	rendererWidget projection: model projection.
 	^ self
 ]
 

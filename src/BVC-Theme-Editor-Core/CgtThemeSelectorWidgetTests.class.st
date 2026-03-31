@@ -1,6 +1,6 @@
 "
 #Theme Selector Widget Tests
-I verify that the compatibility selector widget projects matcher state from a style rule and live hierarchy context.
+I verify that the selector host widget coordinates a selector model and concrete renderer while projecting matcher state from live hierarchy context.
 "
 Class {
 	#name : 'CgtThemeSelectorWidgetTests',
@@ -108,4 +108,13 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 
 	self assert: widget currentStyleRule identicalTo: originalRule.
 	self assert: widget currentStyleRule selector identicalTo: newSelector
+]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testHostsConcreteMatcherRendererWidget [
+	| widget |
+	widget := CgtThemeSelectorWidget new.
+
+	self assert: widget rendererWidget class equals: CgtThemeMatcherMondrianWidget
 ]
