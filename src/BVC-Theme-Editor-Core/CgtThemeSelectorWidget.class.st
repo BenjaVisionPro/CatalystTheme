@@ -6,77 +6,74 @@ Class {
 	#name : 'CgtThemeSelectorWidget',
 	#superclass : 'BrVerticalPane',
 	#instVars : [
-		'model',
-		'rendererWidget',
-		'rendererWidgetClass'
+		'selectorModel',
+		'selectorRendererWidget',
+		'selectorRendererWidgetClass'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
 }
 
-
 { #category : 'initialization' }
 CgtThemeSelectorWidget >> initialize [
 	super initialize.
-	model := CgtThemeSelectorModel new.
-	rendererWidgetClass := CgtThemeSelectorMondrianWidget.
+	selectorModel := CgtThemeSelectorModel new.
+	selectorRendererWidgetClass := CgtThemeSelectorMondrianWidget.
 	self
 		vFitContent;
 		hMatchParent.
-	self installRendererWidget
+	self installSelectorRendererWidget
 ]
 
-
-
 { #category : 'initialization' }
-CgtThemeSelectorWidget >> buildRendererWidget [
-	(rendererWidgetClass inheritsFrom: CgtThemeSelectorRendererWidget) ifFalse: [
+CgtThemeSelectorWidget >> buildSelectorRendererWidget [
+	(selectorRendererWidgetClass inheritsFrom: CgtThemeSelectorRendererWidget) ifFalse: [
 		self error: 'Selector renderer widgets must subclass CgtThemeSelectorRendererWidget' ].
-	^ rendererWidgetClass new
+	^ selectorRendererWidgetClass new
 ]
 
 { #category : 'initialization' }
-CgtThemeSelectorWidget >> installRendererWidget [
-	rendererWidget ifNotNil: [ self removeChild: rendererWidget ].
-	rendererWidget := self buildRendererWidget.
-	self addChild: rendererWidget.
-	self wireRendererWidget.
-	self refreshProjectionFromModel.
+CgtThemeSelectorWidget >> installSelectorRendererWidget [
+	selectorRendererWidget ifNotNil: [ self removeChild: selectorRendererWidget ].
+	selectorRendererWidget := self buildSelectorRendererWidget.
+	self addChild: selectorRendererWidget.
+	self wireSelectorRendererWidget.
+	self refreshSelectorProjectionFromModel.
 	^ self
 ]
 
 { #category : 'initialization' }
-CgtThemeSelectorWidget >> wireRendererWidget [
-	rendererWidget when: CgtThemeSelectorCompactedSectionExpandedEvent do: [ :anEvent |
+CgtThemeSelectorWidget >> wireSelectorRendererWidget [
+	selectorRendererWidget when: CgtThemeSelectorCompactedSectionExpandedEvent do: [ :anEvent |
 		self selectorCompactedSectionExpandedEvent: anEvent ].
-	rendererWidget when: CgtThemeSelectorNodeIncludedInRuleEvent do: [ :anEvent |
+	selectorRendererWidget when: CgtThemeSelectorNodeIncludedInRuleEvent do: [ :anEvent |
 		self selectorNodeIncludedInRuleEvent: anEvent ].
-	rendererWidget when: CgtThemeSelectorNodeExcludedFromRuleEvent do: [ :anEvent |
+	selectorRendererWidget when: CgtThemeSelectorNodeExcludedFromRuleEvent do: [ :anEvent |
 		self selectorNodeExcludedFromRuleEvent: anEvent ].
-	rendererWidget when: CgtThemeSelectorClassMatchChangedEvent do: [ :anEvent |
+	selectorRendererWidget when: CgtThemeSelectorClassMatchChangedEvent do: [ :anEvent |
 		self selectorClassMatchChangedEvent: anEvent ].
-	rendererWidget when: CgtThemeSelectorIdMatchChangedEvent do: [ :anEvent |
+	selectorRendererWidget when: CgtThemeSelectorIdMatchChangedEvent do: [ :anEvent |
 		self selectorIdMatchChangedEvent: anEvent ].
-	rendererWidget when: CgtThemeSelectorCombinatorChangedEvent do: [ :anEvent |
+	selectorRendererWidget when: CgtThemeSelectorCombinatorChangedEvent do: [ :anEvent |
 		self selectorCombinatorChangedEvent: anEvent ].
-	rendererWidget when: CgtThemeSelectorNodeHoveredEvent do: [ :anEvent |
+	selectorRendererWidget when: CgtThemeSelectorNodeHoveredEvent do: [ :anEvent |
 		self selectorNodeHoveredEvent: anEvent ].
-	rendererWidget when: CgtThemeSelectorNodeSelectedEvent do: [ :anEvent |
+	selectorRendererWidget when: CgtThemeSelectorNodeSelectedEvent do: [ :anEvent |
 		self selectorNodeSelectedEvent: anEvent ].
-	rendererWidget when: CgtThemeSelectorNodeUnhoveredEvent do: [ :anEvent |
+	selectorRendererWidget when: CgtThemeSelectorNodeUnhoveredEvent do: [ :anEvent |
 		self selectorNodeUnhoveredEvent: anEvent ].
-	rendererWidget when: CgtThemeSelectorOtherRuleContextToggledEvent do: [ :anEvent |
+	selectorRendererWidget when: CgtThemeSelectorOtherRuleContextToggledEvent do: [ :anEvent |
 		self selectorOtherRuleContextToggledEvent: anEvent ]
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement hierarchyRoot: aRootElement relatedStyleRules: aCollection [
-	model
+	selectorModel
 		configureForStyleRule: aCgtThemeStyleRule
 		selectedElement: anElement
 		hierarchyRoot: aRootElement
 		relatedStyleRules: aCollection.
-	self refreshProjectionFromModel.
+	self refreshSelectorProjectionFromModel.
 	^ self
 ]
 
@@ -105,215 +102,186 @@ CgtThemeSelectorWidget >> selectorNodeUnhoveredEvent: anEvent [
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorClassMatchChangedEvent: anEvent [
-	model applyClassMatch: anEvent shouldMatch toProjectionNode: anEvent projectionNode.
-	self refreshProjectionFromModelAndPublishSelectorChanged.
+	selectorModel applyClassMatch: anEvent shouldMatch toProjectionNode: anEvent projectionNode.
+	self refreshSelectorProjectionFromModelAndPublishSelectorChanged.
 	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorCombinatorChangedEvent: anEvent [
-	model applyCombinator: anEvent combinator toRelation: anEvent relation.
-	self refreshProjectionFromModelAndPublishSelectorChanged.
+	selectorModel applyCombinator: anEvent combinator toRelation: anEvent relation.
+	self refreshSelectorProjectionFromModelAndPublishSelectorChanged.
 	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorCompactedSectionExpandedEvent: anEvent [
-	model revealCompactedProjectionNode: anEvent projectionNode.
-	self refreshProjectionFromModel.
+	selectorModel revealCompactedProjectionNode: anEvent projectionNode.
+	self refreshSelectorProjectionFromModel.
 	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorIdMatchChangedEvent: anEvent [
-	model applyIdMatch: anEvent shouldMatch toProjectionNode: anEvent projectionNode.
-	self refreshProjectionFromModelAndPublishSelectorChanged.
+	selectorModel applyIdMatch: anEvent shouldMatch toProjectionNode: anEvent projectionNode.
+	self refreshSelectorProjectionFromModelAndPublishSelectorChanged.
 	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorNodeExcludedFromRuleEvent: anEvent [
-	model excludeProjectionNode: anEvent projectionNode.
-	self refreshProjectionFromModelAndPublishSelectorChanged.
+	selectorModel excludeProjectionNode: anEvent projectionNode.
+	self refreshSelectorProjectionFromModelAndPublishSelectorChanged.
 	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorNodeIncludedInRuleEvent: anEvent [
-	model includeProjectionNode: anEvent projectionNode.
-	self refreshProjectionFromModelAndPublishSelectorChanged.
+	selectorModel includeProjectionNode: anEvent projectionNode.
+	self refreshSelectorProjectionFromModelAndPublishSelectorChanged.
 	self scheduleIdleCollapse
 ]
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorOtherRuleContextToggledEvent: anEvent [
-	model toggleOtherRuleContext.
-	self refreshProjectionFromModel.
+	selectorModel toggleOtherRuleContext.
+	self refreshSelectorProjectionFromModel.
 	self scheduleIdleCollapse.
 	^ self
 ]
 
 { #category : 'private - idle collapse' }
 CgtThemeSelectorWidget >> noteSelectorInteraction [
-	^ model noteSelectorInteraction
-]
-
-{ #category : 'private - idle collapse' }
-CgtThemeSelectorWidget >> noteMatcherInteraction [
-	"Compatibility shim while matcher-era callers are removed."
-	^ self noteSelectorInteraction
+	^ selectorModel noteSelectorInteraction
 ]
 
 { #category : 'private - idle collapse' }
 CgtThemeSelectorWidget >> scheduleIdleCollapse [
-	model scheduleIdleCollapseAfter: [ self collapseTemporaryReveals ].
+	selectorModel scheduleIdleCollapseAfter: [ self collapseTemporaryReveals ].
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> idleCollapseDelayMilliseconds [
-	^ model idleCollapseDelayMilliseconds
+	^ selectorModel idleCollapseDelayMilliseconds
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> idleCollapseDelayMilliseconds: anInteger [
-	model idleCollapseDelayMilliseconds: anInteger.
+	selectorModel idleCollapseDelayMilliseconds: anInteger.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> styleRule [
-	^ model currentStyleRule
+	^ selectorModel currentStyleRule
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> styleRule: aCgtThemeStyleRule [
-	model styleRule: aCgtThemeStyleRule.
-	self refreshProjectionFromModel.
+	selectorModel styleRule: aCgtThemeStyleRule.
+	self refreshSelectorProjectionFromModel.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selectedElement [
-	^ model selectedElement
+	^ selectorModel selectedElement
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selectedElement: anElement [
-	model selectedElement: anElement.
-	self refreshProjectionFromModel.
+	selectorModel selectedElement: anElement.
+	self refreshSelectorProjectionFromModel.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> hierarchyRoot [
-	^ model hierarchyRoot
+	^ selectorModel hierarchyRoot
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> hierarchyRoot: anElement [
-	model hierarchyRoot: anElement.
-	self refreshProjectionFromModel.
+	selectorModel hierarchyRoot: anElement.
+	self refreshSelectorProjectionFromModel.
 	^ self
 ]
 
-
-
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> relatedStyleRules [
-	^ model relatedStyleRules
+	^ selectorModel relatedStyleRules
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> relatedStyleRules: aCollection [
-	model relatedStyleRules: aCollection.
-	self refreshProjectionFromModel.
+	selectorModel relatedStyleRules: aCollection.
+	self refreshSelectorProjectionFromModel.
 	^ self
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selector [
-	^ model selector
+	^ selectorModel selector
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> currentSelector [
-	^ model selector
+	^ selectorModel selector
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> currentStyleRule [
-	^ model currentStyleRule
+	^ selectorModel currentStyleRule
 ]
 
 { #category : 'event handling' }
 CgtThemeSelectorWidget >> selectorChangedEvent: anEvent [
-	model selector: anEvent selector.
-	self refreshProjectionFromModel
+	selectorModel selector: anEvent selector.
+	self refreshSelectorProjectionFromModel
 ]
-
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selectorModel [
-	^ model
+	^ selectorModel
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selectorRendererWidget [
-	^ rendererWidget
+	^ selectorRendererWidget
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selectorRendererWidgetClass [
-	^ self rendererWidgetClass
+	^ selectorRendererWidgetClass ifNil: [ CgtThemeSelectorMondrianWidget ]
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selectorRendererWidgetClass: aClass [
-	^ self rendererWidgetClass: aClass
-]
-
-{ #category : 'accessing' }
-CgtThemeSelectorWidget >> model [
-	^ model
-]
-
-{ #category : 'accessing' }
-CgtThemeSelectorWidget >> rendererWidgetClass [
-	^ rendererWidgetClass ifNil: [ CgtThemeSelectorMondrianWidget ]
-]
-
-{ #category : 'accessing' }
-CgtThemeSelectorWidget >> rendererWidgetClass: aClass [
-	rendererWidgetClass := aClass ifNil: [ CgtThemeSelectorMondrianWidget ].
-	self installRendererWidget.
+	selectorRendererWidgetClass := aClass ifNil: [ CgtThemeSelectorMondrianWidget ].
+	self installSelectorRendererWidget.
 	^ self
-]
-
-{ #category : 'accessing' }
-CgtThemeSelectorWidget >> rendererWidget [
-	^ rendererWidget
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> projection [
-	^ model projection
+	^ selectorModel projection
 ]
 
 { #category : 'private - projection' }
-CgtThemeSelectorWidget >> refreshProjection [
-	self refreshProjectionFromModel
+CgtThemeSelectorWidget >> refreshSelectorProjection [
+	self refreshSelectorProjectionFromModel
 ]
 
 { #category : 'private - projection' }
-CgtThemeSelectorWidget >> refreshProjectionFromModel [
-	rendererWidget projection: model projection.
+CgtThemeSelectorWidget >> refreshSelectorProjectionFromModel [
+	selectorRendererWidget projection: selectorModel projection.
 	^ self
 ]
 
 { #category : 'private - projection' }
-CgtThemeSelectorWidget >> refreshProjectionFromModelAndPublishSelectorChanged [
-	self refreshProjectionFromModel.
+CgtThemeSelectorWidget >> refreshSelectorProjectionFromModelAndPublishSelectorChanged [
+	self refreshSelectorProjectionFromModel.
 	self publishSelectorChanged.
 	^ self
 ]
@@ -328,32 +296,32 @@ CgtThemeSelectorWidget >> publishSelectorChanged [
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> visibilityState [
-	^ model visibilityState
+	^ selectorModel visibilityState
 ]
 
 { #category : 'editing' }
 CgtThemeSelectorWidget >> showOtherRuleContext [
-	model showOtherRuleContext.
-	self refreshProjectionFromModel.
+	selectorModel showOtherRuleContext.
+	self refreshSelectorProjectionFromModel.
 	^ self
 ]
 
 { #category : 'editing' }
 CgtThemeSelectorWidget >> hideOtherRuleContext [
-	model hideOtherRuleContext.
-	self refreshProjectionFromModel.
+	selectorModel hideOtherRuleContext.
+	self refreshSelectorProjectionFromModel.
 	^ self
 ]
 
 { #category : 'editing' }
 CgtThemeSelectorWidget >> toggleOtherRuleContext [
-	model toggleOtherRuleContext.
-	self refreshProjectionFromModel.
+	selectorModel toggleOtherRuleContext.
+	self refreshSelectorProjectionFromModel.
 	^ self
 ]
 
 { #category : 'events' }
 CgtThemeSelectorWidget >> collapseTemporaryReveals [
-	model collapseTemporaryReveals.
-	self refreshProjectionFromModel
+	selectorModel collapseTemporaryReveals.
+	self refreshSelectorProjectionFromModel
 ]

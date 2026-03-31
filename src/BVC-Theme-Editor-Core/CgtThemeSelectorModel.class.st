@@ -166,11 +166,6 @@ CgtThemeSelectorModel >> noteSelectorInteraction [
 	^ idleCollapseGeneration
 ]
 
-{ #category : 'private - idle collapse' }
-CgtThemeSelectorModel >> noteMatcherInteraction [
-	"Compatibility shim while matcher-era callers are removed."
-	^ self noteSelectorInteraction
-]
 
 { #category : 'accessing' }
 CgtThemeSelectorModel >> hierarchyRoot [
