@@ -31,7 +31,7 @@ CgtMatcherTransitionPolicy >> collapseDuration [
 
 { #category : 'accessing' }
 CgtMatcherTransitionPolicy >> replaceDuration [
-	^ 230 milliSeconds
+	^ 220 milliSeconds
 ]
 
 { #category : 'accessing' }
@@ -63,11 +63,13 @@ CgtMatcherTransitionPolicy >> shouldAnimateStructuralRefreshPlan: aStructuralRef
 CgtMatcherTransitionPolicy >> structuralRefreshStartOpacityForPlan: aStructuralRefreshPlan [
 	aStructuralRefreshPlan ifNil: [ ^ self graphRevealStartOpacity ].
 	aStructuralRefreshPlan isStable ifTrue: [ ^ self graphRevealEndOpacity ].
+	aStructuralRefreshPlan isReplace ifTrue: [ ^ self graphRevealEndOpacity ].
 	^ self graphRevealStartOpacity
 ]
 
 { #category : 'accessing' }
 CgtMatcherTransitionPolicy >> structuralRefreshEndOpacityForPlan: aStructuralRefreshPlan [
+	aStructuralRefreshPlan isReplace ifTrue: [ ^ self graphRevealEndOpacity ].
 	^ self graphRevealEndOpacity
 ]
 
