@@ -351,3 +351,42 @@ CgtThemeSelectorModelTests >> testSelectedElementChangeClearsTemporaryReveals [
 	^ model
 
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorModelTests >> testConfigureForStyleInspectorModelUsesInspectorSessionContext [
+	<gtExample>
+	| root selected currentRule relatedRule inspectorModel selectorModel |
+	root := self newTestElementWithId: #root.
+	selected := self newTestElementWithId: #selected.
+	root addChild: selected.
+	currentRule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	relatedRule := CgtThemeStyleRule new
+		selector: (CgtThemeCombinatorSelector
+			left: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #root);
+				yourself)
+			combinator: #child
+			right: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #selected);
+				yourself));
+		yourself.
+	inspectorModel := CgtThemeStyleInspectorModel new
+		configureForStyleRule: currentRule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: { relatedRule };
+		yourself.
+	selectorModel := CgtThemeSelectorModel new.
+	selectorModel configureForStyleInspectorModel: inspectorModel.
+	self assert: selectorModel currentStyleRule identicalTo: currentRule.
+	self assert: selectorModel selectedElement identicalTo: selected.
+	self assert: selectorModel hierarchyRoot identicalTo: root.
+	self assert: selectorModel relatedStyleRules asArray equals: { relatedRule }.
+	self assert: selectorModel projection notNil.
+	^ selectorModel
+]

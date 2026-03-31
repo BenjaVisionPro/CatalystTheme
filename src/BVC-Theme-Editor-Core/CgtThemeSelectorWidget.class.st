@@ -66,6 +66,14 @@ CgtThemeSelectorWidget >> wireSelectorRendererWidget [
 		self selectorOtherRuleContextToggledEvent: anEvent ]
 ]
 
+
+{ #category : 'accessing' }
+CgtThemeSelectorWidget >> configureForStyleInspectorModel: aCgtThemeStyleInspectorModel [
+	selectorModel configureForStyleInspectorModel: aCgtThemeStyleInspectorModel.
+	self refreshSelectorProjectionFromModel.
+	^ self
+]
+
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> configureForStyleRule: aCgtThemeStyleRule selectedElement: anElement hierarchyRoot: aRootElement relatedStyleRules: aCollection [
 	selectorModel

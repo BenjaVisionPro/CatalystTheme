@@ -93,11 +93,7 @@ CgtThemeStyleInspectorModel >> rebuildThemeStyleRules [
 
 { #category : 'private' }
 CgtThemeStyleInspectorModel >> refreshSelectorModel [
-	selectorModel
-		configureForStyleRule: activeStyleRule
-		selectedElement: selectedElement
-		hierarchyRoot: hierarchyRoot
-		relatedStyleRules: self relatedStyleRules.
+	selectorModel configureForStyleInspectorModel: self.
 	^ self
 ]
 

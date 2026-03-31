@@ -300,3 +300,42 @@ CgtThemeSelectorWidgetTests >> testMatcherHoverEventIsRepublishedAsSelectorHover
 	^ widget
 
 ]
+
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testConfigureForStyleInspectorModelUsesActiveRuleEditingModel [
+	<gtExample>
+	| root selected currentRule relatedRule inspectorModel widget |
+	root := self newTestElementWithId: #root.
+	selected := self newTestElementWithId: #selected.
+	root addChild: selected.
+	currentRule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	relatedRule := CgtThemeStyleRule new
+		selector: (CgtThemeCombinatorSelector
+			left: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #root);
+				yourself)
+			combinator: #child
+			right: (CgtThemeSimpleSelector new
+				addPredicate: (CgtThemeIdPredicate elementId: #selected);
+				yourself));
+		yourself.
+	inspectorModel := CgtThemeStyleInspectorModel new
+		configureForStyleRule: currentRule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: { relatedRule };
+		yourself.
+	widget := CgtThemeSelectorWidget new.
+	widget configureForStyleInspectorModel: inspectorModel.
+	self assert: widget selectorModel currentStyleRule identicalTo: currentRule.
+	self assert: widget selectedElement identicalTo: selected.
+	self assert: widget hierarchyRoot identicalTo: root.
+	self assert: widget relatedStyleRules asArray equals: { relatedRule }.
+	self assert: widget selectorRendererWidget projection identicalTo: widget selectorModel projection.
+	^ widget
+]

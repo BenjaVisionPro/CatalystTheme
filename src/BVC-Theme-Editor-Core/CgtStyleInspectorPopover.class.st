@@ -75,10 +75,12 @@ CgtStyleInspectorPopover >> styleInspectorModel [
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> styleInspectorModel: aCgtThemeStyleInspectorModel [
 	styleInspectorModel := aCgtThemeStyleInspectorModel ifNil: [ CgtThemeStyleInspectorModel new ].
+	selectorWidget configureForStyleInspectorModel: styleInspectorModel.
 	selectorWidget selectorModel: styleInspectorModel selectorModel.
 	self updateLabels.
 	^ self
 ]
+
 
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> selectorRendererWidget [
@@ -119,6 +121,8 @@ CgtStyleInspectorPopover >> toggleOtherRuleContext [
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> configureForStyleInspectorModel: aCgtThemeStyleInspectorModel [
 	self styleInspectorModel: aCgtThemeStyleInspectorModel.
+	selectorWidget configureForStyleInspectorModel: self styleInspectorModel.
+	self updateLabels.
 	^ self
 ]
 
@@ -130,6 +134,7 @@ CgtStyleInspectorPopover >> configureForSelectedElement: anElement hierarchyRoot
 		hierarchyRoot: aRootElement
 		selectedScopePath: aCgtElementPath
 		themeStyleRules: aCollection.
+	selectorWidget configureForStyleInspectorModel: styleInspectorModel.
 	selectorWidget selectorModel: styleInspectorModel selectorModel.
 	self updateLabels.
 	^ self
@@ -142,6 +147,7 @@ CgtStyleInspectorPopover >> configureForStyleRule: aCgtThemeStyleRule selectedEl
 		selectedElement: anElement
 		hierarchyRoot: aRootElement
 		relatedStyleRules: aCollection.
+	selectorWidget configureForStyleInspectorModel: styleInspectorModel.
 	selectorWidget selectorModel: styleInspectorModel selectorModel.
 	self updateLabels.
 	^ self
@@ -155,6 +161,7 @@ CgtStyleInspectorPopover >> selectedElement [
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> selectedElement: anElement [
 	self styleInspectorModel selectedElement: anElement.
+	selectorWidget configureForStyleInspectorModel: self styleInspectorModel.
 	selectorWidget selectorModel: self styleInspectorModel selectorModel.
 	self updateLabels.
 	^ self
@@ -168,6 +175,7 @@ CgtStyleInspectorPopover >> hierarchyRoot [
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> hierarchyRoot: anElement [
 	self styleInspectorModel hierarchyRoot: anElement.
+	selectorWidget configureForStyleInspectorModel: self styleInspectorModel.
 	selectorWidget selectorModel: self styleInspectorModel selectorModel.
 	self updateLabels.
 	^ self
@@ -181,6 +189,7 @@ CgtStyleInspectorPopover >> relatedStyleRules [
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> relatedStyleRules: aCollection [
 	self styleInspectorModel relatedStyleRules: aCollection.
+	selectorWidget configureForStyleInspectorModel: self styleInspectorModel.
 	selectorWidget selectorModel: self styleInspectorModel selectorModel.
 	self updateLabels.
 	^ self
@@ -194,6 +203,7 @@ CgtStyleInspectorPopover >> styleRule [
 { #category : 'accessing' }
 CgtStyleInspectorPopover >> styleRule: aCgtThemeStyleRule [
 	self styleInspectorModel activeStyleRule: aCgtThemeStyleRule.
+	selectorWidget configureForStyleInspectorModel: self styleInspectorModel.
 	selectorWidget selectorModel: self styleInspectorModel selectorModel.
 	self updateLabels.
 	^ self

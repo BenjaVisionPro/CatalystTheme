@@ -39,6 +39,24 @@ CgtThemeSelectorModel >> configureForStyleRule: aCgtThemeStyleRule selectedEleme
 	^ self
 ]
 
+
+{ #category : 'accessing' }
+CgtThemeSelectorModel >> configureForStyleInspectorModel: aCgtThemeStyleInspectorModel [
+	aCgtThemeStyleInspectorModel ifNil: [
+		styleRule := nil.
+		selectedElement := nil.
+		hierarchyRoot := nil.
+		relatedStyleRules := OrderedCollection new.
+		self clearTemporaryRevealState.
+		self refreshProjection.
+		^ self ].
+	^ self
+		configureForStyleRule: aCgtThemeStyleInspectorModel activeStyleRule
+		selectedElement: aCgtThemeStyleInspectorModel selectedElement
+		hierarchyRoot: aCgtThemeStyleInspectorModel hierarchyRoot
+		relatedStyleRules: aCgtThemeStyleInspectorModel relatedStyleRules
+]
+
 { #category : 'accessing' }
 CgtThemeSelectorModel >> currentStyleRule [
 	^ styleRule
