@@ -83,7 +83,7 @@ CgtMatcherTransitionPolicy >> leadingExpansionSideForOrientation: anOrientation 
 
 { #category : 'querying' }
 CgtMatcherTransitionPolicy >> structuralRefreshPlanFrom: anOldProjection to: aNewProjection orientation: anOrientation [
-	| plan offset oldLeadingGapIdentity newLeadingGapIdentity |
+	| plan offset oldLeadingNode newLeadingNode oldLeadingGapIdentity newLeadingGapIdentity |
 	plan := CgtMatcherStructuralRefreshPlan new.
 	plan anchorProjectionNode: (self structuralRefreshAnchorProjectionNodeFor: aNewProjection).
 	offset := 0 @ 0.
@@ -96,8 +96,18 @@ CgtMatcherTransitionPolicy >> structuralRefreshPlanFrom: anOldProjection to: aNe
 		plan transitionKind: #stable.
 		plan revealOffset: offset.
 		^ plan ].
-	oldLeadingGapIdentity := anOldProjection leadingCompactedGapIdentity.
-	newLeadingGapIdentity := aNewProjection leadingCompactedGapIdentity.
+	oldLeadingNode := anOldProjection leadingCompactedProjectionNode.
+	newLeadingNode := aNewProjection leadingCompactedProjectionNode.
+	(oldLeadingNode isNil and: [ newLeadingNode notNil ]) ifTrue: [
+		plan transitionKind: #reveal.
+		plan revealOffset: (self graphRevealOffsetForOrientation: anOrientation).
+		^ plan ].
+	(oldLeadingNode notNil and: [ newLeadingNode isNil ]) ifTrue: [
+		plan transitionKind: #collapse.
+		plan revealOffset: (self graphRevealOffsetForOrientation: anOrientation) negated.
+		^ plan ].
+	oldLeadingGapIdentity := oldLeadingNode ifNil: [ nil ] ifNotNil: [ oldLeadingNode gapIdentity ].
+	newLeadingGapIdentity := newLeadingNode ifNil: [ nil ] ifNotNil: [ newLeadingNode gapIdentity ].
 	oldLeadingGapIdentity = newLeadingGapIdentity
 		ifTrue: [
 			plan transitionKind: #stable.
