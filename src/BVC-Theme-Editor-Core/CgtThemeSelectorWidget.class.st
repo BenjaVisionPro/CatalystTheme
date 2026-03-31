@@ -24,6 +24,7 @@ CgtThemeSelectorWidget >> initialize [
 		hMatchParent.
 	self addChild: rendererWidget.
 	self wireRendererWidget
+]
 
 { #category : 'initialization' }
 CgtThemeSelectorWidget >> wireRendererWidget [
