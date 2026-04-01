@@ -95,6 +95,67 @@ CgtMatcherProjectionTests >> testProjectionSeparatesCurrentRuleNodesFromOtherRul
 
 ]
 
+
+
+{ #category : 'tests' }
+CgtMatcherProjectionTests >> testProjectionProvidesExplicitCorridorAndIndicatorQueries [
+	<gtExample>
+	| projection upstream selected child compacted indicator |
+	projection := CgtMatcherProjection new.
+	upstream := CgtMatcherProjectionNode kind: #upstreamScope.
+	selected := CgtMatcherProjectionNode kind: #selectedElement.
+	child := CgtMatcherProjectionNode kind: #selectedChildScope.
+	compacted := CgtMatcherProjectionNode kind: #compactedSection.
+	indicator := CgtMatcherProjectionNode kind: #otherRuleIndicator.
+	projection
+		addNode: upstream;
+		addNode: selected;
+		addNode: child;
+		addNode: compacted;
+		addNode: indicator.
+	self assert: projection upstreamScopeNodes asArray equals: { upstream }.
+	self assert: projection selectedProjectionNode identicalTo: selected.
+	self assert: projection selectedChildScopeNode identicalTo: child.
+	self assert: projection selectedChildScopeNodes asArray equals: { child }.
+	self assert: projection compactedSectionNodes asArray equals: { compacted }.
+	self assert: projection otherRuleIndicatorNode identicalTo: indicator.
+	self assert: projection otherRuleIndicatorNodes asArray equals: { indicator }.
+	self assert: projection visibleCorridorNodes asArray equals: { upstream. selected. child. compacted }.
+	^ projection
+]
+
+{ #category : 'tests' }
+CgtMatcherProjectionTests >> testProjectionProvidesExplicitRelationQueries [
+	<gtExample>
+	| projection upstream selected child indicator matcherRelation compactionRelation otherRuleRelation |
+	projection := CgtMatcherProjection new.
+	upstream := CgtMatcherProjectionNode kind: #upstreamScope.
+	selected := CgtMatcherProjectionNode kind: #selectedElement.
+	child := CgtMatcherProjectionNode kind: #selectedChildScope.
+	indicator := CgtMatcherProjectionNode kind: #otherRuleIndicator.
+	matcherRelation := (CgtMatcherProjectionRelation from: upstream to: selected kind: #matcher)
+		combinator: #child;
+		yourself.
+	compactionRelation := CgtMatcherProjectionRelation from: selected to: child kind: #compaction.
+	otherRuleRelation := CgtMatcherProjectionRelation from: selected to: indicator kind: #otherRule.
+	projection
+		addNode: upstream;
+		addNode: selected;
+		addNode: child;
+		addNode: indicator;
+		addRelation: matcherRelation;
+		addRelation: compactionRelation;
+		addRelation: otherRuleRelation.
+	self assert: projection matcherRelations asArray equals: { matcherRelation }.
+	self assert: projection compactionRelations asArray equals: { compactionRelation }.
+	self assert: projection otherRuleRelations asArray equals: { otherRuleRelation }.
+	self assert: projection visibleCorridorRelations asArray equals: { matcherRelation. compactionRelation }.
+	self assert: (projection relationFromNode: upstream toNode: selected) identicalTo: matcherRelation.
+	self assert: (projection relationFromNode: selected toNode: child) identicalTo: compactionRelation.
+	self assert: (projection relationFromNode: selected toNode: indicator) identicalTo: otherRuleRelation.
+	^ projection
+]
+
 { #category : 'private' }
 CgtMatcherProjectionTests >> newTestElementWithId: aSymbol [.
 	^ CgtThemeSelectorTestElement new

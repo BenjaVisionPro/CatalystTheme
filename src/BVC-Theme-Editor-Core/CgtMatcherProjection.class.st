@@ -176,6 +176,84 @@ CgtMatcherProjection >> followingProjectionNodeAfterLeadingCompaction [
 	^ relation ifNil: [ nil ] ifNotNil: [ relation toNode ]
 ]
 
+
+{ #category : 'querying' }
+CgtMatcherProjection >> upstreamScopeNodes [
+	^ self nodesOfKind: #upstreamScope
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> selectedChildScopeNodes [
+	^ self nodesOfKind: #selectedChildScope
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> selectedChildScopeNode [
+	^ self selectedChildScopeNodes
+		ifEmpty: [ nil ]
+		ifNotEmpty: [ :nodes | nodes first ]
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> compactedSectionNodes [
+	^ self nodesOfKind: #compactedSection
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> otherRuleIndicatorNodes [
+	^ self nodesOfKind: #otherRuleIndicator
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> otherRuleIndicatorNode [
+	^ self otherRuleIndicatorNodes
+		ifEmpty: [ nil ]
+		ifNotEmpty: [ :nodes | nodes first ]
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> visibleCorridorNodes [
+	^ nodes select: [ :each |
+		(#(#upstreamScope #selectedElement #selectedChildScope #compactedSection) includes: each kind) ]
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> relationsOfKind: aSymbol [
+	^ relations select: [ :each | each kind = aSymbol ]
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> matcherRelations [
+	^ self relationsOfKind: #matcher
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> compactionRelations [
+	^ self relationsOfKind: #compaction
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> otherRuleRelations [
+	^ self relationsOfKind: #otherRule
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> contextRelations [
+	^ self relationsOfKind: #context
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> visibleCorridorRelations [
+	^ relations select: [ :each | each kind ~= #otherRule ]
+]
+
+{ #category : 'querying' }
+CgtMatcherProjection >> relationFromNode: aFromNode toNode: aToNode [
+	^ relations
+		detect: [ :each | each fromNode == aFromNode and: [ each toNode == aToNode ] ]
+		ifNone: [ nil ]
+]
+
 { #category : 'querying' }
 CgtMatcherProjection >> selectedProjectionNode [
 	^ nodes
