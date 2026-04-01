@@ -13,7 +13,8 @@ Class {
 		'activeStyleRule',
 		'relatedStyleRules',
 		'selectorModel',
-		'styleRuleResolver'
+		'styleRuleResolver',
+		'announcer'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -25,13 +26,32 @@ CgtThemeStyleInspectorModel >> initialize [
 	themeStyleRules := OrderedCollection new.
 	relatedStyleRules := OrderedCollection new.
 	selectorModel := CgtThemeSelectorModel new.
-	styleRuleResolver := CgtThemeStyleRuleResolver new
+	styleRuleResolver := CgtThemeStyleRuleResolver new.
+	announcer := Announcer new
 ]
 
 { #category : 'accessing' }
 CgtThemeStyleInspectorModel >> activeStyleRule [
 	^ activeStyleRule
 ]
+
+
+{ #category : 'announcing' }
+CgtThemeStyleInspectorModel >> announce: anEvent [
+	self announcer announce: anEvent.
+	^ anEvent
+]
+
+{ #category : 'announcing' }
+CgtThemeStyleInspectorModel >> announcer [
+	^ announcer ifNil: [ announcer := Announcer new ]
+]
+
+{ #category : 'announcing' }
+CgtThemeStyleInspectorModel >> when: anAnnouncementClass do: aBlockClosure [
+	^ self announcer when: anAnnouncementClass do: aBlockClosure
+]
+
 
 { #category : 'accessing' }
 CgtThemeStyleInspectorModel >> activeStyleRule: aCgtThemeStyleRule [
@@ -118,7 +138,16 @@ CgtThemeStyleInspectorModel >> selectedScopePath [
 
 { #category : 'accessing' }
 CgtThemeStyleInspectorModel >> selectedScopePath: aCgtElementPath [
-	selectedScopePath := aCgtElementPath ifNil: [ selectedElement ifNil: [ nil ] ifNotNil: [ CgtElementPath anchorElement: selectedElement ] ].
+	| previousScopePath updatedScopePath |
+	previousScopePath := selectedScopePath.
+	updatedScopePath := aCgtElementPath ifNil: [ selectedElement ifNil: [ nil ] ifNotNil: [ CgtElementPath anchorElement: selectedElement ] ].
+	selectedScopePath := updatedScopePath.
+	(previousScopePath == updatedScopePath) ifFalse: [
+		self announce: (CgtThemeStyleInspectorScopeChangedEvent new
+			styleInspectorModel: self;
+			previousScopePath: previousScopePath;
+			scopePath: updatedScopePath;
+			yourself) ].
 	self resolveActiveStyleRule.
 	self refreshSelectorModel.
 	^ self
@@ -162,7 +191,9 @@ CgtThemeStyleInspectorModel >> configureForSelectedElement: anElement hierarchyR
 
 { #category : 'private' }
 CgtThemeStyleInspectorModel >> resolveActiveStyleRule [
-	| resolution |
+	| resolution previousActiveRule previousRelatedRules |
+	previousActiveRule := activeStyleRule.
+	previousRelatedRules := self relatedStyleRules asArray.
 	resolution := self styleRuleResolver
 		resolutionForSelectedElement: selectedElement
 		scopePath: selectedScopePath
@@ -173,6 +204,14 @@ CgtThemeStyleInspectorModel >> resolveActiveStyleRule [
 	(activeStyleRule notNil and: [ (themeStyleRules includes: activeStyleRule) not ]) ifTrue: [
 		themeStyleRules := self themeStyleRules asOrderedCollection.
 		themeStyleRules addFirst: activeStyleRule ].
+	(previousActiveRule == activeStyleRule and: [ previousRelatedRules = relatedStyleRules asArray ]) ifFalse: [
+		self announce: (CgtThemeStyleInspectorActiveRuleChangedEvent new
+			styleInspectorModel: self;
+			previousActiveStyleRule: previousActiveRule;
+			activeStyleRule: activeStyleRule;
+			previousRelatedStyleRules: previousRelatedRules;
+			relatedStyleRules: relatedStyleRules asArray;
+			yourself) ].
 	^ self
 ]
 

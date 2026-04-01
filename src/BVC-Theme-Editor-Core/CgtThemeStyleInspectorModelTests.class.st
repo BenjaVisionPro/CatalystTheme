@@ -140,3 +140,64 @@ CgtThemeStyleInspectorModelTests >> styleRuleForSelector: aSelector [
 		selector: aSelector;
 		yourself
 ]
+
+
+{ #category : 'tests' }
+CgtThemeStyleInspectorModelTests >> testSelectedScopePathChangeAnnouncesScopeChangedEvent [
+	<gtExample>
+	| root middle selected simpleRule scopedRule model path events |
+	root := self newTestElementWithId: #'root'.
+	middle := root addChild: (self newTestElementWithId: #'middle').
+	selected := middle addChild: (self newTestElementWithId: #'selected').
+	simpleRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	scopedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'middle')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	events := OrderedCollection new.
+	model := CgtThemeStyleInspectorModel new.
+	model when: CgtThemeStyleInspectorScopeChangedEvent do: [ :anEvent | events add: anEvent ].
+	model
+		configureForSelectedElement: selected
+		hierarchyRoot: root
+		selectedScopePath: (CgtElementPath anchorElement: selected)
+		themeStyleRules: { simpleRule. scopedRule }.
+	path := CgtElementPath anchorElement: selected.
+	path toggleUpstreamElement: middle.
+	model selectedScopePath: path.
+	self assert: events size equals: 1.
+	self assert: events first previousScopePath anchorElement identicalTo: selected.
+	self assert: events first scopePath identicalTo: path.
+	^ model
+]
+
+{ #category : 'tests' }
+CgtThemeStyleInspectorModelTests >> testSelectedScopePathChangeAnnouncesActiveRuleChangedEvent [
+	<gtExample>
+	| root middle selected simpleRule scopedRule model path events |
+	root := self newTestElementWithId: #'root'.
+	middle := root addChild: (self newTestElementWithId: #'middle').
+	selected := middle addChild: (self newTestElementWithId: #'selected').
+	simpleRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	scopedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'middle')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	events := OrderedCollection new.
+	model := CgtThemeStyleInspectorModel new.
+	model
+		configureForSelectedElement: selected
+		hierarchyRoot: root
+		selectedScopePath: (CgtElementPath anchorElement: selected)
+		themeStyleRules: { simpleRule. scopedRule }.
+	model when: CgtThemeStyleInspectorActiveRuleChangedEvent do: [ :anEvent | events add: anEvent ].
+	path := CgtElementPath anchorElement: selected.
+	path toggleUpstreamElement: middle.
+	model selectedScopePath: path.
+	self assert: events size equals: 1.
+	self assert: events first previousActiveStyleRule identicalTo: simpleRule.
+	self assert: events first activeStyleRule identicalTo: scopedRule.
+	self assert: events first previousRelatedStyleRules asArray equals: { scopedRule }.
+	self assert: events first relatedStyleRules asArray equals: { simpleRule }.
+	^ model
+]
