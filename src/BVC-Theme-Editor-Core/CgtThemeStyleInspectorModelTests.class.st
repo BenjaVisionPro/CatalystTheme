@@ -178,7 +178,10 @@ CgtThemeStyleInspectorModelTests >> testScopeChangeUpdatesRelatedRuleContextWhil
 	self assert: model activeStyleRule identicalTo: scopedRule.
 	self assert: model relatedStyleRules asArray equals: { simpleRule }.
 	self assert: model selectorModel showsOtherRuleContext.
-	self assert: model selectorModel otherRuleProjectionNodes isEmpty.
+	self deny: (model selectorModel otherRuleProjectionNodes anySatisfy: [ :each |
+		each representedElement == middle ]).
+	self assert: (model selectorModel otherRuleProjectionNodes anySatisfy: [ :each |
+		each representedElement == selected ]).
 	^ model
 ]
 

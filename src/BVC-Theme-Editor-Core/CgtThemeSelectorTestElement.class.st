@@ -53,6 +53,17 @@ CgtThemeSelectorTestElement >> parent: anElement [
 	parent := anElement
 ]
 
+
+{ #category : 'testing' }
+CgtThemeSelectorTestElement >> hasParent: anElement [
+	| current |
+	current := self parent.
+	[ current notNil ] whileTrue: [
+		current == anElement ifTrue: [ ^ true ].
+		current := current parent ].
+	^ false
+]
+
 { #category : 'accessing' }
 CgtThemeSelectorTestElement >> children [
 	^ children copy
