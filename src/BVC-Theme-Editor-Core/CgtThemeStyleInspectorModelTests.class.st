@@ -120,6 +120,95 @@ CgtThemeStyleInspectorModelTests >> testSelectedScopePathChangeResolvesDifferent
 	^ model
 ]
 
+
+{ #category : 'tests' }
+CgtThemeStyleInspectorModelTests >> testScopeChangeClearsTemporaryRevealStateWhenActiveRuleSwitches [
+	<gtExample>
+	| root middle selected simpleRule scopedRule model compactedNode path |
+	root := self newTestElementWithId: #'root'.
+	middle := root addChild: (self newTestElementWithId: #'middle').
+	selected := middle addChild: (self newTestElementWithId: #'selected').
+	simpleRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	scopedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'middle')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	model := CgtThemeStyleInspectorModel new.
+	model
+		configureForSelectedElement: selected
+		hierarchyRoot: root
+		selectedScopePath: (CgtElementPath anchorElement: selected)
+		themeStyleRules: { simpleRule. scopedRule }.
+	compactedNode := model selectorModel compactedProjectionNodes first.
+	model selectorModel revealCompactedProjectionNode: compactedNode.
+	self assert: model selectorModel hasExpandedCompactedContext.
+	path := CgtElementPath anchorElement: selected.
+	path toggleUpstreamElement: middle.
+	model selectedScopePath: path.
+	self assert: model activeStyleRule identicalTo: scopedRule.
+	self deny: model selectorModel hasExpandedCompactedContext.
+	^ model
+]
+
+{ #category : 'tests' }
+CgtThemeStyleInspectorModelTests >> testScopeChangeUpdatesRelatedRuleContextWhileOtherRuleContextIsVisible [
+	<gtExample>
+	| root middle selected simpleRule scopedRule model path |
+	root := self newTestElementWithId: #'root'.
+	middle := root addChild: (self newTestElementWithId: #'middle').
+	selected := middle addChild: (self newTestElementWithId: #'selected').
+	simpleRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	scopedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'middle')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	model := CgtThemeStyleInspectorModel new.
+	model
+		configureForSelectedElement: selected
+		hierarchyRoot: root
+		selectedScopePath: (CgtElementPath anchorElement: selected)
+		themeStyleRules: { simpleRule. scopedRule }.
+	model selectorModel showOtherRuleContext.
+	self assert: model selectorModel showsOtherRuleContext.
+	self assert: (model selectorModel otherRuleProjectionNodes anySatisfy: [ :each |
+		each representedElement == middle ]).
+	path := CgtElementPath anchorElement: selected.
+	path toggleUpstreamElement: middle.
+	model selectedScopePath: path.
+	self assert: model activeStyleRule identicalTo: scopedRule.
+	self assert: model relatedStyleRules asArray equals: { simpleRule }.
+	self assert: model selectorModel showsOtherRuleContext.
+	self assert: model selectorModel otherRuleProjectionNodes isEmpty.
+	^ model
+]
+
+{ #category : 'tests' }
+CgtThemeStyleInspectorModelTests >> testActiveStyleRuleChangeClearsTemporaryRevealState [
+	<gtExample>
+	| root middle selected simpleRule scopedRule model compactedNode |
+	root := self newTestElementWithId: #'root'.
+	middle := root addChild: (self newTestElementWithId: #'middle').
+	selected := middle addChild: (self newTestElementWithId: #'selected').
+	simpleRule := self styleRuleForSelector: (self selectorForId: #'selected').
+	scopedRule := self styleRuleForSelector: (CgtThemeCombinatorSelector
+		left: (self selectorForId: #'middle')
+		combinator: #child
+		right: (self selectorForId: #'selected')).
+	model := CgtThemeStyleInspectorModel new.
+	model
+		configureForStyleRule: simpleRule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: { scopedRule }.
+	compactedNode := model selectorModel compactedProjectionNodes first.
+	model selectorModel revealCompactedProjectionNode: compactedNode.
+	self assert: model selectorModel hasExpandedCompactedContext.
+	model activeStyleRule: scopedRule.
+	self assert: model activeStyleRule identicalTo: scopedRule.
+	self deny: model selectorModel hasExpandedCompactedContext.
+	^ model
+]
+
 { #category : 'private' }
 CgtThemeStyleInspectorModelTests >> newTestElementWithId: aSymbol [
 	^ CgtThemeSelectorTestElement new
