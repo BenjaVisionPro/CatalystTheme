@@ -49,7 +49,10 @@ CgtThemeStyleInspectorModel >> announcer [
 
 { #category : 'announcing' }
 CgtThemeStyleInspectorModel >> when: anAnnouncementClass do: aBlockClosure [
-	^ self announcer when: anAnnouncementClass do: aBlockClosure
+	^ self announcer
+		when: anAnnouncementClass
+		do: aBlockClosure
+		for: aBlockClosure receiver
 ]
 
 

@@ -95,51 +95,43 @@ CgtMatcherTransitionPolicy >> leadingExpansionSideForOrientation: anOrientation 
 
 
 
+
+
+
 { #category : 'querying' }
-CgtMatcherTransitionPolicy >> structuralRefreshPlanFrom: anOldProjection to: aNewProjection orientation: anOrientation [
-	| plan offset oldLeadingNode newLeadingNode oldLeadingGapIdentity newLeadingGapIdentity |
-	plan := CgtMatcherStructuralRefreshPlan new.
-	plan anchorProjectionNode: (self structuralRefreshAnchorProjectionNodeFor: aNewProjection).
-	offset := 0 @ 0.
+CgtMatcherTransitionPolicy >> structuralRefreshTransitionKindFrom: anOldProjection to: aNewProjection [
+	| oldLeadingNode newLeadingNode oldLeadingGapIdentity newLeadingGapIdentity |
 	(aNewProjection notNil and: [ anOldProjection isNil ]) ifTrue: [
-		offset := self structuralRefreshRevealOffsetForProjection: aNewProjection orientation: anOrientation.
-		plan transitionKind: ((offset = (0 @ 0)) ifTrue: [ #stable ] ifFalse: [ #reveal ]).
-		plan revealOffset: offset.
-		^ plan ].
-	(anOldProjection isNil or: [ aNewProjection isNil ]) ifTrue: [
-		plan transitionKind: #stable.
-		plan revealOffset: offset.
-		^ plan ].
+		^ aNewProjection hasLeadingCompactedProjectionNode
+			ifTrue: [ #reveal ]
+			ifFalse: [ #stable ] ].
+	(anOldProjection isNil or: [ aNewProjection isNil ]) ifTrue: [ ^ #stable ].
 	oldLeadingNode := anOldProjection leadingCompactedProjectionNode.
 	newLeadingNode := aNewProjection leadingCompactedProjectionNode.
-	(oldLeadingNode isNil and: [ newLeadingNode notNil ]) ifTrue: [
-		plan transitionKind: #reveal.
-		plan revealOffset: (self graphRevealOffsetForOrientation: anOrientation).
-		^ plan ].
-	(oldLeadingNode notNil and: [ newLeadingNode isNil ]) ifTrue: [
-		plan transitionKind: #collapse.
-		plan revealOffset: (self graphRevealOffsetForOrientation: anOrientation) negated.
-		^ plan ].
+	(oldLeadingNode isNil and: [ newLeadingNode notNil ]) ifTrue: [ ^ #reveal ].
+	(oldLeadingNode notNil and: [ newLeadingNode isNil ]) ifTrue: [ ^ #collapse ].
 	oldLeadingGapIdentity := oldLeadingNode ifNil: [ nil ] ifNotNil: [ oldLeadingNode gapIdentity ].
 	newLeadingGapIdentity := newLeadingNode ifNil: [ nil ] ifNotNil: [ newLeadingNode gapIdentity ].
-	oldLeadingGapIdentity = newLeadingGapIdentity
-		ifTrue: [
-			plan transitionKind: #stable.
-			plan revealOffset: offset ]
-		ifFalse: [
-			(newLeadingGapIdentity notNil and: [ oldLeadingGapIdentity notNil ])
-				ifTrue: [
-					plan transitionKind: #replace.
-					offset := self graphRevealOffsetForOrientation: anOrientation ]
-				ifFalse: [
-					newLeadingGapIdentity notNil
-						ifTrue: [
-							plan transitionKind: #reveal.
-							offset := self graphRevealOffsetForOrientation: anOrientation ]
-						ifFalse: [
-							plan transitionKind: #collapse.
-							offset := (self graphRevealOffsetForOrientation: anOrientation) negated ] ].
-			plan revealOffset: offset ].
+	oldLeadingGapIdentity = newLeadingGapIdentity ifTrue: [ ^ #stable ].
+	(newLeadingGapIdentity notNil and: [ oldLeadingGapIdentity notNil ]) ifTrue: [ ^ #replace ].
+	newLeadingGapIdentity notNil ifTrue: [ ^ #reveal ].
+	^ #collapse
+]
+
+{ #category : 'querying' }
+CgtMatcherTransitionPolicy >> structuralRefreshPlanFrom: anOldProjection to: aNewProjection orientation: anOrientation [
+	| plan transitionKind |
+	plan := CgtMatcherStructuralRefreshPlan new.
+	plan anchorProjectionNode: (self structuralRefreshAnchorProjectionNodeFor: aNewProjection).
+	transitionKind := self
+		structuralRefreshTransitionKindFrom: anOldProjection
+		to: aNewProjection.
+	plan transitionKind: transitionKind.
+	plan revealOffset: (self
+		structuralRefreshRevealOffsetForTransitionKind: transitionKind
+		oldProjection: anOldProjection
+		newProjection: aNewProjection
+		orientation: anOrientation).
 	^ plan
 ]
 
@@ -158,4 +150,14 @@ CgtMatcherTransitionPolicy >> structuralRefreshRevealOffsetForProjection: aProje
 	^ aProjection hasLeadingCompactedProjectionNode
 		ifTrue: [ self graphRevealOffsetForOrientation: anOrientation ]
 		ifFalse: [ 0 @ 0 ]
+]
+
+{ #category : 'querying' }
+CgtMatcherTransitionPolicy >> structuralRefreshRevealOffsetForTransitionKind: aTransitionKind oldProjection: anOldProjection newProjection: aNewProjection orientation: anOrientation [
+	aTransitionKind = #reveal ifTrue: [
+		anOldProjection ifNil: [ ^ self structuralRefreshRevealOffsetForProjection: aNewProjection orientation: anOrientation ].
+		^ self graphRevealOffsetForOrientation: anOrientation ].
+	aTransitionKind = #collapse ifTrue: [ ^ (self graphRevealOffsetForOrientation: anOrientation) negated ].
+	aTransitionKind = #replace ifTrue: [ ^ self graphRevealOffsetForOrientation: anOrientation ].
+	^ 0 @ 0
 ]

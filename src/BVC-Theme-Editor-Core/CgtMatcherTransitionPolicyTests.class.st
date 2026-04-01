@@ -289,17 +289,19 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshPlanUsesReplaceWhenLeadi
 
 
 { #category : 'tests' }
-CgtMatcherTransitionPolicyTests >> testShouldAnimateStructuralRefreshPlanOnlyForRevealAndCollapse [
+CgtMatcherTransitionPolicyTests >> testShouldAnimateStructuralRefreshPlanForRevealCollapseAndReplaceButNotStable [
 	<gtExample>
-	| policy revealPlan collapsePlan stablePlan |
+	| policy revealPlan collapsePlan replacePlan stablePlan |
 	policy := CgtMatcherTransitionPolicy new.
 	revealPlan := CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself.
 	collapsePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #collapse; yourself.
+	replacePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #replace; yourself.
 	stablePlan := CgtMatcherStructuralRefreshPlan new transitionKind: #stable; yourself.
 	self assert: (policy shouldAnimateStructuralRefreshPlan: revealPlan).
 	self assert: (policy shouldAnimateStructuralRefreshPlan: collapsePlan).
+	self assert: (policy shouldAnimateStructuralRefreshPlan: replacePlan).
 	self deny: (policy shouldAnimateStructuralRefreshPlan: stablePlan).
-	^ CgtMatcherTransitionPolicy new
+	^ policy
 ]
 
 
@@ -324,4 +326,75 @@ CgtMatcherTransitionPolicyTests >> testStructuralRefreshOpacityUsesReplaceNoFade
 	self assert: (policy structuralRefreshEndOpacityForPlan: replacePlan) equals: policy graphRevealEndOpacity.
 	^ policy
 
+]
+
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testStructuralRefreshTransitionKindIsStableForInitialProjectionWithoutLeadingCompaction [
+	<gtExample>
+	| projection selected policy |
+	selected := CgtThemeSelectorTestElement named: #selected id: #selected.
+	projection := CgtMatcherProjection new.
+	projection
+		selectedElement: selected;
+		addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+			representedElement: selected;
+			yourself).
+	policy := CgtMatcherTransitionPolicy new.
+	self
+		assert: (policy structuralRefreshTransitionKindFrom: nil to: projection)
+		equals: #stable.
+	^ policy
+]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testStructuralRefreshTransitionKindUsesReplaceForLeadingGapIdentityChange [
+	<gtExample>
+	| oldProjection newProjection oldGap newGap oldSelected newSelected policy |
+	oldSelected := CgtThemeSelectorTestElement named: #selected id: #selected.
+	newSelected := CgtThemeSelectorTestElement named: #selected id: #selected.
+	oldGap := (CgtMatcherProjectionNode kind: #compactedSection)
+		gapIdentity: #(leading old);
+		hiddenNodeCount: 2;
+		yourself.
+	newGap := (CgtMatcherProjectionNode kind: #compactedSection)
+		gapIdentity: #(leading new);
+		hiddenNodeCount: 2;
+		yourself.
+	oldProjection := CgtMatcherProjection new.
+	oldProjection
+		selectedElement: oldSelected;
+		addNode: oldGap;
+		addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+			representedElement: oldSelected;
+			yourself);
+		addRelation: (CgtMatcherProjectionRelation from: oldGap to: oldProjection selectedProjectionNode kind: #compaction).
+	newProjection := CgtMatcherProjection new.
+	newProjection
+		selectedElement: newSelected;
+		addNode: newGap;
+		addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+			representedElement: newSelected;
+			yourself);
+		addRelation: (CgtMatcherProjectionRelation from: newGap to: newProjection selectedProjectionNode kind: #compaction).
+	policy := CgtMatcherTransitionPolicy new.
+	self
+		assert: (policy structuralRefreshTransitionKindFrom: oldProjection to: newProjection)
+		equals: #replace.
+	^ policy
+]
+
+{ #category : 'tests' }
+CgtMatcherTransitionPolicyTests >> testStructuralRefreshRevealOffsetForReplaceUsesLeadingSideOffset [
+	<gtExample>
+	| policy |
+	policy := CgtMatcherTransitionPolicy new.
+	self
+		assert: (policy
+			structuralRefreshRevealOffsetForTransitionKind: #replace
+			oldProjection: nil
+			newProjection: nil
+			orientation: #horizontal)
+		equals: (-24 @ 0).
+	^ policy
 ]
