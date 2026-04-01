@@ -640,6 +640,19 @@ CgtEditor >> newStyleInspectorPopover [
 	^ CgtStyleInspectorPopover new
 ]
 
+
+{ #category : 'private - style inspector' }
+CgtEditor >> styleInspectorModel [
+	^ styleInspectorPopover ifNil: [ nil ] ifNotNil: [ styleInspectorPopover styleInspectorModel ]
+]
+
+{ #category : 'private - style inspector' }
+CgtEditor >> activeStyleRuleForStyleInspector [
+	^ self styleInspectorModel
+		ifNil: [ styleInspectorRule ]
+		ifNotNil: [ :aModel | aModel activeStyleRule ]
+]
+
 { #category : 'accessing' }
 CgtEditor >> styleRules [
 	^ styleRules ifNil: [ styleRules := OrderedCollection new ]
@@ -661,9 +674,7 @@ CgtEditor >> styleRules: aCollection [
 { #category : 'private - style inspector' }
 CgtEditor >> relatedStyleRulesForStyleInspector [
 	| activeRule |
-	activeRule := styleInspectorPopover
-		ifNil: [ styleInspectorRule ]
-		ifNotNil: [ styleInspectorPopover styleRule ].
+	activeRule := self activeStyleRuleForStyleInspector.
 	^ self styleRules
 		select: [ :each | each notNil and: [ each ~~ activeRule ] ]
 ]
@@ -806,12 +817,12 @@ CgtEditor >> selectorNodeSelectedEvent: anEvent [
 
 { #category : 'event handling - style inspector' }
 CgtEditor >> selectorChangedEvent: anEvent [
-	styleInspectorRule ifNil: [ styleInspectorRule := CgtThemeStyleRule new ].
-	styleInspectorRule selector: anEvent selector.
-	(self styleRules includes: styleInspectorRule) ifFalse: [ self styleRules add: styleInspectorRule ].
-	styleInspectorPopover ifNotNil: [
-		styleInspectorPopover styleInspectorModel themeStyleRules: self styleRules.
-		styleInspectorRule := styleInspectorPopover styleRule ].
+	| activeRule |
+	activeRule := self activeStyleRuleForStyleInspector ifNil: [ CgtThemeStyleRule new ].
+	activeRule selector: anEvent selector.
+	(self styleRules includes: activeRule) ifFalse: [ self styleRules add: activeRule ].
+	styleInspectorRule := activeRule.
+	self styleInspectorModel ifNotNil: [ :aModel | aModel themeStyleRules: self styleRules ].
 	self refreshOverlayState
 ]
 

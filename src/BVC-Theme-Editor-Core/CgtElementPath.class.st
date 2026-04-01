@@ -1,6 +1,6 @@
 "
 #Element Path
-I represent the current selected path through the rendered element tree. I am responsible for the anchor element, the selected upstream scopes, and the optional selected child scope. I provide a concrete structural path for the editor and overlay to work from.
+I represent the current selected path through the rendered element tree. I am responsible for the anchor element, the selected upstream scopes, and the optional single selected child scope. I provide a concrete structural path for the editor and overlay to work from.
 "
 Class {
 	#name : 'CgtElementPath',

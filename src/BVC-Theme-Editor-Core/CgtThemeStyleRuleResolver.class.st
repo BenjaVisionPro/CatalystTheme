@@ -1,6 +1,6 @@
 "
 #Theme Style Rule Resolver
-I resolve the active style rule for the current style-inspector session. Given the selected element, selected scope path, hierarchy root, and the theme's style rules, I determine which existing rule is the current editing target and which other rules remain related context. If nothing resolves, I bootstrap a new rule explicitly.
+I resolve the active style rule for the current style-inspector session. Given the selected element, selected scope path, hierarchy root, and the theme's style rules, I determine which existing rule is the current editing target and which other rules remain related context. If nothing resolves, I create a new authoring fallback rule explicitly.
 "
 Class {
 	#name : 'CgtThemeStyleRuleResolver',

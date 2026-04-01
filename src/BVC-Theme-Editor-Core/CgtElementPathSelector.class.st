@@ -11,7 +11,7 @@ Class {
 		'elementPath',
 		'ancestorRevealCount',
 		'hiddenCrumbLabel',
-		'pathRootElement'
+		'hierarchyRoot'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -59,15 +59,25 @@ CgtElementPathSelector >> elementPath: aCgtElementPath [
 
 
 { #category : 'accessing' }
+CgtElementPathSelector >> hierarchyRoot [
+	^ hierarchyRoot
+]
+
+{ #category : 'accessing' }
+CgtElementPathSelector >> hierarchyRoot: anElement [
+	hierarchyRoot := anElement.
+	ancestorRevealCount := 0.
+	self rebuild
+]
+
+{ #category : 'accessing' }
 CgtElementPathSelector >> pathRootElement [
-	^ pathRootElement
+	^ self hierarchyRoot
 ]
 
 { #category : 'accessing' }
 CgtElementPathSelector >> pathRootElement: anElement [
-	pathRootElement := anElement.
-	ancestorRevealCount := 0.
-	self rebuild
+	self hierarchyRoot: anElement
 ]
 { #category : 'accessing' }
 CgtElementPathSelector >> selectedSimpleSelector [
@@ -112,7 +122,7 @@ CgtElementPathSelector >> fullPathElements [
 	anchor := elementPath anchorElement.
 	anchor ifNil: [ ^ #() ].
 	upstream := OrderedCollection new.
-	stopParent := pathRootElement ifNil: [ nil ] ifNotNil: [ pathRootElement parent ].
+	stopParent := hierarchyRoot ifNil: [ nil ] ifNotNil: [ hierarchyRoot parent ].
 	current := anchor parent.
 	[ current notNil and: [ current ~= stopParent ] ] whileTrue: [
 		upstream add: current.

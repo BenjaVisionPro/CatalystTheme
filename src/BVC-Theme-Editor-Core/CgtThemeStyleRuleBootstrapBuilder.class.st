@@ -1,6 +1,6 @@
 "
 #Theme Style Rule Bootstrap Builder
-I build a default style rule for the current selected element in the live hierarchy. I am an authoring/bootstrap utility, not part of the selector domain itself.
+I build a default style rule for the current selected element in the live hierarchy. I am an authoring utility, not part of the selector domain itself.
 "
 Class {
 	#name : 'CgtThemeStyleRuleBootstrapBuilder',

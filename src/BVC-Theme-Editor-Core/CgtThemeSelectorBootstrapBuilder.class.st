@@ -1,6 +1,6 @@
 "
 #Theme Selector Bootstrap Builder
-I build a default selector from a live selected element and the current hierarchy root. I exist as an editor/bootstrap utility so the selector domain does not need to know about editor paths.
+I build a default selector from a live selected element and the current hierarchy root. I exist as an editor authoring utility so the selector domain does not need to know about editor paths.
 "
 Class {
 	#name : 'CgtThemeSelectorBootstrapBuilder',

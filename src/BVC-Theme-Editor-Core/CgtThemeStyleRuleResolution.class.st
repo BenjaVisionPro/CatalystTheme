@@ -1,6 +1,6 @@
 "
 #Theme Style Rule Resolution
-I represent the resolved editing target for a style-inspector session. I carry the active style rule, the related style rules around it, and whether the active rule was bootstrapped instead of resolved from the theme.
+I represent the resolved editing target for a style-inspector session. I carry the active style rule, the related style rules around it, and whether the active rule was created as an authoring fallback instead of resolved from the theme.
 "
 Class {
 	#name : 'CgtThemeStyleRuleResolution',

@@ -1,6 +1,6 @@
 "
 #Theme Style Rule Resolver Tests
-I verify that active-rule resolution is explicit, scope-aware, and able to distinguish existing theme rules from bootstrapped editing targets.
+I verify that active-rule resolution is explicit, scope-aware, and able to distinguish existing theme rules from authoring fallback editing targets.
 "
 Class {
 	#name : 'CgtThemeStyleRuleResolverTests',
