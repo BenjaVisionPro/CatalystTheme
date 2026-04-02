@@ -307,7 +307,7 @@ CgtMatcherRowElement >> hasDisplayableElementId [
 	projectionNode ifNil: [ ^ false ].
 	projectionNode elementId ifNil: [ ^ false ].
 	rawLabel := projectionNode elementId asString.
-	normalized := rawLabel withBlanksTrimmed.
+	normalized := rawLabel withBlanksCondensed.
 	normalized isEmpty ifTrue: [ ^ false ].
 	^ normalized asLowercase ~= 'nil'
 ]
