@@ -66,6 +66,6 @@ CgtMatcherChipElementTests >> testDefaultLabelUsesChipKind [
 { #category : 'tests' }
 CgtMatcherChipElementTests >> testLayoutPolicyProvidesMinimumChipWidth [
 	<gtExample>
-	self assert: CgtMatcherLayoutPolicy new chipMinimumWidth equals: 56.
+	self assert: CgtMatcherLayoutPolicy new chipMinimumWidth equals: 180.
 	^ CgtMatcherLayoutPolicy new
 ]

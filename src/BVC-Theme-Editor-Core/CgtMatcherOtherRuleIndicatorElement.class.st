@@ -18,10 +18,10 @@ CgtMatcherOtherRuleIndicatorElement >> initialize [
 	self
 		vFitContent;
 		hFitContent;
-		cellSpacing: 4;
-		padding: (BlInsets all: 4);
-		background: (Color orange alpha: 0.08);
-		border: (BlBorder paint: (Color orange alpha: 0.3));
+		cellSpacing: 3;
+		padding: (BlInsets top: 2 right: 6 bottom: 2 left: 6);
+		background: Color transparent;
+		border: BlBorder empty;
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ]
@@ -54,7 +54,7 @@ CgtMatcherOtherRuleIndicatorElement >> refreshContents [
 CgtMatcherOtherRuleIndicatorElement >> newBadgeLabeled: aString [
 	^ BrLabel new
 		beSmallSize;
-		aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
+		aptitude: (BrGlamorousLabelAptitude new foreground: (Color r: 0.72 g: 0.62 b: 0.22 alpha: 1.0));
 		text: aString
 ]
 
@@ -67,7 +67,7 @@ CgtMatcherOtherRuleIndicatorElement >> newCountLabel [
 		ifFalse: [ count asString , ' hidden paths' ].
 	^ BrLabel new
 		beSmallSize;
-		aptitude: (BrGlamorousLabelAptitude new foreground: Color darkGray);
+		aptitude: (BrGlamorousLabelAptitude new foreground: (Color gray alpha: 0.8));
 		text: text
 ]
 
@@ -75,7 +75,9 @@ CgtMatcherOtherRuleIndicatorElement >> newCountLabel [
 CgtMatcherOtherRuleIndicatorElement >> newRevealButton [
 	^ BrButton new
 		label: 'Show';
-		aptitude: (BrGlamorousButtonLabelAptitude new) + (BrGlamorousButtonRectangularAptitude paddingScale: 0.45; cornerRadius: 4);
+		background: Color transparent;
+		border: (BlBorder paint: (Color gray alpha: 0.18) width: 1);
+		aptitude: (BrGlamorousButtonLabelAptitude new) + (BrGlamorousButtonRectangularAptitude paddingScale: 0.32; cornerRadius: 6);
 		action: [ :aButton | self requestOtherRuleContextToggle ];
 		yourself
 ]

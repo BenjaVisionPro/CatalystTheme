@@ -44,7 +44,7 @@ CgtMatcherRowElement >> initialize [
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ].
-	chipsContainer := BrHorizontalPane new
+	chipsContainer := BrVerticalPane new
 		vFitContent;
 		hFitContent;
 		cellSpacing: layoutPolicy nodeCellSpacing;
@@ -238,7 +238,19 @@ CgtMatcherRowElement >> updateVisualState [
 			selected: isSelected
 			inScope: isInScope
 			revealedContext: isRevealedContext
-			otherRule: isOtherRule)
+			otherRule: isOtherRule);
+		constraintsDo: [ :c |
+			c horizontal exact: (self widthForCurrentState).
+			c vertical fitContent ]
+]
+
+{ #category : 'rendering' }
+CgtMatcherRowElement >> widthForCurrentState [
+	isSelected ifTrue: [ ^ layoutPolicy selectedNodeWidth ].
+	isInScope ifTrue: [ ^ layoutPolicy scopeNodeWidth ].
+	isOtherRule ifTrue: [ ^ layoutPolicy scopeNodeWidth ].
+	isRevealedContext ifTrue: [ ^ layoutPolicy contextNodeWidth ].
+	^ layoutPolicy contextNodeWidth
 ]
 
 { #category : 'event handling' }

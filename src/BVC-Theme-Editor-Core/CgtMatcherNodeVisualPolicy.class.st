@@ -92,26 +92,26 @@ CgtMatcherNodeVisualPolicy >> nodeSortPriorityFor: aProjectionNode [
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> rowBackgroundForNode: aProjectionNode selected: isSelected inScope: isInScope revealedContext: isRevealedContext otherRule: isOtherRule [
-	isOtherRule ifTrue: [ ^ (Color orange alpha: 0.08) ].
-	isSelected ifTrue: [ ^ Color veryVeryLightGray ].
+	isOtherRule ifTrue: [ ^ (Color r: 0.72 g: 0.62 b: 0.22 alpha: 0.08) ].
+	isSelected ifTrue: [ ^ (Color white alpha: 0.98) ].
 	isInScope ifTrue: [ ^ (Color white alpha: 0.96) ].
-	isRevealedContext ifTrue: [ ^ (Color black alpha: 0.03) ].
+	isRevealedContext ifTrue: [ ^ (Color black alpha: 0.018) ].
 	^ self backgroundForNode: aProjectionNode
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> rowBorderForNode: aProjectionNode selected: isSelected inScope: isInScope revealedContext: isRevealedContext otherRule: isOtherRule [
-	isOtherRule ifTrue: [ ^ BlBorder paint: (Color orange alpha: 0.4) width: 1 ].
-	isSelected ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.25) width: 2 ].
-	isInScope ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.25) width: 1 ].
-	isRevealedContext ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.18) width: 1 ].
+	isOtherRule ifTrue: [ ^ BlBorder paint: (Color r: 0.72 g: 0.62 b: 0.22 alpha: 0.55) width: 1 ].
+	isSelected ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.22) width: 2 ].
+	isInScope ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.28) width: 1 ].
+	isRevealedContext ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.14) width: 1 ].
 	^ self borderForNode: aProjectionNode
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> chipBackgroundForEnabled: aBoolean [
 	^ aBoolean
-		ifTrue: [ Color veryVeryLightGray ]
+		ifTrue: [ Color white ]
 		ifFalse: [ Color transparent ]
 ]
 
@@ -119,12 +119,12 @@ CgtMatcherNodeVisualPolicy >> chipBackgroundForEnabled: aBoolean [
 CgtMatcherNodeVisualPolicy >> chipBorderForEnabled: aBoolean [
 	^ aBoolean
 		ifTrue: [ BlBorder paint: (Color black alpha: 0.18) width: 1 ]
-		ifFalse: [ BlBorder paint: (Color gray alpha: 0.3) width: 1 ]
+		ifFalse: [ BlBorder paint: (Color gray alpha: 0.22) width: 1 ]
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> chipForegroundForEnabled: aBoolean [
 	^ aBoolean
 		ifTrue: [ Color black ]
-		ifFalse: [ Color darkGray ]
+		ifFalse: [ Color gray muchDarker ]
 ]

@@ -21,7 +21,7 @@ CgtMatcherRelationElement >> initialize [
 	relationVisualPolicy := CgtMatcherRelationVisualPolicy new.
 	currentCombinator := #child.
 	self
-		aptitude: BrGlamorousButtonLabelAptitude + (BrGlamorousButtonRectangularAptitude paddingScale: 0.35; cornerRadius: 10);
+		aptitude: BrGlamorousButtonLabelAptitude + (BrGlamorousButtonRectangularAptitude paddingScale: 0.1; cornerRadius: 10);
 		action: [ :aButton | self toggleCombinator ];
 		beSmallSize.
 	self refreshContents
@@ -69,8 +69,17 @@ CgtMatcherRelationElement >> combinator: aSymbol [
 { #category : 'rendering' }
 CgtMatcherRelationElement >> refreshContents [
 	self
-		label: self displayLabel;
-		aptitude: BrGlamorousButtonLabelAptitude + (BrGlamorousButtonRectangularAptitude paddingScale: 0.35; cornerRadius: 10).
+		label: '';
+		background: (self isDirectChild
+			ifTrue: [ Color transparent ]
+			ifFalse: [ Color black alpha: 0.05 ]);
+		border: (BlBorder
+			paint: (Color gray alpha: (self isDirectChild ifTrue: [ 0.38 ] ifFalse: [ 0.5 ]))
+			width: 1);
+		constraintsDo: [ :c |
+			c horizontal exact: 18.
+			c vertical exact: 18 ];
+		aptitude: BrGlamorousButtonLabelAptitude + (BrGlamorousButtonRectangularAptitude paddingScale: 0.1; cornerRadius: 9).
 	^ self
 ]
 

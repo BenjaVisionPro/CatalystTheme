@@ -36,7 +36,7 @@ CgtMatcherChipElement >> initialize [
 			bottom: layoutPolicy chipVerticalPadding
 			left: layoutPolicy chipHorizontalPadding);
 		constraintsDo: [ :c |
-			c horizontal fitContent.
+			c horizontal exact: self desiredChipWidth.
 			c vertical fitContent ].
 	labelElement := BrLabel new
 		beSmallSize;
@@ -116,13 +116,24 @@ CgtMatcherChipElement >> refreshContents [
 			foreground: (nodeVisualPolicy chipForegroundForEnabled: isEnabled)).
 	self
 		background: (nodeVisualPolicy chipBackgroundForEnabled: isEnabled);
-		border: (nodeVisualPolicy chipBorderForEnabled: isEnabled).
+		border: (nodeVisualPolicy chipBorderForEnabled: isEnabled);
+		constraintsDo: [ :c |
+			c horizontal exact: self desiredChipWidth.
+			c vertical fitContent ].
 	^ self
+]
+
+{ #category : 'rendering' }
+CgtMatcherChipElement >> desiredChipWidth [
+	^ chipKind = #elementId
+		ifTrue: [ layoutPolicy idChipWidth ]
+		ifFalse: [ layoutPolicy classChipWidth ]
 ]
 
 { #category : 'events' }
 CgtMatcherChipElement >> onChipClicked: aClickEvent [
 	projectionNode ifNil: [ ^ self ].
+	aClickEvent ifNotNil: [ aClickEvent consumed: true ].
 	self toggleEnabled
 ]
 

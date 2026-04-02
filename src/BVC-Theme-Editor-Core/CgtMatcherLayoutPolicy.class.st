@@ -22,22 +22,22 @@ CgtMatcherLayoutPolicy >> edgeConnectionSelectorsForOrientation: anOrientation [
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> widgetPadding [
-	^ BlInsets all: 8
+	^ BlInsets top: 10 right: 14 bottom: 10 left: 14
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> widgetCellSpacing [
-	^ 8
+	^ 10
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> nodePadding [
-	^ BlInsets all: 6
+	^ BlInsets top: 6 right: 10 bottom: 6 left: 6
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> nodeCellSpacing [
-	^ 4
+	^ 6
 ]
 
 { #category : 'layout' }
@@ -63,36 +63,51 @@ CgtMatcherLayoutPolicy >> popoverMatcherHeight [
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> selectedNodeWidth [
-	^ 220
+	^ 360
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> scopeNodeWidth [
-	^ 190
+	^ 320
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> contextNodeWidth [
-	^ 156
+	^ 270
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> compactedGapWidth [
-	^ 132
+	^ 36
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> rowLeadingInset [
+	^ 6
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> classChipWidth [
+	^ 250
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> idChipWidth [
+	^ 338
 ]
 
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> chipMinimumWidth [
-	^ 56
+	^ 180
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> chipHorizontalPadding [
-	^ 8
+	^ 12
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> chipVerticalPadding [
-	^ 4
+	^ 5
 ]
