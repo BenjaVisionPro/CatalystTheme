@@ -1,6 +1,6 @@
 "
 #Theme Selector Compact Widget
-I am an early compact custom renderer for the theme selector seam. I render a supplied projection using a small hand-built UI instead of Mondrian so the selector host can evolve toward a denser custom editor without moving selector semantics out of the model.
+I am an early compact custom renderer for the theme selector seam. I render a supplied projection using a small hand-built UI instead of the retired graph renderer so the selector host can evolve toward a denser custom editor without moving selector semantics out of the model.
 "
 Class {
 	#name : 'CgtThemeSelectorCompactWidget',

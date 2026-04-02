@@ -1,6 +1,6 @@
 "
 #Matcher Relation Visual Policy
-I provide the explicit visual language for matcher projection relations. I am responsible for keeping edge styling semantics out of the Mondrian widget so relation meaning remains narrow, stable, and easy to refine.
+I provide the explicit visual language for matcher projection relations. I am responsible for keeping edge styling semantics out of the selector renderer so relation meaning remains narrow, stable, and easy to refine.
 "
 Class {
 	#name : 'CgtMatcherRelationVisualPolicy',

@@ -1,6 +1,6 @@
 "
 #Matcher Node Element
-I render one matcher projection node as a Bloc widget. I am responsible for presenting passive node data for the Mondrian matcher view and emitting explicit widget events for matcher edits without deciding editor semantics.
+I render one matcher projection node as a Bloc widget. I am responsible for presenting passive node data for the matcher view and emitting explicit widget events for matcher edits without deciding editor semantics.
 "
 Class {
 	#name : 'CgtMatcherNodeElement',

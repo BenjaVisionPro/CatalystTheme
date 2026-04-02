@@ -1,6 +1,6 @@
 "
 #Theme Selector Breadcrumb Widget
-I am a simple non-Mondrian renderer for the theme selector model seam. I render the current projection as a compact breadcrumb-like row so the host widget can prove that selector semantics do not depend on Mondrian.
+I am a simple alternate renderer for the theme selector model seam. I render the current projection as a compact breadcrumb-like row so the host widget can prove that selector semantics do not depend on Mondrian.
 "
 Class {
 	#name : 'CgtThemeSelectorBreadcrumbWidget',

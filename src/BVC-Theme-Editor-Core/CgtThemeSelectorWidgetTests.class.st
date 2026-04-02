@@ -140,7 +140,6 @@ CgtThemeSelectorWidgetTests >> testMatcherSelectorChangedEventUpdatesCurrentStyl
 CgtThemeSelectorWidgetTests >> testDefaultRendererSuperclassIsSelectorRendererWidget [
 	<gtExample>
 	| widget |
-	self assert: CgtThemeSelectorMondrianWidget superclass equals: CgtThemeSelectorRendererWidget.
 	self assert: CgtStyleRuleSelectorPathWidget superclass equals: CgtThemeSelectorRendererWidget.
 	self assert: CgtThemeSelectorBreadcrumbWidget superclass equals: CgtThemeSelectorRendererWidget.
 	self assert: CgtThemeSelectorCompactWidget superclass equals: CgtThemeSelectorRendererWidget.
