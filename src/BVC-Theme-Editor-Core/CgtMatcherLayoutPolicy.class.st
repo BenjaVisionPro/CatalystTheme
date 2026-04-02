@@ -38,7 +38,7 @@ CgtMatcherLayoutPolicy >> nodePadding [
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> nodeCellSpacing [
-	^ -2
+	^ -3
 ]
 
 { #category : 'layout' }
