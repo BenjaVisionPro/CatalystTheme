@@ -45,7 +45,7 @@ CgtMatcherRowElementTests >> testDoesNotBuildIdChipForSemanticNilElementId [
 ]
 
 { #category : 'tests' }
-CgtMatcherRowElementTests >> testFirstVisibleRowHasNoRelationElement [
+CgtMatcherRowElementTests >> testFirstVisibleRowBuildsDefaultRelationElement [
 	<gtExample>
 	| node row |
 	node := (CgtMatcherProjectionNode kind: #selectedElement)
@@ -54,7 +54,8 @@ CgtMatcherRowElementTests >> testFirstVisibleRowHasNoRelationElement [
 	row := CgtMatcherRowElement new
 		projectionNode: node;
 		yourself.
-	self deny: row hasRelationElement.
+	self assert: row hasRelationElement.
+	self assert: row relationElement badgeLabel equals: 'D'.
 	^ row
 ]
 

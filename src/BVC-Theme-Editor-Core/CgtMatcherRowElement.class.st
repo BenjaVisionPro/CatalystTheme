@@ -173,7 +173,6 @@ CgtMatcherRowElement >> refreshContents [
 
 { #category : 'rendering' }
 CgtMatcherRowElement >> buildRelationElementIfNeeded [
-	incomingRelation ifNil: [ ^ self ].
 	relationElement := CgtMatcherRelationElement new
 		projectionRelation: incomingRelation;
 		yourself.
