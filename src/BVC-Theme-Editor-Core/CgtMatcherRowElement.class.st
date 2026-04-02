@@ -40,6 +40,7 @@ CgtMatcherRowElement >> initialize [
 	self
 		vFitContent;
 		hFitContent;
+		alignCenterLeft;
 		cellSpacing: layoutPolicy rowCellSpacing;
 		padding: (BlInsets all: 0);
 		background: Color transparent;

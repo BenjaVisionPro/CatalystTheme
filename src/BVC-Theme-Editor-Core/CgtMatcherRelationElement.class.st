@@ -66,6 +66,9 @@ CgtMatcherRelationElement >> combinator: aSymbol [
 { #category : 'rendering' }
 CgtMatcherRelationElement >> refreshContents [
 	self
+		beSmallSize;
+		padding: (BlInsets all: 0);
+		outskirts: BlOutskirts centered;
 		label: self badgeLabel;
 		aptitude: (BrGlamorousButtonLabelAptitude new
 			foreground: (Color black alpha: 0.65));
