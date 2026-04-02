@@ -65,36 +65,106 @@ CgtStyleRuleSelectorPathWidget >> buildRenderItemsFromProjection [
 	| items |
 	projection ifNil: [ ^ OrderedCollection new ].
 	items := OrderedCollection new.
-	self orderedVisibleNodes do: [ :aNode |
+	self orderedVisiblePathNodes do: [ :aNode |
 		aNode isCompactedSection
 			ifTrue: [ items add: (self newGapRenderItemFor: aNode) ]
 			ifFalse: [ items add: (self newRowRenderItemFor: aNode) ] ].
 	projection otherRuleIndicatorNode ifNotNil: [ :anIndicatorNode |
-		items add: (CgtMatcherOtherRuleIndicatorRenderItem new
-			hiddenCount: anIndicatorNode hiddenNodeCount;
-			yourself) ].
+		items := self itemsByInsertingOtherRuleIndicatorFor: anIndicatorNode into: items ].
 	^ items
 ]
 
 { #category : 'private - assembly' }
-CgtStyleRuleSelectorPathWidget >> orderedVisibleNodes [
-	| visibleNodes start ordered current nextRelation |
+CgtStyleRuleSelectorPathWidget >> itemsByInsertingOtherRuleIndicatorFor: anIndicatorNode into: items [
+	| indicatorItem selectedIndex rebuiltItems |
+	indicatorItem := self newOtherRuleIndicatorRenderItemFor: anIndicatorNode.
+	selectedIndex := items findFirst: [ :each | each isRowItem and: [ each isSelected ] ].
+	selectedIndex = 0 ifTrue: [
+		items add: indicatorItem.
+		^ items ].
+	rebuiltItems := OrderedCollection new.
+	items doWithIndex: [ :each :anIndex |
+		rebuiltItems add: each.
+		anIndex = selectedIndex ifTrue: [ rebuiltItems add: indicatorItem ] ].
+	^ rebuiltItems
+]
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> orderedVisiblePathNodes [
+	| selectedNode upstream downstream |
+	projection ifNil: [ ^ #() ].
+	selectedNode := projection selectedProjectionNode.
+	selectedNode ifNil: [ ^ self orderedVisibleNodesFromRoot ].
+	upstream := self upstreamVisiblePathNodesBefore: selectedNode.
+	downstream := self downstreamVisiblePathNodesAfter: selectedNode.
+	^ upstream , (OrderedCollection with: selectedNode) , downstream
+]
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> orderedVisibleNodesFromRoot [
+	| visibleNodes start ordered current nextNode |
 	projection ifNil: [ ^ #() ].
 	visibleNodes := projection visibleCorridorNodes asOrderedCollection.
 	visibleNodes ifEmpty: [ ^ #() ].
 	start := visibleNodes
-		detect: [ :each |
-			((projection visibleCorridorRelations select: [ :aRelation | aRelation toNode == each ]) isEmpty) ]
+		detect: [ :each | (self previousVisibleNodeBefore: each) isNil ]
 		ifNone: [ visibleNodes first ].
 	ordered := OrderedCollection new.
 	current := start.
 	[current notNil and: [ (ordered includes: current) not ]] whileTrue: [
 		ordered add: current.
-		nextRelation := (projection visibleCorridorRelations
-			detect: [ :aRelation | aRelation fromNode == current ]
-			ifNone: [ nil ]).
-		current := nextRelation ifNil: [ nil ] ifNotNil: [ nextRelation toNode ] ].
+		nextNode := self nextVisibleNodeAfter: current.
+		current := nextNode ].
 	^ ordered
+]
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> upstreamVisiblePathNodesBefore: aProjectionNode [
+	| nodes current previous |
+	nodes := OrderedCollection new.
+	current := aProjectionNode.
+	[(previous := self previousVisibleNodeBefore: current) notNil] whileTrue: [
+		nodes addFirst: previous.
+		current := previous ].
+	^ nodes
+]
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> downstreamVisiblePathNodesAfter: aProjectionNode [
+	| nodes current next |
+	nodes := OrderedCollection new.
+	current := aProjectionNode.
+	[(next := self nextVisibleNodeAfter: current) notNil] whileTrue: [
+		nodes add: next.
+		current := next ].
+	^ nodes
+]
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> previousVisibleNodeBefore: aProjectionNode [
+	| relation |
+	relation := self visiblePathRelations
+		detect: [ :each | each toNode == aProjectionNode ]
+		ifNone: [ nil ].
+	^ relation ifNil: [ nil ] ifNotNil: [ relation fromNode ]
+]
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> nextVisibleNodeAfter: aProjectionNode [
+	| relation |
+	relation := self visiblePathRelations
+		detect: [ :each | each fromNode == aProjectionNode ]
+		ifNone: [ nil ].
+	^ relation ifNil: [ nil ] ifNotNil: [ relation toNode ]
+]
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> visiblePathRelations [
+	| visibleNodes |
+	projection ifNil: [ ^ #() ].
+	visibleNodes := projection visibleCorridorNodes asSet.
+	^ projection visibleCorridorRelations select: [ :each |
+		(visibleNodes includes: each fromNode) and: [ visibleNodes includes: each toNode ] ]
 ]
 
 { #category : 'private - assembly' }
@@ -114,6 +184,13 @@ CgtStyleRuleSelectorPathWidget >> newGapRenderItemFor: aProjectionNode [
 		gapIdentity: aProjectionNode gapIdentity;
 		hiddenCount: aProjectionNode hiddenNodeCount;
 		direction: (self gapDirectionFor: aProjectionNode);
+		yourself
+]
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> newOtherRuleIndicatorRenderItemFor: anIndicatorNode [
+	^ CgtMatcherOtherRuleIndicatorRenderItem new
+		hiddenCount: anIndicatorNode hiddenNodeCount;
 		yourself
 ]
 
