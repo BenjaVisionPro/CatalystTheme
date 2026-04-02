@@ -361,10 +361,10 @@ CgtThemeSelectorModel >> toggleClassMatchForProjectionNode: aProjectionNode shou
 		(aBoolean and: [ aProjectionNode isInCurrentRule not ]) ifTrue: [
 			self includeProjectionNodeInRule: aProjectionNode ].
 		aProjectionNode matchByClass: aBoolean.
-		((aBoolean not)
-			and: [ aProjectionNode kind ~= #selectedElement ]
-			and: [ aProjectionNode isInCurrentRule and: [ aProjectionNode matchById not ] ]) ifTrue: [
-			self excludeProjectionNodeFromRule: aProjectionNode ] ]
+		(aBoolean not) ifTrue: [
+			(aProjectionNode kind ~= #selectedElement) ifTrue: [
+				(aProjectionNode isInCurrentRule and: [ aProjectionNode matchById not ]) ifTrue: [
+					self excludeProjectionNodeFromRule: aProjectionNode ] ] ] ]
 ]
 
 { #category : 'editing' }
@@ -374,10 +374,10 @@ CgtThemeSelectorModel >> toggleIdMatchForProjectionNode: aProjectionNode shouldM
 		(aBoolean and: [ aProjectionNode isInCurrentRule not ]) ifTrue: [
 			self includeProjectionNodeInRule: aProjectionNode ].
 		aProjectionNode matchById: aBoolean.
-		((aBoolean not)
-			and: [ aProjectionNode kind ~= #selectedElement ]
-			and: [ aProjectionNode isInCurrentRule and: [ aProjectionNode matchByClass not ] ]) ifTrue: [
-			self excludeProjectionNodeFromRule: aProjectionNode ] ]
+		(aBoolean not) ifTrue: [
+			(aProjectionNode kind ~= #selectedElement) ifTrue: [
+				(aProjectionNode isInCurrentRule and: [ aProjectionNode matchByClass not ]) ifTrue: [
+					self excludeProjectionNodeFromRule: aProjectionNode ] ] ] ]
 ]
 
 { #category : 'accessing' }
