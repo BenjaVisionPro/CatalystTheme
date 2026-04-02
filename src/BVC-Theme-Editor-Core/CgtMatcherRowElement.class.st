@@ -183,7 +183,7 @@ CgtMatcherRowElement >> buildIdChipIfNeeded [
 	idChipElement := CgtMatcherChipElement new
 		chipKind: #elementId;
 		projectionNode: projectionNode;
-		matcherLabel: projectionNode elementId asString;
+		matcherLabel: projectionNode elementId asSymbol asString;
 		enabled: projectionNode matchById;
 		nodeVisualPolicy: nodeVisualPolicy;
 		yourself.

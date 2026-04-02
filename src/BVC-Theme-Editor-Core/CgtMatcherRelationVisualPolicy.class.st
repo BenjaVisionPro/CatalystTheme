@@ -37,10 +37,10 @@ CgtMatcherRelationVisualPolicy >> labelForRelation: aRelation [
 
 { #category : 'styling' }
 CgtMatcherRelationVisualPolicy >> labelForDirectChild [
-	^ 'Child'
+	^ 'Child relation'
 ]
 
 { #category : 'styling' }
 CgtMatcherRelationVisualPolicy >> labelForAnyDepth [
-	^ 'Deep'
+	^ 'Descendant relation'
 ]
