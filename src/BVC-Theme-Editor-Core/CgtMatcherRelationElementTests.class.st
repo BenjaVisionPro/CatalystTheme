@@ -19,6 +19,32 @@ CgtMatcherRelationElementTests >> testDefaultLabelUsesDirectChildRelation [
 	^ element
 ]
 
+
+
+{ #category : 'tests' }
+CgtMatcherRelationElementTests >> testBadgeLabelUsesDirectChildAbbreviation [
+	<gtExample>
+	| element |
+	element := CgtMatcherRelationElement new.
+	self assert: element badgeLabel equals: 'D'.
+	^ element
+]
+
+{ #category : 'tests' }
+CgtMatcherRelationElementTests >> testBadgeLabelUsesAnyDepthAbbreviation [
+	<gtExample>
+	| relation element |
+	relation := CgtMatcherProjectionRelation new
+		kind: #matcher;
+		combinator: #descendant;
+		yourself.
+	element := CgtMatcherRelationElement new
+		projectionRelation: relation;
+		yourself.
+	self assert: element badgeLabel equals: 'A'.
+	^ element
+]
+
 { #category : 'tests' }
 CgtMatcherRelationElementTests >> testChooseAnyDepthPublishesCombinatorChangedEvent [
 	<gtExample>

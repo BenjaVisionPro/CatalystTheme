@@ -66,18 +66,25 @@ CgtMatcherRelationElement >> combinator: aSymbol [
 { #category : 'rendering' }
 CgtMatcherRelationElement >> refreshContents [
 	self
-		label: '';
+		label: self badgeLabel;
+		aptitude: (BrGlamorousButtonLabelAptitude new
+			foreground: (Color black alpha: 0.65));
 		geometry: (BlEllipseGeometry new);
-		background: (self isDirectChild
-			ifTrue: [ Color transparent ]
-			ifFalse: [ Color black alpha: 0.06 ]);
+		background: Color transparent;
 		border: (BlBorder
-			paint: (Color black alpha: (self isDirectChild ifTrue: [ 0.18 ] ifFalse: [ 0.28 ]))
+			paint: (Color black alpha: 0.22)
 			width: 1.5);
 		constraintsDo: [ :c |
 			c horizontal exact: 18.
 			c vertical exact: 18 ].
 	^ self
+]
+
+{ #category : 'rendering' }
+CgtMatcherRelationElement >> badgeLabel [
+	^ self isDirectChild
+		ifTrue: [ relationVisualPolicy badgeLabelForDirectChild ]
+		ifFalse: [ relationVisualPolicy badgeLabelForAnyDepth ]
 ]
 
 { #category : 'rendering' }

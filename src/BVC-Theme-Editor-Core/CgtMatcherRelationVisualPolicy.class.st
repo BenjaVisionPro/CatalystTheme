@@ -35,6 +35,18 @@ CgtMatcherRelationVisualPolicy >> labelForRelation: aRelation [
 ]
 
 
+
+
+{ #category : 'styling' }
+CgtMatcherRelationVisualPolicy >> badgeLabelForDirectChild [
+	^ 'D'
+]
+
+{ #category : 'styling' }
+CgtMatcherRelationVisualPolicy >> badgeLabelForAnyDepth [
+	^ 'A'
+]
+
 { #category : 'styling' }
 CgtMatcherRelationVisualPolicy >> labelForDirectChild [
 	^ 'Child relation'
