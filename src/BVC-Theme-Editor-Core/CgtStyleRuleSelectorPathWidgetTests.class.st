@@ -429,3 +429,48 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementReceivesStructuralRefres
 	self assert: revealElement transitionPolicy class equals: CgtMatcherTransitionPolicy.
 	^ widget
 ]
+
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementExposesFixedEdgeAndOpeningDirectionForLeadingContext [
+	<gtExample>
+	| projection widget revealElement |
+	projection := self newProjectionWithRevealedLeadingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement isUpstreamReveal.
+	self assert: revealElement fixedEdge equals: #bottom.
+	self assert: revealElement openingDirection equals: #up.
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementExposesFixedEdgeAndOpeningDirectionForTrailingContext [
+	<gtExample>
+	| projection widget revealElement |
+	projection := self newProjectionWithRevealedTrailingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement isDownstreamReveal.
+	self assert: revealElement fixedEdge equals: #top.
+	self assert: revealElement openingDirection equals: #down.
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementExposesViewportSizingPolicyHooks [
+	<gtExample>
+	| projection widget revealElement |
+	projection := self newProjectionWithRevealedLeadingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement minimumViewportHeight equals: 0.
+	self assert: revealElement maximumViewportHeight equals: 180.
+	^ widget
+]

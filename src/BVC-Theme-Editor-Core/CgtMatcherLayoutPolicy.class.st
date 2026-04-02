@@ -122,3 +122,24 @@ CgtMatcherLayoutPolicy >> rowCornerRadius [
 CgtMatcherLayoutPolicy >> rowCellSpacing [
 	^ 8
 ]
+
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> revealViewportMaximumHeight [
+	^ 180
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> revealViewportMinimumHeight [
+	^ 0
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> revealViewportCellSpacing [
+	^ self widgetCellSpacing
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> revealContentInset [
+	^ BlInsets all: 0
+]

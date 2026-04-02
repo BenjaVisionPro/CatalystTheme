@@ -48,7 +48,8 @@ CgtMatcherRevealElement >> initialize [
 	contentContainer := BrVerticalPane new
 		vFitContent;
 		hFitContent;
-		cellSpacing: layoutPolicy widgetCellSpacing;
+		cellSpacing: layoutPolicy revealViewportCellSpacing;
+		padding: layoutPolicy revealContentInset;
 		background: Color transparent;
 		border: BlBorder empty;
 		yourself.
@@ -117,4 +118,39 @@ CgtMatcherRevealElement >> refreshContents [
 	contentContainer removeChildren.
 	rowElements do: [ :each | contentContainer addChild: each ].
 	^ self
+]
+
+
+{ #category : 'testing' }
+CgtMatcherRevealElement >> isUpstreamReveal [
+	^ self direction = #upstream
+]
+
+{ #category : 'testing' }
+CgtMatcherRevealElement >> isDownstreamReveal [
+	^ self direction = #downstream
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> fixedEdge [
+	^ self isUpstreamReveal
+		ifTrue: [ #bottom ]
+		ifFalse: [ #top ]
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> openingDirection [
+	^ self isUpstreamReveal
+		ifTrue: [ #up ]
+		ifFalse: [ #down ]
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> maximumViewportHeight [
+	^ layoutPolicy revealViewportMaximumHeight
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> minimumViewportHeight [
+	^ layoutPolicy revealViewportMinimumHeight
 ]
