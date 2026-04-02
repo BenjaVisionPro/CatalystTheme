@@ -219,3 +219,23 @@ CgtStyleRuleSelectorPathWidgetTests >> testGapRenderItemsUseLeadingAndTrailingDi
 	self assert: gapItems second direction equals: #downstream.
 	^ widget
 ]
+
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testSelectedRenderItemIsAlwaysMarkedInScope [
+	<gtExample>
+	| projection widget selectedItem |
+	projection := CgtMatcherProjection new.
+	projection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+		className: 'SelectedElement';
+		elementId: (BlElementId named: #selected);
+		isInCurrentRule: false;
+		yourself).
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	selectedItem := widget renderItems detect: [ :each | each isRowItem and: [ each isSelected ] ].
+	self assert: selectedItem isInScope.
+	self deny: selectedItem isRevealedContext.
+	^ widget
+]
