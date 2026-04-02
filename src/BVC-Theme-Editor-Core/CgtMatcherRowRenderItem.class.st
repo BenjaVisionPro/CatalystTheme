@@ -10,7 +10,9 @@ Class {
 		'incomingRelation',
 		'isSelected',
 		'isCurrentRule',
-		'isOtherRule'
+		'isOtherRule',
+		'isInScope',
+		'isRevealedContext'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -22,7 +24,9 @@ CgtMatcherRowRenderItem >> initialize [
 	self kind: #row.
 	isSelected := false.
 	isCurrentRule := false.
-	isOtherRule := false
+	isOtherRule := false.
+	isInScope := false.
+	isRevealedContext := false
 ]
 
 { #category : 'accessing' }
@@ -82,6 +86,30 @@ CgtMatcherRowRenderItem >> projectionNode [
 { #category : 'accessing' }
 CgtMatcherRowRenderItem >> projectionNode: aCgtMatcherProjectionNode [
 	projectionNode := aCgtMatcherProjectionNode.
+	^ self
+]
+
+
+
+{ #category : 'testing' }
+CgtMatcherRowRenderItem >> isInScope [
+	^ isInScope
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowRenderItem >> isInScope: aBoolean [
+	isInScope := aBoolean.
+	^ self
+]
+
+{ #category : 'testing' }
+CgtMatcherRowRenderItem >> isRevealedContext [
+	^ isRevealedContext
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowRenderItem >> isRevealedContext: aBoolean [
+	isRevealedContext := aBoolean.
 	^ self
 ]
 

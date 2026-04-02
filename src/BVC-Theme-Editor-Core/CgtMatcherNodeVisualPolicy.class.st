@@ -89,6 +89,26 @@ CgtMatcherNodeVisualPolicy >> nodeSortPriorityFor: aProjectionNode [
 ]
 
 
+
+
+{ #category : 'rendering' }
+CgtMatcherNodeVisualPolicy >> rowBackgroundForNode: aProjectionNode selected: isSelected inScope: isInScope revealedContext: isRevealedContext otherRule: isOtherRule [
+	isOtherRule ifTrue: [ ^ Color transparent ].
+	isSelected ifTrue: [ ^ (Color white alpha: 0.98) ].
+	isInScope ifTrue: [ ^ (Color white alpha: 0.94) ].
+	isRevealedContext ifTrue: [ ^ Color transparent ].
+	^ self backgroundForNode: aProjectionNode
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeVisualPolicy >> rowBorderForNode: aProjectionNode selected: isSelected inScope: isInScope revealedContext: isRevealedContext otherRule: isOtherRule [
+	isSelected ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.25) width: 2 ].
+	isOtherRule ifTrue: [ ^ BlBorder paint: (Color orange alpha: 0.45) width: 1 ].
+	isInScope ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.18) width: 1 ].
+	isRevealedContext ifTrue: [ ^ BlBorder empty ].
+	^ self borderForNode: aProjectionNode
+]
+
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> chipBackgroundForEnabled: aBoolean [
 	^ aBoolean

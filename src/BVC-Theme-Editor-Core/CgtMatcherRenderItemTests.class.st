@@ -26,6 +26,8 @@ CgtMatcherRenderItemTests >> testRowRenderItemCarriesProjectionNodeAndState [
 		isSelected: true;
 		isCurrentRule: true;
 		isOtherRule: false;
+		isInScope: true;
+		isRevealedContext: false;
 		yourself.
 	self assert: item isRowItem.
 	self deny: item isGapItem.
@@ -34,6 +36,8 @@ CgtMatcherRenderItemTests >> testRowRenderItemCarriesProjectionNodeAndState [
 	self assert: item isSelected.
 	self assert: item isCurrentRule.
 	self deny: item isOtherRule.
+	self assert: item isInScope.
+	self deny: item isRevealedContext.
 	self assert: item renderKey first equals: #row.
 	^ item
 ]

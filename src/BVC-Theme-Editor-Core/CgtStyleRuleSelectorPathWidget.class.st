@@ -175,7 +175,25 @@ CgtStyleRuleSelectorPathWidget >> newRowRenderItemFor: aProjectionNode [
 		isSelected: aProjectionNode == projection selectedProjectionNode;
 		isCurrentRule: aProjectionNode isInCurrentRule;
 		isOtherRule: aProjectionNode isInOtherRule;
+		isInScope: (self shouldRenderNodeAsInScope: aProjectionNode);
+		isRevealedContext: (self shouldRenderNodeAsRevealedContext: aProjectionNode);
 		yourself
+]
+
+
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> shouldRenderNodeAsInScope: aProjectionNode [
+	projection ifNil: [ ^ false ].
+	aProjectionNode == projection selectedProjectionNode ifTrue: [ ^ true ].
+	^ aProjectionNode isInCurrentRule
+]
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> shouldRenderNodeAsRevealedContext: aProjectionNode [
+	(self shouldRenderNodeAsInScope: aProjectionNode) ifTrue: [ ^ false ].
+	aProjectionNode isInOtherRule ifTrue: [ ^ false ].
+	^ true
 ]
 
 { #category : 'private - assembly' }
@@ -243,6 +261,8 @@ CgtStyleRuleSelectorPathWidget >> buildRowElementFor: aRowRenderItem [
 		selected: aRowRenderItem isSelected;
 		currentRule: aRowRenderItem isCurrentRule;
 		otherRule: aRowRenderItem isOtherRule;
+		inScope: aRowRenderItem isInScope;
+		revealedContext: aRowRenderItem isRevealedContext;
 		yourself.
 	rowElement when: CgtMatcherNodeHoveredEvent do: [ :anEvent |
 		self announceSelectorNodeHoveredFor: anEvent projectionNode ].

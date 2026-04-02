@@ -17,6 +17,8 @@ Class {
 		'isSelected',
 		'isCurrentRule',
 		'isOtherRule',
+		'isInScope',
+		'isRevealedContext',
 		'hoverNestingCount'
 	],
 	#category : 'BVC-Theme-Editor-Core',
@@ -31,6 +33,8 @@ CgtMatcherRowElement >> initialize [
 	isSelected := false.
 	isCurrentRule := false.
 	isOtherRule := false.
+	isInScope := false.
+	isRevealedContext := false.
 	hoverNestingCount := 0.
 	self
 		vFitContent;
@@ -107,6 +111,32 @@ CgtMatcherRowElement >> otherRule: aBoolean [
 	isOtherRule := aBoolean.
 	self refreshContents.
 	^ self
+]
+
+
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> inScope: aBoolean [
+	isInScope := aBoolean.
+	self refreshContents.
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> revealedContext: aBoolean [
+	isRevealedContext := aBoolean.
+	self refreshContents.
+	^ self
+]
+
+{ #category : 'testing' }
+CgtMatcherRowElement >> isInScope [
+	^ isInScope
+]
+
+{ #category : 'testing' }
+CgtMatcherRowElement >> isRevealedContext [
+	^ isRevealedContext
 ]
 
 { #category : 'accessing' }
@@ -197,15 +227,19 @@ CgtMatcherRowElement >> buildIdChipIfNeeded [
 
 { #category : 'rendering' }
 CgtMatcherRowElement >> updateVisualState [
-	| baseNode border |
-	baseNode := projectionNode.
-	self background: (nodeVisualPolicy backgroundForNode: baseNode).
-	border := nodeVisualPolicy borderForNode: baseNode.
-	isSelected ifTrue: [
-		border := BlBorder paint: (Color black alpha: 0.25) width: 2 ].
-	isOtherRule ifTrue: [
-		border := BlBorder paint: (Color orange alpha: 0.45) width: 1 ].
-	self border: border
+	self
+		background: (nodeVisualPolicy
+			rowBackgroundForNode: projectionNode
+			selected: isSelected
+			inScope: isInScope
+			revealedContext: isRevealedContext
+			otherRule: isOtherRule);
+		border: (nodeVisualPolicy
+			rowBorderForNode: projectionNode
+			selected: isSelected
+			inScope: isInScope
+			revealedContext: isRevealedContext
+			otherRule: isOtherRule)
 ]
 
 { #category : 'event handling' }

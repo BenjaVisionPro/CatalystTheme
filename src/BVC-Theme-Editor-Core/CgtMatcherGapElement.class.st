@@ -21,10 +21,10 @@ CgtMatcherGapElement >> initialize [
 	self
 		vFitContent;
 		hFitContent;
-		cellSpacing: 4;
-		padding: (BlInsets all: 4);
-		background: (Color veryLightGray alpha: 0.65);
-		border: (BlBorder paint: (Color gray alpha: 0.2));
+		cellSpacing: 0;
+		padding: (BlInsets all: 2);
+		background: Color transparent;
+		border: BlBorder empty;
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ]
@@ -58,9 +58,26 @@ CgtMatcherGapElement >> outgoingRelation: aCgtMatcherProjectionRelation [
 CgtMatcherGapElement >> refreshContents [
 	self removeChildren.
 	projectionNode ifNil: [ ^ self ].
-	self addChild: self newHiddenCountLabel.
-	self addChild: self newPathControlRow.
-	self addChild: self newRevealRow
+	self addChild: self newCompactRevealHandle
+]
+
+
+
+{ #category : 'rendering' }
+CgtMatcherGapElement >> newCompactRevealHandle [
+	| button label |
+	button := BrButton new
+		aptitude: BrGlamorousButtonLabelAptitude + (BrGlamorousButtonRectangularAptitude paddingScale: 0.25; cornerRadius: 10);
+		action: [ :aButton | self requestCompactedSectionExpansionFor: projectionNode ];
+		beSmallSize;
+		background: (Color veryLightGray alpha: 0.9);
+		border: (BlBorder paint: (Color gray alpha: 0.25) width: 1);
+		yourself.
+	label := projectionNode hiddenNodeCount = 1
+		ifTrue: [ '1 hidden' ]
+		ifFalse: [ projectionNode hiddenNodeCount asString , ' hidden' ].
+	button label: label.
+	^ button
 ]
 
 { #category : 'rendering' }
