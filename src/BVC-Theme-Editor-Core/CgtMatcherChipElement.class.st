@@ -127,7 +127,7 @@ CgtMatcherChipElement >> refreshContents [
 { #category : 'rendering' }
 CgtMatcherChipElement >> applyTypographyToLabel [
 	self isClassChip
-		ifTrue: [ labelElement beTinySize ]
+		ifTrue: [ labelElement beSmallSize ]
 		ifFalse: [ labelElement beLargeSize ]
 ]
 

@@ -242,7 +242,7 @@ CgtMatcherRowElement >> updateVisualState [
 			revealedContext: isRevealedContext
 			otherRule: isOtherRule);
 		constraintsDo: [ :c |
-			c horizontal exact: (self widthForCurrentState).
+			c horizontal fitContent.
 			c vertical fitContent ]
 ]
 
