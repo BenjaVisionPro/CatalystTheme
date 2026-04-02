@@ -41,8 +41,9 @@ CgtMatcherRowElement >> initialize [
 		vFitContent;
 		hFitContent;
 		cellSpacing: layoutPolicy rowCellSpacing;
-		padding: layoutPolicy nodePadding;
-		geometry: (BlRoundedRectangleGeometry cornerRadius: layoutPolicy rowCornerRadius);
+		padding: (BlInsets all: 0);
+		background: Color transparent;
+		border: BlBorder empty;
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ].
@@ -50,6 +51,8 @@ CgtMatcherRowElement >> initialize [
 		vFitContent;
 		hFitContent;
 		cellSpacing: layoutPolicy nodeCellSpacing;
+		padding: layoutPolicy nodePadding;
+		geometry: (BlRoundedRectangleGeometry cornerRadius: layoutPolicy rowCornerRadius);
 		yourself.
 	self when: BlClickEvent do: [ :anEvent | self onMouseSelect: anEvent ].
 	self when: BlElementHoveredEvent do: [ :anEvent | self onMouseEnter: anEvent ].
@@ -228,6 +231,12 @@ CgtMatcherRowElement >> buildIdChipIfNeeded [
 { #category : 'rendering' }
 CgtMatcherRowElement >> updateVisualState [
 	self
+		background: Color transparent;
+		border: BlBorder empty;
+		constraintsDo: [ :c |
+			c horizontal fitContent.
+			c vertical fitContent ].
+	chipsContainer
 		background: (nodeVisualPolicy
 			rowBackgroundForNode: projectionNode
 			selected: isSelected
@@ -239,10 +248,7 @@ CgtMatcherRowElement >> updateVisualState [
 			selected: isSelected
 			inScope: isInScope
 			revealedContext: isRevealedContext
-			otherRule: isOtherRule);
-		constraintsDo: [ :c |
-			c horizontal fitContent.
-			c vertical fitContent ]
+			otherRule: isOtherRule)
 ]
 
 { #category : 'rendering' }
