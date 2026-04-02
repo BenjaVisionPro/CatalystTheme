@@ -363,8 +363,7 @@ CgtThemeSelectorModel >> toggleClassMatchForProjectionNode: aProjectionNode shou
 		aProjectionNode matchByClass: aBoolean.
 		((aBoolean not)
 			and: [ aProjectionNode kind ~= #selectedElement ]
-			and: [ aProjectionNode isInCurrentRule ]
-			and: [ aProjectionNode matchById not ]) ifTrue: [
+			and: [ aProjectionNode isInCurrentRule and: [ aProjectionNode matchById not ] ]) ifTrue: [
 			self excludeProjectionNodeFromRule: aProjectionNode ] ]
 ]
 
@@ -377,8 +376,7 @@ CgtThemeSelectorModel >> toggleIdMatchForProjectionNode: aProjectionNode shouldM
 		aProjectionNode matchById: aBoolean.
 		((aBoolean not)
 			and: [ aProjectionNode kind ~= #selectedElement ]
-			and: [ aProjectionNode isInCurrentRule ]
-			and: [ aProjectionNode matchByClass not ]) ifTrue: [
+			and: [ aProjectionNode isInCurrentRule and: [ aProjectionNode matchByClass not ] ]) ifTrue: [
 			self excludeProjectionNodeFromRule: aProjectionNode ] ]
 ]
 
