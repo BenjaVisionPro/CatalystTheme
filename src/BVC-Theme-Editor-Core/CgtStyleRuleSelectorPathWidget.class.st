@@ -169,31 +169,27 @@ CgtStyleRuleSelectorPathWidget >> visiblePathRelations [
 
 { #category : 'private - assembly' }
 CgtStyleRuleSelectorPathWidget >> newRowRenderItemFor: aProjectionNode [
+	| isSelected |
+	isSelected := aProjectionNode == projection selectedProjectionNode.
 	^ CgtMatcherRowRenderItem new
 		projectionNode: aProjectionNode;
 		incomingRelation: (self incomingMatcherRelationForNode: aProjectionNode);
-		isSelected: aProjectionNode == projection selectedProjectionNode;
+		isSelected: isSelected;
 		isCurrentRule: aProjectionNode isInCurrentRule;
 		isOtherRule: aProjectionNode isInOtherRule;
-		isInScope: (self shouldRenderNodeAsInScope: aProjectionNode);
-		isRevealedContext: (self shouldRenderNodeAsRevealedContext: aProjectionNode);
+		isInScope: (isSelected or: [ aProjectionNode isInCurrentRule ]);
+		isRevealedContext: (self shouldRenderNodeAsRevealedContext: aProjectionNode selected: isSelected);
 		yourself
 ]
 
 
-
 { #category : 'private - assembly' }
-CgtStyleRuleSelectorPathWidget >> shouldRenderNodeAsInScope: aProjectionNode [
-	projection ifNil: [ ^ false ].
-	aProjectionNode == projection selectedProjectionNode ifTrue: [ ^ true ].
-	^ aProjectionNode isInCurrentRule
-]
-
-{ #category : 'private - assembly' }
-CgtStyleRuleSelectorPathWidget >> shouldRenderNodeAsRevealedContext: aProjectionNode [
-	(self shouldRenderNodeAsInScope: aProjectionNode) ifTrue: [ ^ false ].
+CgtStyleRuleSelectorPathWidget >> shouldRenderNodeAsRevealedContext: aProjectionNode selected: isSelected [
+	isSelected ifTrue: [ ^ false ].
+	aProjectionNode isCompactedSection ifTrue: [ ^ false ].
+	aProjectionNode isOtherRuleIndicator ifTrue: [ ^ false ].
 	aProjectionNode isInOtherRule ifTrue: [ ^ false ].
-	^ true
+	^ aProjectionNode isInCurrentRule not
 ]
 
 { #category : 'private - assembly' }

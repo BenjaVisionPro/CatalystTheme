@@ -90,22 +90,21 @@ CgtMatcherNodeVisualPolicy >> nodeSortPriorityFor: aProjectionNode [
 
 
 
-
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> rowBackgroundForNode: aProjectionNode selected: isSelected inScope: isInScope revealedContext: isRevealedContext otherRule: isOtherRule [
-	isOtherRule ifTrue: [ ^ Color transparent ].
-	isSelected ifTrue: [ ^ (Color white alpha: 0.98) ].
-	isInScope ifTrue: [ ^ (Color white alpha: 0.94) ].
-	isRevealedContext ifTrue: [ ^ Color transparent ].
+	isOtherRule ifTrue: [ ^ (Color orange alpha: 0.08) ].
+	isSelected ifTrue: [ ^ Color veryVeryLightGray ].
+	isInScope ifTrue: [ ^ (Color white alpha: 0.96) ].
+	isRevealedContext ifTrue: [ ^ (Color black alpha: 0.03) ].
 	^ self backgroundForNode: aProjectionNode
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> rowBorderForNode: aProjectionNode selected: isSelected inScope: isInScope revealedContext: isRevealedContext otherRule: isOtherRule [
+	isOtherRule ifTrue: [ ^ BlBorder paint: (Color orange alpha: 0.4) width: 1 ].
 	isSelected ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.25) width: 2 ].
-	isOtherRule ifTrue: [ ^ BlBorder paint: (Color orange alpha: 0.45) width: 1 ].
-	isInScope ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.18) width: 1 ].
-	isRevealedContext ifTrue: [ ^ BlBorder empty ].
+	isInScope ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.25) width: 1 ].
+	isRevealedContext ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.18) width: 1 ].
 	^ self borderForNode: aProjectionNode
 ]
 

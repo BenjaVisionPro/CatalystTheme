@@ -62,6 +62,29 @@ CgtMatcherRowRenderItem >> isOtherRule: aBoolean [
 	^ self
 ]
 
+
+{ #category : 'testing' }
+CgtMatcherRowRenderItem >> isInScope [
+	^ isInScope
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowRenderItem >> isInScope: aBoolean [
+	isInScope := aBoolean.
+	^ self
+]
+
+{ #category : 'testing' }
+CgtMatcherRowRenderItem >> isRevealedContext [
+	^ isRevealedContext
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowRenderItem >> isRevealedContext: aBoolean [
+	isRevealedContext := aBoolean.
+	^ self
+]
+
 { #category : 'testing' }
 CgtMatcherRowRenderItem >> isRowItem [
 	^ true
@@ -86,30 +109,6 @@ CgtMatcherRowRenderItem >> projectionNode [
 { #category : 'accessing' }
 CgtMatcherRowRenderItem >> projectionNode: aCgtMatcherProjectionNode [
 	projectionNode := aCgtMatcherProjectionNode.
-	^ self
-]
-
-
-
-{ #category : 'testing' }
-CgtMatcherRowRenderItem >> isInScope [
-	^ isInScope
-]
-
-{ #category : 'accessing' }
-CgtMatcherRowRenderItem >> isInScope: aBoolean [
-	isInScope := aBoolean.
-	^ self
-]
-
-{ #category : 'testing' }
-CgtMatcherRowRenderItem >> isRevealedContext [
-	^ isRevealedContext
-]
-
-{ #category : 'accessing' }
-CgtMatcherRowRenderItem >> isRevealedContext: aBoolean [
-	isRevealedContext := aBoolean.
 	^ self
 ]
 

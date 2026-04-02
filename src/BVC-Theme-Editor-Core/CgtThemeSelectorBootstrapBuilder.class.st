@@ -35,8 +35,18 @@ CgtThemeSelectorBootstrapBuilder >> hierarchyRoot: anElement [
 
 { #category : 'building' }
 CgtThemeSelectorBootstrapBuilder >> buildSelector [
-	selectedElement ifNil: [ ^ nil ].
-	^ CgtThemeSimpleSelector defaultForElement: selectedElement
+	| elements selectors rootSelector |
+	elements := self elementChain.
+	elements ifEmpty: [ ^ nil ].
+	selectors := elements collect: [ :eachElement |
+		CgtThemeSimpleSelector defaultForElement: eachElement ].
+	rootSelector := selectors first.
+	selectors allButFirstDo: [ :eachSelector |
+		rootSelector := CgtThemeCombinatorSelector
+			left: rootSelector
+			combinator: #child
+			right: eachSelector ].
+	^ rootSelector
 ]
 
 { #category : 'building' }

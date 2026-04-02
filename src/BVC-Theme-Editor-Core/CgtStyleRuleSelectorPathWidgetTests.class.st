@@ -224,18 +224,21 @@ CgtStyleRuleSelectorPathWidgetTests >> testGapRenderItemsUseLeadingAndTrailingDi
 { #category : 'tests' }
 CgtStyleRuleSelectorPathWidgetTests >> testSelectedRenderItemIsAlwaysMarkedInScope [
 	<gtExample>
-	| projection widget selectedItem |
+	| projection selected widget rowItem |
 	projection := CgtMatcherProjection new.
-	projection addNode: ((CgtMatcherProjectionNode kind: #selectedElement)
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
 		className: 'SelectedElement';
 		elementId: (BlElementId named: #selected);
 		isInCurrentRule: false;
-		yourself).
+		yourself.
+	projection addNode: selected.
 	widget := CgtStyleRuleSelectorPathWidget new
 		projection: projection;
 		yourself.
-	selectedItem := widget renderItems detect: [ :each | each isRowItem and: [ each isSelected ] ].
-	self assert: selectedItem isInScope.
-	self deny: selectedItem isRevealedContext.
+	rowItem := widget renderItems first.
+	self assert: rowItem isRowItem.
+	self assert: rowItem isSelected.
+	self assert: rowItem isInScope.
+	self deny: rowItem isRevealedContext.
 	^ widget
 ]

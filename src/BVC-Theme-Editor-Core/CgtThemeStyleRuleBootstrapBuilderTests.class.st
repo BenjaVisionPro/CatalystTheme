@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'tests' }
-CgtThemeStyleRuleBootstrapBuilderTests >> testBuildsRuleForSelectedElementOnlyEvenWhenHierarchyRootIsAnAncestor [
+CgtThemeStyleRuleBootstrapBuilderTests >> testBuildsRuleFromHierarchyRootToSelectedElement [
 	<gtExample>
 	| root child selected rule |
 	root := self newTestElementWithId: #'root'.
@@ -19,7 +19,7 @@ CgtThemeStyleRuleBootstrapBuilderTests >> testBuildsRuleForSelectedElementOnlyEv
 	rule := CgtThemeStyleRuleBootstrapBuilder
 		ruleForSelectedElement: selected
 		withinHierarchyRoot: root.
-	self assert: rule selector displayString equals: '#selected'.
+	self assert: rule selector displayString equals: '#root > #child > #selected'.
 	^ rule
 
 ]
@@ -38,20 +38,6 @@ CgtThemeStyleRuleBootstrapBuilderTests >> testFallsBackToSelectedElementWhenHier
 
 ]
 
-
-
-{ #category : 'tests' }
-CgtThemeStyleRuleBootstrapBuilderTests >> testBootstrappedRuleStartsWithSelectedElementAsOnlyScopeNode [
-	<gtExample>
-	| root child selected rule |
-	root := self newTestElementWithId: #'root'.
-	child := root addChild: (self newTestElementWithId: #'child').
-	selected := child addChild: (self newTestElementWithId: #'selected').
-	rule := CgtThemeStyleRule bootstrapForSelectedElement: selected withinHierarchyRoot: root.
-	self assert: rule selector displayString equals: '#selected'.
-	^ rule
-
-]
 { #category : 'private' }
 CgtThemeStyleRuleBootstrapBuilderTests >> newTestElementWithId: aSymbol [.
 	^ CgtThemeSelectorTestElement new

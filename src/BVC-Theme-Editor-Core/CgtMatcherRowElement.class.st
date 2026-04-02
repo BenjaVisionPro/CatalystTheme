@@ -114,7 +114,6 @@ CgtMatcherRowElement >> otherRule: aBoolean [
 ]
 
 
-
 { #category : 'accessing' }
 CgtMatcherRowElement >> inScope: aBoolean [
 	isInScope := aBoolean.

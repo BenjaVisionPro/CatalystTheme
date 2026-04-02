@@ -153,17 +153,13 @@ CgtMatcherRowElementTests >> testRowAllowsRevealedContextStateToBeApplied [
 	<gtExample>
 	| node row |
 	node := (CgtMatcherProjectionNode kind: #upstreamScope)
-		className: 'IntermediateElement';
-		elementId: (BlElementId named: #intermediate);
-		matchByClass: false;
-		matchById: false;
+		className: 'ContextElement';
 		yourself.
 	row := CgtMatcherRowElement new
 		projectionNode: node;
-		inScope: false;
 		revealedContext: true;
 		yourself.
-	self deny: row isInScope.
 	self assert: row isRevealedContext.
+	self deny: row isInScope.
 	^ row
 ]

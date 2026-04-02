@@ -21,7 +21,7 @@ CgtMatcherGapElement >> initialize [
 	self
 		vFitContent;
 		hFitContent;
-		cellSpacing: 0;
+		cellSpacing: 2;
 		padding: (BlInsets all: 2);
 		background: Color transparent;
 		border: BlBorder empty;
@@ -62,22 +62,22 @@ CgtMatcherGapElement >> refreshContents [
 ]
 
 
-
 { #category : 'rendering' }
 CgtMatcherGapElement >> newCompactRevealHandle [
-	| button label |
-	button := BrButton new
-		aptitude: BrGlamorousButtonLabelAptitude + (BrGlamorousButtonRectangularAptitude paddingScale: 0.25; cornerRadius: 10);
+	| handle |
+	handle := BrButton new
+		label: '';
+		aptitude: (BrGlamorousButtonRectangularAptitude new
+			cornerRadius: 8;
+			paddingScale: 0.1);
+		background: (Color gray alpha: 0.18);
+		border: (BlBorder paint: (Color gray alpha: 0.28) width: 1);
+		constraintsDo: [ :c |
+			c horizontal exact: 28.
+			c vertical exact: 10 ];
 		action: [ :aButton | self requestCompactedSectionExpansionFor: projectionNode ];
-		beSmallSize;
-		background: (Color veryLightGray alpha: 0.9);
-		border: (BlBorder paint: (Color gray alpha: 0.25) width: 1);
 		yourself.
-	label := projectionNode hiddenNodeCount = 1
-		ifTrue: [ '1 hidden' ]
-		ifFalse: [ projectionNode hiddenNodeCount asString , ' hidden' ].
-	button label: label.
-	^ button
+	^ handle
 ]
 
 { #category : 'rendering' }

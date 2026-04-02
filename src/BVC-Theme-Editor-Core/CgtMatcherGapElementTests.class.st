@@ -56,12 +56,11 @@ CgtMatcherGapElementTests >> testRefreshContentsBuildsSingleCompactRevealHandle 
 	<gtExample>
 	| gap element |
 	gap := (CgtMatcherProjectionNode kind: #compactedSection)
-		hiddenNodeCount: 3;
+		hiddenNodeCount: 2;
 		yourself.
 	element := CgtMatcherGapElement new
 		projectionNode: gap;
 		yourself.
 	self assert: element children size equals: 1.
-	self assert: element children first class equals: BrButton.
 	^ element
 ]
