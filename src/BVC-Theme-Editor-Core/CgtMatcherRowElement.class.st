@@ -44,10 +44,10 @@ CgtMatcherRowElement >> initialize [
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ].
-	chipsContainer := BrHorizontalPane new
+	chipsContainer := BrVerticalPane new
 		vFitContent;
-		hFitContent;
-		cellSpacing: layoutPolicy nodeCellSpacing;
+		hMatchParent;
+		cellSpacing: 2;
 		yourself.
 	self when: BlClickEvent do: [ :anEvent | self onMouseSelect: anEvent ].
 	self when: BlElementHoveredEvent do: [ :anEvent | self onMouseEnter: anEvent ].
@@ -153,6 +153,11 @@ CgtMatcherRowElement >> idChipElement [
 	^ idChipElement
 ]
 
+{ #category : 'accessing' }
+CgtMatcherRowElement >> chipsContainer [
+	^ chipsContainer
+]
+
 { #category : 'rendering' }
 CgtMatcherRowElement >> refreshContents [
 	self removeChildren.
@@ -238,7 +243,18 @@ CgtMatcherRowElement >> updateVisualState [
 			selected: isSelected
 			inScope: isInScope
 			revealedContext: isRevealedContext
-			otherRule: isOtherRule)
+			otherRule: isOtherRule);
+		constraintsDo: [ :c |
+			c horizontal exact: self widthForCurrentState.
+			c vertical fitContent ]
+]
+
+
+{ #category : 'layout' }
+CgtMatcherRowElement >> widthForCurrentState [
+	isSelected ifTrue: [ ^ layoutPolicy selectedNodeWidth ].
+	isInScope ifTrue: [ ^ layoutPolicy scopeNodeWidth ].
+	^ layoutPolicy contextNodeWidth
 ]
 
 { #category : 'event handling' }

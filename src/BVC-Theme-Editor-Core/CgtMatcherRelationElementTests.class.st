@@ -58,3 +58,26 @@ CgtMatcherRelationElementTests >> testChooseDirectChildPublishesCombinatorChange
 	self assert: element isDirectChild.
 	^ element
 ]
+
+
+{ #category : 'tests' }
+CgtMatcherRelationElementTests >> testCompactDisplayLabelUsesDotForChild [
+	| element |
+	element := CgtMatcherRelationElement new.
+	self assert: element compactDisplayLabel equals: '•'.
+	^ element
+]
+
+{ #category : 'tests' }
+CgtMatcherRelationElementTests >> testCompactDisplayLabelUsesOpenDotForDescendant [
+	| relation element |
+	relation := (CgtMatcherProjectionRelation from: CgtMatcherProjectionNode new to: CgtMatcherProjectionNode new)
+		kind: #matcher;
+		combinator: #descendant;
+		yourself.
+	element := CgtMatcherRelationElement new
+		projectionRelation: relation;
+		yourself.
+	self assert: element compactDisplayLabel equals: '◌'.
+	^ element
+]

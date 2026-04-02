@@ -82,6 +82,22 @@ CgtMatcherLayoutPolicy >> compactedGapWidth [
 ]
 
 
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> relationControlDiameter [
+	^ 24
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> gapHandleWidth [
+	^ 34
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> gapHandleHeight [
+	^ 10
+]
+
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> chipMinimumWidth [
 	^ 56

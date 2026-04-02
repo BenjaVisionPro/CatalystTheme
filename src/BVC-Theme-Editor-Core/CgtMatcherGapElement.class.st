@@ -93,8 +93,8 @@ CgtMatcherGapElement >> newCompactRevealHandle [
 		background: (self compactRevealHandleBackground);
 		border: (self compactRevealHandleBorder);
 		constraintsDo: [ :c |
-			c horizontal exact: 30.
-			c vertical exact: 10 ];
+			c horizontal exact: layoutPolicy gapHandleWidth.
+			c vertical exact: layoutPolicy gapHandleHeight ];
 		action: [ :aButton | self requestCompactedSectionExpansionFor: projectionNode ];
 		yourself.
 	label := BrLabel new
@@ -207,8 +207,7 @@ CgtMatcherGapElement >> toggleButtonAptitudeActive: aBoolean enabled: isEnabled 
 	base := (BrGlamorousButtonLabelAptitude new
 			hoveredColor: Color black;
 			pressedColor: Color black) +
-		(BrGlamorousButtonRectangularAptitude
-			paddingScale: 0.45;
+		(BrGlamorousButtonRectangularAptitude new
 			cornerRadius: 4).
 	activeBackground := Color gray alpha: 0.18.
 	inactiveBackground := Color transparent.
