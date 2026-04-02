@@ -229,6 +229,7 @@ CgtStyleRuleSelectorPathWidget >> shouldRenderNodeAsRevealedContext: aProjection
 	(self shouldRenderNodeInScope: aProjectionNode) ifTrue: [ ^ false ].
 	aProjectionNode isCompactedSection ifTrue: [ ^ false ].
 	aProjectionNode isOtherRuleIndicator ifTrue: [ ^ false ].
+	aProjectionNode isInOtherRule ifTrue: [ ^ false ].
 	^ aProjectionNode representedElement notNil
 ]
 
