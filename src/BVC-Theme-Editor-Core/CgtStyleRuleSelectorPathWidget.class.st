@@ -282,6 +282,7 @@ CgtStyleRuleSelectorPathWidget >> buildGapElementFor: aGapRenderItem [
 		ifNone: [ nil ].
 	gapElement := CgtMatcherGapElement new
 		projectionNode: gapProjectionNode;
+		direction: aGapRenderItem direction;
 		outgoingRelation: (gapProjectionNode ifNil: [ nil ] ifNotNil: [ self outgoingRelationForGapNode: gapProjectionNode ]);
 		yourself.
 	gapElement when: CgtMatcherCombinatorChangedEvent do: [ :anEvent |

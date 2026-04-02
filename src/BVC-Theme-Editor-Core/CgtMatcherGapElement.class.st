@@ -8,7 +8,8 @@ Class {
 	#instVars : [
 		'projectionNode',
 		'outgoingRelation',
-		'layoutPolicy'
+		'layoutPolicy',
+		'direction'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -47,6 +48,20 @@ CgtMatcherGapElement >> outgoingRelation [
 	^ outgoingRelation
 ]
 
+
+{ #category : 'accessing' }
+CgtMatcherGapElement >> direction [
+	^ direction ifNil: [ #upstream ]
+]
+
+{ #category : 'accessing' }
+CgtMatcherGapElement >> direction: aSymbol [
+	direction := aSymbol.
+	self refreshContents.
+	^ self
+]
+
+
 { #category : 'accessing' }
 CgtMatcherGapElement >> outgoingRelation: aCgtMatcherProjectionRelation [
 	outgoingRelation := aCgtMatcherProjectionRelation.
@@ -64,19 +79,54 @@ CgtMatcherGapElement >> refreshContents [
 
 { #category : 'rendering' }
 CgtMatcherGapElement >> newCompactRevealHandle [
-	| handle |
+	| wrapper handle label |
+	wrapper := BrVerticalPane new
+		vFitContent;
+		hFitContent;
+		cellSpacing: 2;
+		padding: (BlInsets top: 1 right: 2 bottom: 1 left: 2);
+		yourself.
 	handle := BrButton new
 		label: '';
 		aptitude: (BrGlamorousButtonRectangularAptitude new
 			cornerRadius: 8);
-		background: (Color gray alpha: 0.18);
-		border: (BlBorder paint: (Color gray alpha: 0.28) width: 1);
+		background: (self compactRevealHandleBackground);
+		border: (self compactRevealHandleBorder);
 		constraintsDo: [ :c |
-			c horizontal exact: 28.
+			c horizontal exact: 30.
 			c vertical exact: 10 ];
 		action: [ :aButton | self requestCompactedSectionExpansionFor: projectionNode ];
 		yourself.
-	^ handle
+	label := BrLabel new
+		beSmallSize;
+		aptitude: (BrGlamorousLabelAptitude new foreground: (Color gray alpha: 0.75));
+		text: self compactRevealHintText;
+		yourself.
+	wrapper addChildren: { handle. label }.
+	^ wrapper
+]
+
+{ #category : 'rendering' }
+CgtMatcherGapElement >> compactRevealHandleBackground [
+	^ self isUpstreamGap
+		ifTrue: [ Color gray alpha: 0.32 ]
+		ifFalse: [ Color gray alpha: 0.24 ]
+]
+
+{ #category : 'rendering' }
+CgtMatcherGapElement >> compactRevealHandleBorder [
+	^ BlBorder paint: (self isUpstreamGap
+		ifTrue: [ Color black alpha: 0.32 ]
+		ifFalse: [ Color gray alpha: 0.34 ]) width: 1
+]
+
+{ #category : 'rendering' }
+CgtMatcherGapElement >> compactRevealHintText [
+	| countText |
+	countText := projectionNode hiddenNodeCount asString , ' hidden'.
+	^ self isUpstreamGap
+		ifTrue: [ countText , ' above' ]
+		ifFalse: [ countText , ' below' ]
 ]
 
 { #category : 'rendering' }
@@ -166,6 +216,17 @@ CgtMatcherGapElement >> toggleButtonAptitudeActive: aBoolean enabled: isEnabled 
 		aStyle background: (isEnabled
 			ifTrue: [ aBoolean ifTrue: [ activeBackground ] ifFalse: [ inactiveBackground ] ]
 			ifFalse: [ Color veryVeryLightGray alpha: 0.4 ]) ])
+]
+
+
+{ #category : 'testing' }
+CgtMatcherGapElement >> isUpstreamGap [
+	^ self direction ~= #downstream
+]
+
+{ #category : 'testing' }
+CgtMatcherGapElement >> isDownstreamGap [
+	^ self direction = #downstream
 ]
 
 { #category : 'testing' }
