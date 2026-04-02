@@ -98,7 +98,7 @@ CgtStyleRuleSelectorPathWidgetTests >> testForwardsRowSelectionEventAsSelectorNo
 		yourself.
 	widget when: CgtThemeSelectorNodeSelectedEvent do: [ :anEvent | forwardedEvent := anEvent ].
 	rowElement := (widget rowsContainer children detect: [ :each |
-		each isKindOf: CgtMatcherRowElement and: [ each projectionNode kind = #selectedElement ] ]).
+		(each isKindOf: CgtMatcherRowElement) and: [ each projectionNode kind = #selectedElement ] ]).
 	rowElement onMouseSelect: nil.
 	self assert: forwardedEvent notNil.
 	self assert: forwardedEvent projectionNode identicalTo: rowElement projectionNode.
