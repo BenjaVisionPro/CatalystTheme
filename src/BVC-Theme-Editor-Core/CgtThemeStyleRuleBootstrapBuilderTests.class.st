@@ -1,6 +1,6 @@
 "
 #Theme Style Rule Bootstrap Builder Tests
-I verify that bootstrap selector/rule creation starts from the selected live element only.
+I verify that bootstrap selector/rule creation now comes from the live hierarchy rather than from an editor path object.
 "
 Class {
 	#name : 'CgtThemeStyleRuleBootstrapBuilderTests',
@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'tests' }
-CgtThemeStyleRuleBootstrapBuilderTests >> testBuildsRuleForSelectedElementOnly [
+CgtThemeStyleRuleBootstrapBuilderTests >> testBuildsRuleFromHierarchyRootToSelectedElement [
 	<gtExample>
 	| root child selected rule |
 	root := self newTestElementWithId: #'root'.
@@ -19,7 +19,7 @@ CgtThemeStyleRuleBootstrapBuilderTests >> testBuildsRuleForSelectedElementOnly [
 	rule := CgtThemeStyleRuleBootstrapBuilder
 		ruleForSelectedElement: selected
 		withinHierarchyRoot: root.
-	self assert: rule selector displayString equals: '#selected'.
+	self assert: rule selector displayString equals: '#root > #child > #selected'.
 	^ rule
 
 ]

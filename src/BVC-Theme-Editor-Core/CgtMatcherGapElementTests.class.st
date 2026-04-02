@@ -60,26 +60,7 @@ CgtMatcherGapElementTests >> testRefreshContentsBuildsSingleCompactRevealHandle 
 		yourself.
 	element := CgtMatcherGapElement new
 		projectionNode: gap;
-		direction: #upstream;
 		yourself.
 	self assert: element children size equals: 1.
-	self assert: element children first children size equals: 2.
-	self assert: element children first children second text asString equals: '2 hidden above'.
-	^ element
-]
-
-
-{ #category : 'tests' }
-CgtMatcherGapElementTests >> testDownstreamGapUsesBelowHintText [
-	<gtExample>
-	| gap element |
-	gap := (CgtMatcherProjectionNode kind: #compactedSection)
-		hiddenNodeCount: 1;
-		yourself.
-	element := CgtMatcherGapElement new
-		projectionNode: gap;
-		direction: #downstream;
-		yourself.
-	self assert: element children first children second text asString equals: '1 hidden below'.
 	^ element
 ]

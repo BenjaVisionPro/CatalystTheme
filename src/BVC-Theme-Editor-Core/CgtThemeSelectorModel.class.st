@@ -357,13 +357,29 @@ CgtThemeSelectorModel >> styleRule: aCgtThemeStyleRule [
 { #category : 'editing' }
 CgtThemeSelectorModel >> toggleClassMatchForProjectionNode: aProjectionNode shouldMatch: aBoolean [
 	self withProjectionMutationDo: [
-		aProjectionNode ifNotNil: [ aProjectionNode matchByClass: aBoolean ] ]
+		aProjectionNode ifNil: [ ^ self ].
+		(aBoolean and: [ aProjectionNode isInCurrentRule not ]) ifTrue: [
+			self includeProjectionNodeInRule: aProjectionNode ].
+		aProjectionNode matchByClass: aBoolean.
+		((aBoolean not)
+			and: [ aProjectionNode kind ~= #selectedElement ]
+			and: [ aProjectionNode isInCurrentRule ]
+			and: [ aProjectionNode matchById not ]) ifTrue: [
+			self excludeProjectionNodeFromRule: aProjectionNode ] ]
 ]
 
 { #category : 'editing' }
 CgtThemeSelectorModel >> toggleIdMatchForProjectionNode: aProjectionNode shouldMatch: aBoolean [
 	self withProjectionMutationDo: [
-		aProjectionNode ifNotNil: [ aProjectionNode matchById: aBoolean ] ]
+		aProjectionNode ifNil: [ ^ self ].
+		(aBoolean and: [ aProjectionNode isInCurrentRule not ]) ifTrue: [
+			self includeProjectionNodeInRule: aProjectionNode ].
+		aProjectionNode matchById: aBoolean.
+		((aBoolean not)
+			and: [ aProjectionNode kind ~= #selectedElement ]
+			and: [ aProjectionNode isInCurrentRule ]
+			and: [ aProjectionNode matchByClass not ]) ifTrue: [
+			self excludeProjectionNodeFromRule: aProjectionNode ] ]
 ]
 
 { #category : 'accessing' }

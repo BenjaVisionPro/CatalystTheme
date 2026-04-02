@@ -491,3 +491,63 @@ CgtThemeSelectorModelTests >> testExpandedContextQueryTracksTemporaryGapRevealSt
 	^ model
 ]
 
+
+
+{ #category : 'tests' }
+CgtThemeSelectorModelTests >> testApplyClassMatchToRevealedContextPromotesNodeIntoCurrentRule [
+	<gtExample>
+	| root middle selected rule model compactedNode middleNode |
+	root := self newTestElementWithId: #root.
+	middle := self newTestElementWithId: #middle.
+	selected := self newTestElementWithId: #selected.
+	root addChild: middle.
+	middle addChild: selected.
+	rule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	model := CgtThemeSelectorModel new
+		configureForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: #().
+	compactedNode := model projection nodes detect: [ :each | each isCompactedSection ].
+	model revealCompactedProjectionNode: compactedNode.
+	middleNode := model projection nodes detect: [ :each | each representedElement == middle ].
+	self deny: middleNode isInCurrentRule.
+	model applyClassMatch: true toProjectionNode: middleNode.
+	self assert: (model currentRuleProjectionNodes anySatisfy: [ :each |
+		each representedElement == middle and: [ each isInCurrentRule ] ]).
+	^ model
+]
+
+{ #category : 'tests' }
+CgtThemeSelectorModelTests >> testDisablingLastMatcherRemovesNonSelectedNodeFromCurrentRule [
+	<gtExample>
+	| root middle selected rule model compactedNode middleNode |
+	root := self newTestElementWithId: #root.
+	middle := self newTestElementWithId: #middle.
+	selected := self newTestElementWithId: #selected.
+	root addChild: middle.
+	middle addChild: selected.
+	rule := CgtThemeStyleRule new
+		selector: (CgtThemeSimpleSelector new
+			addPredicate: (CgtThemeIdPredicate elementId: #selected);
+			yourself);
+		yourself.
+	model := CgtThemeSelectorModel new
+		configureForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: #().
+	compactedNode := model projection nodes detect: [ :each | each isCompactedSection ].
+	model revealCompactedProjectionNode: compactedNode.
+	middleNode := model projection nodes detect: [ :each | each representedElement == middle ].
+	model applyClassMatch: true toProjectionNode: middleNode.
+	middleNode := model projection nodes detect: [ :each | each representedElement == middle ].
+	model applyClassMatch: false toProjectionNode: middleNode.
+	self deny: (model currentRuleProjectionNodes anySatisfy: [ :each |
+		each representedElement == middle and: [ each isInCurrentRule ] ]).
+	^ model
+]

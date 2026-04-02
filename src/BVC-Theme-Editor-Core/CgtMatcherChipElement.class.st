@@ -29,7 +29,7 @@ CgtMatcherChipElement >> initialize [
 	isEnabled := false.
 	self
 		vFitContent;
-		hMatchParent;
+		hFitContent;
 		padding: (BlInsets
 			top: layoutPolicy chipVerticalPadding
 			right: layoutPolicy chipHorizontalPadding

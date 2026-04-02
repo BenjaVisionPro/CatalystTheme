@@ -163,35 +163,3 @@ CgtMatcherRowElementTests >> testRowAllowsRevealedContextStateToBeApplied [
 	self deny: row isInScope.
 	^ row
 ]
-
-
-{ #category : 'tests' }
-CgtMatcherRowElementTests >> testBuildsMatcherChipsInVerticalStack [
-	| node row |
-	node := (CgtMatcherProjectionNode kind: #selectedElement)
-		className: 'SelectedElement';
-		elementId: (BlElementId named: #'selected-node');
-		matchByClass: true;
-		matchById: false;
-		yourself.
-	row := CgtMatcherRowElement new
-		projectionNode: node;
-		yourself.
-	self assert: row chipsContainer class equals: BrVerticalPane.
-	^ row
-]
-
-{ #category : 'tests' }
-CgtMatcherRowElementTests >> testSelectedRowUsesSelectedWidth [
-	| node row |
-	node := (CgtMatcherProjectionNode kind: #selectedElement)
-		className: 'SelectedElement';
-		matchByClass: true;
-		yourself.
-	row := CgtMatcherRowElement new
-		projectionNode: node;
-		selected: true;
-		yourself.
-	self assert: row widthForCurrentState equals: CgtMatcherLayoutPolicy new selectedNodeWidth.
-	^ row
-]
