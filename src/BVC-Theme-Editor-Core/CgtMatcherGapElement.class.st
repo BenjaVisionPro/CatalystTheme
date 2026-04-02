@@ -61,6 +61,28 @@ CgtMatcherGapElement >> refreshContents [
 	self addChild: self newCompactRevealHandle
 ]
 
+
+
+{ #category : 'rendering' }
+CgtMatcherGapElement >> newCompactRevealHandle [
+	| button |
+	button := BrButton new
+		label: '';
+		aptitude: ((BrGlamorousButtonRectangularAptitude
+			paddingScale: 0.2;
+			cornerRadius: 6) +
+			(BrStyleCommonAptitude new default: [ :aStyle |
+				aStyle
+					background: (Color veryLightGray alpha: 0.9);
+					border: (BlBorder paint: (Color gray alpha: 0.35) width: 1) ]));
+		action: [ :aButton | self requestCompactedSectionExpansionFor: projectionNode ];
+		constraintsDo: [ :c |
+			c horizontal exact: 28.
+			c vertical exact: 10 ];
+		yourself.
+	^ button
+]
+
 { #category : 'rendering' }
 CgtMatcherGapElement >> newHiddenCountLabel [
 	| text |
