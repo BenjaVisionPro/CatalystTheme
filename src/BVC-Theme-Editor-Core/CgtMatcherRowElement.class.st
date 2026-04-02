@@ -1,0 +1,252 @@
+"
+#Matcher Row Element
+I render one visible matcher row for the upcoming custom style-rule selector widget. I am responsible for composing an optional incoming relation control with matcher chips and forwarding row-level hover, selection, and child edit events without owning selector semantics.
+"
+Class {
+	#name : 'CgtMatcherRowElement',
+	#superclass : 'BrHorizontalPane',
+	#instVars : [
+		'projectionNode',
+		'incomingRelation',
+		'relationElement',
+		'chipsContainer',
+		'classChipElement',
+		'idChipElement',
+		'nodeVisualPolicy',
+		'layoutPolicy',
+		'isSelected',
+		'isCurrentRule',
+		'isOtherRule',
+		'hoverNestingCount'
+	],
+	#category : 'BVC-Theme-Editor-Core',
+	#package : 'BVC-Theme-Editor-Core'
+}
+
+{ #category : 'initialization' }
+CgtMatcherRowElement >> initialize [
+	super initialize.
+	layoutPolicy := CgtMatcherLayoutPolicy new.
+	nodeVisualPolicy := CgtMatcherNodeVisualPolicy new.
+	isSelected := false.
+	isCurrentRule := false.
+	isOtherRule := false.
+	hoverNestingCount := 0.
+	self
+		vFitContent;
+		hFitContent;
+		cellSpacing: layoutPolicy nodeCellSpacing;
+		padding: layoutPolicy nodePadding;
+		constraintsDo: [ :c |
+			c horizontal fitContent.
+			c vertical fitContent ].
+	chipsContainer := BrHorizontalPane new
+		vFitContent;
+		hFitContent;
+		cellSpacing: layoutPolicy nodeCellSpacing;
+		yourself.
+	self when: BlClickEvent do: [ :anEvent | self onMouseSelect: anEvent ].
+	self when: BlElementHoveredEvent do: [ :anEvent | self onMouseEnter: anEvent ].
+	self when: BlElementUnhoveredEvent do: [ :anEvent | self onMouseLeave: anEvent ].
+	self refreshContents
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> projectionNode [
+	^ projectionNode
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> projectionNode: aCgtMatcherProjectionNode [
+	projectionNode := aCgtMatcherProjectionNode.
+	hoverNestingCount := 0.
+	self refreshContents.
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> incomingRelation [
+	^ incomingRelation
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> incomingRelation: aCgtMatcherProjectionRelation [
+	incomingRelation := aCgtMatcherProjectionRelation.
+	self refreshContents.
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> nodeVisualPolicy [
+	^ nodeVisualPolicy
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> nodeVisualPolicy: aCgtMatcherNodeVisualPolicy [
+	nodeVisualPolicy := aCgtMatcherNodeVisualPolicy.
+	self refreshContents.
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> selected: aBoolean [
+	isSelected := aBoolean.
+	self refreshContents.
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> currentRule: aBoolean [
+	isCurrentRule := aBoolean.
+	self refreshContents.
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> otherRule: aBoolean [
+	isOtherRule := aBoolean.
+	self refreshContents.
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> relationElement [
+	^ relationElement
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> classChipElement [
+	^ classChipElement
+]
+
+{ #category : 'accessing' }
+CgtMatcherRowElement >> idChipElement [
+	^ idChipElement
+]
+
+{ #category : 'rendering' }
+CgtMatcherRowElement >> refreshContents [
+	self removeChildren.
+	relationElement := nil.
+	classChipElement := nil.
+	idChipElement := nil.
+	chipsContainer removeChildren.
+	projectionNode ifNil: [ ^ self ].
+	self updateVisualState.
+	self buildRelationElementIfNeeded.
+	self buildMatcherChips.
+	relationElement ifNotNil: [ self addChild: relationElement ].
+	self addChild: chipsContainer.
+	^ self
+]
+
+{ #category : 'rendering' }
+CgtMatcherRowElement >> buildRelationElementIfNeeded [
+	incomingRelation ifNil: [ ^ self ].
+	relationElement := CgtMatcherRelationElement new
+		projectionRelation: incomingRelation;
+		yourself.
+	relationElement when: CgtMatcherCombinatorChangedEvent do: [ :anEvent |
+		self fireEvent: (CgtMatcherCombinatorChangedEvent new
+			relation: anEvent relation;
+			combinator: anEvent combinator;
+			yourself) ]
+]
+
+{ #category : 'rendering' }
+CgtMatcherRowElement >> buildMatcherChips [
+	self buildClassChipIfNeeded.
+	self buildIdChipIfNeeded.
+]
+
+{ #category : 'rendering' }
+CgtMatcherRowElement >> buildClassChipIfNeeded [
+	projectionNode className ifNil: [ ^ self ].
+	classChipElement := CgtMatcherChipElement new
+		chipKind: #class;
+		projectionNode: projectionNode;
+		matcherLabel: projectionNode className;
+		enabled: projectionNode matchByClass;
+		nodeVisualPolicy: nodeVisualPolicy;
+		yourself.
+	classChipElement when: CgtMatcherClassMatchToggledEvent do: [ :anEvent |
+		self fireEvent: (CgtMatcherClassMatchToggledEvent new
+			projectionNode: anEvent projectionNode;
+			shouldMatch: anEvent shouldMatch;
+			yourself) ].
+	chipsContainer addChild: classChipElement
+]
+
+{ #category : 'rendering' }
+CgtMatcherRowElement >> buildIdChipIfNeeded [
+	projectionNode elementId ifNil: [ ^ self ].
+	idChipElement := CgtMatcherChipElement new
+		chipKind: #elementId;
+		projectionNode: projectionNode;
+		matcherLabel: projectionNode elementId asString;
+		enabled: projectionNode matchById;
+		nodeVisualPolicy: nodeVisualPolicy;
+		yourself.
+	idChipElement when: CgtMatcherIdMatchToggledEvent do: [ :anEvent |
+		self fireEvent: (CgtMatcherIdMatchToggledEvent new
+			projectionNode: anEvent projectionNode;
+			shouldMatch: anEvent shouldMatch;
+			yourself) ].
+	chipsContainer addChild: idChipElement
+]
+
+{ #category : 'rendering' }
+CgtMatcherRowElement >> updateVisualState [
+	| baseNode border |
+	baseNode := projectionNode.
+	self background: (nodeVisualPolicy backgroundForNode: baseNode).
+	border := nodeVisualPolicy borderForNode: baseNode.
+	isSelected ifTrue: [
+		border := BlBorder paint: (Color black alpha: 0.25) width: 2 ].
+	isOtherRule ifTrue: [
+		border := BlBorder paint: (Color orange alpha: 0.45) width: 1 ].
+	self border: border
+]
+
+{ #category : 'event handling' }
+CgtMatcherRowElement >> onMouseEnter: anEvent [
+	projectionNode ifNil: [ ^ self ].
+	hoverNestingCount := hoverNestingCount + 1.
+	hoverNestingCount = 1 ifFalse: [ ^ self ].
+	self fireEvent: (CgtMatcherNodeHoveredEvent new
+		projectionNode: projectionNode;
+		yourself)
+]
+
+{ #category : 'event handling' }
+CgtMatcherRowElement >> onMouseLeave: anEvent [
+	projectionNode ifNil: [ ^ self ].
+	hoverNestingCount := (hoverNestingCount - 1) max: 0.
+	hoverNestingCount = 0 ifFalse: [ ^ self ].
+	self fireEvent: (CgtMatcherNodeUnhoveredEvent new
+		projectionNode: projectionNode;
+		yourself)
+]
+
+{ #category : 'event handling' }
+CgtMatcherRowElement >> onMouseSelect: anEvent [
+	projectionNode ifNil: [ ^ self ].
+	self fireEvent: (CgtMatcherNodeSelectedEvent new
+		projectionNode: projectionNode;
+		yourself)
+]
+
+{ #category : 'testing' }
+CgtMatcherRowElement >> hasRelationElement [
+	^ relationElement notNil
+]
+
+{ #category : 'testing' }
+CgtMatcherRowElement >> hasClassMatcher [
+	^ classChipElement notNil
+]
+
+{ #category : 'testing' }
+CgtMatcherRowElement >> hasIdMatcher [
+	^ idChipElement notNil
+]
