@@ -30,6 +30,17 @@ CgtMatcherRelationVisualPolicy >> labelForRelation: aRelation [
 	aRelation kind = #otherRule ifTrue: [ ^ 'Other rule' ].
 	aRelation kind = #compaction ifTrue: [ ^ 'Compacted context' ].
 	aRelation kind = #context ifTrue: [ ^ 'Revealed context' ].
-	(aRelation combinator = #descendant) ifTrue: [ ^ 'Descendant relation' ].
-	^ 'Child relation'
+	(aRelation combinator = #descendant) ifTrue: [ ^ self labelForAnyDepth ].
+	^ self labelForDirectChild
+]
+
+
+{ #category : 'styling' }
+CgtMatcherRelationVisualPolicy >> labelForDirectChild [
+	^ 'Child'
+]
+
+{ #category : 'styling' }
+CgtMatcherRelationVisualPolicy >> labelForAnyDepth [
+	^ 'Deep'
 ]

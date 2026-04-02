@@ -36,7 +36,7 @@ CgtMatcherChipElement >> initialize [
 			bottom: layoutPolicy chipVerticalPadding
 			left: layoutPolicy chipHorizontalPadding);
 		constraintsDo: [ :c |
-			c horizontal min: layoutPolicy chipMinimumWidth.
+			c horizontal fitContent.
 			c vertical fitContent ].
 	labelElement := BrLabel new
 		beSmallSize;
