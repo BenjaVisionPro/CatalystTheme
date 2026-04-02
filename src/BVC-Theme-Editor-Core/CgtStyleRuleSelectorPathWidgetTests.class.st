@@ -370,8 +370,22 @@ CgtStyleRuleSelectorPathWidgetTests >> testRefreshContentsBuildsRevealElementFor
 		yourself.
 	revealElements := widget rowsContainer children select: [ :each | each isKindOf: CgtMatcherRevealElement ].
 	self assert: revealElements size equals: 1.
-	revealRows := revealElements first children select: [ :each | each isKindOf: CgtMatcherRowElement ].
+	revealRows := revealElements first rowElements.
 	self assert: revealRows size equals: 2.
 	self assert: (revealRows allSatisfy: [ :each | each projectionNode isInCurrentRule not ]).
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementHostsRowsInDedicatedContentContainer [
+	<gtExample>
+	| projection widget revealElement |
+	projection := self newProjectionWithRevealedLeadingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement contentContainer children size equals: 2.
+	self assert: revealElement rowElements asArray equals: revealElement contentContainer children asArray.
 	^ widget
 ]

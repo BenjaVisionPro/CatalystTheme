@@ -324,12 +324,13 @@ CgtStyleRuleSelectorPathWidget >> buildRowElementFor: aRowRenderItem [
 
 { #category : 'rendering' }
 CgtStyleRuleSelectorPathWidget >> buildRevealElementFor: aRevealRenderItem [
-	| revealElement |
+	| revealElement rowElements |
+	rowElements := aRevealRenderItem rowItems collect: [ :each |
+		self buildRowElementFor: each ].
 	revealElement := CgtMatcherRevealElement new
 		direction: aRevealRenderItem direction;
+		rowElements: rowElements;
 		yourself.
-	aRevealRenderItem rowItems do: [ :each |
-		revealElement addChild: (self buildRowElementFor: each) ].
 	^ revealElement
 ]
 
