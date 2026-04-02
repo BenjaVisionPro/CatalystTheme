@@ -136,3 +136,86 @@ CgtStyleRuleSelectorPathWidgetTests >> testForwardsGapExpansionEventAsSelectorCo
 	self assert: forwardedEvent projectionNode identicalTo: leadingGap.
 	^ widget
 ]
+
+
+{ #category : 'private' }
+CgtStyleRuleSelectorPathWidgetTests >> newProjectionWithLeadingGapSelectedTrailingGapChildAndIndicator [
+	| projection leadingGap selected trailingGap child indicator |
+	projection := CgtMatcherProjection new.
+	leadingGap := (CgtMatcherProjectionNode kind: #compactedSection)
+		gapIdentity: #leadingGap;
+		hiddenNodeCount: 2;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		className: 'SelectedElement';
+		elementId: (BlElementId named: #selected);
+		isInCurrentRule: true;
+		matchByClass: true;
+		yourself.
+	trailingGap := (CgtMatcherProjectionNode kind: #compactedSection)
+		gapIdentity: #trailingGap;
+		hiddenNodeCount: 1;
+		yourself.
+	child := (CgtMatcherProjectionNode kind: #selectedChildScope)
+		className: 'ChildElement';
+		elementId: (BlElementId named: #child);
+		isInCurrentRule: true;
+		matchById: true;
+		yourself.
+	indicator := (CgtMatcherProjectionNode kind: #otherRuleIndicator)
+		hiddenNodeCount: 3;
+		isEditable: false;
+		yourself.
+	projection
+		addNode: leadingGap;
+		addNode: selected;
+		addNode: trailingGap;
+		addNode: child;
+		addNode: indicator;
+		addRelation: ((CgtMatcherProjectionRelation from: leadingGap to: selected kind: #compaction)
+			combinator: #child;
+			yourself);
+		addRelation: ((CgtMatcherProjectionRelation from: selected to: trailingGap kind: #compaction)
+			combinator: #child;
+			yourself);
+		addRelation: ((CgtMatcherProjectionRelation from: trailingGap to: child kind: #matcher)
+			combinator: #descendant;
+			yourself);
+		addRelation: (CgtMatcherProjectionRelation from: selected to: indicator kind: #otherRule).
+	^ projection
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testBuildRenderItemsCentersSequenceOnSelectedNodeAndPlacesIndicatorAfterIt [
+	<gtExample>
+	| projection widget items |
+	projection := self newProjectionWithLeadingGapSelectedTrailingGapChildAndIndicator.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	items := widget renderItems asArray.
+	self assert: items size equals: 5.
+	self assert: items first isGapItem.
+	self assert: items second isRowItem.
+	self assert: items second projectionNode kind equals: #selectedElement.
+	self assert: items third isOtherRuleIndicatorItem.
+	self assert: items fourth isGapItem.
+	self assert: items fifth isRowItem.
+	self assert: items fifth projectionNode kind equals: #selectedChildScope.
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testGapRenderItemsUseLeadingAndTrailingDirections [
+	<gtExample>
+	| projection widget gapItems |
+	projection := self newProjectionWithLeadingGapSelectedTrailingGapChildAndIndicator.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	gapItems := widget renderItems select: [ :each | each isGapItem ].
+	self assert: gapItems size equals: 2.
+	self assert: gapItems first direction equals: #upstream.
+	self assert: gapItems second direction equals: #downstream.
+	^ widget
+]
