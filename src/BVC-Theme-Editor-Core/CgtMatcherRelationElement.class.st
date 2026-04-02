@@ -70,11 +70,8 @@ CgtMatcherRelationElement >> refreshContents [
 		padding: (BlInsets all: 0);
 		outskirts: BlOutskirts centered;
 		label: self badgeLabel;
-		aptitude: ((BrGlamorousButtonLabelAptitude new
-			foreground: (Color black alpha: 0.65))
-			+ (BrGlamorousButtonRectangularAptitude new
-				paddingScale: 0;
-				cornerRadius: 9));
+		aptitude: (BrGlamorousButtonLabelAptitude new
+			foreground: (Color black alpha: 0.65));
 		geometry: (BlEllipseGeometry new);
 		background: Color transparent;
 		border: (BlBorder

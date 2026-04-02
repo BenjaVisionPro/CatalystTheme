@@ -41,7 +41,8 @@ CgtMatcherChipElement >> initialize [
 			c horizontal exact: self desiredChipWidth.
 			c vertical fitContent ].
 	labelElement := BrLabel new
-		aptitude: BrGlamorousLabelAptitude new.
+		aptitude: BrGlamorousLabelAptitude new;
+		padding: (BlInsets all: 0).
 	self addChild: labelElement.
 	self when: BlClickEvent do: [ :anEvent | self onChipClicked: anEvent ].
 	self refreshContents
