@@ -21,6 +21,7 @@ CgtMatcherRowElementTests >> testBuildsClassAndIdChipsFromProjectionNode [
 		yourself.
 	row := CgtMatcherRowElement new
 		projectionNode: node;
+		inScope: true;
 		yourself.
 	self assert: row hasClassMatcher.
 	self assert: row hasIdMatcher.
@@ -75,9 +76,25 @@ CgtMatcherRowElementTests >> testNonRootRowBuildsRelationElement [
 	row := CgtMatcherRowElement new
 		projectionNode: child;
 		incomingRelation: relation;
+		inScope: true;
 		yourself.
 	self assert: row hasRelationElement.
 	self assert: row relationElement projectionRelation identicalTo: relation.
+	^ row
+]
+
+{ #category : 'tests' }
+CgtMatcherRowElementTests >> testOutOfScopeRowDoesNotBuildRelationElement [
+	<gtExample>
+	| node row |
+	node := (CgtMatcherProjectionNode kind: #revealedContext)
+		className: 'ContextElement';
+		yourself.
+	row := CgtMatcherRowElement new
+		projectionNode: node;
+		inScope: false;
+		yourself.
+	self deny: row hasRelationElement.
 	^ row
 ]
 
@@ -116,6 +133,7 @@ CgtMatcherRowElementTests >> testRelationChangeIsForwardedByRow [
 	row := CgtMatcherRowElement new
 		projectionNode: child;
 		incomingRelation: relation;
+		inScope: true;
 		yourself.
 	row when: CgtMatcherCombinatorChangedEvent do: [ :anEvent | event := anEvent ].
 	row relationElement chooseAnyDepth.

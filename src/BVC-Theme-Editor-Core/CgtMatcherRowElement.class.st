@@ -177,6 +177,7 @@ CgtMatcherRowElement >> refreshContents [
 
 { #category : 'rendering' }
 CgtMatcherRowElement >> buildRelationElementIfNeeded [
+	isInScope ifFalse: [ ^ self ].
 	relationElement := CgtMatcherRelationElement new
 		projectionRelation: incomingRelation;
 		yourself.
