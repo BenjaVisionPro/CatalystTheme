@@ -389,3 +389,43 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementHostsRowsInDedicatedCont
 	self assert: revealElement rowElements asArray equals: revealElement contentContainer children asArray.
 	^ widget
 ]
+
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRefreshContentsBuildsRevealElementWithViewportContainer [
+	<gtExample>
+	| projection widget revealElement |
+	projection := self newProjectionWithRevealedLeadingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement viewportContainer children size equals: 1.
+	self assert: revealElement viewportContainer children first identicalTo: revealElement contentContainer.
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testProjectionRefreshComputesRevealStructuralRefreshPlan [
+	<gtExample>
+	| widget |
+	widget := CgtStyleRuleSelectorPathWidget new.
+	widget projection: self newProjectionWithUpstreamSelectedAndIndicator.
+	widget projection: self newProjectionWithRevealedLeadingContext.
+	self assert: widget structuralRefreshPlan isReveal.
+	self assert: widget structuralRefreshPlan revealOffset equals: (0 @ -24).
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementReceivesStructuralRefreshPlanAndTransitionPolicy [
+	<gtExample>
+	| widget revealElement |
+	widget := CgtStyleRuleSelectorPathWidget new.
+	widget projection: self newProjectionWithUpstreamSelectedAndIndicator.
+	widget projection: self newProjectionWithRevealedLeadingContext.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement structuralRefreshPlan identicalTo: widget structuralRefreshPlan.
+	self assert: revealElement transitionPolicy class equals: CgtMatcherTransitionPolicy.
+	^ widget
+]

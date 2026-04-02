@@ -13,7 +13,9 @@ Class {
 		'rowsContainer',
 		'renderItems',
 		'previousRenderItems',
-		'renderElementsByKey'
+		'renderElementsByKey',
+		'previousProjection',
+		'structuralRefreshPlan'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -29,6 +31,8 @@ CgtStyleRuleSelectorPathWidget >> initialize [
 	renderItems := OrderedCollection new.
 	previousRenderItems := OrderedCollection new.
 	renderElementsByKey := Dictionary new.
+	previousProjection := nil.
+	structuralRefreshPlan := CgtMatcherStructuralRefreshPlan new.
 	self
 		vFitContent;
 		hMatchParent;
@@ -52,11 +56,26 @@ CgtStyleRuleSelectorPathWidget >> renderItems [
 	^ renderItems copy
 ]
 
+{ #category : 'accessing' }
+CgtStyleRuleSelectorPathWidget >> structuralRefreshPlan [
+	^ structuralRefreshPlan
+]
+
+{ #category : 'accessing' }
+CgtStyleRuleSelectorPathWidget >> previousProjection [
+	^ previousProjection
+]
+
 { #category : 'rendering' }
 CgtStyleRuleSelectorPathWidget >> refreshContents [
 	previousRenderItems := renderItems ifNil: [ OrderedCollection new ] ifNotNil: [ renderItems copy ].
+	structuralRefreshPlan := transitionPolicy
+		structuralRefreshPlanFrom: previousProjection
+		to: projection
+		orientation: layoutPolicy corridorOrientation.
 	renderItems := self buildRenderItemsFromProjection.
 	self renderItems: renderItems.
+	previousProjection := projection.
 	^ self
 ]
 
@@ -329,6 +348,8 @@ CgtStyleRuleSelectorPathWidget >> buildRevealElementFor: aRevealRenderItem [
 		self buildRowElementFor: each ].
 	revealElement := CgtMatcherRevealElement new
 		direction: aRevealRenderItem direction;
+		transitionPolicy: transitionPolicy;
+		structuralRefreshPlan: structuralRefreshPlan;
 		rowElements: rowElements;
 		yourself.
 	^ revealElement

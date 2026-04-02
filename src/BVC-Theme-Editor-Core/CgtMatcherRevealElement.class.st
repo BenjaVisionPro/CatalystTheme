@@ -9,7 +9,10 @@ Class {
 		'direction',
 		'layoutPolicy',
 		'contentContainer',
-		'rowElements'
+		'viewportContainer',
+		'rowElements',
+		'transitionPolicy',
+		'structuralRefreshPlan'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -19,6 +22,8 @@ Class {
 CgtMatcherRevealElement >> initialize [
 	super initialize.
 	layoutPolicy := CgtMatcherLayoutPolicy new.
+	transitionPolicy := CgtMatcherTransitionPolicy new.
+	structuralRefreshPlan := CgtMatcherStructuralRefreshPlan new.
 	rowElements := OrderedCollection new.
 	self
 		vFitContent;
@@ -29,18 +34,59 @@ CgtMatcherRevealElement >> initialize [
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ].
+	viewportContainer := BrVerticalPane new
+		vFitContent;
+		hFitContent;
+		cellSpacing: 0;
+		padding: (BlInsets all: 0);
+		background: Color transparent;
+		border: BlBorder empty;
+		constraintsDo: [ :c |
+			c horizontal fitContent.
+			c vertical fitContent ];
+		yourself.
 	contentContainer := BrVerticalPane new
 		vFitContent;
 		hFitContent;
 		cellSpacing: layoutPolicy widgetCellSpacing;
 		background: Color transparent;
+		border: BlBorder empty;
 		yourself.
-	self addChild: contentContainer
+	viewportContainer addChild: contentContainer.
+	self addChild: viewportContainer
 ]
 
 { #category : 'accessing' }
 CgtMatcherRevealElement >> contentContainer [
 	^ contentContainer
+]
+
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> viewportContainer [
+	^ viewportContainer
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> transitionPolicy [
+	^ transitionPolicy
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> transitionPolicy: aTransitionPolicy [
+	transitionPolicy := aTransitionPolicy ifNil: [ CgtMatcherTransitionPolicy new ].
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> structuralRefreshPlan [
+	^ structuralRefreshPlan
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> structuralRefreshPlan: aStructuralRefreshPlan [
+	structuralRefreshPlan := aStructuralRefreshPlan ifNil: [ CgtMatcherStructuralRefreshPlan new ].
+	^ self
 ]
 
 { #category : 'accessing' }
