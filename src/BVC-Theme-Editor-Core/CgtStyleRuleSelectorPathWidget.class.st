@@ -238,7 +238,6 @@ CgtStyleRuleSelectorPathWidget >> renderItems: aCollection [
 	aCollection do: [ :each |
 		| element |
 		element := self buildElementForRenderItem: each.
-		renderElementsByKey at: each renderKey put: element.
 		rowsContainer addChild: element ].
 	^ self
 ]
