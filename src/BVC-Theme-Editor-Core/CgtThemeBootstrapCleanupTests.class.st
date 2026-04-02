@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'tests' }
-CgtThemeBootstrapCleanupTests >> testSelectorBootstrapClassSideEntryPointBuildsFromHierarchyContext [
+CgtThemeBootstrapCleanupTests >> testSelectorBootstrapClassSideEntryPointBuildsSelectedElementOnly [
 	<gtExample>
 	| root child selected selector |
 	root := self newTestElementWithId: #'root'.
@@ -19,13 +19,13 @@ CgtThemeBootstrapCleanupTests >> testSelectorBootstrapClassSideEntryPointBuildsF
 	selector := CgtThemeSelector
 		bootstrapForSelectedElement: selected
 		withinHierarchyRoot: root.
-	self assert: selector displayString equals: '#root > #child > #selected'.
+	self assert: selector displayString equals: '#selected'.
 	^ selector
 
 ]
 
 { #category : 'tests' }
-CgtThemeBootstrapCleanupTests >> testStyleRuleBootstrapClassSideEntryPointBuildsFromHierarchyContext [
+CgtThemeBootstrapCleanupTests >> testStyleRuleBootstrapClassSideEntryPointBuildsSelectedElementOnly [
 	<gtExample>
 	| root selected rule |
 	root := self newTestElementWithId: #'root'.
@@ -33,7 +33,7 @@ CgtThemeBootstrapCleanupTests >> testStyleRuleBootstrapClassSideEntryPointBuilds
 	rule := CgtThemeStyleRule
 		bootstrapForSelectedElement: selected
 		withinHierarchyRoot: root.
-	self assert: rule selector displayString equals: '#root > #selected'.
+	self assert: rule selector displayString equals: '#selected'.
 	^ rule
 
 ]
