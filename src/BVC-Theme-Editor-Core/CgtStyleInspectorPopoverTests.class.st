@@ -171,7 +171,7 @@ CgtStyleInspectorPopoverTests >> testSelectorWidgetUsesConcreteMatcherRenderer [
 	| popover |
 	popover := CgtStyleInspectorPopover new.
 
-	self assert: popover selectorWidget selectorRendererWidget class equals: CgtThemeSelectorMondrianWidget.
+	self assert: popover selectorWidget selectorRendererWidget class equals: CgtStyleRuleSelectorPathWidget.
 	^ CgtStyleInspectorPopover new
 ]
 

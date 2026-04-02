@@ -18,7 +18,7 @@ Class {
 CgtThemeSelectorWidget >> initialize [
 	super initialize.
 	selectorModel := CgtThemeSelectorModel new.
-	selectorRendererWidgetClass := CgtThemeSelectorMondrianWidget.
+	selectorRendererWidgetClass := CgtStyleRuleSelectorPathWidget.
 	self
 		vFitContent;
 		hMatchParent.
@@ -270,12 +270,12 @@ CgtThemeSelectorWidget >> selectorRendererWidget [
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selectorRendererWidgetClass [
-	^ selectorRendererWidgetClass ifNil: [ CgtThemeSelectorMondrianWidget ]
+	^ selectorRendererWidgetClass ifNil: [ CgtStyleRuleSelectorPathWidget ]
 ]
 
 { #category : 'accessing' }
 CgtThemeSelectorWidget >> selectorRendererWidgetClass: aClass [
-	selectorRendererWidgetClass := aClass ifNil: [ CgtThemeSelectorMondrianWidget ].
+	selectorRendererWidgetClass := aClass ifNil: [ CgtStyleRuleSelectorPathWidget ].
 	self installSelectorRendererWidget.
 	^ self
 ]

@@ -141,6 +141,7 @@ CgtThemeSelectorWidgetTests >> testDefaultRendererSuperclassIsSelectorRendererWi
 	<gtExample>
 	| widget |
 	self assert: CgtThemeSelectorMondrianWidget superclass equals: CgtThemeSelectorRendererWidget.
+	self assert: CgtStyleRuleSelectorPathWidget superclass equals: CgtThemeSelectorRendererWidget.
 	self assert: CgtThemeSelectorBreadcrumbWidget superclass equals: CgtThemeSelectorRendererWidget.
 	self assert: CgtThemeSelectorCompactWidget superclass equals: CgtThemeSelectorRendererWidget.
 	widget := CgtThemeSelectorWidget new.
@@ -154,7 +155,7 @@ CgtThemeSelectorWidgetTests >> testHostsConcreteSelectorRendererWidget [
 	| widget |
 	widget := CgtThemeSelectorWidget new.
 
-	self assert: widget selectorRendererWidget class equals: CgtThemeSelectorMondrianWidget.
+	self assert: widget selectorRendererWidget class equals: CgtStyleRuleSelectorPathWidget.
 	^ widget
 ]
 
