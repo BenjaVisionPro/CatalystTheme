@@ -100,9 +100,10 @@ CgtMatcherTransitionPolicy >> leadingExpansionSideForOrientation: anOrientation 
 
 { #category : 'querying' }
 CgtMatcherTransitionPolicy >> structuralRefreshTransitionKindFrom: anOldProjection to: aNewProjection [
-	| oldLeadingNode newLeadingNode oldLeadingGapIdentity newLeadingGapIdentity |
+	| oldLeadingNode newLeadingNode oldLeadingGapIdentity newLeadingGapIdentity oldHasLeadingReveal newHasLeadingReveal |
 	(aNewProjection notNil and: [ anOldProjection isNil ]) ifTrue: [
-		^ aNewProjection hasLeadingCompactedProjectionNode
+		^ ((aNewProjection hasLeadingCompactedProjectionNode)
+			or: [ self hasLeadingRevealedContextIn: aNewProjection ])
 			ifTrue: [ #reveal ]
 			ifFalse: [ #stable ] ].
 	(anOldProjection isNil or: [ aNewProjection isNil ]) ifTrue: [ ^ #stable ].
@@ -110,12 +111,34 @@ CgtMatcherTransitionPolicy >> structuralRefreshTransitionKindFrom: anOldProjecti
 	newLeadingNode := aNewProjection leadingCompactedProjectionNode.
 	(oldLeadingNode isNil and: [ newLeadingNode notNil ]) ifTrue: [ ^ #reveal ].
 	(oldLeadingNode notNil and: [ newLeadingNode isNil ]) ifTrue: [ ^ #collapse ].
+	oldHasLeadingReveal := self hasLeadingRevealedContextIn: anOldProjection.
+	newHasLeadingReveal := self hasLeadingRevealedContextIn: aNewProjection.
+	(oldHasLeadingReveal not and: [ newHasLeadingReveal ]) ifTrue: [ ^ #reveal ].
+	(oldHasLeadingReveal and: [ newHasLeadingReveal not ]) ifTrue: [ ^ #collapse ].
 	oldLeadingGapIdentity := oldLeadingNode ifNil: [ nil ] ifNotNil: [ oldLeadingNode gapIdentity ].
 	newLeadingGapIdentity := newLeadingNode ifNil: [ nil ] ifNotNil: [ newLeadingNode gapIdentity ].
 	oldLeadingGapIdentity = newLeadingGapIdentity ifTrue: [ ^ #stable ].
 	(newLeadingGapIdentity notNil and: [ oldLeadingGapIdentity notNil ]) ifTrue: [ ^ #replace ].
 	newLeadingGapIdentity notNil ifTrue: [ ^ #reveal ].
 	^ #collapse
+]
+
+{ #category : 'querying' }
+CgtMatcherTransitionPolicy >> hasLeadingRevealedContextIn: aProjection [
+	| current relation previous |
+	aProjection ifNil: [ ^ false ].
+	current := aProjection selectedProjectionNode.
+	current ifNil: [ ^ false ].
+	[relation := (aProjection visibleCorridorRelations
+		detect: [ :each | each toNode == current ]
+		ifNone: [ nil ]).
+	relation notNil] whileTrue: [
+		previous := relation fromNode.
+		(previous isCompactedSection not
+			and: [ previous isOtherRuleIndicator not
+				and: [ previous isInCurrentRule not ] ]) ifTrue: [ ^ true ].
+		current := previous ].
+	^ false
 ]
 
 { #category : 'querying' }
