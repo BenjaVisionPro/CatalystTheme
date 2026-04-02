@@ -54,6 +54,7 @@ CgtMatcherRowElementTests >> testFirstVisibleRowBuildsDefaultRelationElement [
 		yourself.
 	row := CgtMatcherRowElement new
 		projectionNode: node;
+		inScope: true;
 		yourself.
 	self assert: row hasRelationElement.
 	self assert: row relationElement badgeLabel equals: 'D'.

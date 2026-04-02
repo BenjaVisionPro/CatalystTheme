@@ -305,7 +305,10 @@ CgtMatcherRowElement >> hasClassMatcher [
 CgtMatcherRowElement >> displayableElementIdLabel [
 	| rawLabel |
 	rawLabel := projectionNode elementId asString.
-	^ ((rawLabel beginsWith: '#') ifTrue: [ rawLabel allButFirst ] ifFalse: [ rawLabel ])
+	(rawLabel beginsWith: '#') ifTrue: [ ^ rawLabel allButFirst ].
+	((rawLabel beginsWith: '''') and: [ (rawLabel endsWith: '''') and: [ rawLabel size >= 2 ] ])
+		ifTrue: [ ^ rawLabel copyFrom: 2 to: rawLabel size - 1 ].
+	^ rawLabel
 ]
 
 { #category : 'testing' }

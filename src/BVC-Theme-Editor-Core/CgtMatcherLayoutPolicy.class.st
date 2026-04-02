@@ -64,12 +64,12 @@ CgtMatcherLayoutPolicy >> popoverMatcherHeight [
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> selectedNodeWidth [
-	^ 250
+	^ 260
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> scopeNodeWidth [
-	^ 250
+	^ 255
 ]
 
 { #category : 'layout' }
