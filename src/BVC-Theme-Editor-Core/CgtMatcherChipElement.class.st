@@ -114,7 +114,7 @@ CgtMatcherChipElement >> refreshContents [
 	self applyTypographyToLabel.
 	labelElement text: self displayLabel.
 	labelElement aptitude: (BrGlamorousLabelAptitude new
-		foreground: (nodeVisualPolicy chipForegroundForEnabled: isEnabled)).
+		foreground: (nodeVisualPolicy chipForegroundForEnabled: isEnabled chipKind: chipKind)).
 	self
 		background: (nodeVisualPolicy chipBackgroundForEnabled: isEnabled);
 		border: (nodeVisualPolicy chipBorderForEnabled: isEnabled);
@@ -127,7 +127,7 @@ CgtMatcherChipElement >> refreshContents [
 { #category : 'rendering' }
 CgtMatcherChipElement >> applyTypographyToLabel [
 	self isClassChip
-		ifTrue: [ labelElement beSmallSize ]
+		ifTrue: [ labelElement beTinySize ]
 		ifFalse: [ labelElement beLargeSize ]
 ]
 

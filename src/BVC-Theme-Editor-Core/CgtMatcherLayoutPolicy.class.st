@@ -33,12 +33,12 @@ CgtMatcherLayoutPolicy >> widgetCellSpacing [
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> nodePadding [
-	^ BlInsets top: 10 right: 18 bottom: 12 left: 16
+	^ BlInsets top: 6 right: 14 bottom: 8 left: 14
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> nodeCellSpacing [
-	^ 2
+	^ 0
 ]
 
 { #category : 'layout' }
@@ -89,12 +89,12 @@ CgtMatcherLayoutPolicy >> rowLeadingInset [
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> classChipWidth [
-	^ 452
+	^ 462
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> idChipWidth [
-	^ 452
+	^ 462
 ]
 
 
@@ -111,4 +111,14 @@ CgtMatcherLayoutPolicy >> chipHorizontalPadding [
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> chipVerticalPadding [
 	^ 0
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> rowCornerRadius [
+	^ 28
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> rowCellSpacing [
+	^ 8
 ]

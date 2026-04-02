@@ -40,9 +40,9 @@ CgtMatcherRowElement >> initialize [
 	self
 		vFitContent;
 		hFitContent;
-		cellSpacing: 10;
+		cellSpacing: layoutPolicy rowCellSpacing;
 		padding: layoutPolicy nodePadding;
-		geometry: (BlRoundedRectangleGeometry cornerRadius: 18);
+		geometry: (BlRoundedRectangleGeometry cornerRadius: layoutPolicy rowCornerRadius);
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ].
@@ -210,11 +210,11 @@ CgtMatcherRowElement >> buildClassChipIfNeeded [
 
 { #category : 'rendering' }
 CgtMatcherRowElement >> buildIdChipIfNeeded [
-	projectionNode elementId ifNil: [ ^ self ].
+	self hasDisplayableElementId ifFalse: [ ^ self ].
 	idChipElement := CgtMatcherChipElement new
 		chipKind: #elementId;
 		projectionNode: projectionNode;
-		matcherLabel: projectionNode elementId asSymbol asString;
+		matcherLabel: self displayableElementIdLabel;
 		enabled: projectionNode matchById;
 		nodeVisualPolicy: nodeVisualPolicy;
 		yourself.
@@ -292,6 +292,24 @@ CgtMatcherRowElement >> hasRelationElement [
 { #category : 'testing' }
 CgtMatcherRowElement >> hasClassMatcher [
 	^ classChipElement notNil
+]
+
+{ #category : 'rendering' }
+CgtMatcherRowElement >> displayableElementIdLabel [
+	| rawLabel |
+	rawLabel := projectionNode elementId asString.
+	^ ((rawLabel beginsWith: '#') ifTrue: [ rawLabel allButFirst ] ifFalse: [ rawLabel ])
+]
+
+{ #category : 'testing' }
+CgtMatcherRowElement >> hasDisplayableElementId [
+	| rawLabel normalized |
+	projectionNode ifNil: [ ^ false ].
+	projectionNode elementId ifNil: [ ^ false ].
+	rawLabel := projectionNode elementId asString.
+	normalized := rawLabel withBlanksTrimmed.
+	normalized isEmpty ifTrue: [ ^ false ].
+	^ normalized asLowercase ~= 'nil'
 ]
 
 { #category : 'testing' }

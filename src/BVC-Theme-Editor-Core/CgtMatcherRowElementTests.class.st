@@ -30,6 +30,21 @@ CgtMatcherRowElementTests >> testBuildsClassAndIdChipsFromProjectionNode [
 ]
 
 { #category : 'tests' }
+CgtMatcherRowElementTests >> testDoesNotBuildIdChipForSemanticNilElementId [
+	<gtExample>
+	| node row |
+	node := (CgtMatcherProjectionNode kind: #selectedElement)
+		className: 'SelectedElement';
+		elementId: 'nil';
+		yourself.
+	row := CgtMatcherRowElement new
+		projectionNode: node;
+		yourself.
+	self deny: row hasIdMatcher.
+	^ row
+]
+
+{ #category : 'tests' }
 CgtMatcherRowElementTests >> testFirstVisibleRowHasNoRelationElement [
 	<gtExample>
 	| node row |
