@@ -109,22 +109,3 @@ CgtMatcherNodeVisualPolicy >> chipForegroundForEnabled: aBoolean [
 		ifTrue: [ Color black ]
 		ifFalse: [ Color darkGray ]
 ]
-
-
-{ #category : 'rendering' }
-CgtMatcherNodeVisualPolicy >> rowBackgroundForNode: aProjectionNode selected: isSelected inScope: isInScope revealedContext: isRevealedContext otherRule: isOtherRule [
-	isSelected ifTrue: [ ^ Color veryVeryLightGray ].
-	isOtherRule ifTrue: [ ^ (Color orange alpha: 0.12) ].
-	isInScope ifTrue: [ ^ (Color white alpha: 0.96) ].
-	isRevealedContext ifTrue: [ ^ (Color gray alpha: 0.08) ].
-	^ self backgroundForNode: aProjectionNode
-]
-
-{ #category : 'rendering' }
-CgtMatcherNodeVisualPolicy >> rowBorderForNode: aProjectionNode selected: isSelected inScope: isInScope revealedContext: isRevealedContext otherRule: isOtherRule [
-	isSelected ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.25) width: 2 ].
-	isOtherRule ifTrue: [ ^ BlBorder paint: (Color orange alpha: 0.45) width: 1 ].
-	isInScope ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.28) width: 1 ].
-	isRevealedContext ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.18) width: 1 ].
-	^ self borderForNode: aProjectionNode
-]

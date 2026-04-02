@@ -175,8 +175,6 @@ CgtStyleRuleSelectorPathWidget >> newRowRenderItemFor: aProjectionNode [
 		isSelected: aProjectionNode == projection selectedProjectionNode;
 		isCurrentRule: aProjectionNode isInCurrentRule;
 		isOtherRule: aProjectionNode isInOtherRule;
-		isInScope: (self shouldRenderNodeInScope: aProjectionNode);
-		isRevealedContext: (self shouldRenderNodeAsRevealedContext: aProjectionNode);
 		yourself
 ]
 
@@ -215,24 +213,6 @@ CgtStyleRuleSelectorPathWidget >> gapDirectionFor: aProjectionNode [
 	^ #upstream
 ]
 
-
-{ #category : 'private - assembly' }
-CgtStyleRuleSelectorPathWidget >> shouldRenderNodeInScope: aProjectionNode [
-	aProjectionNode ifNil: [ ^ false ].
-	(aProjectionNode == projection selectedProjectionNode) ifTrue: [ ^ true ].
-	^ aProjectionNode isInCurrentRule
-]
-
-{ #category : 'private - assembly' }
-CgtStyleRuleSelectorPathWidget >> shouldRenderNodeAsRevealedContext: aProjectionNode [
-	aProjectionNode ifNil: [ ^ false ].
-	(self shouldRenderNodeInScope: aProjectionNode) ifTrue: [ ^ false ].
-	aProjectionNode isCompactedSection ifTrue: [ ^ false ].
-	aProjectionNode isOtherRuleIndicator ifTrue: [ ^ false ].
-	aProjectionNode isInOtherRule ifTrue: [ ^ false ].
-	^ aProjectionNode representedElement notNil
-]
-
 { #category : 'rendering' }
 CgtStyleRuleSelectorPathWidget >> renderItems: aCollection [
 	renderElementsByKey := Dictionary new.
@@ -263,8 +243,6 @@ CgtStyleRuleSelectorPathWidget >> buildRowElementFor: aRowRenderItem [
 		selected: aRowRenderItem isSelected;
 		currentRule: aRowRenderItem isCurrentRule;
 		otherRule: aRowRenderItem isOtherRule;
-		inScope: aRowRenderItem isInScope;
-		revealedContext: aRowRenderItem isRevealedContext;
 		yourself.
 	rowElement when: CgtMatcherNodeHoveredEvent do: [ :anEvent |
 		self announceSelectorNodeHoveredFor: anEvent projectionNode ].

@@ -21,10 +21,10 @@ CgtMatcherGapElement >> initialize [
 	self
 		vFitContent;
 		hFitContent;
-		cellSpacing: 2;
-		padding: (BlInsets all: 2);
-		background: Color transparent;
-		border: (BlBorder paint: Color transparent width: 0);
+		cellSpacing: 4;
+		padding: (BlInsets all: 4);
+		background: (Color veryLightGray alpha: 0.65);
+		border: (BlBorder paint: (Color gray alpha: 0.2));
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ]
@@ -58,29 +58,9 @@ CgtMatcherGapElement >> outgoingRelation: aCgtMatcherProjectionRelation [
 CgtMatcherGapElement >> refreshContents [
 	self removeChildren.
 	projectionNode ifNil: [ ^ self ].
-	self addChild: self newCompactRevealHandle
-]
-
-
-
-{ #category : 'rendering' }
-CgtMatcherGapElement >> newCompactRevealHandle [
-	| button |
-	button := BrButton new
-		label: '';
-		aptitude: ((BrGlamorousButtonRectangularAptitude
-			paddingScale: 0.2;
-			cornerRadius: 6) +
-			(BrStyleCommonAptitude new default: [ :aStyle |
-				aStyle
-					background: (Color veryLightGray alpha: 0.9);
-					border: (BlBorder paint: (Color gray alpha: 0.35) width: 1) ]));
-		action: [ :aButton | self requestCompactedSectionExpansionFor: projectionNode ];
-		constraintsDo: [ :c |
-			c horizontal exact: 28.
-			c vertical exact: 10 ];
-		yourself.
-	^ button
+	self addChild: self newHiddenCountLabel.
+	self addChild: self newPathControlRow.
+	self addChild: self newRevealRow
 ]
 
 { #category : 'rendering' }

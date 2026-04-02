@@ -339,3 +339,64 @@ CgtThemeSelectorWidgetTests >> testConfigureForStyleInspectorModelUsesActiveRule
 	self assert: widget selectorRendererWidget projection identicalTo: widget selectorModel projection.
 	^ widget
 ]
+
+{ #category : 'private' }
+CgtThemeSelectorWidgetTests >> newRootMiddleSelectedElements [
+	| root middle selected |
+	root := self newTestElementWithId: #root.
+	middle := self newTestElementWithId: #middle.
+	selected := self newTestElementWithId: #selected.
+	root addChild: middle.
+	middle addChild: selected.
+	^ { root. middle. selected }
+]
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testExpandingCompactedSectionRefreshesProjectionWithRevealedContext [
+	<gtExample>
+	| elements root middle selected rule widget compactedNode |
+	elements := self newRootMiddleSelectedElements.
+	root := elements first.
+	middle := elements second.
+	selected := elements third.
+	rule := self styleRuleForSelector: (self selectorForId: #selected).
+	widget := CgtThemeSelectorWidget new
+		configureForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: #().
+	compactedNode := widget projection nodes detect: [ :each | each isCompactedSection ].
+	widget selectorCompactedSectionExpandedEvent: (CgtThemeSelectorCompactedSectionExpandedEvent new
+		projectionNode: compactedNode;
+		yourself).
+	self assert: widget visibilityState hasExpandedGaps.
+	self assert: (widget projection nodes anySatisfy: [ :each | each representedElement == middle ]).
+	self assert: widget selectorRendererWidget projection identicalTo: widget projection.
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtThemeSelectorWidgetTests >> testIdleCollapseCollapsesExpandedContextBackToSelectorView [
+	<gtExample>
+	| elements root selected rule widget compactedNode |
+	elements := self newRootMiddleSelectedElements.
+	root := elements first.
+	selected := elements third.
+	rule := self styleRuleForSelector: (self selectorForId: #selected).
+	widget := CgtThemeSelectorWidget new
+		configureForStyleRule: rule
+		selectedElement: selected
+		hierarchyRoot: root
+		relatedStyleRules: #().
+	widget idleCollapseDelayMilliseconds: 20.
+	compactedNode := widget projection nodes detect: [ :each | each isCompactedSection ].
+	widget selectorCompactedSectionExpandedEvent: (CgtThemeSelectorCompactedSectionExpandedEvent new
+		projectionNode: compactedNode;
+		yourself).
+	self assert: widget visibilityState hasExpandedGaps.
+	(Delay forMilliseconds: 80) wait.
+	self deny: widget visibilityState hasExpandedGaps.
+	self assert: (widget projection nodes anySatisfy: [ :each | each isCompactedSection ]).
+	^ widget
+]
+

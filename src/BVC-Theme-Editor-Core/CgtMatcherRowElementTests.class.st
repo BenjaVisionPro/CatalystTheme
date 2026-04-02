@@ -146,21 +146,3 @@ CgtMatcherRowElementTests >> testRowPublishesHoverAndUnhoverEvents [
 	self assert: unhovered projectionNode identicalTo: node.
 	^ row
 ]
-
-
-{ #category : 'tests' }
-CgtMatcherRowElementTests >> testRowAllowsRevealedContextStateToBeApplied [
-	<gtExample>
-	| node row |
-	node := (CgtMatcherProjectionNode kind: #upstreamScope)
-		className: 'ContextElement';
-		matchByClass: false;
-		yourself.
-	row := CgtMatcherRowElement new
-		projectionNode: node;
-		revealedContext: true;
-		yourself.
-	self assert: row isRevealedContext.
-	self deny: row isInScope.
-	^ row
-]
