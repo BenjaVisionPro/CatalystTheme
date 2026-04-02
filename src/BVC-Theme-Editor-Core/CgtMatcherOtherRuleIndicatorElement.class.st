@@ -75,7 +75,10 @@ CgtMatcherOtherRuleIndicatorElement >> newCountLabel [
 CgtMatcherOtherRuleIndicatorElement >> newRevealButton [
 	^ BrButton new
 		label: 'Show';
-		aptitude: (BrGlamorousButtonLabelAptitude new) + (BrGlamorousButtonRectangularAptitude paddingScale: 0.45; cornerRadius: 4);
+		aptitude: (BrGlamorousButtonLabelAptitude new) + (BrGlamorousButtonRectangularAptitude new cornerRadius: 4);
+		constraintsDo: [ :c |
+			c horizontal exact: 40.
+			c vertical exact: 18 ];
 		action: [ :aButton | self requestOtherRuleContextToggle ];
 		yourself
 ]
