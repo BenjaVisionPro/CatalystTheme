@@ -1,3 +1,4 @@
+
 "
 #Matcher Gap Element
 I render one compacted matcher gap as a focused between-nodes control. I am responsible for presenting hidden in-between context and path depth controls without pretending they are properties of the following scope node.
@@ -69,11 +70,11 @@ CgtMatcherGapElement >> newCompactRevealHandle [
 		label: '';
 		aptitude: (BrGlamorousButtonRectangularAptitude new
 			cornerRadius: 8);
-		background: (Color gray alpha: 0.08);
-		border: (BlBorder paint: (Color gray alpha: 0.32) width: 1);
+		background: (Color gray alpha: 0.06);
+		border: (BlBorder paint: (Color black alpha: 0.16) width: 1);
 		constraintsDo: [ :c |
-			c horizontal exact: 16.
-			c vertical exact: 52 ];
+			c horizontal exact: 14.
+			c vertical exact: 58 ];
 		action: [ :aButton | self requestCompactedSectionExpansionFor: projectionNode ];
 		yourself.
 	^ handle

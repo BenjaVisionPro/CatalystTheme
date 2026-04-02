@@ -1,3 +1,4 @@
+
 "
 #Matcher Layout Policy
 I centralize the functional layout constants for the matcher editor. I am responsible for keeping sizing, spacing, corridor orientation, and connection direction explicit so visual cleanup does not leak ad-hoc numbers across the widget tree.
@@ -32,12 +33,12 @@ CgtMatcherLayoutPolicy >> widgetCellSpacing [
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> nodePadding [
-	^ BlInsets top: 6 right: 10 bottom: 6 left: 6
+	^ BlInsets top: 10 right: 18 bottom: 12 left: 16
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> nodeCellSpacing [
-	^ 6
+	^ 2
 ]
 
 { #category : 'layout' }
@@ -63,51 +64,51 @@ CgtMatcherLayoutPolicy >> popoverMatcherHeight [
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> selectedNodeWidth [
-	^ 360
+	^ 520
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> scopeNodeWidth [
-	^ 320
+	^ 460
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> contextNodeWidth [
-	^ 270
+	^ 430
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> compactedGapWidth [
-	^ 36
+	^ 28
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> rowLeadingInset [
-	^ 6
+	^ 8
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> classChipWidth [
-	^ 250
+	^ 452
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> idChipWidth [
-	^ 338
+	^ 452
 ]
 
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> chipMinimumWidth [
-	^ 180
+	^ 220
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> chipHorizontalPadding [
-	^ 12
+	^ 0
 ]
 
 { #category : 'layout' }
 CgtMatcherLayoutPolicy >> chipVerticalPadding [
-	^ 5
+	^ 0
 ]

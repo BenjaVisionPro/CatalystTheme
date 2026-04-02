@@ -1,3 +1,4 @@
+
 "
 #Matcher Node Visual Policy
 I centralize the explicit visual language for matcher projection nodes. I am responsible for mapping passive matcher node state to presentation-oriented labels, colors, and render ordering without taking on widget or editor semantics.
@@ -11,20 +12,20 @@ Class {
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> backgroundForNode: aProjectionNode [
-	aProjectionNode kind = #selectedElement ifTrue: [ ^ Color veryVeryLightGray ].
-	aProjectionNode kind = #compactedSection ifTrue: [ ^ (Color gray alpha: 0.12) ].
-	aProjectionNode kind = #otherRuleIndicator ifTrue: [ ^ (Color orange alpha: 0.08) ].
-	aProjectionNode isInOtherRule ifTrue: [ ^ (Color orange alpha: 0.12) ].
-	^ (Color white alpha: 0.95)
+	aProjectionNode kind = #selectedElement ifTrue: [ ^ (Color r: 0.96 g: 0.96 b: 0.96 alpha: 1.0) ].
+	aProjectionNode kind = #compactedSection ifTrue: [ ^ (Color gray alpha: 0.08) ].
+	aProjectionNode kind = #otherRuleIndicator ifTrue: [ ^ (Color r: 0.78 g: 0.68 b: 0.28 alpha: 0.04) ].
+	aProjectionNode isInOtherRule ifTrue: [ ^ (Color r: 0.78 g: 0.68 b: 0.28 alpha: 0.05) ].
+	^ (Color r: 0.965 g: 0.965 b: 0.965 alpha: 1.0)
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> borderForNode: aProjectionNode [
-	aProjectionNode kind = #selectedElement ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.25) width: 2 ].
-	aProjectionNode kind = #compactedSection ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.35) width: 1 ].
-	aProjectionNode kind = #otherRuleIndicator ifTrue: [ ^ BlBorder paint: (Color orange alpha: 0.35) width: 1 ].
-	aProjectionNode isInOtherRule ifTrue: [ ^ BlBorder paint: (Color orange alpha: 0.45) width: 1 ].
-	^ BlBorder paint: (Color gray alpha: 0.3)
+	aProjectionNode kind = #selectedElement ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.28) width: 3 ].
+	aProjectionNode kind = #compactedSection ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.34) width: 1 ].
+	aProjectionNode kind = #otherRuleIndicator ifTrue: [ ^ BlBorder paint: (Color r: 0.78 g: 0.68 b: 0.28 alpha: 0.35) width: 1 ].
+	aProjectionNode isInOtherRule ifTrue: [ ^ BlBorder paint: (Color r: 0.72 g: 0.62 b: 0.22 alpha: 0.55) width: 2 ].
+	^ BlBorder paint: (Color black alpha: 0.18) width: 2
 ]
 
 { #category : 'rendering' }
@@ -92,39 +93,35 @@ CgtMatcherNodeVisualPolicy >> nodeSortPriorityFor: aProjectionNode [
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> rowBackgroundForNode: aProjectionNode selected: isSelected inScope: isInScope revealedContext: isRevealedContext otherRule: isOtherRule [
-	isOtherRule ifTrue: [ ^ (Color r: 0.72 g: 0.62 b: 0.22 alpha: 0.08) ].
-	isSelected ifTrue: [ ^ (Color white alpha: 0.98) ].
-	isInScope ifTrue: [ ^ (Color white alpha: 0.96) ].
-	isRevealedContext ifTrue: [ ^ (Color black alpha: 0.018) ].
+	isOtherRule ifTrue: [ ^ (Color r: 0.955 g: 0.94 b: 0.88 alpha: 1.0) ].
+	isSelected ifTrue: [ ^ (Color r: 0.96 g: 0.96 b: 0.96 alpha: 1.0) ].
+	isInScope ifTrue: [ ^ (Color r: 0.965 g: 0.965 b: 0.965 alpha: 1.0) ].
+	isRevealedContext ifTrue: [ ^ (Color r: 0.97 g: 0.97 b: 0.97 alpha: 1.0) ].
 	^ self backgroundForNode: aProjectionNode
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> rowBorderForNode: aProjectionNode selected: isSelected inScope: isInScope revealedContext: isRevealedContext otherRule: isOtherRule [
-	isOtherRule ifTrue: [ ^ BlBorder paint: (Color r: 0.72 g: 0.62 b: 0.22 alpha: 0.55) width: 1 ].
-	isSelected ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.22) width: 2 ].
-	isInScope ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.28) width: 1 ].
-	isRevealedContext ifTrue: [ ^ BlBorder paint: (Color gray alpha: 0.14) width: 1 ].
+	isOtherRule ifTrue: [ ^ BlBorder paint: (Color r: 0.72 g: 0.62 b: 0.22 alpha: 0.55) width: 2 ].
+	isSelected ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.26) width: 4 ].
+	isInScope ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.18) width: 2 ].
+	isRevealedContext ifTrue: [ ^ BlBorder paint: (Color black alpha: 0.14) width: 1 ].
 	^ self borderForNode: aProjectionNode
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> chipBackgroundForEnabled: aBoolean [
-	^ aBoolean
-		ifTrue: [ Color white ]
-		ifFalse: [ Color transparent ]
+	^ Color transparent
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> chipBorderForEnabled: aBoolean [
-	^ aBoolean
-		ifTrue: [ BlBorder paint: (Color black alpha: 0.18) width: 1 ]
-		ifFalse: [ BlBorder paint: (Color gray alpha: 0.22) width: 1 ]
+	^ BlBorder empty
 ]
 
 { #category : 'rendering' }
 CgtMatcherNodeVisualPolicy >> chipForegroundForEnabled: aBoolean [
 	^ aBoolean
 		ifTrue: [ Color black ]
-		ifFalse: [ Color gray muchDarker ]
+		ifFalse: [ Color gray ]
 ]

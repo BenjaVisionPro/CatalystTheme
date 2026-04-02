@@ -1,3 +1,4 @@
+
 "
 #Matcher Row Element
 I render one visible matcher row for the upcoming custom style-rule selector widget. I am responsible for composing an optional incoming relation control with matcher chips and forwarding row-level hover, selection, and child edit events without owning selector semantics.
@@ -39,8 +40,9 @@ CgtMatcherRowElement >> initialize [
 	self
 		vFitContent;
 		hFitContent;
-		cellSpacing: layoutPolicy nodeCellSpacing;
+		cellSpacing: 10;
 		padding: layoutPolicy nodePadding;
+		geometry: (BlRoundedRectangleGeometry cornerRadius: 18);
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ].
@@ -276,6 +278,7 @@ CgtMatcherRowElement >> onMouseLeave: anEvent [
 { #category : 'event handling' }
 CgtMatcherRowElement >> onMouseSelect: anEvent [
 	projectionNode ifNil: [ ^ self ].
+	anEvent ifNotNil: [ anEvent consumed: true ].
 	self fireEvent: (CgtMatcherNodeSelectedEvent new
 		projectionNode: projectionNode;
 		yourself)

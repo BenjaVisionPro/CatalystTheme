@@ -35,11 +35,12 @@ CgtMatcherChipElement >> initialize [
 			right: layoutPolicy chipHorizontalPadding
 			bottom: layoutPolicy chipVerticalPadding
 			left: layoutPolicy chipHorizontalPadding);
+		background: Color transparent;
+		border: BlBorder empty;
 		constraintsDo: [ :c |
 			c horizontal exact: self desiredChipWidth.
 			c vertical fitContent ].
 	labelElement := BrLabel new
-		beSmallSize;
 		aptitude: BrGlamorousLabelAptitude new.
 	self addChild: labelElement.
 	self when: BlClickEvent do: [ :anEvent | self onChipClicked: anEvent ].
@@ -110,10 +111,10 @@ CgtMatcherChipElement >> nodeVisualPolicy: aCgtMatcherNodeVisualPolicy [
 { #category : 'rendering' }
 CgtMatcherChipElement >> refreshContents [
 	labelElement ifNil: [ ^ self ].
-	labelElement
-		text: self displayLabel;
-		aptitude: (BrGlamorousLabelAptitude new
-			foreground: (nodeVisualPolicy chipForegroundForEnabled: isEnabled)).
+	self applyTypographyToLabel.
+	labelElement text: self displayLabel.
+	labelElement aptitude: (BrGlamorousLabelAptitude new
+		foreground: (nodeVisualPolicy chipForegroundForEnabled: isEnabled)).
 	self
 		background: (nodeVisualPolicy chipBackgroundForEnabled: isEnabled);
 		border: (nodeVisualPolicy chipBorderForEnabled: isEnabled);
@@ -121,6 +122,13 @@ CgtMatcherChipElement >> refreshContents [
 			c horizontal exact: self desiredChipWidth.
 			c vertical fitContent ].
 	^ self
+]
+
+{ #category : 'rendering' }
+CgtMatcherChipElement >> applyTypographyToLabel [
+	self isClassChip
+		ifTrue: [ labelElement beSmallSize ]
+		ifFalse: [ labelElement beLargeSize ]
 ]
 
 { #category : 'rendering' }
