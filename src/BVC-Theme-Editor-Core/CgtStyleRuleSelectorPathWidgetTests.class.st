@@ -242,3 +242,136 @@ CgtStyleRuleSelectorPathWidgetTests >> testSelectedRenderItemIsAlwaysMarkedInSco
 	self deny: rowItem isRevealedContext.
 	^ widget
 ]
+
+
+{ #category : 'private' }
+CgtStyleRuleSelectorPathWidgetTests >> newProjectionWithRevealedLeadingContext [
+	| projection root middle selected rootElement middleElement selectedElement |
+	projection := CgtMatcherProjection new.
+	rootElement := CgtThemeSelectorTestElement new
+		className: 'RootElement';
+		id: (BlElementId named: #root);
+		yourself.
+	middleElement := CgtThemeSelectorTestElement new
+		className: 'MiddleElement';
+		id: (BlElementId named: #middle);
+		yourself.
+	selectedElement := CgtThemeSelectorTestElement new
+		className: 'SelectedElement';
+		id: (BlElementId named: #selected);
+		yourself.
+	root := (CgtMatcherProjectionNode kind: #upstreamScope)
+		representedElement: rootElement;
+		isInCurrentRule: false;
+		yourself.
+	middle := (CgtMatcherProjectionNode kind: #upstreamScope)
+		representedElement: middleElement;
+		isInCurrentRule: false;
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: selectedElement;
+		isInCurrentRule: true;
+		yourself.
+	projection
+		addNode: root;
+		addNode: middle;
+		addNode: selected;
+		addRelation: (CgtMatcherProjectionRelation from: root to: middle kind: #context);
+		addRelation: (CgtMatcherProjectionRelation from: middle to: selected kind: #context);
+		selectedElement: selectedElement.
+	^ projection
+]
+
+{ #category : 'private' }
+CgtStyleRuleSelectorPathWidgetTests >> newProjectionWithRevealedTrailingContext [
+	| projection selected child grandchild selectedElement childElement grandchildElement |
+	projection := CgtMatcherProjection new.
+	selectedElement := CgtThemeSelectorTestElement new
+		className: 'SelectedElement';
+		id: (BlElementId named: #selected);
+		yourself.
+	childElement := CgtThemeSelectorTestElement new
+		className: 'ChildElement';
+		id: (BlElementId named: #child);
+		yourself.
+	grandchildElement := CgtThemeSelectorTestElement new
+		className: 'GrandchildElement';
+		id: (BlElementId named: #grandchild);
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: selectedElement;
+		isInCurrentRule: true;
+		yourself.
+	child := (CgtMatcherProjectionNode kind: #selectedChildScope)
+		representedElement: childElement;
+		isInCurrentRule: false;
+		yourself.
+	grandchild := (CgtMatcherProjectionNode kind: #selectedChildScope)
+		representedElement: grandchildElement;
+		isInCurrentRule: false;
+		yourself.
+	projection
+		addNode: selected;
+		addNode: child;
+		addNode: grandchild;
+		addRelation: (CgtMatcherProjectionRelation from: selected to: child kind: #context);
+		addRelation: (CgtMatcherProjectionRelation from: child to: grandchild kind: #context);
+		selectedElement: selectedElement.
+	^ projection
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testBuildRenderItemsGroupsRevealedLeadingContextIntoRevealItem [
+	<gtExample>
+	| projection widget items revealItem |
+	projection := self newProjectionWithRevealedLeadingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	items := widget renderItems asArray.
+	self assert: items size equals: 2.
+	self assert: items first isRevealItem.
+	revealItem := items first.
+	self assert: revealItem direction equals: #upstream.
+	self assert: revealItem rowItems size equals: 2.
+	self assert: (revealItem rowItems allSatisfy: [ :each | each isRevealedContext ]).
+	self assert: items second isRowItem.
+	self assert: items second isSelected.
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testBuildRenderItemsGroupsRevealedTrailingContextIntoRevealItem [
+	<gtExample>
+	| projection widget items revealItem |
+	projection := self newProjectionWithRevealedTrailingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	items := widget renderItems asArray.
+	self assert: items size equals: 2.
+	self assert: items first isRowItem.
+	self assert: items first isSelected.
+	self assert: items second isRevealItem.
+	revealItem := items second.
+	self assert: revealItem direction equals: #downstream.
+	self assert: revealItem rowItems size equals: 2.
+	self assert: (revealItem rowItems allSatisfy: [ :each | each isRevealedContext ]).
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRefreshContentsBuildsRevealElementForGroupedRevealedContext [
+	<gtExample>
+	| projection widget revealElements revealRows |
+	projection := self newProjectionWithRevealedLeadingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	revealElements := widget rowsContainer children select: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElements size equals: 1.
+	revealRows := revealElements first children select: [ :each | each isKindOf: CgtMatcherRowElement ].
+	self assert: revealRows size equals: 2.
+	self assert: (revealRows allSatisfy: [ :each | each projectionNode isInCurrentRule not ]).
+	^ widget
+]

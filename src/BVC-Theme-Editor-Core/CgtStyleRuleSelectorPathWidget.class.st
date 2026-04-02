@@ -64,13 +64,40 @@ CgtStyleRuleSelectorPathWidget >> refreshContents [
 CgtStyleRuleSelectorPathWidget >> buildRenderItemsFromProjection [
 	| items |
 	projection ifNil: [ ^ OrderedCollection new ].
-	items := OrderedCollection new.
-	self orderedVisiblePathNodes do: [ :aNode |
-		aNode isCompactedSection
-			ifTrue: [ items add: (self newGapRenderItemFor: aNode) ]
-			ifFalse: [ items add: (self newRowRenderItemFor: aNode) ] ].
+	items := self assembleRenderItemsFromOrderedNodes: self orderedVisiblePathNodes.
 	projection otherRuleIndicatorNode ifNotNil: [ :anIndicatorNode |
 		items := self itemsByInsertingOtherRuleIndicatorFor: anIndicatorNode into: items ].
+	^ items
+]
+
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> assembleRenderItemsFromOrderedNodes: orderedNodes [
+	| items index |
+	items := OrderedCollection new.
+	index := 1.
+	[index <= orderedNodes size] whileTrue: [
+		| node revealedNodes |
+		node := orderedNodes at: index.
+		node isCompactedSection
+			ifTrue: [
+				items add: (self newGapRenderItemFor: node).
+				index := index + 1 ]
+			ifFalse: [
+				(self shouldRenderNodeAsRevealedContext: node selected: node == projection selectedProjectionNode)
+					ifTrue: [
+						revealedNodes := OrderedCollection new.
+						[index <= orderedNodes size
+							and: [ (orderedNodes at: index) isCompactedSection not
+								and: [ self
+									shouldRenderNodeAsRevealedContext: (orderedNodes at: index)
+									selected: (orderedNodes at: index) == projection selectedProjectionNode ] ] ] whileTrue: [
+								revealedNodes add: (orderedNodes at: index).
+								index := index + 1 ].
+						items add: (self newRevealRenderItemForNodes: revealedNodes) ]
+					ifFalse: [
+						items add: (self newRowRenderItemFor: node).
+						index := index + 1 ] ] ].
 	^ items
 ]
 
@@ -201,6 +228,25 @@ CgtStyleRuleSelectorPathWidget >> newGapRenderItemFor: aProjectionNode [
 		yourself
 ]
 
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> newRevealRenderItemForNodes: projectionNodes [
+	| rowItems direction |
+	rowItems := projectionNodes collect: [ :each | self newRowRenderItemFor: each ].
+	direction := projectionNodes
+		ifEmpty: [ #upstream ]
+		ifNotEmpty: [ self revealDirectionForNode: projectionNodes first ].
+	^ CgtMatcherRevealRenderItem new
+		rowItems: rowItems;
+		direction: direction;
+		yourself
+]
+
+{ #category : 'private - assembly' }
+CgtStyleRuleSelectorPathWidget >> revealDirectionForNode: aProjectionNode [
+	^ self gapDirectionFor: aProjectionNode
+]
+
 { #category : 'private - assembly' }
 CgtStyleRuleSelectorPathWidget >> newOtherRuleIndicatorRenderItemFor: anIndicatorNode [
 	^ CgtMatcherOtherRuleIndicatorRenderItem new
@@ -242,6 +288,7 @@ CgtStyleRuleSelectorPathWidget >> renderItems: aCollection [
 CgtStyleRuleSelectorPathWidget >> buildElementForRenderItem: aRenderItem [
 	aRenderItem isRowItem ifTrue: [ ^ self buildRowElementFor: aRenderItem ].
 	aRenderItem isGapItem ifTrue: [ ^ self buildGapElementFor: aRenderItem ].
+	aRenderItem isRevealItem ifTrue: [ ^ self buildRevealElementFor: aRenderItem ].
 	aRenderItem isOtherRuleIndicatorItem ifTrue: [ ^ self buildOtherRuleIndicatorElementFor: aRenderItem ].
 	self error: 'Unknown render item kind'
 ]
@@ -272,6 +319,18 @@ CgtStyleRuleSelectorPathWidget >> buildRowElementFor: aRowRenderItem [
 	rowElement when: CgtMatcherCombinatorChangedEvent do: [ :anEvent |
 		self announceSelectorCombinator: anEvent combinator for: anEvent relation ].
 	^ rowElement
+]
+
+
+{ #category : 'rendering' }
+CgtStyleRuleSelectorPathWidget >> buildRevealElementFor: aRevealRenderItem [
+	| revealElement |
+	revealElement := CgtMatcherRevealElement new
+		direction: aRevealRenderItem direction;
+		yourself.
+	aRevealRenderItem rowItems do: [ :each |
+		revealElement addChild: (self buildRowElementFor: each) ].
+	^ revealElement
 ]
 
 { #category : 'rendering' }

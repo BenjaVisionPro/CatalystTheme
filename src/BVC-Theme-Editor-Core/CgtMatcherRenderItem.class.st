@@ -34,6 +34,12 @@ CgtMatcherRenderItem >> isOtherRuleIndicatorItem [
 	^ false
 ]
 
+
+{ #category : 'testing' }
+CgtMatcherRenderItem >> isRevealItem [
+	^ false
+]
+
 { #category : 'testing' }
 CgtMatcherRenderItem >> isRowItem [
 	^ false
