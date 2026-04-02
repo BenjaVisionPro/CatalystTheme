@@ -303,12 +303,14 @@ CgtMatcherRowElement >> hasClassMatcher [
 
 { #category : 'rendering' }
 CgtMatcherRowElement >> displayableElementIdLabel [
-	| rawLabel |
-	rawLabel := projectionNode elementId asString.
-	(rawLabel beginsWith: '#') ifTrue: [ ^ rawLabel allButFirst ].
-	((rawLabel beginsWith: '''') and: [ (rawLabel endsWith: '''') and: [ rawLabel size >= 2 ] ])
-		ifTrue: [ ^ rawLabel copyFrom: 2 to: rawLabel size - 1 ].
-	^ rawLabel
+	| normalized |
+	normalized := projectionNode elementId asString.
+	[ normalized beginsWith: '#' ] whileTrue: [ normalized := normalized allButFirst ].
+	[ 
+		normalized size >= 2
+			and: [ normalized first = $' and: [ normalized last = $' ] ] ]
+		whileTrue: [ normalized := normalized copyFrom: 2 to: normalized size - 1 ].
+	^ normalized
 ]
 
 { #category : 'testing' }
