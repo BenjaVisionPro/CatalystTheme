@@ -23,6 +23,7 @@ CgtThemeStyleRuleResolverTests >> testResolutionBootstrapsRuleWhenThemeHasNoMatc
 	self assert: resolution activeStyleRule notNil.
 	self assert: resolution wasBootstrapped.
 	self assert: resolution relatedStyleRules isEmpty.
+	self assert: resolution activeStyleRule selector displayString equals: '#selected'.
 	^ resolution
 ]
 

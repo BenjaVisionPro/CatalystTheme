@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'tests' }
-CgtThemeStyleRuleBootstrapBuilderTests >> testBuildsRuleFromHierarchyRootToSelectedElement [
+CgtThemeStyleRuleBootstrapBuilderTests >> testBuildsRuleForSelectedElementOnly [
 	<gtExample>
 	| root child selected rule |
 	root := self newTestElementWithId: #'root'.
@@ -19,7 +19,7 @@ CgtThemeStyleRuleBootstrapBuilderTests >> testBuildsRuleFromHierarchyRootToSelec
 	rule := CgtThemeStyleRuleBootstrapBuilder
 		ruleForSelectedElement: selected
 		withinHierarchyRoot: root.
-	self assert: rule selector displayString equals: '#root > #child > #selected'.
+	self assert: rule selector displayString equals: '#selected'.
 	^ rule
 
 ]
