@@ -357,27 +357,51 @@ CgtThemeSelectorModel >> styleRule: aCgtThemeStyleRule [
 { #category : 'editing' }
 CgtThemeSelectorModel >> toggleClassMatchForProjectionNode: aProjectionNode shouldMatch: aBoolean [
 	self withProjectionMutationDo: [
+		| incoming outgoing |
 		aProjectionNode ifNil: [ ^ self ].
 		(aBoolean and: [ aProjectionNode isInCurrentRule not ]) ifTrue: [
-			self includeProjectionNodeInRule: aProjectionNode ].
+			aProjectionNode isInCurrentRule: true.
+			incoming := self preferredIncomingRelationForNode: aProjectionNode.
+			incoming ifNotNil: [
+				incoming kind: #matcher.
+				incoming combinator ifNil: [ incoming combinator: #child ] ].
+			outgoing := self preferredOutgoingRelationForNode: aProjectionNode.
+			outgoing ifNotNil: [
+				(outgoing toNode isInCurrentRule or: [ outgoing toNode kind = #selectedElement ]) ifTrue: [
+					outgoing kind: #matcher.
+					outgoing combinator ifNil: [ outgoing combinator: #child ] ] ] ].
 		aProjectionNode matchByClass: aBoolean.
 		(aBoolean not) ifTrue: [
 			(aProjectionNode kind ~= #selectedElement) ifTrue: [
 				(aProjectionNode isInCurrentRule and: [ aProjectionNode matchById not ]) ifTrue: [
-					self excludeProjectionNodeFromRule: aProjectionNode ] ] ] ]
+					aProjectionNode isInCurrentRule: false.
+					incoming := self preferredIncomingRelationForNode: aProjectionNode.
+					incoming ifNotNil: [ incoming kind: #context ] ] ] ] ]
 ]
 
 { #category : 'editing' }
 CgtThemeSelectorModel >> toggleIdMatchForProjectionNode: aProjectionNode shouldMatch: aBoolean [
 	self withProjectionMutationDo: [
+		| incoming outgoing |
 		aProjectionNode ifNil: [ ^ self ].
 		(aBoolean and: [ aProjectionNode isInCurrentRule not ]) ifTrue: [
-			self includeProjectionNodeInRule: aProjectionNode ].
+			aProjectionNode isInCurrentRule: true.
+			incoming := self preferredIncomingRelationForNode: aProjectionNode.
+			incoming ifNotNil: [
+				incoming kind: #matcher.
+				incoming combinator ifNil: [ incoming combinator: #child ] ].
+			outgoing := self preferredOutgoingRelationForNode: aProjectionNode.
+			outgoing ifNotNil: [
+				(outgoing toNode isInCurrentRule or: [ outgoing toNode kind = #selectedElement ]) ifTrue: [
+					outgoing kind: #matcher.
+					outgoing combinator ifNil: [ outgoing combinator: #child ] ] ] ].
 		aProjectionNode matchById: aBoolean.
 		(aBoolean not) ifTrue: [
 			(aProjectionNode kind ~= #selectedElement) ifTrue: [
 				(aProjectionNode isInCurrentRule and: [ aProjectionNode matchByClass not ]) ifTrue: [
-					self excludeProjectionNodeFromRule: aProjectionNode ] ] ] ]
+					aProjectionNode isInCurrentRule: false.
+					incoming := self preferredIncomingRelationForNode: aProjectionNode.
+					incoming ifNotNil: [ incoming kind: #context ] ] ] ] ]
 ]
 
 { #category : 'accessing' }
