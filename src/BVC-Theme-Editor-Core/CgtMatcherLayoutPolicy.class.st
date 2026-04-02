@@ -80,3 +80,19 @@ CgtMatcherLayoutPolicy >> contextNodeWidth [
 CgtMatcherLayoutPolicy >> compactedGapWidth [
 	^ 132
 ]
+
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> chipMinimumWidth [
+	^ 56
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> chipHorizontalPadding [
+	^ 8
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> chipVerticalPadding [
+	^ 4
+]

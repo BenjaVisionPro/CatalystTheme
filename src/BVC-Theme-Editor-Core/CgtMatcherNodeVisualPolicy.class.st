@@ -87,3 +87,25 @@ CgtMatcherNodeVisualPolicy >> nodeSortPriorityFor: aProjectionNode [
 	aProjectionNode kind = #otherRuleRelated ifTrue: [ ^ 50 ].
 	^ 100
 ]
+
+
+{ #category : 'rendering' }
+CgtMatcherNodeVisualPolicy >> chipBackgroundForEnabled: aBoolean [
+	^ aBoolean
+		ifTrue: [ Color veryVeryLightGray ]
+		ifFalse: [ Color transparent ]
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeVisualPolicy >> chipBorderForEnabled: aBoolean [
+	^ aBoolean
+		ifTrue: [ BlBorder paint: (Color black alpha: 0.18) width: 1 ]
+		ifFalse: [ BlBorder paint: (Color gray alpha: 0.3) width: 1 ]
+]
+
+{ #category : 'rendering' }
+CgtMatcherNodeVisualPolicy >> chipForegroundForEnabled: aBoolean [
+	^ aBoolean
+		ifTrue: [ Color black ]
+		ifFalse: [ Color darkGray ]
+]
