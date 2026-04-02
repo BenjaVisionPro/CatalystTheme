@@ -204,8 +204,12 @@ CgtStyleRuleSelectorPathWidget >> incomingMatcherRelationForNode: aProjectionNod
 
 { #category : 'private - assembly' }
 CgtStyleRuleSelectorPathWidget >> gapDirectionFor: aProjectionNode [
+	| selectedNode downstreamNodes |
 	projection ifNil: [ ^ #upstream ].
-	projection trailingCompactedProjectionNode == aProjectionNode ifTrue: [ ^ #downstream ].
+	selectedNode := projection selectedProjectionNode.
+	selectedNode ifNil: [ ^ #upstream ].
+	downstreamNodes := self downstreamVisiblePathNodesAfter: selectedNode.
+	(downstreamNodes includes: aProjectionNode) ifTrue: [ ^ #downstream ].
 	^ #upstream
 ]
 
