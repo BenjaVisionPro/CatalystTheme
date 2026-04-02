@@ -68,8 +68,7 @@ CgtMatcherGapElement >> newCompactRevealHandle [
 	handle := BrButton new
 		label: '';
 		aptitude: (BrGlamorousButtonRectangularAptitude new
-			cornerRadius: 8;
-			paddingScale: 0.1);
+			cornerRadius: 8);
 		background: (Color gray alpha: 0.18);
 		border: (BlBorder paint: (Color gray alpha: 0.28) width: 1);
 		constraintsDo: [ :c |
