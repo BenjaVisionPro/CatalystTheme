@@ -474,3 +474,18 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementExposesViewportSizingPol
 	self assert: revealElement maximumViewportHeight equals: 180.
 	^ widget
 ]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementUsesDedicatedScrollViewportContainer [
+	<gtExample>
+	| projection widget revealElement |
+	projection := self newProjectionWithRevealedLeadingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement viewportUsesScrollContainer.
+	self assert: revealElement viewportContainer children size equals: 1.
+	self assert: revealElement viewportContainer children first identicalTo: revealElement contentContainer.
+	^ widget
+]

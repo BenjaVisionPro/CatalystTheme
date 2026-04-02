@@ -34,17 +34,6 @@ CgtMatcherRevealElement >> initialize [
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ].
-	viewportContainer := BrVerticalPane new
-		vFitContent;
-		hFitContent;
-		cellSpacing: 0;
-		padding: (BlInsets all: 0);
-		background: Color transparent;
-		border: BlBorder empty;
-		constraintsDo: [ :c |
-			c horizontal fitContent.
-			c vertical fitContent ];
-		yourself.
 	contentContainer := BrVerticalPane new
 		vFitContent;
 		hFitContent;
@@ -53,8 +42,17 @@ CgtMatcherRevealElement >> initialize [
 		background: Color transparent;
 		border: BlBorder empty;
 		yourself.
-	viewportContainer addChild: contentContainer.
-	self addChild: viewportContainer
+	viewportContainer := contentContainer asScrollableElement.
+	viewportContainer
+		vFitContent;
+		hFitContent;
+		background: Color transparent;
+		border: BlBorder empty;
+		constraintsDo: [ :c |
+			c horizontal fitContent.
+			c vertical fitContent ].
+	self addChild: viewportContainer.
+	self refreshViewportPresentation
 ]
 
 { #category : 'accessing' }
@@ -87,6 +85,7 @@ CgtMatcherRevealElement >> structuralRefreshPlan [
 { #category : 'accessing' }
 CgtMatcherRevealElement >> structuralRefreshPlan: aStructuralRefreshPlan [
 	structuralRefreshPlan := aStructuralRefreshPlan ifNil: [ CgtMatcherStructuralRefreshPlan new ].
+	self refreshViewportPresentation.
 	^ self
 ]
 
@@ -98,6 +97,7 @@ CgtMatcherRevealElement >> direction [
 { #category : 'accessing' }
 CgtMatcherRevealElement >> direction: aSymbol [
 	direction := aSymbol ifNil: [ #upstream ].
+	self refreshViewportPresentation.
 	^ self
 ]
 
@@ -109,7 +109,8 @@ CgtMatcherRevealElement >> rowElements [
 { #category : 'accessing' }
 CgtMatcherRevealElement >> rowElements: aCollection [
 	rowElements := (aCollection ifNil: [ #() ]) asOrderedCollection.
-	self refreshContents.
+	self refreshContents;
+		refreshViewportPresentation.
 	^ self
 ]
 
@@ -117,6 +118,18 @@ CgtMatcherRevealElement >> rowElements: aCollection [
 CgtMatcherRevealElement >> refreshContents [
 	contentContainer removeChildren.
 	rowElements do: [ :each | contentContainer addChild: each ].
+	^ self
+]
+
+{ #category : 'rendering' }
+CgtMatcherRevealElement >> refreshViewportPresentation [
+	viewportContainer ifNil: [ ^ self ].
+	viewportContainer
+		vFitContent;
+		hFitContent;
+		constraintsDo: [ :c |
+			c horizontal fitContent.
+			c vertical fitContent ].
 	^ self
 ]
 
@@ -143,6 +156,22 @@ CgtMatcherRevealElement >> openingDirection [
 	^ self isUpstreamReveal
 		ifTrue: [ #up ]
 		ifFalse: [ #down ]
+]
+
+{ #category : 'testing' }
+CgtMatcherRevealElement >> viewportUsesScrollContainer [
+	^ viewportContainer notNil
+		and: [ viewportContainer ~~ contentContainer ]
+]
+
+{ #category : 'testing' }
+CgtMatcherRevealElement >> pinsViewportToBottomEdge [
+	^ self fixedEdge = #bottom
+]
+
+{ #category : 'testing' }
+CgtMatcherRevealElement >> pinsViewportToTopEdge [
+	^ self fixedEdge = #top
 ]
 
 { #category : 'accessing' }
