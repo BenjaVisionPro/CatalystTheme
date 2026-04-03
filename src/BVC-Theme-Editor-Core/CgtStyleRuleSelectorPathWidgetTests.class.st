@@ -791,3 +791,48 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementRefreshContentsUsesAllVi
 	self assert: revealElement contentContainer children second identicalTo: secondRow.
 	^ revealElement
 ]
+
+
+{ #category : 'tests - reveal presentation' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementExposesPresentationDurationForCurrentPlan [
+	<gtExample>
+	| revealElement |
+	revealElement := CgtMatcherRevealElement new
+		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself);
+		yourself.
+	self assert: revealElement viewportPresentationDurationForCurrentPlan equals: revealElement transitionPolicy revealDuration.
+	^ revealElement
+]
+
+{ #category : 'tests - reveal presentation' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementCanBeginAndFinishPresentationForCurrentPlan [
+	<gtExample>
+	| revealElement |
+	revealElement := CgtMatcherRevealElement new
+		rowElements: { BlElement new. BlElement new };
+		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #collapse; yourself);
+		yourself.
+	revealElement beginViewportPresentationForCurrentPlan.
+	self assert: revealElement viewportPresentationProgress equals: 1.0.
+	revealElement finishViewportPresentationForCurrentPlan.
+	self assert: revealElement viewportPresentationProgress equals: 0.0.
+	^ revealElement
+]
+
+{ #category : 'tests - reveal presentation' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementCanAdvancePresentationProgressTowardTarget [
+	<gtExample>
+	| revealElement |
+	revealElement := CgtMatcherRevealElement new
+		rowElements: { BlElement new. BlElement new };
+		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself);
+		yourself.
+	revealElement beginViewportPresentationForCurrentPlan.
+	revealElement advanceViewportPresentationProgressBy: 0.25.
+	self assert: revealElement viewportPresentationProgress equals: 0.25.
+	self deny: revealElement isAtTargetViewportPresentationProgress.
+	revealElement advanceViewportPresentationProgressBy: 0.75.
+	self assert: revealElement viewportPresentationProgress equals: 1.0.
+	self assert: revealElement isAtTargetViewportPresentationProgress.
+	^ revealElement
+]

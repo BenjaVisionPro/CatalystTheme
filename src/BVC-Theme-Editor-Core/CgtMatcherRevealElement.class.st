@@ -171,6 +171,35 @@ CgtMatcherRevealElement >> completeViewportPresentationProgressForCurrentPlan [
 	^ self viewportPresentationProgress: self targetViewportPresentationProgressForCurrentPlan
 ]
 
+
+
+{ #category : 'actions' }
+CgtMatcherRevealElement >> beginViewportPresentationForCurrentPlan [
+	self resetViewportPresentationProgressToPlanStart.
+	^ self
+]
+
+{ #category : 'actions' }
+CgtMatcherRevealElement >> finishViewportPresentationForCurrentPlan [
+	self completeViewportPresentationProgressForCurrentPlan.
+	^ self
+]
+
+{ #category : 'actions' }
+CgtMatcherRevealElement >> advanceViewportPresentationProgressBy: aNumber [
+	^ self viewportPresentationProgress: self viewportPresentationProgress + (aNumber ifNil: [ 0 ])
+]
+
+{ #category : 'testing' }
+CgtMatcherRevealElement >> isAtTargetViewportPresentationProgress [
+	^ (self viewportPresentationProgress - self targetViewportPresentationProgressForCurrentPlan) abs < 0.0001
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> viewportPresentationDurationForCurrentPlan [
+	^ transitionPolicy structuralRefreshDurationForPlan: structuralRefreshPlan
+]
+
 { #category : 'accessing' }
 CgtMatcherRevealElement >> viewportPresentationProgress [
 	^ viewportPresentationProgress ifNil: [ 1 ]
