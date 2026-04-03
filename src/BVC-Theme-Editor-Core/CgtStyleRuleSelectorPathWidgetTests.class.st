@@ -637,7 +637,7 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementComputesVisibleRowsForPa
 	revealElement := CgtMatcherRevealElement new
 		rowElements: { firstRow. secondRow. thirdRow };
 		yourself.
-	partialHeight := 20 + revealElement minimumViewportHeight.
+	partialHeight := (revealElement measuredHeightForRowElement: firstRow) + revealElement minimumViewportHeight.
 	visibleRows := revealElement visibleRowElementsForViewportHeight: partialHeight.
 	self assert: visibleRows size equals: 1.
 	self assert: visibleRows first identicalTo: firstRow.
