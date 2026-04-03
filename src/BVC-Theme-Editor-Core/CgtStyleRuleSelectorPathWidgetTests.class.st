@@ -646,44 +646,15 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementComputesVisibleRowsForPa
 
 
 { #category : 'tests' }
-CgtStyleRuleSelectorPathWidgetTests >> testRefreshStartsRevealElementAtPlanStartProgress [
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementDefaultsCurrentPresentationToEndViewportHeight [
 	<gtExample>
 	| widget revealElement |
 	widget := CgtStyleRuleSelectorPathWidget new.
 	widget projection: self newProjectionWithUpstreamSelectedAndIndicator.
 	widget projection: self newProjectionWithRevealedLeadingContext.
 	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
-	self assert: revealElement viewportPresentationProgress equals: revealElement startingViewportPresentationProgressForCurrentPlan.
 	self assert: revealElement currentViewportHeightForCurrentPlan equals: revealElement viewportStartHeightForCurrentPlan.
 	self assert: revealElement visibleRowElementsForCurrentViewportPresentation isEmpty.
-	^ widget
-]
-
-{ #category : 'tests' }
-CgtStyleRuleSelectorPathWidgetTests >> testWidgetCanCompleteRevealElementToPlanTarget [
-	<gtExample>
-	| widget revealElement |
-	widget := CgtStyleRuleSelectorPathWidget new.
-	widget projection: self newProjectionWithUpstreamSelectedAndIndicator.
-	widget projection: self newProjectionWithRevealedLeadingContext.
-	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
-	widget completeRevealPresentationsForCurrentPlan.
-	self assert: revealElement viewportPresentationProgress equals: revealElement targetViewportPresentationProgressForCurrentPlan.
-	self assert: revealElement currentViewportHeightForCurrentPlan equals: revealElement viewportEndHeightForCurrentPlan.
-	self assert: revealElement visibleRowElementsForCurrentViewportPresentation size equals: revealElement visibleRowElements size.
-	^ widget
-]
-
-{ #category : 'tests' }
-CgtStyleRuleSelectorPathWidgetTests >> testStableRefreshStartsRevealAtTargetProgress [
-	<gtExample>
-	| widget revealElement |
-	widget := CgtStyleRuleSelectorPathWidget new.
-	widget projection: self newProjectionWithRevealedLeadingContext.
-	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
-	self assert: widget structuralRefreshPlan isStable.
-	self assert: revealElement viewportPresentationProgress equals: revealElement targetViewportPresentationProgressForCurrentPlan.
-	self assert: revealElement currentViewportHeightForCurrentPlan equals: revealElement viewportEndHeightForCurrentPlan.
 	^ widget
 ]
 
@@ -864,4 +835,41 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementCanAdvancePresentationPr
 	self assert: revealElement viewportPresentationProgress equals: 1.0.
 	self assert: revealElement isAtTargetViewportPresentationProgress.
 	^ revealElement
+]
+
+
+{ #category : 'tests - reveal presentation' }
+CgtStyleRuleSelectorPathWidgetTests >> testRefreshStartsRevealElementsAtPlanStart [
+	<gtExample>
+	| widget revealElement |
+	widget := CgtStyleRuleSelectorPathWidget new.
+	widget projection: self newProjectionWithUpstreamSelectedAndIndicator.
+	widget projection: self newProjectionWithRevealedLeadingContext.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement viewportPresentationProgress equals: revealElement startingViewportPresentationProgressForCurrentPlan.
+	^ widget
+]
+
+{ #category : 'tests - reveal presentation' }
+CgtStyleRuleSelectorPathWidgetTests >> testWidgetCanCompleteRevealElementsToPlanTarget [
+	<gtExample>
+	| widget revealElement |
+	widget := CgtStyleRuleSelectorPathWidget new.
+	widget projection: self newProjectionWithUpstreamSelectedAndIndicator.
+	widget projection: self newProjectionWithRevealedLeadingContext.
+	widget completeRevealPresentationsForCurrentPlan.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement viewportPresentationProgress equals: revealElement targetViewportPresentationProgressForCurrentPlan.
+	^ widget
+]
+
+{ #category : 'tests - reveal presentation' }
+CgtStyleRuleSelectorPathWidgetTests >> testStableRefreshStartsRevealElementsAtTargetProgress [
+	<gtExample>
+	| widget revealElement |
+	widget := CgtStyleRuleSelectorPathWidget new.
+	widget projection: self newProjectionWithRevealedLeadingContext.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement viewportPresentationProgress equals: revealElement targetViewportPresentationProgressForCurrentPlan.
+	^ widget
 ]

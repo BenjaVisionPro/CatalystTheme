@@ -75,7 +75,7 @@ CgtStyleRuleSelectorPathWidget >> revealElements [
 { #category : 'actions' }
 CgtStyleRuleSelectorPathWidget >> beginRevealPresentationsForCurrentPlan [
 	self revealElements do: [ :each |
-		transitionPolicy shouldAnimateStructuralRefreshPlan: structuralRefreshPlan
+		(transitionPolicy shouldAnimateStructuralRefreshPlan: structuralRefreshPlan)
 			ifTrue: [ each beginViewportPresentationForCurrentPlan ]
 			ifFalse: [ each finishViewportPresentationForCurrentPlan ] ].
 	^ self
