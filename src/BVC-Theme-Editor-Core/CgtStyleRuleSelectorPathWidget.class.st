@@ -72,21 +72,6 @@ CgtStyleRuleSelectorPathWidget >> revealElements [
 	^ rowsContainer children select: [ :each | each isKindOf: CgtMatcherRevealElement ]
 ]
 
-{ #category : 'actions' }
-CgtStyleRuleSelectorPathWidget >> beginRevealPresentationsForCurrentPlan [
-	self revealElements do: [ :each |
-		(transitionPolicy shouldAnimateStructuralRefreshPlan: structuralRefreshPlan)
-			ifTrue: [ each beginViewportPresentationForCurrentPlan ]
-			ifFalse: [ each finishViewportPresentationForCurrentPlan ] ].
-	^ self
-]
-
-{ #category : 'actions' }
-CgtStyleRuleSelectorPathWidget >> completeRevealPresentationsForCurrentPlan [
-	self revealElements do: [ :each | each finishViewportPresentationForCurrentPlan ].
-	^ self
-]
-
 { #category : 'rendering' }
 CgtStyleRuleSelectorPathWidget >> refreshContents [
 	previousRenderItems := renderItems ifNil: [ OrderedCollection new ] ifNotNil: [ renderItems copy ].
