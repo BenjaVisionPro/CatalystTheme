@@ -121,11 +121,13 @@ CgtMatcherRevealElement >> refreshContents [
 
 { #category : 'rendering' }
 CgtMatcherRevealElement >> refreshViewportPresentation [
+	| viewportHeight |
 	viewportContainer ifNil: [ ^ self ].
+	viewportHeight := self viewportHeightForVisibleRows.
 	viewportContainer
 		constraintsDo: [ :c |
 			c horizontal fitContent.
-			c vertical fitContent ].
+			c vertical exact: viewportHeight ].
 	^ self
 ]
 
@@ -154,6 +156,38 @@ CgtMatcherRevealElement >> openingDirection [
 		ifFalse: [ #down ]
 ]
 
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> estimatedContentHeight [
+	^ self estimatedHeightForRowElements: rowElements
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> estimatedHeightForRowElements: aCollection [
+	| rows verticalInset |
+	rows := (aCollection ifNil: [ #() ]) asOrderedCollection.
+	rows isEmpty ifTrue: [ ^ self minimumViewportHeight ].
+	verticalInset := layoutPolicy revealContentInset top + layoutPolicy revealContentInset bottom.
+	^ (rows inject: verticalInset into: [ :sum :each | sum + (self measuredHeightForRowElement: each) ])
+		+ ((rows size - 1) * layoutPolicy revealViewportCellSpacing)
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> visibleRowElements [
+	^ rowElements first: (rowElements size min: self maximumVisibleRowCount)
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> viewportHeightForVisibleRows [
+	| estimated |
+	estimated := self estimatedHeightForRowElements: self visibleRowElements.
+	^ estimated max: self minimumViewportHeight
+]
+
+{ #category : 'testing' }
+CgtMatcherRevealElement >> shouldUseScrollForOverflowRows [
+	^ rowElements size > self maximumVisibleRowCount
+]
+
 { #category : 'testing' }
 CgtMatcherRevealElement >> viewportUsesScrollContainer [
 	^ viewportContainer notNil
@@ -171,8 +205,19 @@ CgtMatcherRevealElement >> pinsViewportToTopEdge [
 ]
 
 { #category : 'accessing' }
-CgtMatcherRevealElement >> maximumViewportHeight [
-	^ layoutPolicy revealViewportMaximumHeight
+CgtMatcherRevealElement >> maximumVisibleRowCount [
+	^ layoutPolicy revealMaximumVisibleRowCount
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> measuredHeightForRowElement: anElement [
+	| measured boundsHeight |
+	anElement ifNil: [ ^ layoutPolicy revealEstimatedRowHeight ].
+	measured := [ anElement measuredBounds height ] on: Error do: [ 0 ].
+	measured > 0 ifTrue: [ ^ measured ].
+	boundsHeight := [ anElement bounds height ] on: Error do: [ 0 ].
+	boundsHeight > 0 ifTrue: [ ^ boundsHeight ].
+	^ layoutPolicy revealEstimatedRowHeight
 ]
 
 { #category : 'accessing' }

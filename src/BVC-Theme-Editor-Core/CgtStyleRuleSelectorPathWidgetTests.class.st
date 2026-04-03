@@ -245,6 +245,38 @@ CgtStyleRuleSelectorPathWidgetTests >> testSelectedRenderItemIsAlwaysMarkedInSco
 
 
 { #category : 'private' }
+CgtStyleRuleSelectorPathWidgetTests >> newProjectionWithManyRevealedLeadingContextNodes [
+	| projection previous selected selectedElement |
+	projection := CgtMatcherProjection new.
+	1 to: 5 do: [ :index |
+		| element node |
+		element := CgtThemeSelectorTestElement new
+			className: 'ContextElement', index asString;
+			id: (BlElementId named: ('context', index asString) asSymbol);
+			yourself.
+		node := (CgtMatcherProjectionNode kind: #upstreamScope)
+			representedElement: element;
+			isInCurrentRule: false;
+			yourself.
+		projection addNode: node.
+		previous ifNotNil: [ projection addRelation: (CgtMatcherProjectionRelation from: previous to: node kind: #context) ].
+		previous := node ].
+	selectedElement := CgtThemeSelectorTestElement new
+		className: 'SelectedElement';
+		id: (BlElementId named: #selected);
+		yourself.
+	selected := (CgtMatcherProjectionNode kind: #selectedElement)
+		representedElement: selectedElement;
+		isInCurrentRule: true;
+		yourself.
+	projection
+		addNode: selected;
+		addRelation: (CgtMatcherProjectionRelation from: previous to: selected kind: #context);
+		selectedElement: selectedElement.
+	^ projection
+]
+
+{ #category : 'private' }
 CgtStyleRuleSelectorPathWidgetTests >> newProjectionWithRevealedLeadingContext [
 	| projection root middle selected rootElement middleElement selectedElement |
 	projection := CgtMatcherProjection new.
@@ -471,7 +503,7 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementExposesViewportSizingPol
 		yourself.
 	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
 	self assert: revealElement minimumViewportHeight equals: 0.
-	self assert: revealElement maximumViewportHeight equals: 180.
+	self assert: revealElement maximumVisibleRowCount equals: 6.
 	^ widget
 ]
 
@@ -487,5 +519,36 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementUsesDedicatedScrollViewp
 	self assert: revealElement viewportUsesScrollContainer.
 	self assert: revealElement viewportContainer children size equals: 1.
 	self assert: revealElement viewportContainer children first identicalTo: revealElement contentContainer.
+	^ widget
+]
+
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementUsesScrollForOverflowRowsBeyondVisibleCount [
+	<gtExample>
+	| projection widget revealElement |
+	projection := self newProjectionWithManyRevealedLeadingContextNodes.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement shouldUseScrollForOverflowRows.
+	self assert: revealElement visibleRowElements size equals: revealElement maximumVisibleRowCount.
+	self assert: revealElement viewportHeightForVisibleRows equals: (revealElement estimatedHeightForRowElements: revealElement visibleRowElements).
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementUsesAllRowsWhenBelowVisibleCountLimit [
+	<gtExample>
+	| projection widget revealElement |
+	projection := self newProjectionWithRevealedLeadingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self deny: revealElement shouldUseScrollForOverflowRows.
+	self assert: revealElement visibleRowElements size equals: revealElement rowElements size.
+	self assert: revealElement viewportHeightForVisibleRows equals: (revealElement estimatedHeightForRowElements: revealElement rowElements).
 	^ widget
 ]

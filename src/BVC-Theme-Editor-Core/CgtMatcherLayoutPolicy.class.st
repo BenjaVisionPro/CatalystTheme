@@ -124,9 +124,15 @@ CgtMatcherLayoutPolicy >> rowCellSpacing [
 ]
 
 
+
 { #category : 'layout' }
-CgtMatcherLayoutPolicy >> revealViewportMaximumHeight [
-	^ 180
+CgtMatcherLayoutPolicy >> revealEstimatedRowHeight [
+	^ 56
+]
+
+{ #category : 'layout' }
+CgtMatcherLayoutPolicy >> revealMaximumVisibleRowCount [
+	^ 6
 ]
 
 { #category : 'layout' }
