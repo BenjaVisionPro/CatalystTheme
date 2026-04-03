@@ -211,6 +211,7 @@ CgtMatcherRevealElement >> viewportPresentationProgress: aNumber [
 	progress := (aNumber ifNil: [ 1 ]) asFloat.
 	viewportPresentationProgress := (progress max: 0.0) min: 1.0.
 	self refreshViewportPresentation.
+	self requestLayout.
 	^ self
 ]
 
@@ -330,7 +331,7 @@ CgtMatcherRevealElement >> currentViewportHeightForCurrentPlan [
 CgtMatcherRevealElement >> rowElementsForCurrentViewportPresentation [
 	(self shouldAnimateViewportHeight and: [ self viewportPresentationProgress < 1.0 ]) ifTrue: [
 		^ self visibleRowElementsForCurrentViewportPresentation ].
-	^ self visibleRowElements
+	^ rowElements copy
 ]
 
 { #category : 'accessing' }

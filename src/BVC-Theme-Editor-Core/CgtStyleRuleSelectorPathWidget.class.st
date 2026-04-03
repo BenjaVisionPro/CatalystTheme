@@ -108,7 +108,7 @@ CgtStyleRuleSelectorPathWidget >> refreshContents [
 		orientation: layoutPolicy corridorOrientation.
 	renderItems := self buildRenderItemsFromProjection.
 	self renderItems: renderItems.
-	self beginRevealPresentationsForCurrentPlan.
+	"Inspection-first pass: fully open reveal presentations after refresh so the UI is immediately visible and testable."
 	self completeRevealPresentationsForCurrentPlan.
 	previousProjection := projection.
 	^ self
