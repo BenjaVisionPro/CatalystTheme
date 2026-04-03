@@ -248,7 +248,7 @@ CgtStyleRuleSelectorPathWidgetTests >> testSelectedRenderItemIsAlwaysMarkedInSco
 CgtStyleRuleSelectorPathWidgetTests >> newProjectionWithManyRevealedLeadingContextNodes [
 	| projection previous selected selectedElement |
 	projection := CgtMatcherProjection new.
-	1 to: 5 do: [ :index |
+	1 to: 8 do: [ :index |
 		| element node |
 		element := CgtThemeSelectorTestElement new
 			className: 'ContextElement', index asString;
