@@ -234,6 +234,19 @@ CgtMatcherRevealElement >> viewportEndHeightForCurrentPlan [
 	^ self viewportHeightForVisibleRows
 ]
 
+
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> currentViewportHeightForCurrentPlan [
+	"Until the actual animation hookup lands, the live viewport presentation uses the current plan's target height."
+	^ self viewportEndHeightForCurrentPlan
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> visibleRowElementsForCurrentViewportPresentation [
+	^ self visibleRowElementsForViewportHeight: self currentViewportHeightForCurrentPlan
+]
+
 { #category : 'accessing' }
 CgtMatcherRevealElement >> visibleRowElementsForViewportHeight: aNumber [
 	| visibleRows accumulatedHeight spacing |
