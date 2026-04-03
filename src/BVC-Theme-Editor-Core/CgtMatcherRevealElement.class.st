@@ -14,7 +14,8 @@ Class {
 		'viewportContainer',
 		'rowElements',
 		'transitionPolicy',
-		'structuralRefreshPlan'
+		'structuralRefreshPlan',
+		'viewportPresentationProgress'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -26,6 +27,7 @@ CgtMatcherRevealElement >> initialize [
 	layoutPolicy := CgtMatcherLayoutPolicy new.
 	transitionPolicy := CgtMatcherTransitionPolicy new.
 	structuralRefreshPlan := CgtMatcherStructuralRefreshPlan new.
+	viewportPresentationProgress := 1.
 	rowElements := OrderedCollection new.
 	self
 		vFitContent;
@@ -140,6 +142,31 @@ CgtMatcherRevealElement >> rowElements: aCollection [
 	^ self
 ]
 
+
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> viewportPresentationProgress [
+	^ viewportPresentationProgress ifNil: [ 1 ]
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> viewportPresentationProgress: aNumber [
+	| progress |
+	progress := (aNumber ifNil: [ 1 ]) asFloat.
+	viewportPresentationProgress := (progress max: 0.0) min: 1.0.
+	self refreshViewportPresentation.
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> currentViewportHeightForPresentationProgress: aNumber [
+	| startHeight endHeight progress |
+	startHeight := self viewportStartHeightForCurrentPlan.
+	endHeight := self viewportEndHeightForCurrentPlan.
+	progress := ((aNumber ifNil: [ 1 ]) asFloat max: 0.0) min: 1.0.
+	^ startHeight + ((endHeight - startHeight) * progress)
+]
+
 { #category : 'rendering' }
 CgtMatcherRevealElement >> refreshContents [
 	contentContainer removeChildren.
@@ -151,7 +178,7 @@ CgtMatcherRevealElement >> refreshContents [
 CgtMatcherRevealElement >> refreshViewportPresentation [
 	| viewportHeight |
 	viewportContainer ifNil: [ ^ self ].
-	viewportHeight := self viewportHeightForVisibleRows.
+	viewportHeight := self currentViewportHeightForCurrentPlan.
 	self refreshViewportContentLayoutForHeight: viewportHeight.
 	viewportContainer
 		constraintsDo: [ :c |
@@ -238,8 +265,7 @@ CgtMatcherRevealElement >> viewportEndHeightForCurrentPlan [
 
 { #category : 'accessing' }
 CgtMatcherRevealElement >> currentViewportHeightForCurrentPlan [
-	"Until the actual animation hookup lands, the live viewport presentation uses the current plan's target height."
-	^ self viewportEndHeightForCurrentPlan
+	^ self currentViewportHeightForPresentationProgress: self viewportPresentationProgress
 ]
 
 { #category : 'accessing' }

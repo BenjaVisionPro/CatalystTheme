@@ -646,7 +646,7 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementComputesVisibleRowsForPa
 
 
 { #category : 'tests' }
-CgtStyleRuleSelectorPathWidgetTests >> testRevealElementUsesTargetViewportHeightForCurrentPresentation [
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementDefaultsCurrentPresentationToEndViewportHeight [
 	<gtExample>
 	| widget revealElement |
 	widget := CgtStyleRuleSelectorPathWidget new.
@@ -669,5 +669,45 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementCollapsedStartPresentati
 		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself);
 		yourself.
 	self assert: (revealElement visibleRowElementsForViewportHeight: revealElement viewportStartHeightForCurrentPlan) isEmpty.
+	^ revealElement
+]
+
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementCurrentPresentationInterpolatesViewportHeightFromProgress [
+	<gtExample>
+	| revealElement startHeight endHeight midHeight |
+	revealElement := CgtMatcherRevealElement new
+		rowElements: { BlElement new. BlElement new };
+		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself);
+		yourself.
+	startHeight := revealElement viewportStartHeightForCurrentPlan.
+	endHeight := revealElement viewportEndHeightForCurrentPlan.
+	revealElement viewportPresentationProgress: 0.
+	self assert: revealElement currentViewportHeightForCurrentPlan equals: startHeight.
+	revealElement viewportPresentationProgress: 0.5.
+	midHeight := revealElement currentViewportHeightForCurrentPlan.
+	self assert: midHeight > startHeight.
+	self assert: midHeight < endHeight.
+	revealElement viewportPresentationProgress: 1.
+	self assert: revealElement currentViewportHeightForCurrentPlan equals: endHeight.
+	^ revealElement
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementCurrentPresentationUsesVisibleRowsForProgressedHeight [
+	<gtExample>
+	| revealElement firstRow secondRow presentationHeight visibleRows |
+	firstRow := BlElement new constraintsDo: [ :c | c vertical exact: 20. c horizontal exact: 10 ].
+	secondRow := BlElement new constraintsDo: [ :c | c vertical exact: 30. c horizontal exact: 10 ].
+	revealElement := CgtMatcherRevealElement new
+		rowElements: { firstRow. secondRow };
+		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself);
+		yourself.
+	presentationHeight := revealElement minimumViewportHeight + (revealElement measuredHeightForRowElement: firstRow).
+	revealElement viewportPresentationProgress: ((presentationHeight - revealElement viewportStartHeightForCurrentPlan) / (revealElement viewportEndHeightForCurrentPlan - revealElement viewportStartHeightForCurrentPlan)).
+	visibleRows := revealElement visibleRowElementsForCurrentViewportPresentation.
+	self assert: visibleRows size equals: 1.
+	self assert: visibleRows first identicalTo: firstRow.
 	^ revealElement
 ]
