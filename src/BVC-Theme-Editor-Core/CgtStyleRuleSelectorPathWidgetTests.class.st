@@ -552,3 +552,47 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementUsesAllRowsWhenBelowVisi
 	self assert: revealElement viewportHeightForVisibleRows equals: (revealElement estimatedHeightForRowElements: revealElement rowElements).
 	^ widget
 ]
+
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testUpstreamRevealElementUsesLeadingSpacerToPinContentToBottomEdge [
+	<gtExample>
+	| projection widget revealElement |
+	projection := self newProjectionWithRevealedLeadingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement shouldUseLeadingSpacerForFixedEdge.
+	self assert: revealElement viewportContentContainer children first identicalTo: revealElement viewportSpacerElement.
+	self assert: revealElement viewportContentContainer children second identicalTo: revealElement contentContainer.
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testDownstreamRevealElementUsesTrailingSpacerToPinContentToTopEdge [
+	<gtExample>
+	| projection widget revealElement |
+	projection := self newProjectionWithRevealedTrailingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement shouldUseTrailingSpacerForFixedEdge.
+	self assert: revealElement viewportContentContainer children first identicalTo: revealElement contentContainer.
+	self assert: revealElement viewportContentContainer children second identicalTo: revealElement viewportSpacerElement.
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testUpstreamRevealElementComputesPositiveSpacerWhenViewportExceedsContentHeight [
+	<gtExample>
+	| projection widget revealElement |
+	projection := self newProjectionWithRevealedLeadingContext.
+	widget := CgtStyleRuleSelectorPathWidget new
+		projection: projection;
+		yourself.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: (revealElement spacerHeightForViewportHeight: (revealElement estimatedContentHeight + 12)) equals: 12.
+	^ widget
+]

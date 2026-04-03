@@ -9,6 +9,8 @@ Class {
 		'direction',
 		'layoutPolicy',
 		'contentContainer',
+		'viewportContentContainer',
+		'viewportSpacerElement',
 		'viewportContainer',
 		'rowElements',
 		'transitionPolicy',
@@ -42,7 +44,21 @@ CgtMatcherRevealElement >> initialize [
 		background: Color transparent;
 		border: BlBorder empty;
 		yourself.
-	viewportContainer := contentContainer asScrollableElement.
+	viewportContentContainer := BrVerticalPane new
+		vFitContent;
+		hFitContent;
+		cellSpacing: 0;
+		background: Color transparent;
+		border: BlBorder empty;
+		yourself.
+	viewportSpacerElement := BlElement new
+		background: Color transparent;
+		border: BlBorder empty;
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical exact: 0 ];
+		yourself.
+	viewportContainer := viewportContentContainer asScrollableElement.
 	viewportContainer
 		background: Color transparent;
 		border: BlBorder empty;
@@ -56,6 +72,18 @@ CgtMatcherRevealElement >> initialize [
 { #category : 'accessing' }
 CgtMatcherRevealElement >> contentContainer [
 	^ contentContainer
+]
+
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> viewportContentContainer [
+	^ viewportContentContainer
+]
+
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> viewportSpacerElement [
+	^ viewportSpacerElement
 ]
 
 
@@ -124,6 +152,7 @@ CgtMatcherRevealElement >> refreshViewportPresentation [
 	| viewportHeight |
 	viewportContainer ifNil: [ ^ self ].
 	viewportHeight := self viewportHeightForVisibleRows.
+	self refreshViewportContentLayoutForHeight: viewportHeight.
 	viewportContainer
 		constraintsDo: [ :c |
 			c horizontal fitContent.
@@ -209,6 +238,43 @@ CgtMatcherRevealElement >> maximumVisibleRowCount [
 	^ layoutPolicy revealMaximumVisibleRowCount
 ]
 
+
+
+{ #category : 'private - layout' }
+CgtMatcherRevealElement >> refreshViewportContentLayoutForHeight: aViewportHeight [
+	| spacerHeight |
+	viewportContentContainer ifNil: [ ^ self ].
+	spacerHeight := self spacerHeightForViewportHeight: aViewportHeight.
+	viewportSpacerElement constraintsDo: [ :c |
+		c horizontal matchParent.
+		c vertical exact: spacerHeight ].
+	viewportContentContainer removeChildren.
+	self shouldUseLeadingSpacerForFixedEdge
+		ifTrue: [
+			viewportContentContainer addChild: viewportSpacerElement.
+			viewportContentContainer addChild: contentContainer ]
+		ifFalse: [
+			viewportContentContainer addChild: contentContainer.
+			viewportContentContainer addChild: viewportSpacerElement ].
+	^ self
+]
+
+{ #category : 'private - layout' }
+CgtMatcherRevealElement >> spacerHeightForViewportHeight: aViewportHeight [
+	| contentHeight |
+	contentHeight := self estimatedContentHeight.
+	^ (aViewportHeight - contentHeight) max: 0
+]
+
+{ #category : 'testing' }
+CgtMatcherRevealElement >> shouldUseLeadingSpacerForFixedEdge [
+	^ self fixedEdge = #bottom
+]
+
+{ #category : 'testing' }
+CgtMatcherRevealElement >> shouldUseTrailingSpacerForFixedEdge [
+	^ self shouldUseLeadingSpacerForFixedEdge not
+]
 { #category : 'accessing' }
 CgtMatcherRevealElement >> measuredHeightForRowElement: anElement [
 	| measured boundsHeight |
