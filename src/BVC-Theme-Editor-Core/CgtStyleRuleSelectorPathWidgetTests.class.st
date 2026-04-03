@@ -866,9 +866,11 @@ CgtStyleRuleSelectorPathWidgetTests >> testWidgetCanCompleteRevealElementsToPlan
 { #category : 'tests - reveal presentation' }
 CgtStyleRuleSelectorPathWidgetTests >> testStableRefreshStartsRevealElementsAtTargetProgress [
 	<gtExample>
-	| widget revealElement |
+	| widget revealElement projection |
 	widget := CgtStyleRuleSelectorPathWidget new.
-	widget projection: self newProjectionWithRevealedLeadingContext.
+	projection := self newProjectionWithRevealedLeadingContext.
+	widget projection: projection.
+	widget projection: projection.
 	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
 	self assert: revealElement viewportPresentationProgress equals: revealElement targetViewportPresentationProgressForCurrentPlan.
 	^ widget
