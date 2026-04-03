@@ -44,8 +44,6 @@ CgtMatcherRevealElement >> initialize [
 		yourself.
 	viewportContainer := contentContainer asScrollableElement.
 	viewportContainer
-		vFitContent;
-		hFitContent;
 		background: Color transparent;
 		border: BlBorder empty;
 		constraintsDo: [ :c |
@@ -125,8 +123,6 @@ CgtMatcherRevealElement >> refreshContents [
 CgtMatcherRevealElement >> refreshViewportPresentation [
 	viewportContainer ifNil: [ ^ self ].
 	viewportContainer
-		vFitContent;
-		hFitContent;
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ].
