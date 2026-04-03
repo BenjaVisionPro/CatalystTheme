@@ -57,6 +57,11 @@ CgtStyleRuleSelectorPathWidget >> renderItems [
 ]
 
 { #category : 'accessing' }
+CgtStyleRuleSelectorPathWidget >> revealElements [
+	^ rowsContainer children select: [ :each | each isKindOf: CgtMatcherRevealElement ]
+]
+
+{ #category : 'accessing' }
 CgtStyleRuleSelectorPathWidget >> structuralRefreshPlan [
 	^ structuralRefreshPlan
 ]
@@ -75,6 +80,7 @@ CgtStyleRuleSelectorPathWidget >> refreshContents [
 		orientation: layoutPolicy corridorOrientation.
 	renderItems := self buildRenderItemsFromProjection.
 	self renderItems: renderItems.
+	self beginRevealPresentationsForCurrentPlan.
 	previousProjection := projection.
 	^ self
 ]
@@ -300,6 +306,18 @@ CgtStyleRuleSelectorPathWidget >> renderItems: aCollection [
 		| element |
 		element := self buildElementForRenderItem: each.
 		rowsContainer addChild: element ].
+	^ self
+]
+
+{ #category : 'rendering' }
+CgtStyleRuleSelectorPathWidget >> beginRevealPresentationsForCurrentPlan [
+	self revealElements do: [ :each | each beginViewportPresentationForCurrentPlan ].
+	^ self
+]
+
+{ #category : 'rendering' }
+CgtStyleRuleSelectorPathWidget >> completeRevealPresentationsForCurrentPlan [
+	self revealElements do: [ :each | each finishViewportPresentationForCurrentPlan ].
 	^ self
 ]
 
