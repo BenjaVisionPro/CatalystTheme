@@ -646,7 +646,7 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementComputesVisibleRowsForPa
 
 
 { #category : 'tests' }
-CgtStyleRuleSelectorPathWidgetTests >> testRevealElementDefaultsCurrentPresentationToEndViewportHeight [
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementDefaultsCurrentPresentationToEndViewportHeightAfterRevealRefresh [
 	<gtExample>
 	| widget revealElement |
 	widget := CgtStyleRuleSelectorPathWidget new.
@@ -792,26 +792,6 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementRefreshContentsUsesAllVi
 	^ revealElement
 ]
 
-
-
-{ #category : 'tests - reveal presentation' }
-CgtStyleRuleSelectorPathWidgetTests >> testRevealElementRefreshContentsUsesAllRowsAtFullPresentationProgressWhenOverflowExists [
-	<gtExample>
-	| revealElement rows |
-	rows := (1 to: 8) collect: [ :index |
-		BlElement new constraintsDo: [ :c |
-			c vertical exact: (18 + index).
-			c horizontal exact: 10 ] ].
-	revealElement := CgtMatcherRevealElement new
-		rowElements: rows;
-		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself);
-		viewportPresentationProgress: 1;
-		yourself.
-	self assert: revealElement shouldUseScrollForOverflowRows.
-	self assert: revealElement contentContainer children size equals: rows size.
-	self assert: revealElement contentContainer children asArray equals: rows asArray.
-	^ revealElement
-]
 
 { #category : 'tests - reveal presentation' }
 CgtStyleRuleSelectorPathWidgetTests >> testRevealElementExposesPresentationDurationForCurrentPlan [

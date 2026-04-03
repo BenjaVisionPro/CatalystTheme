@@ -66,39 +66,6 @@ CgtStyleRuleSelectorPathWidget >> previousProjection [
 	^ previousProjection
 ]
 
-{ #category : 'accessing' }
-CgtStyleRuleSelectorPathWidget >> revealElements [
-	^ rowsContainer children
-		select: [ :each | each isKindOf: CgtMatcherRevealElement ]
-]
-
-{ #category : 'actions - reveal presentation' }
-CgtStyleRuleSelectorPathWidget >> beginRevealPresentationsForCurrentPlan [
-	| shouldAnimate |
-	shouldAnimate := transitionPolicy shouldAnimateStructuralRefreshPlan: structuralRefreshPlan.
-	self revealElements do: [ :each |
-		shouldAnimate
-			ifTrue: [ each beginViewportPresentationForCurrentPlan ]
-			ifFalse: [ each finishViewportPresentationForCurrentPlan ] ].
-	self refreshRevealPresentationLayout.
-	^ self
-]
-
-{ #category : 'actions - reveal presentation' }
-CgtStyleRuleSelectorPathWidget >> completeRevealPresentationsForCurrentPlan [
-	self revealElements do: [ :each | each finishViewportPresentationForCurrentPlan ].
-	self refreshRevealPresentationLayout.
-	^ self
-]
-
-{ #category : 'actions - reveal presentation' }
-CgtStyleRuleSelectorPathWidget >> refreshRevealPresentationLayout [
-	self revealElements do: [ :each | each requestLayout ].
-	rowsContainer requestLayout.
-	self requestLayout.
-	^ self
-]
-
 { #category : 'rendering' }
 CgtStyleRuleSelectorPathWidget >> refreshContents [
 	previousRenderItems := renderItems ifNil: [ OrderedCollection new ] ifNotNil: [ renderItems copy ].
@@ -108,8 +75,9 @@ CgtStyleRuleSelectorPathWidget >> refreshContents [
 		orientation: layoutPolicy corridorOrientation.
 	renderItems := self buildRenderItemsFromProjection.
 	self renderItems: renderItems.
-	"Inspection-first pass: fully open reveal presentations after refresh so the UI is immediately visible and testable."
+	self beginRevealPresentationsForCurrentPlan.
 	self completeRevealPresentationsForCurrentPlan.
+	self refreshRevealPresentationLayout.
 	previousProjection := projection.
 	^ self
 ]
@@ -426,3 +394,43 @@ CgtStyleRuleSelectorPathWidget >> buildOtherRuleIndicatorElementFor: aRenderItem
 		self announceSelectorOtherRuleContextToggled ].
 	^ indicatorElement
 ]
+
+{ #category : 'accessing' }
+CgtStyleRuleSelectorPathWidget >> revealElements [
+	^ rowsContainer children select: [ :each | each isKindOf: CgtMatcherRevealElement ]
+]
+
+{ #category : 'actions' }
+CgtStyleRuleSelectorPathWidget >> beginRevealPresentationsForCurrentPlan [
+	(self revealElements) do: [ :each |
+		(transitionPolicy shouldAnimateStructuralRefreshPlan: structuralRefreshPlan)
+			ifTrue: [ each beginViewportPresentationForCurrentPlan ]
+			ifFalse: [ each finishViewportPresentationForCurrentPlan ] ].
+	^ self
+]
+
+{ #category : 'actions' }
+CgtStyleRuleSelectorPathWidget >> completeRevealPresentationsForCurrentPlan [
+	self revealElements do: [ :each | each finishViewportPresentationForCurrentPlan ].
+	^ self
+]
+
+{ #category : 'actions' }
+CgtStyleRuleSelectorPathWidget >> refreshRevealPresentationLayout [
+	self revealElements do: [ :each | each requestLayout ].
+	rowsContainer requestLayout.
+	self requestLayout.
+	^ self
+]
+
+{ #category : 'actions' }
+CgtStyleRuleSelectorPathWidget >> advanceRevealPresentationsBy: aNumber [
+	self revealElements do: [ :each | each advanceViewportPresentationProgressBy: aNumber ].
+	^ self
+]
+
+{ #category : 'testing' }
+CgtStyleRuleSelectorPathWidget >> hasRevealPresentationsInFlight [
+	^ self revealElements anySatisfy: [ :each | each isAtTargetViewportPresentationProgress not ]
+]
+

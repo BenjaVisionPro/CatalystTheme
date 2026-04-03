@@ -331,7 +331,7 @@ CgtMatcherRevealElement >> currentViewportHeightForCurrentPlan [
 CgtMatcherRevealElement >> rowElementsForCurrentViewportPresentation [
 	(self shouldAnimateViewportHeight and: [ self viewportPresentationProgress < 1.0 ]) ifTrue: [
 		^ self visibleRowElementsForCurrentViewportPresentation ].
-	^ rowElements copy
+	^ self visibleRowElements
 ]
 
 { #category : 'accessing' }
