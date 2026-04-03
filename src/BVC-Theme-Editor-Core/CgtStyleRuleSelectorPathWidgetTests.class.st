@@ -433,7 +433,8 @@ CgtStyleRuleSelectorPathWidgetTests >> testRefreshContentsBuildsRevealElementWit
 		yourself.
 	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
 	self assert: revealElement viewportContainer children size equals: 1.
-	self assert: revealElement viewportContainer children first identicalTo: revealElement contentContainer.
+	self assert: revealElement viewportContainer children first identicalTo: revealElement viewportContentContainer.
+	self assert: revealElement viewportContentContainer children second identicalTo: revealElement contentContainer.
 	^ widget
 ]
 
@@ -518,7 +519,8 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementUsesDedicatedScrollViewp
 	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
 	self assert: revealElement viewportUsesScrollContainer.
 	self assert: revealElement viewportContainer children size equals: 1.
-	self assert: revealElement viewportContainer children first identicalTo: revealElement contentContainer.
+	self assert: revealElement viewportContainer children first identicalTo: revealElement viewportContentContainer.
+	self assert: revealElement viewportContentContainer children second identicalTo: revealElement contentContainer.
 	^ widget
 ]
 
