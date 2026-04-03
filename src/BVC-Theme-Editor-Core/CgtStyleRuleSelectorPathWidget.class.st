@@ -15,7 +15,9 @@ Class {
 		'previousRenderItems',
 		'renderElementsByKey',
 		'previousProjection',
-		'structuralRefreshPlan'
+		'structuralRefreshPlan',
+		'revealPresentationAnimation',
+		'revealPresentationAnimationToken'
 	],
 	#category : 'BVC-Theme-Editor-Core',
 	#package : 'BVC-Theme-Editor-Core'
@@ -33,6 +35,8 @@ CgtStyleRuleSelectorPathWidget >> initialize [
 	renderElementsByKey := Dictionary new.
 	previousProjection := nil.
 	structuralRefreshPlan := CgtMatcherStructuralRefreshPlan new.
+	revealPresentationAnimation := nil.
+	revealPresentationAnimationToken := 0.
 	self
 		vFitContent;
 		hMatchParent;
@@ -78,6 +82,91 @@ CgtStyleRuleSelectorPathWidget >> refreshContents [
 	self beginRevealPresentationsForCurrentPlan.
 	previousProjection := projection.
 	^ self
+]
+
+{ #category : 'rendering - reveal presentation' }
+CgtStyleRuleSelectorPathWidget >> revealElements [
+	^ rowsContainer children select: [ :each | each isKindOf: CgtMatcherRevealElement ]
+]
+
+{ #category : 'rendering - reveal presentation' }
+CgtStyleRuleSelectorPathWidget >> beginRevealPresentationsForCurrentPlan [
+	| shouldAnimate |
+	shouldAnimate := transitionPolicy shouldAnimateStructuralRefreshPlan: structuralRefreshPlan.
+	self stopRevealPresentationAnimation.
+	self revealElements do: [ :each |
+		shouldAnimate
+			ifTrue: [ each beginViewportPresentationForCurrentPlan ]
+			ifFalse: [ each finishViewportPresentationForCurrentPlan ] ].
+	shouldAnimate ifTrue: [ self animateRevealPresentationsForCurrentPlan ].
+	^ self
+]
+
+{ #category : 'rendering - reveal presentation' }
+CgtStyleRuleSelectorPathWidget >> completeRevealPresentationsForCurrentPlan [
+	self stopRevealPresentationAnimation.
+	self revealElements do: [ :each | each finishViewportPresentationForCurrentPlan ].
+	^ self
+]
+
+{ #category : 'rendering - reveal presentation' }
+CgtStyleRuleSelectorPathWidget >> advanceRevealPresentationsBy: aNumber [
+	self stopRevealPresentationAnimation.
+	self revealElements do: [ :each | each advanceViewportPresentationProgressBy: aNumber ].
+	^ self
+]
+
+{ #category : 'rendering - reveal presentation' }
+CgtStyleRuleSelectorPathWidget >> hasRevealPresentationsInFlight [
+	^ self revealElements anySatisfy: [ :each | each isAtTargetViewportPresentationProgress not ]
+]
+
+{ #category : 'rendering - reveal presentation' }
+CgtStyleRuleSelectorPathWidget >> applyRevealPresentationAnimationProgress: aNumber [
+	self revealElements do: [ :each |
+		| start target |
+		start := each startingViewportPresentationProgressForCurrentPlan.
+		target := each targetViewportPresentationProgressForCurrentPlan.
+		each viewportPresentationProgress: (start + ((target - start) * (aNumber ifNil: [ 1.0 ]))) ].
+	^ self
+]
+
+{ #category : 'rendering - reveal presentation' }
+CgtStyleRuleSelectorPathWidget >> animateRevealPresentationsForCurrentPlan [
+	| duration token |
+	self revealElements ifEmpty: [ ^ self ].
+	duration := self revealElements first viewportPresentationDurationForCurrentPlan.
+	(duration isNil or: [ duration <= 0 milliSeconds ]) ifTrue: [ ^ self completeRevealPresentationsForCurrentPlan ].
+	revealPresentationAnimationToken := revealPresentationAnimationToken + 1.
+	token := revealPresentationAnimationToken.
+	revealPresentationAnimation := BlNumberTransition new
+		from: 0.0;
+		to: 1.0;
+		duration: duration;
+		easing: CgtFastInSlowOutEasing new;
+		onStepDo: [ :eachProgress :aWidget |
+			aWidget revealPresentationAnimationToken = token
+				ifTrue: [ aWidget applyRevealPresentationAnimationProgress: eachProgress ] ];
+		onFinishedDo: [
+			self revealPresentationAnimationToken = token ifTrue: [
+				revealPresentationAnimation := nil.
+				self applyRevealPresentationAnimationProgress: 1.0 ] ];
+		yourself.
+	self addAnimation: revealPresentationAnimation.
+	^ self
+]
+
+{ #category : 'rendering - reveal presentation' }
+CgtStyleRuleSelectorPathWidget >> stopRevealPresentationAnimation [
+	revealPresentationAnimation ifNotNil: [
+		revealPresentationAnimation stopIfRunning.
+		revealPresentationAnimation := nil ].
+	^ self
+]
+
+{ #category : 'accessing' }
+CgtStyleRuleSelectorPathWidget >> revealPresentationAnimationToken [
+	^ revealPresentationAnimationToken
 ]
 
 { #category : 'rendering' }
@@ -392,35 +481,3 @@ CgtStyleRuleSelectorPathWidget >> buildOtherRuleIndicatorElementFor: aRenderItem
 		self announceSelectorOtherRuleContextToggled ].
 	^ indicatorElement
 ]
-
-{ #category : 'accessing' }
-CgtStyleRuleSelectorPathWidget >> revealElements [
-	^ rowsContainer children select: [ :each | each isKindOf: CgtMatcherRevealElement ]
-]
-
-{ #category : 'actions' }
-CgtStyleRuleSelectorPathWidget >> beginRevealPresentationsForCurrentPlan [
-	(self revealElements) do: [ :each |
-		(transitionPolicy shouldAnimateStructuralRefreshPlan: structuralRefreshPlan)
-			ifTrue: [ each beginViewportPresentationForCurrentPlan ]
-			ifFalse: [ each finishViewportPresentationForCurrentPlan ] ].
-	^ self
-]
-
-{ #category : 'actions' }
-CgtStyleRuleSelectorPathWidget >> completeRevealPresentationsForCurrentPlan [
-	self revealElements do: [ :each | each finishViewportPresentationForCurrentPlan ].
-	^ self
-]
-
-{ #category : 'actions' }
-CgtStyleRuleSelectorPathWidget >> advanceRevealPresentationsBy: aNumber [
-	self revealElements do: [ :each | each advanceViewportPresentationProgressBy: aNumber ].
-	^ self
-]
-
-{ #category : 'testing' }
-CgtStyleRuleSelectorPathWidget >> hasRevealPresentationsInFlight [
-	^ self revealElements anySatisfy: [ :each | each isAtTargetViewportPresentationProgress not ]
-]
-

@@ -417,7 +417,7 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementHostsRowsInDedicatedCont
 		projection: projection;
 		yourself.
 	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
-	self assert: revealElement contentContainer children isEmpty.
+	self assert: revealElement contentContainer children size equals: 0.
 	self assert: revealElement rowElements size equals: 2.
 	^ widget
 ]
@@ -628,6 +628,34 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementComputesCollapsedEndHeig
 ]
 
 { #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testWidgetAdvancesRevealPresentationProgressByAnimationProgress [
+	<gtExample>
+	| widget revealElement |
+	widget := CgtStyleRuleSelectorPathWidget new.
+	widget projection: self newProjectionWithUpstreamSelectedAndIndicator.
+	widget projection: self newProjectionWithRevealedLeadingContext.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	widget applyRevealPresentationAnimationProgress: 0.5.
+	self assert: revealElement viewportPresentationProgress equals: 0.5.
+	self assert: widget hasRevealPresentationsInFlight.
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testWidgetCompletesRevealPresentationProgressToTarget [
+	<gtExample>
+	| widget revealElement |
+	widget := CgtStyleRuleSelectorPathWidget new.
+	widget projection: self newProjectionWithUpstreamSelectedAndIndicator.
+	widget projection: self newProjectionWithRevealedLeadingContext.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	widget completeRevealPresentationsForCurrentPlan.
+	self assert: revealElement viewportPresentationProgress equals: revealElement targetViewportPresentationProgressForCurrentPlan.
+	self deny: widget hasRevealPresentationsInFlight.
+	^ widget
+]
+
+{ #category : 'tests' }
 CgtStyleRuleSelectorPathWidgetTests >> testRevealElementComputesVisibleRowsForPartialViewportHeight [
 	<gtExample>
 	| revealElement firstRow secondRow thirdRow partialHeight visibleRows |
@@ -654,7 +682,7 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementDefaultsCurrentPresentat
 	widget projection: self newProjectionWithRevealedLeadingContext.
 	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
 	self assert: revealElement currentViewportHeightForCurrentPlan equals: revealElement viewportStartHeightForCurrentPlan.
-	self assert: revealElement visibleRowElementsForCurrentViewportPresentation isEmpty.
+	self assert: revealElement visibleRowElementsForCurrentViewportPresentation size equals: 0.
 	^ widget
 ]
 
