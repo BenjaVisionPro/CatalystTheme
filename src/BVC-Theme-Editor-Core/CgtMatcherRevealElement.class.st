@@ -144,6 +144,33 @@ CgtMatcherRevealElement >> rowElements: aCollection [
 
 
 
+
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> startingViewportPresentationProgressForCurrentPlan [
+	structuralRefreshPlan ifNil: [ ^ 1.0 ].
+	structuralRefreshPlan isReveal ifTrue: [ ^ 0.0 ].
+	structuralRefreshPlan isCollapse ifTrue: [ ^ 1.0 ].
+	^ 1.0
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> targetViewportPresentationProgressForCurrentPlan [
+	structuralRefreshPlan ifNil: [ ^ 1.0 ].
+	structuralRefreshPlan isCollapse ifTrue: [ ^ 0.0 ].
+	^ 1.0
+]
+
+{ #category : 'actions' }
+CgtMatcherRevealElement >> resetViewportPresentationProgressToPlanStart [
+	^ self viewportPresentationProgress: self startingViewportPresentationProgressForCurrentPlan
+]
+
+{ #category : 'actions' }
+CgtMatcherRevealElement >> completeViewportPresentationProgressForCurrentPlan [
+	^ self viewportPresentationProgress: self targetViewportPresentationProgressForCurrentPlan
+]
+
 { #category : 'accessing' }
 CgtMatcherRevealElement >> viewportPresentationProgress [
 	^ viewportPresentationProgress ifNil: [ 1 ]

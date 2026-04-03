@@ -713,6 +713,50 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementCurrentPresentationUsesV
 ]
 
 
+
+
+{ #category : 'tests - reveal presentation' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementExposesStartingAndTargetProgressForRevealPlan [
+	<gtExample>
+	| revealElement |
+	revealElement := CgtMatcherRevealElement new
+		rowElements: { BlElement new. BlElement new };
+		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself);
+		yourself.
+	self assert: revealElement startingViewportPresentationProgressForCurrentPlan equals: 0.0.
+	self assert: revealElement targetViewportPresentationProgressForCurrentPlan equals: 1.0.
+	^ revealElement
+]
+
+{ #category : 'tests - reveal presentation' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementExposesStartingAndTargetProgressForCollapsePlan [
+	<gtExample>
+	| revealElement |
+	revealElement := CgtMatcherRevealElement new
+		rowElements: { BlElement new. BlElement new };
+		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #collapse; yourself);
+		yourself.
+	self assert: revealElement startingViewportPresentationProgressForCurrentPlan equals: 1.0.
+	self assert: revealElement targetViewportPresentationProgressForCurrentPlan equals: 0.0.
+	^ revealElement
+]
+
+{ #category : 'tests - reveal presentation' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementCanResetAndCompletePresentationProgressFromPlan [
+	<gtExample>
+	| revealElement |
+	revealElement := CgtMatcherRevealElement new
+		rowElements: { BlElement new. BlElement new };
+		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself);
+		viewportPresentationProgress: 0.5;
+		yourself.
+	revealElement resetViewportPresentationProgressToPlanStart.
+	self assert: revealElement viewportPresentationProgress equals: 0.0.
+	revealElement completeViewportPresentationProgressForCurrentPlan.
+	self assert: revealElement viewportPresentationProgress equals: 1.0.
+	^ revealElement
+]
+
 { #category : 'tests - reveal presentation' }
 CgtStyleRuleSelectorPathWidgetTests >> testRevealElementRefreshContentsUsesRowsVisibleForCurrentPresentation [
 	<gtExample>
