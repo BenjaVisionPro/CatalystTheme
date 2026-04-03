@@ -217,6 +217,58 @@ CgtMatcherRevealElement >> shouldUseScrollForOverflowRows [
 	^ rowElements size > self maximumVisibleRowCount
 ]
 
+
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> viewportStartHeightForCurrentPlan [
+	structuralRefreshPlan ifNil: [ ^ self viewportHeightForVisibleRows ].
+	structuralRefreshPlan isReveal ifTrue: [ ^ self minimumViewportHeight ].
+	structuralRefreshPlan isCollapse ifTrue: [ ^ self viewportHeightForVisibleRows ].
+	^ self viewportHeightForVisibleRows
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> viewportEndHeightForCurrentPlan [
+	structuralRefreshPlan ifNil: [ ^ self viewportHeightForVisibleRows ].
+	structuralRefreshPlan isCollapse ifTrue: [ ^ self minimumViewportHeight ].
+	^ self viewportHeightForVisibleRows
+]
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> visibleRowElementsForViewportHeight: aNumber [
+	| visibleRows accumulatedHeight spacing |
+	visibleRows := OrderedCollection new.
+	accumulatedHeight := layoutPolicy revealContentInset top + layoutPolicy revealContentInset bottom.
+	spacing := layoutPolicy revealViewportCellSpacing.
+	self visibleRowElements do: [ :each |
+		| rowHeight additionalHeight |
+		rowHeight := self measuredHeightForRowElement: each.
+		additionalHeight := rowHeight + (visibleRows isEmpty ifTrue: [ 0 ] ifFalse: [ spacing ]).
+		(accumulatedHeight + additionalHeight) <= aNumber ifFalse: [ ^ visibleRows ].
+		visibleRows add: each.
+		accumulatedHeight := accumulatedHeight + additionalHeight ].
+	^ visibleRows
+]
+
+{ #category : 'testing' }
+CgtMatcherRevealElement >> shouldAnimateViewportHeight [
+	^ transitionPolicy shouldAnimateStructuralRefreshPlan: structuralRefreshPlan
+]
+
+{ #category : 'testing' }
+CgtMatcherRevealElement >> usesCollapsedStartHeightForRevealPlan [
+	^ structuralRefreshPlan notNil
+		and: [ structuralRefreshPlan isReveal
+		and: [ self viewportStartHeightForCurrentPlan = self minimumViewportHeight ] ]
+]
+
+{ #category : 'testing' }
+CgtMatcherRevealElement >> usesCollapsedEndHeightForCollapsePlan [
+	^ structuralRefreshPlan notNil
+		and: [ structuralRefreshPlan isCollapse
+		and: [ self viewportEndHeightForCurrentPlan = self minimumViewportHeight ] ]
+]
+
 { #category : 'testing' }
 CgtMatcherRevealElement >> viewportUsesScrollContainer [
 	^ viewportContainer notNil

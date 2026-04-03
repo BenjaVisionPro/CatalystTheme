@@ -598,3 +598,48 @@ CgtStyleRuleSelectorPathWidgetTests >> testUpstreamRevealElementComputesPositive
 	self assert: (revealElement spacerHeightForViewportHeight: (revealElement estimatedContentHeight + 12)) equals: 12.
 	^ widget
 ]
+
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementComputesCollapsedStartHeightForRevealPlan [
+	<gtExample>
+	| widget revealElement |
+	widget := CgtStyleRuleSelectorPathWidget new.
+	widget projection: self newProjectionWithUpstreamSelectedAndIndicator.
+	widget projection: self newProjectionWithRevealedLeadingContext.
+	revealElement := widget rowsContainer children detect: [ :each | each isKindOf: CgtMatcherRevealElement ].
+	self assert: revealElement shouldAnimateViewportHeight.
+	self assert: revealElement usesCollapsedStartHeightForRevealPlan.
+	self assert: revealElement viewportEndHeightForCurrentPlan equals: revealElement viewportHeightForVisibleRows.
+	^ widget
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementComputesCollapsedEndHeightForCollapsePlan [
+	<gtExample>
+	| revealElement |
+	revealElement := CgtMatcherRevealElement new
+		rowElements: { BlElement new. BlElement new };
+		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #collapse; yourself);
+		yourself.
+	self assert: revealElement usesCollapsedEndHeightForCollapsePlan.
+	self assert: revealElement viewportStartHeightForCurrentPlan equals: revealElement viewportHeightForVisibleRows.
+	^ revealElement
+]
+
+{ #category : 'tests' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementComputesVisibleRowsForPartialViewportHeight [
+	<gtExample>
+	| revealElement firstRow secondRow thirdRow partialHeight visibleRows |
+	firstRow := BlElement new constraintsDo: [ :c | c vertical exact: 20. c horizontal exact: 10 ].
+	secondRow := BlElement new constraintsDo: [ :c | c vertical exact: 30. c horizontal exact: 10 ].
+	thirdRow := BlElement new constraintsDo: [ :c | c vertical exact: 40. c horizontal exact: 10 ].
+	revealElement := CgtMatcherRevealElement new
+		rowElements: { firstRow. secondRow. thirdRow };
+		yourself.
+	partialHeight := 20 + revealElement minimumViewportHeight.
+	visibleRows := revealElement visibleRowElementsForViewportHeight: partialHeight.
+	self assert: visibleRows size equals: 1.
+	self assert: visibleRows first identicalTo: firstRow.
+	^ revealElement
+]
