@@ -711,3 +711,39 @@ CgtStyleRuleSelectorPathWidgetTests >> testRevealElementCurrentPresentationUsesV
 	self assert: visibleRows first identicalTo: firstRow.
 	^ revealElement
 ]
+
+
+{ #category : 'tests - reveal presentation' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementRefreshContentsUsesRowsVisibleForCurrentPresentation [
+	<gtExample>
+	| revealElement firstRow secondRow thirdRow presentationHeight |
+	firstRow := BlElement new constraintsDo: [ :c | c vertical exact: 20. c horizontal exact: 10 ].
+	secondRow := BlElement new constraintsDo: [ :c | c vertical exact: 30. c horizontal exact: 10 ].
+	thirdRow := BlElement new constraintsDo: [ :c | c vertical exact: 40. c horizontal exact: 10 ].
+	revealElement := CgtMatcherRevealElement new
+		rowElements: { firstRow. secondRow. thirdRow };
+		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself);
+		yourself.
+	presentationHeight := revealElement measuredHeightForRowElement: firstRow.
+	revealElement viewportPresentationProgress: ((presentationHeight - revealElement viewportStartHeightForCurrentPlan) / (revealElement viewportEndHeightForCurrentPlan - revealElement viewportStartHeightForCurrentPlan)).
+	self assert: revealElement contentContainer children size equals: 1.
+	self assert: revealElement contentContainer children first identicalTo: firstRow.
+	^ revealElement
+]
+
+{ #category : 'tests - reveal presentation' }
+CgtStyleRuleSelectorPathWidgetTests >> testRevealElementRefreshContentsUsesAllVisibleRowsAtFullPresentationProgress [
+	<gtExample>
+	| revealElement firstRow secondRow |
+	firstRow := BlElement new constraintsDo: [ :c | c vertical exact: 20. c horizontal exact: 10 ].
+	secondRow := BlElement new constraintsDo: [ :c | c vertical exact: 30. c horizontal exact: 10 ].
+	revealElement := CgtMatcherRevealElement new
+		rowElements: { firstRow. secondRow };
+		structuralRefreshPlan: (CgtMatcherStructuralRefreshPlan new transitionKind: #reveal; yourself);
+		viewportPresentationProgress: 1;
+		yourself.
+	self assert: revealElement contentContainer children size equals: 2.
+	self assert: revealElement contentContainer children first identicalTo: firstRow.
+	self assert: revealElement contentContainer children second identicalTo: secondRow.
+	^ revealElement
+]

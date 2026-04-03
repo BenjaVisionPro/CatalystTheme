@@ -170,7 +170,7 @@ CgtMatcherRevealElement >> currentViewportHeightForPresentationProgress: aNumber
 { #category : 'rendering' }
 CgtMatcherRevealElement >> refreshContents [
 	contentContainer removeChildren.
-	rowElements do: [ :each | contentContainer addChild: each ].
+	self rowElementsForCurrentViewportPresentation do: [ :each | contentContainer addChild: each ].
 	^ self
 ]
 
@@ -179,6 +179,7 @@ CgtMatcherRevealElement >> refreshViewportPresentation [
 	| viewportHeight |
 	viewportContainer ifNil: [ ^ self ].
 	viewportHeight := self currentViewportHeightForCurrentPlan.
+	self refreshContents.
 	self refreshViewportContentLayoutForHeight: viewportHeight.
 	viewportContainer
 		constraintsDo: [ :c |
@@ -266,6 +267,14 @@ CgtMatcherRevealElement >> viewportEndHeightForCurrentPlan [
 { #category : 'accessing' }
 CgtMatcherRevealElement >> currentViewportHeightForCurrentPlan [
 	^ self currentViewportHeightForPresentationProgress: self viewportPresentationProgress
+]
+
+
+{ #category : 'accessing' }
+CgtMatcherRevealElement >> rowElementsForCurrentViewportPresentation [
+	(self shouldAnimateViewportHeight and: [ self viewportPresentationProgress < 1.0 ]) ifTrue: [
+		^ self visibleRowElementsForCurrentViewportPresentation ].
+	^ self visibleRowElements
 ]
 
 { #category : 'accessing' }
