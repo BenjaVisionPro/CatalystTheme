@@ -66,12 +66,6 @@ CgtStyleRuleSelectorPathWidget >> previousProjection [
 	^ previousProjection
 ]
 
-
-{ #category : 'accessing' }
-CgtStyleRuleSelectorPathWidget >> revealElements [
-	^ rowsContainer children select: [ :each | each isKindOf: CgtMatcherRevealElement ]
-]
-
 { #category : 'rendering' }
 CgtStyleRuleSelectorPathWidget >> refreshContents [
 	previousRenderItems := renderItems ifNil: [ OrderedCollection new ] ifNotNil: [ renderItems copy ].
@@ -398,3 +392,35 @@ CgtStyleRuleSelectorPathWidget >> buildOtherRuleIndicatorElementFor: aRenderItem
 		self announceSelectorOtherRuleContextToggled ].
 	^ indicatorElement
 ]
+
+{ #category : 'accessing' }
+CgtStyleRuleSelectorPathWidget >> revealElements [
+	^ rowsContainer children select: [ :each | each isKindOf: CgtMatcherRevealElement ]
+]
+
+{ #category : 'actions' }
+CgtStyleRuleSelectorPathWidget >> beginRevealPresentationsForCurrentPlan [
+	(self revealElements) do: [ :each |
+		(transitionPolicy shouldAnimateStructuralRefreshPlan: structuralRefreshPlan)
+			ifTrue: [ each beginViewportPresentationForCurrentPlan ]
+			ifFalse: [ each finishViewportPresentationForCurrentPlan ] ].
+	^ self
+]
+
+{ #category : 'actions' }
+CgtStyleRuleSelectorPathWidget >> completeRevealPresentationsForCurrentPlan [
+	self revealElements do: [ :each | each finishViewportPresentationForCurrentPlan ].
+	^ self
+]
+
+{ #category : 'actions' }
+CgtStyleRuleSelectorPathWidget >> advanceRevealPresentationsBy: aNumber [
+	self revealElements do: [ :each | each advanceViewportPresentationProgressBy: aNumber ].
+	^ self
+]
+
+{ #category : 'testing' }
+CgtStyleRuleSelectorPathWidget >> hasRevealPresentationsInFlight [
+	^ self revealElements anySatisfy: [ :each | each isAtTargetViewportPresentationProgress not ]
+]
+
