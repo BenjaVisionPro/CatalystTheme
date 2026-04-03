@@ -98,6 +98,7 @@ CgtStyleRuleSelectorPathWidget >> beginRevealPresentationsForCurrentPlan [
 		shouldAnimate
 			ifTrue: [ each beginViewportPresentationForCurrentPlan ]
 			ifFalse: [ each finishViewportPresentationForCurrentPlan ] ].
+	self refreshRevealPresentationLayout.
 	shouldAnimate ifTrue: [ self animateRevealPresentationsForCurrentPlan ].
 	^ self
 ]
@@ -106,6 +107,7 @@ CgtStyleRuleSelectorPathWidget >> beginRevealPresentationsForCurrentPlan [
 CgtStyleRuleSelectorPathWidget >> completeRevealPresentationsForCurrentPlan [
 	self stopRevealPresentationAnimation.
 	self revealElements do: [ :each | each finishViewportPresentationForCurrentPlan ].
+	self refreshRevealPresentationLayout.
 	^ self
 ]
 
@@ -128,6 +130,15 @@ CgtStyleRuleSelectorPathWidget >> applyRevealPresentationAnimationProgress: aNum
 		start := each startingViewportPresentationProgressForCurrentPlan.
 		target := each targetViewportPresentationProgressForCurrentPlan.
 		each viewportPresentationProgress: (start + ((target - start) * (aNumber ifNil: [ 1.0 ]))) ].
+	self refreshRevealPresentationLayout.
+	^ self
+]
+
+{ #category : 'rendering - reveal presentation' }
+CgtStyleRuleSelectorPathWidget >> refreshRevealPresentationLayout [
+	self revealElements do: [ :each | each requestLayout ].
+	rowsContainer requestLayout.
+	self requestLayout.
 	^ self
 ]
 
