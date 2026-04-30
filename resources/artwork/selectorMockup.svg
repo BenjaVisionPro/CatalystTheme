@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="2.3161225"
-     inkscape:cx="349.50655"
-     inkscape:cy="583.95011"
+     inkscape:zoom="4.071005"
+     inkscape:cx="181.28202"
+     inkscape:cy="844.87736"
      inkscape:window-width="1952"
      inkscape:window-height="1166"
      inkscape:window-x="0"
@@ -1337,5 +1337,274 @@
        style="opacity:0.555556;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.299;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m 90.13178,196.94194 -0.913884,-5.25483"
        id="path166" />
+    <rect
+       style="fill:#f9f9f9;stroke:#b7b7b7;stroke-width:0.0989999"
+       id="rect1"
+       width="32.710407"
+       height="2.7279065"
+       x="21.195463"
+       y="215.51546"
+       ry="1.3087752" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b3b3b3;stroke:#b7b7b7;stroke-width:0;stroke-dasharray:none"
+       x="22.236107"
+       y="215.03632"
+       id="text1"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke-width:0;stroke-dasharray:none"
+         x="22.236107"
+         y="215.03632">Field Label</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.76389px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#1a1a1a;stroke:#b7b7b7;stroke-width:0;stroke-dasharray:none"
+       x="22.253752"
+       y="217.46045"
+       id="text2"><tspan
+         sodipodi:role="line"
+         id="tspan2"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.76389px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#1a1a1a;stroke-width:0;stroke-dasharray:none"
+         x="22.253752"
+         y="217.46045">fieldBodyArea</tspan></text>
+    <ellipse
+       style="opacity:0.555556;fill:#aa8800;fill-opacity:1;stroke:none;stroke-width:0.299"
+       id="path2"
+       cx="52.56472"
+       cy="216.86569"
+       rx="0.54167098"
+       ry="0.56250453" />
+    <text
+       xml:space="preserve"
+       style="font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:0.555556;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.299;stroke-opacity:1"
+       x="54.603313"
+       y="217.35481"
+       id="text3"><tspan
+         sodipodi:role="line"
+         id="tspan3"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.299;stroke-opacity:1"
+         x="54.603313"
+         y="217.35481"></tspan></text>
+    <rect
+       style="fill:#f9f9f9;stroke:#b7b7b7;stroke-width:0.0989999"
+       id="rect18"
+       width="32.710407"
+       height="2.7279065"
+       x="21.212221"
+       y="220.76048"
+       ry="1.3087752" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.76389px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#1a1a1a;stroke:#b7b7b7;stroke-width:0;stroke-dasharray:none"
+       x="24.387178"
+       y="222.70547"
+       id="text20"><tspan
+         sodipodi:role="line"
+         id="tspan20"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.76389px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#1a1a1a;stroke-width:0;stroke-dasharray:none"
+         x="24.387178"
+         y="222.70547">Boolean Field Label</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:0.555556;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.299;stroke-opacity:1"
+       x="54.620071"
+       y="222.59984"
+       id="text21"><tspan
+         sodipodi:role="line"
+         id="tspan21"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.299;stroke-opacity:1"
+         x="54.620071"
+         y="222.59984"></tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.098709;stroke-dasharray:none;stroke-opacity:1"
+       id="rect6"
+       width="1.2584822"
+       height="1.2732191"
+       x="22.460526"
+       y="221.46278"
+       ry="0" />
+    <rect
+       style="fill:#f9f9f9;stroke:#b7b7b7;stroke-width:0.0989999"
+       id="rect21"
+       width="32.778419"
+       height="7.7608309"
+       x="21.329121"
+       y="225.96976"
+       ry="1.3087752" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b3b3b3;stroke:#b7b7b7;stroke-width:0;stroke-dasharray:none"
+       x="22.236107"
+       y="225.49182"
+       id="text22"><tspan
+         sodipodi:role="line"
+         id="tspan22"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke-width:0;stroke-dasharray:none"
+         x="22.236107"
+         y="225.49182">Multiline Field Label</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.76389px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#1a1a1a;stroke:#b7b7b7;stroke-width:0;stroke-dasharray:none"
+       x="22.387409"
+       y="227.91475"
+       id="text23"><tspan
+         sodipodi:role="line"
+         id="tspan23"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.76389px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#1a1a1a;stroke-width:0;stroke-dasharray:none"
+         x="22.387409"
+         y="227.91475">This is the editabaggle area, This is</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.76389px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#1a1a1a;stroke-width:0;stroke-dasharray:none"
+         x="22.387409"
+         y="230.11961"
+         id="tspan26">the editabaggle area... This is the</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.76389px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#1a1a1a;stroke-width:0;stroke-dasharray:none"
+         x="22.387409"
+         y="232.32448"
+         id="tspan27">editabaggle area</tspan></text>
+    <ellipse
+       style="opacity:0.555556;fill:#aa8800;fill-opacity:1;stroke:none;stroke-width:0.299"
+       id="ellipse23"
+       cx="52.69838"
+       cy="227.35306"
+       rx="0.54167098"
+       ry="0.56250453" />
+    <text
+       xml:space="preserve"
+       style="font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:0.555556;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.299;stroke-opacity:1"
+       x="54.736973"
+       y="227.80911"
+       id="text24"><tspan
+         sodipodi:role="line"
+         id="tspan24"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.299;stroke-opacity:1"
+         x="54.736973"
+         y="227.80911"></tspan></text>
+    <ellipse
+       style="opacity:0.555556;fill:#800000;fill-opacity:1;stroke:none;stroke-width:0.299"
+       id="ellipse8"
+       cx="52.520359"
+       cy="222.10269"
+       rx="0.54167098"
+       ry="0.56250453" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b3b3b3;stroke:#b7b7b7;stroke-width:0;stroke-dasharray:none"
+       x="22.236107"
+       y="220.17697"
+       id="text25"><tspan
+         sodipodi:role="line"
+         id="tspan25"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke-width:0;stroke-dasharray:none"
+         x="22.236107"
+         y="220.17697">Boolean Field Label</tspan></text>
+    <path
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-dasharray:none;stroke-opacity:1"
+       d="m 57.228644,210.38688 -4.327194,6.09463 v 0"
+       id="path27" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-dasharray:none;stroke-opacity:1"
+       x="53.40276"
+       y="209.54994"
+       id="text28"><tspan
+         sodipodi:role="line"
+         id="tspan28"
+         style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.1"
+         x="53.40276"
+         y="209.54994">Not saved indicator appears if value is different to model</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-dasharray:none;stroke-opacity:1"
+       x="61.996197"
+       y="215.2789"
+       id="text29"><tspan
+         sodipodi:role="line"
+         id="tspan29"
+         style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.1"
+         x="61.996197"
+         y="215.2789">revert to model value. appears if different</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-dasharray:none;stroke-opacity:1"
+       x="62.422821"
+       y="218.08244"
+       id="text30"><tspan
+         sodipodi:role="line"
+         id="tspan30"
+         style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.1"
+         x="62.422821"
+         y="218.08244">failed validation indicator</tspan></text>
+    <path
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-dasharray:none;stroke-opacity:1"
+       d="m 61.433943,214.89692 -5.05855,1.64554 v 0"
+       id="path30"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-dasharray:none;stroke-opacity:1"
+       d="m 61.433943,217.82234 -8.59344,4.20529 v 0"
+       id="path31"
+       sodipodi:nodetypes="ccc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b3b3b3;stroke:#b7b7b7;stroke-width:0;stroke-dasharray:none"
+       x="22.236107"
+       y="215.03632"
+       id="text31"><tspan
+         sodipodi:role="line"
+         id="tspan31"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke-width:0;stroke-dasharray:none"
+         x="22.236107"
+         y="215.03632">Field Label</tspan></text>
+    <ellipse
+       style="opacity:0.555556;fill:#aa8800;fill-opacity:1;stroke:none;stroke-width:0.299"
+       id="ellipse32"
+       cx="52.56472"
+       cy="216.86569"
+       rx="0.54167098"
+       ry="0.56250453" />
+    <rect
+       style="fill:#f9f9f9;stroke:#b7b7b7;stroke-width:0.0989999"
+       id="rect45"
+       width="32.85881"
+       height="6.7961245"
+       x="21.489906"
+       y="236.0992"
+       ry="1.3087752" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b3b3b3;stroke:#b7b7b7;stroke-width:0;stroke-dasharray:none"
+       x="22.396893"
+       y="235.62126"
+       id="text45"><tspan
+         sodipodi:role="line"
+         id="tspan45"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke-width:0;stroke-dasharray:none"
+         x="22.396893"
+         y="235.62126">Icon Field Label</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.30795px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Normal';text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0;stroke-dasharray:none;stroke-opacity:1"
+       x="22.315086"
+       y="241.32883"
+       id="text18"
+       transform="scale(1.0019078,0.99809583)"><tspan
+         sodipodi:role="line"
+         id="tspan18"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0;stroke-dasharray:none"
+         x="22.315086"
+         y="241.32883"></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:1.05833px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b3b3b3;stroke:#b7b7b7;stroke-width:0;stroke-dasharray:none"
+       x="21.412165"
+       y="212.03177"
+       id="text50"><tspan
+         sodipodi:role="line"
+         id="tspan50"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:1.05833px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#b3b3b3;stroke-width:0;stroke-dasharray:none"
+         x="21.412165"
+         y="212.03177">GROUP NAME</tspan></text>
   </g>
 </svg>
