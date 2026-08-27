@@ -28,6 +28,7 @@ CgtThemeShowcaseElement >> buildBrickSection [
 	| aSection aRow |
 	aSection := self newSectionNamed: 'Brick controls'.
 	aRow := BrHorizontalPane new
+		hMatchParent;
 		vFitContent;
 		cellSpacing: 10;
 		yourself.
@@ -36,11 +37,13 @@ CgtThemeShowcaseElement >> buildBrickSection [
 		addChild: (BrButton new
 			aptitude: BrGlamorousButtonWithLabelAptitude;
 			label: 'Button';
+			hFitContent;
 			yourself);
 		addChild: (BrEditor new
 			aptitude: BrGlamorousEditorAptitude + BrGlamorousInputFieldSpacingAptitude;
 			text: 'Editor';
-			fitContent;
+			hExact: 160;
+			vFitContent;
 			yourself).
 	^ aSection
 ]

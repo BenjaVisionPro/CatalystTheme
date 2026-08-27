@@ -58,3 +58,21 @@ CgtDarkThemeExamples class >> showcase [
 		theme: self theme;
 		build
 ]
+
+
+{ #category : #examples }
+CgtDarkThemeExamples class >> brickControlThemeValues [
+	| aTheme resolve |
+	aTheme := self theme.
+	resolve := [ :aColor | aColor blocResolveColorForTheme: aTheme ].
+	self assert: (resolve value: aTheme button defaultBackground) equals: (resolve value: aTheme interaction controlBackgroundTint).
+	self assert: (resolve value: aTheme button defaultTextForeground) equals: (resolve value: aTheme typography primaryForeground).
+	self assert: (resolve value: aTheme button disabledBackgroundColor) equals: (resolve value: aTheme interaction subtleBackgroundTint).
+	self assert: (resolve value: aTheme button disabledTextColor) equals: (resolve value: aTheme typography disabledForeground).
+	self assert: aTheme button defaultBorderColor equals: Color transparent.
+	self assert: (resolve value: aTheme editor defaultBackground) equals: (resolve value: aTheme interaction controlBackgroundTint).
+	self assert: (resolve value: aTheme editor defaultTextForeground) equals: (resolve value: aTheme typography primaryForeground).
+	self assert: aTheme editor borderColor equals: Color transparent.
+	self assert: (resolve value: aTheme editor focusedBorderColor) equals: (resolve value: aTheme interaction focusedBorderColor).
+	^ aTheme
+]

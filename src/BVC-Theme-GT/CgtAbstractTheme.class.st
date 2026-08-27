@@ -53,20 +53,23 @@ CgtAbstractTheme >> initialize [
 { #category : #initialization }
 CgtAbstractTheme >> initializeSubthemes [
 	colors := self class colorsClass theme: self.
-	link := BrGlamorousLinkTheme new.
-	status := BrGlamorousStatusTheme new.
 	default := self class defaultThemeClass theme: self. default initializeThemeable.
-	editor := self class editorThemeClass theme: self. editor initializeThemeable.
-	button := self class buttonThemeClass theme: self. button initializeThemeable.
-	item := self class itemThemeClass new.
-	header := self class headerThemeClass theme: self. header initializeThemeable.
-	label := BrGlamorousLabelTheme theme: self. label initializeThemeable.
+
+	"Initialize Catalyst semantic providers before GT subthemes that consume them."
 	highlight := CgtHighlightTheme theme: self. highlight initializeThemeable.
 	surfaces := self class surfacesThemeClass theme: self. surfaces initializeThemeable.
 	typography := self class typographyThemeClass theme: self. typography initializeThemeable.
 	lighting := CgtLightingTheme theme: self.
 	interaction := self class interactionThemeClass theme: self. interaction initializeThemeable.
-	controls := self class controlsThemeClass theme: self. controls initializeThemeable
+	controls := self class controlsThemeClass theme: self. controls initializeThemeable.
+
+	link := BrGlamorousLinkTheme new.
+	status := BrGlamorousStatusTheme new.
+	editor := self class editorThemeClass theme: self. editor initializeThemeable.
+	button := self class buttonThemeClass theme: self. button initializeThemeable.
+	item := self class itemThemeClass new.
+	header := self class headerThemeClass theme: self. header initializeThemeable.
+	label := BrGlamorousLabelTheme theme: self. label initializeThemeable
 ]
 
 { #category : #accessing }

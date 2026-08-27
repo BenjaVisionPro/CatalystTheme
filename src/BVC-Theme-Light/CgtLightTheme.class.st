@@ -6,7 +6,7 @@ Class {
 
 { #category : #'class defaults' }
 CgtLightTheme class >> buttonThemeClass [
-	^ BrGlamorousButtonLightTheme
+	^ CgtLightButtonTheme
 ]
 
 { #category : #'class defaults' }
@@ -27,7 +27,7 @@ CgtLightTheme class >> defaultThemeClass [
 
 { #category : #'class defaults' }
 CgtLightTheme class >> editorThemeClass [
-	^ BrGlamorousEditorLightTheme
+	^ CgtLightEditorTheme
 ]
 
 
