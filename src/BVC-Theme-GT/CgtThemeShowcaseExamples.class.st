@@ -124,3 +124,23 @@ CgtThemeShowcaseExamples class >> menuThemeStructure [
 	self assert: aVanillaTheme menu menuShadowWidth equals: 0.
 	^ aDarkTheme
 ]
+
+{ #category : #examples }
+CgtThemeShowcaseExamples class >> popoverUsesAnchorTheme [
+	| aTheme anAnchor anAptitude anEvent aMenuContainer |
+	aTheme := CgtDarkTheme new.
+	anAnchor := BrButton new
+		theme: aTheme;
+		yourself.
+	aMenuContainer := BrMenuSteppedElement new.
+	anAptitude := BrGlamorousWithExplicitDropdownAptitude new.
+
+	anEvent := BrPopoverAboutToShowEvent new
+		anchorElement: anAnchor;
+		menuContainer: aMenuContainer;
+		yourself.
+	anAptitude dispatchEvent: anEvent.
+
+	self assert: aMenuContainer theme identicalTo: aTheme.
+	^ aMenuContainer
+]
