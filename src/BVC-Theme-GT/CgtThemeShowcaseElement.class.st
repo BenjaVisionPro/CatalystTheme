@@ -25,7 +25,7 @@ CgtThemeShowcaseElement >> build [
 
 { #category : #'building - sections' }
 CgtThemeShowcaseElement >> buildBrickSection [
-	| aSection aRow |
+	| aSection aRow aMenuItems aDropdown |
 	aSection := self newSectionNamed: 'Brick controls'.
 	aRow := BrHorizontalPane new
 		hMatchParent;
@@ -62,6 +62,36 @@ CgtThemeShowcaseElement >> buildBrickSection [
 			label: 'Two';
 			yourself);
 		yourself).
+
+	aMenuItems := BrMenuItems new.
+	aMenuItems
+		addItemId: #'theme-menu-first'
+		label: 'First action'
+		preview: 'preview'
+		action: [ ];
+		addItemId: #'theme-menu-second'
+		label: 'Second action'
+		shortcut: 'CMD+2'
+		action: [ ];
+		addItemId: #'theme-menu-third'
+		label: 'Third action'
+		action: [ ].
+
+	aDropdown := BrButton new
+		aptitude: BrGlamorousButtonWithLabelAptitude;
+		label: 'Open menu';
+		hFitContent;
+		addAptitude:
+			(BrGlamorousWithExplicitDropdownAptitude
+				handle: [
+					BrButton new
+						aptitude:
+							BrGlamorousButtonWithLabelAptitude
+							- BrGlamorousButtonExteriorAptitude;
+						label: 'Open menu' ]
+				menu: aMenuItems);
+		yourself.
+	aSection addChild: aDropdown.
 
 	aSection
 		addChild: (self swatchNamed: 'Menu default' color: self theme item defaultColor);

@@ -72,3 +72,36 @@ CgtThemeShowcaseExamples class >> toggleSemanticForegrounds [
 		equals: Color white.
 	^ aDarkTheme
 ]
+
+{ #category : #examples }
+CgtThemeShowcaseExamples class >> realDropdownMenu [
+	| aMenuItems aButton |
+	aMenuItems := BrMenuItems new.
+	aMenuItems
+		addItemId: #'theme-menu-first'
+		label: 'First action'
+		preview: 'preview'
+		action: [ ];
+		addItemId: #'theme-menu-second'
+		label: 'Second action'
+		shortcut: 'CMD+2'
+		action: [ ].
+
+	aButton := BrButton new
+		aptitude: BrGlamorousButtonWithLabelAptitude;
+		label: 'Open menu';
+		addAptitude:
+			(BrGlamorousWithExplicitDropdownAptitude
+				handle: [
+					BrButton new
+						aptitude:
+							BrGlamorousButtonWithLabelAptitude
+							- BrGlamorousButtonExteriorAptitude;
+						label: 'Open menu' ]
+				menu: aMenuItems);
+		theme: CgtDarkTheme new;
+		yourself.
+
+	self assert: aMenuItems items size equals: 2.
+	^ aButton
+]
