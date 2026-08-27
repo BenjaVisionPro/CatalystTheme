@@ -62,3 +62,31 @@ CgtLightThemeExamples class >> sharedThemeStateSurvivesAppearanceChange [
 	self assert: aLightTheme highlight textColor equals: aDarkTheme highlight textColor.
 	^ aLightTheme
 ]
+
+{ #category : #examples }
+CgtLightThemeExamples class >> semanticFallbackBeforeThemeInheritance [
+	| aDefaultTheme |
+	aDefaultTheme := BrGlamorousLightTheme new.
+	self
+		assert: (CgtThemeSemantics highlightColorFor: aDefaultTheme)
+		equals: CgtThemeState default highlightColor.
+	self
+		assert: (CgtThemeSemantics textHighlightColorFor: aDefaultTheme)
+		equals: CgtThemeState default textHighlightColor.
+	self
+		assert: (CgtThemeSemantics bodyFontSizeFor: aDefaultTheme)
+		equals: 13.
+	^ aDefaultTheme
+]
+
+{ #category : #examples }
+CgtLightThemeExamples class >> semanticResolverUsesEffectiveCatalystTheme [
+	| aState aTheme |
+	aState := CgtThemeState new.
+	aState highlightColor: CgtPalette highlightPurple.
+	aTheme := CgtLightTheme state: aState.
+	self
+		assert: (CgtThemeSemantics highlightColorFor: aTheme)
+		equals: CgtPalette highlightPurple.
+	^ aTheme
+]
