@@ -2,31 +2,31 @@ Class {
 	#name : #CgtSurfacesTheme,
 	#superclass : #BlSubTheme,
 	#instVars : [
-		'formBackground',
-		'cardBackground',
-		'separatorColor'
+		'baseBackground',
+		'cardTint',
+		'separatorTint'
 	],
 	#category : #'BVC-Theme-GT'
 }
 
 { #category : #accessing }
-CgtSurfacesTheme >> cardBackground [ ^ cardBackground ]
+CgtSurfacesTheme >> baseBackground [ ^ baseBackground ]
 
 { #category : #accessing }
-CgtSurfacesTheme >> formBackground [ ^ formBackground ]
+CgtSurfacesTheme >> cardTint [ ^ cardTint ]
 
 { #category : #initialization }
 CgtSurfacesTheme >> initializeThemeable [
-	formBackground := self
-		color: [ :aTheme | aTheme surfaces constantAt: #formBackground ]
-		source: [ :aTheme | aTheme surfaces formBackground ].
-	cardBackground := self
-		color: [ :aTheme | aTheme surfaces constantAt: #cardBackground ]
-		source: [ :aTheme | aTheme surfaces cardBackground ].
-	separatorColor := self
-		color: [ :aTheme | aTheme surfaces constantAt: #separatorColor ]
-		source: [ :aTheme | aTheme surfaces separatorColor ]
+	baseBackground := self
+		color: [ :aTheme | aTheme surfaces constantAt: #baseBackground ]
+		source: [ :aTheme | aTheme surfaces baseBackground ].
+	cardTint := self
+		color: [ :aTheme | aTheme surfaces constantAt: #cardTint ]
+		source: [ :aTheme | aTheme surfaces cardTint ].
+	separatorTint := self
+		color: [ :aTheme | aTheme surfaces constantAt: #separatorTint ]
+		source: [ :aTheme | aTheme surfaces separatorTint ]
 ]
 
 { #category : #accessing }
-CgtSurfacesTheme >> separatorColor [ ^ separatorColor ]
+CgtSurfacesTheme >> separatorTint [ ^ separatorTint ]

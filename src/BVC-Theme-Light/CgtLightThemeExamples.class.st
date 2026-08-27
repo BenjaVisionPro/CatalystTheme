@@ -36,13 +36,13 @@ CgtLightThemeExamples class >> detailLightReferenceValues [
 	self assert: aTheme typography primaryForeground equals: Color black.
 	self assert: aTheme typography secondaryForeground equals: (Color black alpha: 0.8).
 	self assert: aTheme typography tertiaryForeground equals: (Color black alpha: 0.55).
-	self assert: aTheme surfaces formBackground equals: Color white.
+	self assert: aTheme surfaces baseBackground equals: Color white.
 	self
-		assert: aTheme surfaces cardBackground
-		equals: (Color r: 248 g: 248 b: 248 range: 255).
+		assert: aTheme surfaces cardTint
+		equals: (Color black alpha: 7.0 / 255.0).
 	self
-		assert: aTheme surfaces separatorColor
-		equals: (Color r: 229 g: 229 b: 229 range: 255).
+		assert: aTheme surfaces separatorTint
+		equals: (Color black alpha: 19.0 / 248.0).
 	self assert: aTheme typography bodyFontSize equals: 13.
 	self assert: aTheme typography supportingFontSize equals: 11.
 	self assert: aTheme typography groupHeadingFontSize equals: 14.

@@ -5,16 +5,28 @@ Class {
 }
 
 { #category : #accessing }
-CgtGlamorousSurfacesTheme >> cardBackground [
+CgtGlamorousSurfacesTheme >> baseBackground [
 	^ self theme default contentBackground
 ]
 
 { #category : #accessing }
-CgtGlamorousSurfacesTheme >> formBackground [
-	^ self theme default contentBackground
+CgtGlamorousSurfacesTheme >> cardTint [
+	^ self contrastTintColor alpha: 7.0 / 255.0
+]
+
+{ #category : #private }
+CgtGlamorousSurfacesTheme >> contrastTintColor [
+	| aBackground aLuminance |
+	aBackground := self theme default contentBackground.
+	aLuminance := (aBackground red * 0.2126)
+		+ (aBackground green * 0.7152)
+		+ (aBackground blue * 0.0722).
+	^ aLuminance < 0.5
+		ifTrue: [ Color white ]
+		ifFalse: [ Color black ]
 ]
 
 { #category : #accessing }
-CgtGlamorousSurfacesTheme >> separatorColor [
-	^ self theme colors tertiaryTextColor
+CgtGlamorousSurfacesTheme >> separatorTint [
+	^ self contrastTintColor alpha: 19.0 / 248.0
 ]
