@@ -92,6 +92,7 @@ CgtThemeShowcaseExamples class >> realDropdownMenu [
 		label: 'Open menu';
 		addAptitude:
 			(BrGlamorousWithExplicitDropdownAptitude new
+				withoutHandle;
 				menu: aMenuItems;
 				yourself);
 		theme: CgtDarkTheme new;

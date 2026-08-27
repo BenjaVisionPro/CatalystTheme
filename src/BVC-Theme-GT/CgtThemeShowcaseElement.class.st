@@ -83,6 +83,7 @@ CgtThemeShowcaseElement >> buildBrickSection [
 		hFitContent;
 		addAptitude:
 			(BrGlamorousWithExplicitDropdownAptitude new
+				withoutHandle;
 				menu: aMenuItems;
 				yourself);
 		yourself.
