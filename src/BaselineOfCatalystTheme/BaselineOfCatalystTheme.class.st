@@ -1,21 +1,17 @@
 Class {
-    #name : 'BaselineOfCatalystTheme',
-    #superclass : 'BaselineOf',
-    #category : 'BaselineOfCatalystTheme',
-    #package : 'BaselineOfCatalystTheme'
+	#name : #BaselineOfCatalystTheme,
+	#superclass : #BaselineOf,
+	#category : #BaselineOfCatalystTheme,
+	#package : #BaselineOfCatalystTheme
 }
 
-{ #category : 'baseline' }
+{ #category : #baseline }
 BaselineOfCatalystTheme >> baseline: spec [
-    <baseline>
-    spec for: #common do: [
-        spec
-            package: 'BVC-Theme-Core';
-            package: 'BVC-Theme-GT' with: [ spec requires: #('BVC-Theme-Core') ];
-            package: 'BVC-Theme-Palettes-Core' with: [ spec requires: #('BVC-Theme-Core') ];
-            package: 'BVC-Theme-Dark' with: [ spec requires: #('BVC-Theme-GT' 'BVC-Theme-Palettes-Core') ];
-            package: 'BVC-Theme-Light' with: [ spec requires: #('BVC-Theme-GT' 'BVC-Theme-Palettes-Core') ];
-            package: 'BVC-Theme-DarkHighContrast' with: [ spec requires: #('BVC-Theme-GT' 'BVC-Theme-Palettes-Core') ];
-            package: 'BVC-Theme-Transparent' with: [ spec requires: #('BVC-Theme-GT' 'BVC-Theme-Palettes-Core') ];
-            package: 'BVC-Theme-Editor-Core' with: [ spec requires: #('BVC-Theme-Core' 'BVC-Theme-GT') ] ]
+	<baseline>
+	spec for: #common do: [
+		spec
+			package: 'BVC-Theme-Core';
+			package: 'BVC-Theme-GT' with: [ spec requires: #('BVC-Theme-Core') ];
+			package: 'BVC-Theme-Light' with: [ spec requires: #('BVC-Theme-GT') ];
+			package: 'BVC-Theme-Dark' with: [ spec requires: #('BVC-Theme-GT') ] ]
 ]

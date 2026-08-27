@@ -2,12 +2,19 @@ Class {
 	#name : #CgtAbstractTheme,
 	#superclass : #BrGlamorousTheme,
 	#instVars : [
-		'uiPalette',
-		'codePalette',
-		'bindings'
+		'themeState',
+		'foundation',
+		'typography'
 	],
 	#category : #'BVC-Theme-GT'
 }
+
+{ #category : #'instance creation' }
+CgtAbstractTheme class >> state: aThemeState [
+	^ self new
+		themeState: aThemeState;
+		yourself
+]
 
 { #category : #'class defaults' }
 CgtAbstractTheme class >> buttonThemeClass [
@@ -36,45 +43,20 @@ CgtAbstractTheme class >> headerThemeClass [
 
 { #category : #'class defaults' }
 CgtAbstractTheme class >> itemThemeClass [
-	self subclassResponsibility
+	^ BrGlamorousItemTheme
 ]
 
 { #category : #accessing }
-CgtAbstractTheme >> bindings [
-	^ bindings
-]
-
-{ #category : #accessing }
-CgtAbstractTheme >> bindings: anObject [
-	bindings := anObject
-]
-
-{ #category : #accessing }
-CgtAbstractTheme >> codePalette [
-	^ codePalette
-]
-
-{ #category : #accessing }
-CgtAbstractTheme >> codePalette: anObject [
-	codePalette := anObject
+CgtAbstractTheme >> foundation [
+	^ foundation
 ]
 
 { #category : #initialization }
 CgtAbstractTheme >> initialize [
 	super initialize.
-	self initializePalettes.
-	self initializeBindings.
+	themeState := CgtThemeState default.
+	self subscribeToThemeState.
 	self initializeSubthemes
-]
-
-{ #category : #initialization }
-CgtAbstractTheme >> initializeBindings [
-	bindings := CgtBindingSet new
-]
-
-{ #category : #initialization }
-CgtAbstractTheme >> initializePalettes [
-	self subclassResponsibility
 ]
 
 { #category : #initialization }
@@ -88,26 +70,50 @@ CgtAbstractTheme >> initializeSubthemes [
 	editor initializeThemeable.
 	button := self class buttonThemeClass theme: self.
 	button initializeThemeable.
-	item := self class itemThemeClass theme: self.
-	item initializeThemeable.
+	item := self class itemThemeClass new.
 	header := self class headerThemeClass theme: self.
 	header initializeThemeable.
 	label := BrGlamorousLabelTheme theme: self.
-	label initializeThemeable
+	label initializeThemeable.
+	foundation := CgtFoundationTheme theme: self.
+	foundation initializeThemeable.
+	typography := CgtTypographyTheme theme: self
 ]
 
 { #category : #'theme lifecycle' }
 CgtAbstractTheme >> onThemeModified [
 	super onThemeModified.
-	item ifNotNil: [ item initializeThemeable ]
+	foundation ifNotNil: [ foundation initializeThemeable ]
+]
+
+{ #category : #'theme lifecycle' }
+CgtAbstractTheme >> onThemeStateChanged: anAnnouncement [
+	anAnnouncement state == themeState ifFalse: [ ^ self ].
+	self themeModified
+]
+
+{ #category : #private }
+CgtAbstractTheme >> subscribeToThemeState [
+	themeState announcer weak
+		when: CgtThemeStateChanged
+		send: #onThemeStateChanged:
+		to: self
 ]
 
 { #category : #accessing }
-CgtAbstractTheme >> uiPalette [
-	^ uiPalette
+CgtAbstractTheme >> themeState [
+	^ themeState
 ]
 
 { #category : #accessing }
-CgtAbstractTheme >> uiPalette: anObject [
-	uiPalette := anObject
+CgtAbstractTheme >> themeState: aThemeState [
+	themeState == aThemeState ifTrue: [ ^ self ].
+	themeState := aThemeState.
+	self subscribeToThemeState.
+	self themeModified
+]
+
+{ #category : #accessing }
+CgtAbstractTheme >> typography [
+	^ typography
 ]
