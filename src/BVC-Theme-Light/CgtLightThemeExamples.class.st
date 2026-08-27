@@ -58,6 +58,10 @@ CgtLightThemeExamples class >> detailLightReferenceValues [
 	self assert: aTheme controls sliderTickTint equals: (Color black alpha: 0.22).
 	self assert: aTheme controls switchInactiveTrackTint equals: (Color black alpha: 35.0 / 255.0).
 	self assert: aTheme controls switchThumbBackground equals: Color white.
+	self assert: aTheme controls inactiveIconForeground equals: (Color black alpha: 0.68).
+	self assert: aTheme controls controlIndicatorForeground equals: (Color black alpha: 0.72).
+	self assert: aTheme controls tagBackgroundTint equals: (Color black alpha: 0.06).
+	self assert: aTheme controls tagEditorBackground equals: (Color white alpha: 0.9).
 	self assert: aTheme highlight foregroundColor equals: Color white.
 	^ aTheme
 ]

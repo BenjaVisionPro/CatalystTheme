@@ -7,7 +7,11 @@ Class {
 		'sliderThumbBorderTint',
 		'sliderTickTint',
 		'switchInactiveTrackTint',
-		'switchThumbBackground'
+		'switchThumbBackground',
+		'inactiveIconForeground',
+		'controlIndicatorForeground',
+		'tagBackgroundTint',
+		'tagEditorBackground'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -31,7 +35,19 @@ CgtControlsTheme >> initializeThemeable [
 		source: [ :aTheme | aTheme controls switchInactiveTrackTint ].
 	switchThumbBackground := self
 		color: [ :aTheme | aTheme controls constantAt: #switchThumbBackground ]
-		source: [ :aTheme | aTheme controls switchThumbBackground ]
+		source: [ :aTheme | aTheme controls switchThumbBackground ].
+	inactiveIconForeground := self
+		color: [ :aTheme | aTheme controls constantAt: #inactiveIconForeground ]
+		source: [ :aTheme | aTheme controls inactiveIconForeground ].
+	controlIndicatorForeground := self
+		color: [ :aTheme | aTheme controls constantAt: #controlIndicatorForeground ]
+		source: [ :aTheme | aTheme controls controlIndicatorForeground ].
+	tagBackgroundTint := self
+		color: [ :aTheme | aTheme controls constantAt: #tagBackgroundTint ]
+		source: [ :aTheme | aTheme controls tagBackgroundTint ].
+	tagEditorBackground := self
+		color: [ :aTheme | aTheme controls constantAt: #tagEditorBackground ]
+		source: [ :aTheme | aTheme controls tagEditorBackground ]
 ]
 
 { #category : #accessing }
@@ -46,3 +62,12 @@ CgtControlsTheme >> sliderTrackTint [ ^ sliderTrackTint ]
 CgtControlsTheme >> switchInactiveTrackTint [ ^ switchInactiveTrackTint ]
 { #category : #accessing }
 CgtControlsTheme >> switchThumbBackground [ ^ switchThumbBackground ]
+
+{ #category : #accessing }
+CgtControlsTheme >> inactiveIconForeground [ ^ inactiveIconForeground ]
+{ #category : #accessing }
+CgtControlsTheme >> controlIndicatorForeground [ ^ controlIndicatorForeground ]
+{ #category : #accessing }
+CgtControlsTheme >> tagBackgroundTint [ ^ tagBackgroundTint ]
+{ #category : #accessing }
+CgtControlsTheme >> tagEditorBackground [ ^ tagEditorBackground ]
