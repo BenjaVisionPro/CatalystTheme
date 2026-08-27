@@ -190,3 +190,15 @@ CgtThemeShowcaseExamples class >> menuItemGeometryFollowsInheritedTheme [
 		equals: aTheme menu itemCornerRadius.
 	^ anItem
 ]
+
+{ #category : #examples }
+CgtThemeShowcaseExamples class >> menuSelectionUsesExactHighlight [
+	| aTheme |
+	aTheme := CgtDarkTheme new.
+	self
+		assert:
+			(aTheme highlight color
+				blocResolveColorForTheme: aTheme)
+		equals: aTheme themeState highlightColor.
+	^ aTheme
+]

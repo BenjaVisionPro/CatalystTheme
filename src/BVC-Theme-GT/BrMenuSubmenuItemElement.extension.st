@@ -16,10 +16,14 @@ BrMenuSubmenuItemElement >> initializeStyling [
 				aStyle background: self theme item defaultColor ];
 			when: BlElementState hovered & BlElementState selected
 				style: [ :aStyle |
-					aStyle background: self theme item selectedColor ];
+					aStyle background:
+					(self theme highlight color
+						blocResolveColorForTheme: self theme) ];
 			when: BlElementState hovered not & BlElementState selected
 				style: [ :aStyle |
-					aStyle background: self theme item selectedColor ];
+					aStyle background:
+					(self theme highlight color
+						blocResolveColorForTheme: self theme) ];
 			pressed: [ :aStyle |
 				aStyle background: self theme item pressedColor ])
 ]
