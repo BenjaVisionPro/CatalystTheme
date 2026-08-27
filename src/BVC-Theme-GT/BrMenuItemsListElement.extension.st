@@ -6,12 +6,6 @@ BrMenuItemsListElement >> applyMenuContentInset [
 ]
 
 { #category : #'*BVC-Theme-GT' }
-BrMenuItemsListElement >> initialize [
-	super initialize.
-	self applyMenuContentInset
-]
-
-{ #category : #'*BVC-Theme-GT' }
 BrMenuItemsListElement >> onThemeChanged [
 	super onThemeChanged.
 	self applyMenuContentInset
