@@ -8,11 +8,9 @@ BrMenuTextLabelElement >> applyThemeToShortcut [
 				(self theme typography tertiaryForeground
 					blocResolveColorForTheme: self theme)
 			width: 0.5).
-	shortcutLabel aptitude
-		fontSize: self theme typography supportingFontSize;
-		foreground:
-			(self theme typography tertiaryForeground
-				blocResolveColorForTheme: self theme)
+	shortcutLabel aptitude foreground:
+		(self theme typography tertiaryForeground
+			blocResolveColorForTheme: self theme)
 ]
 
 { #category : #'*BVC-Theme-GT' }

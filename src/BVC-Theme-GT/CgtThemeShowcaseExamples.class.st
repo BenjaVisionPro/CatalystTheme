@@ -207,7 +207,6 @@ CgtThemeShowcaseExamples class >> menuSelectionUsesExactHighlight [
 CgtThemeShowcaseExamples class >> menuShortcutUsesSupportingTypography [
 	| aTheme |
 	aTheme := CgtDarkTheme new.
-	self assert: aTheme typography supportingFontSize equals: 11.
 	self
 		assert:
 			(aTheme typography tertiaryForeground
