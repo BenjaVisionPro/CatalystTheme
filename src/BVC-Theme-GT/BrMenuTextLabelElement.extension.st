@@ -2,14 +2,12 @@ Extension { #name : #BrMenuTextLabelElement }
 
 { #category : #'*BVC-Theme-GT' }
 BrMenuTextLabelElement >> applyThemeToShortcut [
-	shortcutElement border:
-		(BlBorder
-			paint: (self theme typography quaternaryForeground
+	shortcutElement border: BlBorder empty.
+	shortcutLabel aptitude
+		fontSize: self theme typography supportingFontSize;
+		foreground:
+			(self theme typography tertiaryForeground
 				blocResolveColorForTheme: self theme)
-			width: 0.5).
-	shortcutLabel aptitude foreground:
-		(self theme typography tertiaryForeground
-			blocResolveColorForTheme: self theme)
 ]
 
 { #category : #'*BVC-Theme-GT' }
@@ -24,7 +22,18 @@ BrMenuTextLabelElement >> initializeCommonStyling [
 				disabled: [ :aStyle |
 					aStyle
 						do: [ self updateLabelElement ]
-						after: [ self updateLabelElement ] ])
+						after: [ self updateLabelElement ] ]);
+		addAptitude:
+			(BrStyleCommonAptitude new @ shortcutLabel / #shortcut
+				default: [ :aStyle |
+					aStyle foreground:
+					(self theme typography tertiaryForeground
+						blocResolveColorForTheme: self theme) ];
+				selected: [ :aStyle |
+					aStyle foreground:
+					((self theme highlight foregroundColor
+						blocResolveColorForTheme: self theme)
+						alpha: 0.72) ])
 ]
 
 { #category : #'*BVC-Theme-GT' }

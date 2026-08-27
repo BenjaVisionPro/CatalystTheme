@@ -202,3 +202,16 @@ CgtThemeShowcaseExamples class >> menuSelectionUsesExactHighlight [
 		equals: aTheme themeState highlightColor.
 	^ aTheme
 ]
+
+{ #category : #examples }
+CgtThemeShowcaseExamples class >> menuShortcutUsesSupportingTypography [
+	| aTheme |
+	aTheme := CgtDarkTheme new.
+	self assert: aTheme typography supportingFontSize equals: 11.
+	self
+		assert:
+			(aTheme typography tertiaryForeground
+				blocResolveColorForTheme: aTheme)
+		equals: (Color white alpha: 0.55).
+	^ aTheme
+]
