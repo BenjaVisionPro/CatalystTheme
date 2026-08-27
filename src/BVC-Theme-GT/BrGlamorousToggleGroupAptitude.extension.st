@@ -1,6 +1,15 @@
 Extension { #name : #BrGlamorousToggleGroupAptitude }
 
 { #category : #'*BVC-Theme-GT' }
+BrGlamorousToggleGroupAptitude >> applyThemeBorder [
+	self widget border:
+		(BlBorder
+			paint: (self theme interaction hoveredBackgroundTint
+				blocResolveColorForTheme: self theme)
+			width: 1)
+]
+
+{ #category : #'*BVC-Theme-GT' }
 BrGlamorousToggleGroupAptitude >> initialize [
 	super initialize.
 	self
@@ -13,7 +22,13 @@ BrGlamorousToggleGroupAptitude >> initialize [
 		addChangeProperty: #(widget border)
 		with: [
 			BlBorder
-				paint: (self theme button defaultBorderColor
+				paint: (self theme interaction hoveredBackgroundTint
 					blocResolveColorForTheme: self theme)
 				width: 1 ]
+]
+
+{ #category : #'*BVC-Theme-GT' }
+BrGlamorousToggleGroupAptitude >> initializeListeners [
+	super initializeListeners.
+	self when: BlElementThemeChanged do: [ self applyThemeBorder ]
 ]

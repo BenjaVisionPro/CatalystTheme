@@ -53,3 +53,22 @@ CgtThemeShowcaseExamples class >> standardControlPaintValuesAreConcrete [
 		equals: Color.
 	^ aTheme
 ]
+
+{ #category : #examples }
+CgtThemeShowcaseExamples class >> toggleSemanticForegrounds [
+	| aLightTheme aDarkTheme resolve |
+	aLightTheme := CgtLightTheme new.
+	aDarkTheme := CgtDarkTheme new.
+	resolve := [ :aColor :aTheme | aColor blocResolveColorForTheme: aTheme ].
+
+	self
+		assert: (resolve value: aLightTheme label defaultTextForeground value: aLightTheme)
+		equals: (resolve value: aLightTheme typography primaryForeground value: aLightTheme).
+	self
+		assert: (resolve value: aDarkTheme label defaultTextForeground value: aDarkTheme)
+		equals: (resolve value: aDarkTheme typography primaryForeground value: aDarkTheme).
+	self
+		assert: (resolve value: aDarkTheme highlight foregroundColor value: aDarkTheme)
+		equals: Color white.
+	^ aDarkTheme
+]
