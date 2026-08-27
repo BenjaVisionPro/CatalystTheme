@@ -11,10 +11,7 @@ BrGlamorousTheme >> highlight [
 
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> interaction [
-	| anInteractionTheme |
-	anInteractionTheme := CgtGlamorousInteractionTheme theme: self.
-	anInteractionTheme initializeThemeable.
-	^ anInteractionTheme
+	^ CgtGlamorousInteractionTheme theme: self
 ]
 
 { #category : #'*BVC-Theme-GT' }

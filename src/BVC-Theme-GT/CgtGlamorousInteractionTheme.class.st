@@ -1,8 +1,13 @@
 Class {
 	#name : #CgtGlamorousInteractionTheme,
-	#superclass : #CgtInteractionTheme,
+	#superclass : #BlSubTheme,
 	#category : #'BVC-Theme-GT'
 }
+
+{ #category : #accessing }
+CgtGlamorousInteractionTheme >> controlBackgroundTint [
+	^ self contrastTintColor alpha: 0.08
+]
 
 { #category : #private }
 CgtGlamorousInteractionTheme >> contrastTintColor [
@@ -16,15 +21,22 @@ CgtGlamorousInteractionTheme >> contrastTintColor [
 		ifFalse: [ Color black ]
 ]
 
-{ #category : #initialization }
-CgtGlamorousInteractionTheme >> initializeConstants [
-	| aTint |
-	super initializeConstants.
-	aTint := self contrastTintColor.
-	self
-		constantAt: #subtleBackgroundTint put: (aTint alpha: 0.06);
-		constantAt: #controlBackgroundTint put: (aTint alpha: 0.08);
-		constantAt: #popupBackgroundTint put: (aTint alpha: 0.10);
-		constantAt: #hoveredBackgroundTint put: (aTint alpha: 0.12);
-		constantAt: #pressedBackgroundTint put: (aTint alpha: 0.16)
+{ #category : #accessing }
+CgtGlamorousInteractionTheme >> hoveredBackgroundTint [
+	^ self contrastTintColor alpha: 0.12
+]
+
+{ #category : #accessing }
+CgtGlamorousInteractionTheme >> popupBackgroundTint [
+	^ self contrastTintColor alpha: 0.10
+]
+
+{ #category : #accessing }
+CgtGlamorousInteractionTheme >> pressedBackgroundTint [
+	^ self contrastTintColor alpha: 0.16
+]
+
+{ #category : #accessing }
+CgtGlamorousInteractionTheme >> subtleBackgroundTint [
+	^ self contrastTintColor alpha: 0.06
 ]
