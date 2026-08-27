@@ -1,5 +1,11 @@
 Extension { #name : #BrGlamorousTheme }
 
+
+{ #category : #'*BVC-Theme-GT' }
+BrGlamorousTheme >> controls [
+	^ CgtGlamorousControlsTheme theme: self
+]
+
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> highlight [
 	| aHighlightTheme |

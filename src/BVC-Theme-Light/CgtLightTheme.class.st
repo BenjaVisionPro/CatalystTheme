@@ -14,6 +14,12 @@ CgtLightTheme class >> colorsClass [
 	^ BrGlamorousLightThemeColors
 ]
 
+
+{ #category : #'class defaults' }
+CgtLightTheme class >> controlsThemeClass [
+	^ CgtLightControlsTheme
+]
+
 { #category : #'class defaults' }
 CgtLightTheme class >> defaultThemeClass [
 	^ BrGlamorousDefaultLightTheme

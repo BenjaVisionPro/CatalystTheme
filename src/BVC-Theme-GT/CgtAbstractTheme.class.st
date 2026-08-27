@@ -7,7 +7,8 @@ Class {
 		'surfaces',
 		'typography',
 		'lighting',
-		'interaction'
+		'interaction',
+		'controls'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -16,6 +17,8 @@ Class {
 CgtAbstractTheme class >> state: aThemeState [ ^ self new themeState: aThemeState; yourself ]
 { #category : #'class defaults' }
 CgtAbstractTheme class >> buttonThemeClass [ self subclassResponsibility ]
+{ #category : #'class defaults' }
+CgtAbstractTheme class >> controlsThemeClass [ ^ CgtGlamorousControlsTheme ]
 { #category : #'class defaults' }
 CgtAbstractTheme class >> colorsClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
@@ -32,6 +35,9 @@ CgtAbstractTheme class >> itemThemeClass [ ^ BrGlamorousItemTheme ]
 CgtAbstractTheme class >> surfacesThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
 CgtAbstractTheme class >> typographyThemeClass [ self subclassResponsibility ]
+
+{ #category : #accessing }
+CgtAbstractTheme >> controls [ ^ controls ]
 
 { #category : #accessing }
 CgtAbstractTheme >> highlight [ ^ highlight ]
@@ -59,7 +65,8 @@ CgtAbstractTheme >> initializeSubthemes [
 	surfaces := self class surfacesThemeClass theme: self. surfaces initializeThemeable.
 	typography := self class typographyThemeClass theme: self. typography initializeThemeable.
 	lighting := CgtLightingTheme theme: self.
-	interaction := self class interactionThemeClass theme: self. interaction initializeThemeable
+	interaction := self class interactionThemeClass theme: self. interaction initializeThemeable.
+	controls := self class controlsThemeClass theme: self. controls initializeThemeable
 ]
 
 { #category : #accessing }
@@ -74,7 +81,8 @@ CgtAbstractTheme >> onThemeModified [
 	highlight ifNotNil: [ highlight initializeThemeable ].
 	surfaces ifNotNil: [ surfaces initializeThemeable ].
 	typography ifNotNil: [ typography initializeThemeable ].
-	interaction ifNotNil: [ interaction initializeThemeable ]
+	interaction ifNotNil: [ interaction initializeThemeable ].
+	controls ifNotNil: [ controls initializeThemeable ]
 ]
 
 { #category : #'theme lifecycle' }

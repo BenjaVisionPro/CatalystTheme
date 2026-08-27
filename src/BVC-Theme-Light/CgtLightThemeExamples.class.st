@@ -52,6 +52,12 @@ CgtLightThemeExamples class >> detailLightReferenceValues [
 	self assert: aTheme interaction hoveredBackgroundTint equals: (Color black alpha: 0.12).
 	self assert: aTheme interaction pressedBackgroundTint equals: (Color black alpha: 0.16).
 	self assert: aTheme interaction focusedBorderColor equals: (CgtPalette highlightBlue alpha: 0.3).
+	self assert: aTheme controls sliderTrackTint equals: (Color black alpha: 0.14).
+	self assert: aTheme controls sliderThumbBackground equals: Color white.
+	self assert: aTheme controls sliderThumbBorderTint equals: (Color black alpha: 0.16).
+	self assert: aTheme controls sliderTickTint equals: (Color black alpha: 0.22).
+	self assert: aTheme controls switchInactiveTrackTint equals: (Color black alpha: 35.0 / 255.0).
+	self assert: aTheme controls switchThumbBackground equals: Color white.
 	self assert: aTheme highlight foregroundColor equals: Color white.
 	^ aTheme
 ]
