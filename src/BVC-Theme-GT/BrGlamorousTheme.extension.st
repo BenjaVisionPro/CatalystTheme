@@ -8,6 +8,15 @@ BrGlamorousTheme >> highlight [
 	^ aHighlightTheme
 ]
 
+
+{ #category : #'*BVC-Theme-GT' }
+BrGlamorousTheme >> interaction [
+	| anInteractionTheme |
+	anInteractionTheme := CgtGlamorousInteractionTheme theme: self.
+	anInteractionTheme initializeThemeable.
+	^ anInteractionTheme
+]
+
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> lighting [
 	^ CgtLightingTheme theme: self

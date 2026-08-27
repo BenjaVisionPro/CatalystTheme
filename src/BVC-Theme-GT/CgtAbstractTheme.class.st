@@ -6,7 +6,8 @@ Class {
 		'highlight',
 		'surfaces',
 		'typography',
-		'lighting'
+		'lighting',
+		'interaction'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -23,6 +24,8 @@ CgtAbstractTheme class >> defaultThemeClass [ self subclassResponsibility ]
 CgtAbstractTheme class >> editorThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
 CgtAbstractTheme class >> headerThemeClass [ self subclassResponsibility ]
+{ #category : #'class defaults' }
+CgtAbstractTheme class >> interactionThemeClass [ ^ CgtGlamorousInteractionTheme ]
 { #category : #'class defaults' }
 CgtAbstractTheme class >> itemThemeClass [ ^ BrGlamorousItemTheme ]
 { #category : #'class defaults' }
@@ -55,8 +58,12 @@ CgtAbstractTheme >> initializeSubthemes [
 	highlight := CgtHighlightTheme theme: self. highlight initializeThemeable.
 	surfaces := self class surfacesThemeClass theme: self. surfaces initializeThemeable.
 	typography := self class typographyThemeClass theme: self. typography initializeThemeable.
-	lighting := CgtLightingTheme theme: self
+	lighting := CgtLightingTheme theme: self.
+	interaction := self class interactionThemeClass theme: self. interaction initializeThemeable
 ]
+
+{ #category : #accessing }
+CgtAbstractTheme >> interaction [ ^ interaction ]
 
 { #category : #accessing }
 CgtAbstractTheme >> lighting [ ^ lighting ]
@@ -66,7 +73,8 @@ CgtAbstractTheme >> onThemeModified [
 	super onThemeModified.
 	highlight ifNotNil: [ highlight initializeThemeable ].
 	surfaces ifNotNil: [ surfaces initializeThemeable ].
-	typography ifNotNil: [ typography initializeThemeable ]
+	typography ifNotNil: [ typography initializeThemeable ].
+	interaction ifNotNil: [ interaction initializeThemeable ]
 ]
 
 { #category : #'theme lifecycle' }

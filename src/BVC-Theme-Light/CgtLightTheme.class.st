@@ -30,6 +30,12 @@ CgtLightTheme class >> headerThemeClass [
 	^ BrGlamorousHeaderLightTheme
 ]
 
+
+{ #category : #'class defaults' }
+CgtLightTheme class >> interactionThemeClass [
+	^ CgtLightInteractionTheme
+]
+
 { #category : #'class defaults' }
 CgtLightTheme class >> surfacesThemeClass [
 	^ CgtLightSurfacesTheme

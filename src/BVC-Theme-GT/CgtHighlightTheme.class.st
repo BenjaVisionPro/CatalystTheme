@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'color',
 		'textColor',
-		'inactiveTextColor'
+		'inactiveTextColor',
+		'foregroundColor'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -28,6 +29,9 @@ CgtHighlightTheme >> inactiveColorFor: aColor [
 ]
 
 { #category : #accessing }
+CgtHighlightTheme >> foregroundColor [ ^ foregroundColor ]
+
+{ #category : #accessing }
 CgtHighlightTheme >> inactiveTextColor [ ^ inactiveTextColor ]
 
 { #category : #initialization }
@@ -38,6 +42,9 @@ CgtHighlightTheme >> initializeThemeable [
 	textColor := self
 		color: [ :aTheme | aTheme themeState textHighlightColor ]
 		source: [ :aTheme | aTheme highlight textColor ].
+	foregroundColor := self
+		color: [ :aTheme | Color white ]
+		source: [ :aTheme | aTheme highlight foregroundColor ].
 	inactiveTextColor := self
 		color: [ :aTheme | self inactiveColorFor: aTheme themeState textHighlightColor ]
 		source: [ :aTheme | aTheme highlight inactiveTextColor ]
