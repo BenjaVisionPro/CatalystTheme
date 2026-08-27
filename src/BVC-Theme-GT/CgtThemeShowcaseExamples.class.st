@@ -163,3 +163,15 @@ CgtThemeShowcaseExamples class >> menuInsetMatchesDetailReference [
 	self assert: aTheme menu itemCornerRadius equals: 7.
 	^ aTheme
 ]
+
+{ #category : #examples }
+CgtThemeShowcaseExamples class >> menuInsetIsAppliedToSimpleList [
+	| aMenuElement aList |
+	aMenuElement := BrMenuItemsListElement new
+		theme: CgtDarkTheme new;
+		yourself.
+	aList := aMenuElement childWithId: #'menu--list'.
+	self assert: aList padding equals: (BlInsets all: 5).
+	self assert: aMenuElement padding equals: BlInsets empty.
+	^ aMenuElement
+]

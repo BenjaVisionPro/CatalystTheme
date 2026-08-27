@@ -8,8 +8,5 @@ BrPopoverCommonAptitude >> initialize [
 		addChangeProperty: #(widget geometry)
 		with: [
 			BlRoundedRectangleGeometry
-				cornerRadius: self theme menu cornerRadius ];
-		addChangeProperty: #(widget padding)
-		with: [
-			BlInsets all: self theme menu contentInset ]
+				cornerRadius: self theme menu cornerRadius ]
 ]
