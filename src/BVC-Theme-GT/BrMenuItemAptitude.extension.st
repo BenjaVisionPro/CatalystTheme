@@ -1,14 +1,18 @@
 Extension { #name : #BrMenuItemAptitude }
 
 { #category : #'*BVC-Theme-GT' }
+BrMenuItemAptitude >> applyMenuGeometry [
+	self widgetDo: [ :aWidget |
+		aWidget geometry:
+			(BlRoundedRectangleGeometry
+				cornerRadius: self theme menu itemCornerRadius) ]
+]
+
+{ #category : #'*BVC-Theme-GT' }
 BrMenuItemAptitude >> initialize [
 	super initialize.
 
 	self
-		addChangeProperty: #(widget geometry)
-		with: [
-			BlRoundedRectangleGeometry
-				cornerRadius: self theme menu itemCornerRadius ];
 		add:
 			(BrStyleCommonAptitude new
 				default: [ :aStyle |
@@ -20,5 +24,12 @@ BrMenuItemAptitude >> initialize [
 					style: [ :aStyle |
 						aStyle background: self theme item selectedColor ];
 				pressed: [ :aStyle |
-					aStyle background: self theme item pressedColor ])
+					aStyle background: self theme item pressedColor ]).
+	self applyMenuGeometry
+]
+
+{ #category : #'*BVC-Theme-GT' }
+BrMenuItemAptitude >> initializeListeners [
+	super initializeListeners.
+	self when: BlElementThemeChanged do: [ self applyMenuGeometry ]
 ]

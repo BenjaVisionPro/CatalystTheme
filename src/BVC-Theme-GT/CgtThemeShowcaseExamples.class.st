@@ -175,3 +175,18 @@ CgtThemeShowcaseExamples class >> menuInsetIsAppliedToSimpleList [
 	self assert: aMenuElement padding equals: BlInsets empty.
 	^ aMenuElement
 ]
+
+{ #category : #examples }
+CgtThemeShowcaseExamples class >> menuItemGeometryFollowsInheritedTheme [
+	| aTheme anItem anAptitude |
+	aTheme := CgtDarkTheme new.
+	anItem := BrMenuActionItemElement new.
+	anAptitude := BrMenuItemAptitude new.
+	anItem addAptitude: anAptitude.
+	anItem theme: aTheme.
+
+	self
+		assert: anItem geometry cornerRadius
+		equals: aTheme menu itemCornerRadius.
+	^ anItem
+]

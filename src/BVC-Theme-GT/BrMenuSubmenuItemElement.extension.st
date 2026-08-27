@@ -1,10 +1,15 @@
 Extension { #name : #BrMenuSubmenuItemElement }
 
 { #category : #'*BVC-Theme-GT' }
-BrMenuSubmenuItemElement >> initializeStyling [
+BrMenuSubmenuItemElement >> applyMenuGeometry [
 	self geometry:
 		(BlRoundedRectangleGeometry
-			cornerRadius: self theme menu itemCornerRadius).
+			cornerRadius: self theme menu itemCornerRadius)
+]
+
+{ #category : #'*BVC-Theme-GT' }
+BrMenuSubmenuItemElement >> initializeStyling [
+	self applyMenuGeometry.
 	self addAptitude:
 		(BrStyleCommonAptitude new
 			default: [ :aStyle |
@@ -17,4 +22,10 @@ BrMenuSubmenuItemElement >> initializeStyling [
 					aStyle background: self theme item selectedColor ];
 			pressed: [ :aStyle |
 				aStyle background: self theme item pressedColor ])
+]
+
+{ #category : #'*BVC-Theme-GT' }
+BrMenuSubmenuItemElement >> onThemeChanged [
+	super onThemeChanged.
+	self applyMenuGeometry
 ]
