@@ -9,7 +9,11 @@ Class {
 		'secondaryForeground',
 		'tertiaryForeground',
 		'quaternaryForeground',
-		'disabledForeground'
+		'disabledForeground',
+		'titleFontSize',
+		'metadataFontSize',
+		'titleForeground',
+		'metadataForeground'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -26,7 +30,9 @@ CgtTypographyTheme >> initialize [
 	super initialize.
 	bodyFontSize := 13.
 	supportingFontSize := 11.
-	groupHeadingFontSize := 14
+	groupHeadingFontSize := 14.
+	titleFontSize := 16.
+	metadataFontSize := 11
 ]
 
 { #category : #initialization }
@@ -45,7 +51,13 @@ CgtTypographyTheme >> initializeThemeable [
 		source: [ :aTheme | aTheme typography quaternaryForeground ].
 	disabledForeground := self
 		color: [ :aTheme | aTheme typography constantAt: #disabledForeground ]
-		source: [ :aTheme | aTheme typography disabledForeground ]
+		source: [ :aTheme | aTheme typography disabledForeground ].
+	titleForeground := self
+		color: [ :aTheme | aTheme typography constantAt: #titleForeground ]
+		source: [ :aTheme | aTheme typography titleForeground ].
+	metadataForeground := self
+		color: [ :aTheme | aTheme typography constantAt: #metadataForeground ]
+		source: [ :aTheme | aTheme typography metadataForeground ]
 ]
 
 { #category : #accessing }
@@ -58,3 +70,12 @@ CgtTypographyTheme >> secondaryForeground [ ^ secondaryForeground ]
 CgtTypographyTheme >> supportingFontSize [ ^ supportingFontSize ]
 { #category : #accessing }
 CgtTypographyTheme >> tertiaryForeground [ ^ tertiaryForeground ]
+
+{ #category : #accessing }
+CgtTypographyTheme >> titleFontSize [ ^ titleFontSize ]
+{ #category : #accessing }
+CgtTypographyTheme >> metadataFontSize [ ^ metadataFontSize ]
+{ #category : #accessing }
+CgtTypographyTheme >> titleForeground [ ^ titleForeground ]
+{ #category : #accessing }
+CgtTypographyTheme >> metadataForeground [ ^ metadataForeground ]

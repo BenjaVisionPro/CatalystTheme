@@ -12,5 +12,7 @@ CgtDarkTypographyTheme >> initializeConstants [
 		constantAt: #secondaryForeground put: self theme colors secondaryTextColor;
 		constantAt: #tertiaryForeground put: self theme colors tertiaryTextColor;
 		constantAt: #quaternaryForeground put: self theme colors disabledTextColor;
-		constantAt: #disabledForeground put: self theme colors disabledTextColor
+		constantAt: #disabledForeground put: self theme colors disabledTextColor;
+		constantAt: #titleForeground put: self theme colors primaryTextColor;
+		constantAt: #metadataForeground put: self theme colors secondaryTextColor
 ]

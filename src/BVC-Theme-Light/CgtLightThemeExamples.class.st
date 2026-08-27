@@ -46,6 +46,10 @@ CgtLightThemeExamples class >> detailLightReferenceValues [
 	self assert: aTheme typography bodyFontSize equals: 13.
 	self assert: aTheme typography supportingFontSize equals: 11.
 	self assert: aTheme typography groupHeadingFontSize equals: 14.
+	self assert: aTheme typography titleFontSize equals: 16.
+	self assert: aTheme typography metadataFontSize equals: 11.
+	self assert: aTheme typography titleForeground equals: (Color black alpha: 0.92).
+	self assert: aTheme typography metadataForeground equals: (Color black alpha: 0.45).
 	self assert: aTheme interaction subtleBackgroundTint equals: (Color black alpha: 0.06).
 	self assert: aTheme interaction controlBackgroundTint equals: (Color black alpha: 0.08).
 	self assert: aTheme interaction popupBackgroundTint equals: (Color black alpha: 0.10).

@@ -43,3 +43,12 @@ CgtGlamorousTypographyTheme >> supportingFontSize [
 CgtGlamorousTypographyTheme >> tertiaryForeground [
 	^ self theme colors tertiaryTextColor
 ]
+
+{ #category : #accessing }
+CgtGlamorousTypographyTheme >> titleFontSize [ ^ 16 ]
+{ #category : #accessing }
+CgtGlamorousTypographyTheme >> metadataFontSize [ ^ 11 ]
+{ #category : #accessing }
+CgtGlamorousTypographyTheme >> titleForeground [ ^ self theme colors primaryTextColor ]
+{ #category : #accessing }
+CgtGlamorousTypographyTheme >> metadataForeground [ ^ self theme colors secondaryTextColor ]
