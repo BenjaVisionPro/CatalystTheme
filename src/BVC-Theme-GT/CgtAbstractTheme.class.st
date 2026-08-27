@@ -3,59 +3,35 @@ Class {
 	#superclass : #BrGlamorousTheme,
 	#instVars : [
 		'themeState',
-		'foundation',
-		'typography'
+		'highlight',
+		'surfaces',
+		'typography',
+		'lighting'
 	],
 	#category : #'BVC-Theme-GT'
 }
 
 { #category : #'instance creation' }
-CgtAbstractTheme class >> state: aThemeState [
-	^ self new
-		themeState: aThemeState;
-		yourself
-]
-
+CgtAbstractTheme class >> state: aThemeState [ ^ self new themeState: aThemeState; yourself ]
 { #category : #'class defaults' }
-CgtAbstractTheme class >> buttonThemeClass [
-	self subclassResponsibility
-]
-
+CgtAbstractTheme class >> buttonThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
-CgtAbstractTheme class >> colorsClass [
-	self subclassResponsibility
-]
-
+CgtAbstractTheme class >> colorsClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
-CgtAbstractTheme class >> defaultThemeClass [
-	self subclassResponsibility
-]
-
+CgtAbstractTheme class >> defaultThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
-CgtAbstractTheme class >> editorThemeClass [
-	self subclassResponsibility
-]
-
-
+CgtAbstractTheme class >> editorThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
-CgtAbstractTheme class >> foundationThemeClass [
-	self subclassResponsibility
-]
-
+CgtAbstractTheme class >> headerThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
-CgtAbstractTheme class >> headerThemeClass [
-	self subclassResponsibility
-]
-
+CgtAbstractTheme class >> itemThemeClass [ ^ BrGlamorousItemTheme ]
 { #category : #'class defaults' }
-CgtAbstractTheme class >> itemThemeClass [
-	^ BrGlamorousItemTheme
-]
+CgtAbstractTheme class >> surfacesThemeClass [ self subclassResponsibility ]
+{ #category : #'class defaults' }
+CgtAbstractTheme class >> typographyThemeClass [ self subclassResponsibility ]
 
 { #category : #accessing }
-CgtAbstractTheme >> foundation [
-	^ foundation
-]
+CgtAbstractTheme >> highlight [ ^ highlight ]
 
 { #category : #initialization }
 CgtAbstractTheme >> initialize [
@@ -70,26 +46,27 @@ CgtAbstractTheme >> initializeSubthemes [
 	colors := self class colorsClass theme: self.
 	link := BrGlamorousLinkTheme new.
 	status := BrGlamorousStatusTheme new.
-	default := self class defaultThemeClass theme: self.
-	default initializeThemeable.
-	editor := self class editorThemeClass theme: self.
-	editor initializeThemeable.
-	button := self class buttonThemeClass theme: self.
-	button initializeThemeable.
+	default := self class defaultThemeClass theme: self. default initializeThemeable.
+	editor := self class editorThemeClass theme: self. editor initializeThemeable.
+	button := self class buttonThemeClass theme: self. button initializeThemeable.
 	item := self class itemThemeClass new.
-	header := self class headerThemeClass theme: self.
-	header initializeThemeable.
-	label := BrGlamorousLabelTheme theme: self.
-	label initializeThemeable.
-	foundation := self class foundationThemeClass theme: self.
-	foundation initializeThemeable.
-	typography := CgtTypographyTheme theme: self
+	header := self class headerThemeClass theme: self. header initializeThemeable.
+	label := BrGlamorousLabelTheme theme: self. label initializeThemeable.
+	highlight := CgtHighlightTheme theme: self. highlight initializeThemeable.
+	surfaces := self class surfacesThemeClass theme: self. surfaces initializeThemeable.
+	typography := self class typographyThemeClass theme: self. typography initializeThemeable.
+	lighting := CgtLightingTheme theme: self
 ]
+
+{ #category : #accessing }
+CgtAbstractTheme >> lighting [ ^ lighting ]
 
 { #category : #'theme lifecycle' }
 CgtAbstractTheme >> onThemeModified [
 	super onThemeModified.
-	foundation ifNotNil: [ foundation initializeThemeable ]
+	highlight ifNotNil: [ highlight initializeThemeable ].
+	surfaces ifNotNil: [ surfaces initializeThemeable ].
+	typography ifNotNil: [ typography initializeThemeable ]
 ]
 
 { #category : #'theme lifecycle' }
@@ -100,17 +77,13 @@ CgtAbstractTheme >> onThemeStateChanged: anAnnouncement [
 
 { #category : #private }
 CgtAbstractTheme >> subscribeToThemeState [
-	themeState announcer weak
-		when: CgtThemeStateChanged
-		send: #onThemeStateChanged:
-		to: self
+	themeState announcer weak when: CgtThemeStateChanged send: #onThemeStateChanged: to: self
 ]
 
 { #category : #accessing }
-CgtAbstractTheme >> themeState [
-	^ themeState
-]
-
+CgtAbstractTheme >> surfaces [ ^ surfaces ]
+{ #category : #accessing }
+CgtAbstractTheme >> themeState [ ^ themeState ]
 { #category : #accessing }
 CgtAbstractTheme >> themeState: aThemeState [
 	themeState == aThemeState ifTrue: [ ^ self ].
@@ -118,8 +91,5 @@ CgtAbstractTheme >> themeState: aThemeState [
 	self subscribeToThemeState.
 	self themeModified
 ]
-
 { #category : #accessing }
-CgtAbstractTheme >> typography [
-	^ typography
-]
+CgtAbstractTheme >> typography [ ^ typography ]

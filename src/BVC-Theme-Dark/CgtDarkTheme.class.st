@@ -24,12 +24,18 @@ CgtDarkTheme class >> editorThemeClass [
 	^ BrGlamorousEditorDarkTheme
 ]
 
-{ #category : #'class defaults' }
-CgtDarkTheme class >> foundationThemeClass [
-	^ CgtFoundationDarkTheme
-]
 
 { #category : #'class defaults' }
 CgtDarkTheme class >> headerThemeClass [
 	^ BrGlamorousHeaderDarkTheme
+]
+
+{ #category : #'class defaults' }
+CgtDarkTheme class >> surfacesThemeClass [
+	^ CgtDarkSurfacesTheme
+]
+
+{ #category : #'class defaults' }
+CgtDarkTheme class >> typographyThemeClass [
+	^ CgtDarkTypographyTheme
 ]

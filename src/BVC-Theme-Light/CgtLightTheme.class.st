@@ -24,12 +24,18 @@ CgtLightTheme class >> editorThemeClass [
 	^ BrGlamorousEditorLightTheme
 ]
 
-{ #category : #'class defaults' }
-CgtLightTheme class >> foundationThemeClass [
-	^ CgtFoundationLightTheme
-]
 
 { #category : #'class defaults' }
 CgtLightTheme class >> headerThemeClass [
 	^ BrGlamorousHeaderLightTheme
+]
+
+{ #category : #'class defaults' }
+CgtLightTheme class >> surfacesThemeClass [
+	^ CgtLightSurfacesTheme
+]
+
+{ #category : #'class defaults' }
+CgtLightTheme class >> typographyThemeClass [
+	^ CgtLightTypographyTheme
 ]

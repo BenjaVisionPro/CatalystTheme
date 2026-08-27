@@ -25,12 +25,12 @@ CgtThemeState class >> resetDefault [
 
 { #category : #defaults }
 CgtThemeState class >> defaultHighlightColor [
-	^ CgtFoundationPalette highlightBlue
+	^ CgtPalette highlightBlue
 ]
 
 { #category : #defaults }
 CgtThemeState class >> defaultTextHighlightColor [
-	^ CgtFoundationPalette textHighlightBlue
+	^ CgtPalette textHighlightBlue
 ]
 
 { #category : #defaults }
