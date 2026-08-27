@@ -2,6 +2,9 @@ Extension { #name : #BrMenuSubmenuItemElement }
 
 { #category : #'*BVC-Theme-GT' }
 BrMenuSubmenuItemElement >> initializeStyling [
+	self geometry:
+		(BlRoundedRectangleGeometry
+			cornerRadius: self theme menu itemCornerRadius).
 	self addAptitude:
 		(BrStyleCommonAptitude new
 			default: [ :aStyle |

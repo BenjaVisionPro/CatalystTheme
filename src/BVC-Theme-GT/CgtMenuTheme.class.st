@@ -20,13 +20,18 @@ CgtMenuTheme >> borderColor [
 ]
 
 { #category : #accessing }
-CgtMenuTheme >> clipChildren [
-	^ true
+CgtMenuTheme >> cornerRadius [
+	^ 12
 ]
 
 { #category : #accessing }
-CgtMenuTheme >> cornerRadius [
-	^ 12
+CgtMenuTheme >> contentInset [
+	^ 5
+]
+
+{ #category : #accessing }
+CgtMenuTheme >> itemCornerRadius [
+	^ self cornerRadius - self contentInset
 ]
 
 { #category : #initialization }

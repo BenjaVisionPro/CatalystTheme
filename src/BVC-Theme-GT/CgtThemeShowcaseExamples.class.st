@@ -155,12 +155,11 @@ CgtThemeShowcaseExamples class >> popoverUsesAnchorTheme [
 ]
 
 { #category : #examples }
-CgtThemeShowcaseExamples class >> menuClippingFollowsThemeChrome [
-	| aCatalystTheme aGlamorousTheme |
-	aCatalystTheme := CgtDarkTheme new.
-	aGlamorousTheme := BrGlamorousDarkTheme new.
-
-	self assert: aCatalystTheme menu clipChildren.
-	self deny: aGlamorousTheme menu clipChildren.
-	^ aCatalystTheme
+CgtThemeShowcaseExamples class >> menuInsetMatchesDetailReference [
+	| aTheme |
+	aTheme := CgtDarkTheme new.
+	self assert: aTheme menu cornerRadius equals: 12.
+	self assert: aTheme menu contentInset equals: 5.
+	self assert: aTheme menu itemCornerRadius equals: 7.
+	^ aTheme
 ]

@@ -5,6 +5,10 @@ BrMenuItemAptitude >> initialize [
 	super initialize.
 
 	self
+		addChangeProperty: #(widget geometry)
+		with: [
+			BlRoundedRectangleGeometry
+				cornerRadius: self theme menu itemCornerRadius ];
 		add:
 			(BrStyleCommonAptitude new
 				default: [ :aStyle |
