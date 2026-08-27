@@ -44,7 +44,30 @@ CgtThemeShowcaseElement >> buildBrickSection [
 			text: 'Editor';
 			hExact: 160;
 			vFitContent;
+			yourself);
+		addChild: (BrCheckbox new
+			aptitude: BrGlamorousCheckboxAptitude;
+			check;
 			yourself).
+
+	aSection addChild: (BrToggleGroup new
+		aptitude: BrGlamorousToggleGroupAptitude new;
+		addToggle: (BrToggle new
+			aptitude: BrGlamorousToggleWithLabelAptitude new;
+			label: 'One';
+			activate;
+			yourself);
+		addToggle: (BrToggle new
+			aptitude: BrGlamorousToggleWithLabelAptitude new;
+			label: 'Two';
+			yourself);
+		yourself).
+
+	aSection
+		addChild: (self swatchNamed: 'Menu default' color: self theme item defaultColor);
+		addChild: (self swatchNamed: 'Menu hovered' color: self theme item hoveredColor);
+		addChild: (self swatchNamed: 'Menu selected' color: self theme item selectedColor);
+		addChild: (self swatchNamed: 'Menu pressed' color: self theme item pressedColor).
 	^ aSection
 ]
 

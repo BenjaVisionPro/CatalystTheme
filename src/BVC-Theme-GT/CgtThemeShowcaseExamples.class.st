@@ -35,3 +35,17 @@ CgtThemeShowcaseExamples class >> buttonExteriorResolvesThemeablePaints [
 	self assert: anAptitude borderPaint class equals: Color.
 	^ anAptitude
 ]
+
+{ #category : #examples }
+CgtThemeShowcaseExamples class >> standardControlPaintValuesAreConcrete [
+	| aTheme |
+	aTheme := CgtDarkTheme new.
+	self assert: aTheme item defaultColor class equals: Color.
+	self assert: aTheme item hoveredColor class equals: Color.
+	self assert: aTheme item selectedColor class equals: Color.
+	self assert: aTheme item pressedColor class equals: Color.
+	self assert:
+		(aTheme highlight color blocResolveColorForTheme: aTheme) class
+		equals: Color.
+	^ aTheme
+]

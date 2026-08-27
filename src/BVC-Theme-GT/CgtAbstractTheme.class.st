@@ -30,7 +30,7 @@ CgtAbstractTheme class >> headerThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
 CgtAbstractTheme class >> interactionThemeClass [ ^ CgtGlamorousInteractionTheme ]
 { #category : #'class defaults' }
-CgtAbstractTheme class >> itemThemeClass [ ^ BrGlamorousItemTheme ]
+CgtAbstractTheme class >> itemThemeClass [ ^ CgtItemTheme ]
 { #category : #'class defaults' }
 CgtAbstractTheme class >> surfacesThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
@@ -67,7 +67,7 @@ CgtAbstractTheme >> initializeSubthemes [
 	status := BrGlamorousStatusTheme new.
 	editor := self class editorThemeClass theme: self. editor initializeThemeable.
 	button := self class buttonThemeClass theme: self. button initializeThemeable.
-	item := self class itemThemeClass new.
+	item := self class itemThemeClass theme: self.
 	header := self class headerThemeClass theme: self. header initializeThemeable.
 	label := BrGlamorousLabelTheme theme: self. label initializeThemeable
 ]
