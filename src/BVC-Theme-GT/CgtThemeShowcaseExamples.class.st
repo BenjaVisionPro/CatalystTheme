@@ -22,7 +22,11 @@ CgtThemeShowcaseExamples class >> lightAndDark [
 			theme: CgtDarkTheme new;
 			constraintsDo: [ :c | c horizontal matchParent ];
 			build).
-	^ aRow
+	^ BrScrollPane new
+		aptitude: BrScrollPaneAptitude + BrGlamorousWithVerticalScrollbarAptitude;
+		matchParent;
+		content: aRow;
+		yourself
 ]
 
 { #category : #examples }
