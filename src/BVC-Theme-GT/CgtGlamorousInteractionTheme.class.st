@@ -21,6 +21,12 @@ CgtGlamorousInteractionTheme >> contrastTintColor [
 		ifFalse: [ Color black ]
 ]
 
+
+{ #category : #accessing }
+CgtGlamorousInteractionTheme >> focusedBorderColor [
+	^ self theme editor focusedBorderColor
+]
+
 { #category : #accessing }
 CgtGlamorousInteractionTheme >> hoveredBackgroundTint [
 	^ self contrastTintColor alpha: 0.12

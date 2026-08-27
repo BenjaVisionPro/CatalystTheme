@@ -51,6 +51,7 @@ CgtLightThemeExamples class >> detailLightReferenceValues [
 	self assert: aTheme interaction popupBackgroundTint equals: (Color black alpha: 0.10).
 	self assert: aTheme interaction hoveredBackgroundTint equals: (Color black alpha: 0.12).
 	self assert: aTheme interaction pressedBackgroundTint equals: (Color black alpha: 0.16).
+	self assert: aTheme interaction focusedBorderColor equals: (CgtPalette highlightBlue alpha: 0.3).
 	self assert: aTheme highlight foregroundColor equals: Color white.
 	^ aTheme
 ]

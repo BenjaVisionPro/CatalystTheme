@@ -6,7 +6,8 @@ Class {
 		'controlBackgroundTint',
 		'popupBackgroundTint',
 		'hoveredBackgroundTint',
-		'pressedBackgroundTint'
+		'pressedBackgroundTint',
+		'focusedBorderColor'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -16,6 +17,9 @@ CgtInteractionTheme >> controlBackgroundTint [ ^ controlBackgroundTint ]
 
 { #category : #accessing }
 CgtInteractionTheme >> hoveredBackgroundTint [ ^ hoveredBackgroundTint ]
+
+{ #category : #accessing }
+CgtInteractionTheme >> focusedBorderColor [ ^ focusedBorderColor ]
 
 { #category : #initialization }
 CgtInteractionTheme >> initializeThemeable [
@@ -33,7 +37,10 @@ CgtInteractionTheme >> initializeThemeable [
 		source: [ :aTheme | aTheme interaction hoveredBackgroundTint ].
 	pressedBackgroundTint := self
 		color: [ :aTheme | aTheme interaction constantAt: #pressedBackgroundTint ]
-		source: [ :aTheme | aTheme interaction pressedBackgroundTint ]
+		source: [ :aTheme | aTheme interaction pressedBackgroundTint ].
+	focusedBorderColor := self
+		color: [ :aTheme | aTheme themeState highlightColor alpha: 0.3 ]
+		source: [ :aTheme | aTheme interaction focusedBorderColor ]
 ]
 
 { #category : #accessing }
