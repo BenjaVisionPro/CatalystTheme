@@ -76,7 +76,6 @@ CgtThemeShowcaseElement >> buildBrickSection [
 		addItemId: #'theme-menu-third'
 		label: 'Third action'
 		action: [ ].
-	aMenuItems items second select.
 
 	aDropdown := BrButton new
 		aptitude: BrGlamorousButtonWithLabelAptitude;
