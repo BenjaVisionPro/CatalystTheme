@@ -85,3 +85,10 @@ CgtLightThemeExamples class >> sharedThemeStateSurvivesAppearanceChange [
 ]
 
 
+
+{ #category : #examples }
+CgtLightThemeExamples class >> showcase [
+	^ CgtThemeShowcaseElement new
+		theme: self theme;
+		build
+]
