@@ -83,14 +83,14 @@ CgtThemeShowcaseElement >> buildSurfaceSection [
 		yourself.
 	aSection addChild: aBase.
 	aCard := BlElement new
-		hMatchParent;
+		constraintsDo: [ :c | c horizontal matchParent ];
 		height: 44;
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 6);
 		background: (self resolvedColor: self theme surfaces cardTint);
 		yourself.
 	aBase addChild: aCard.
 	aSeparator := BlElement new
-		hMatchParent;
+		constraintsDo: [ :c | c horizontal matchParent ];
 		height: 1;
 		background: (self resolvedColor: self theme surfaces separatorTint);
 		yourself.
