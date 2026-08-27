@@ -24,3 +24,14 @@ CgtThemeShowcaseExamples class >> lightAndDark [
 			build).
 	^ aRow
 ]
+
+{ #category : #examples }
+CgtThemeShowcaseExamples class >> buttonExteriorResolvesThemeablePaints [
+	| aTheme anAptitude |
+	aTheme := CgtLightTheme new.
+	anAptitude := BrGlamorousButtonExteriorAptitude new.
+	anAptitude theme: aTheme.
+	self assert: anAptitude backgroundPaint class equals: Color.
+	self assert: anAptitude borderPaint class equals: Color.
+	^ anAptitude
+]
