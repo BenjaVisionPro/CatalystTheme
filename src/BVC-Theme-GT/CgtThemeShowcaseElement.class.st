@@ -82,14 +82,9 @@ CgtThemeShowcaseElement >> buildBrickSection [
 		label: 'Open menu';
 		hFitContent;
 		addAptitude:
-			(BrGlamorousWithExplicitDropdownAptitude
-				handle: [
-					BrButton new
-						aptitude:
-							BrGlamorousButtonWithLabelAptitude
-							- BrGlamorousButtonExteriorAptitude;
-						label: 'Open menu' ]
-				menu: aMenuItems);
+			(BrGlamorousWithExplicitDropdownAptitude new
+				menu: aMenuItems;
+				yourself);
 		yourself.
 	aSection addChild: aDropdown.
 

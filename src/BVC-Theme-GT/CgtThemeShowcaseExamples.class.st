@@ -91,14 +91,9 @@ CgtThemeShowcaseExamples class >> realDropdownMenu [
 		aptitude: BrGlamorousButtonWithLabelAptitude;
 		label: 'Open menu';
 		addAptitude:
-			(BrGlamorousWithExplicitDropdownAptitude
-				handle: [
-					BrButton new
-						aptitude:
-							BrGlamorousButtonWithLabelAptitude
-							- BrGlamorousButtonExteriorAptitude;
-						label: 'Open menu' ]
-				menu: aMenuItems);
+			(BrGlamorousWithExplicitDropdownAptitude new
+				menu: aMenuItems;
+				yourself);
 		theme: CgtDarkTheme new;
 		yourself.
 
