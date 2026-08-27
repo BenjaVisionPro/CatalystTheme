@@ -39,3 +39,8 @@ BrGlamorousTheme >> themeState [
 BrGlamorousTheme >> typography [
 	^ CgtGlamorousTypographyTheme theme: self
 ]
+
+{ #category : #'*BVC-Theme-GT' }
+BrGlamorousTheme >> menu [
+	^ CgtGlamorousMenuTheme theme: self
+]

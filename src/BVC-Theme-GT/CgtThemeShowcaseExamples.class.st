@@ -105,3 +105,26 @@ CgtThemeShowcaseExamples class >> realDropdownMenu [
 	self assert: aMenuItems items size equals: 2.
 	^ aButton
 ]
+
+{ #category : #examples }
+CgtThemeShowcaseExamples class >> menuThemeStructure [
+	| aLightTheme aDarkTheme aVanillaTheme |
+	aLightTheme := CgtLightTheme new.
+	aDarkTheme := CgtDarkTheme new.
+	aVanillaTheme := BrGlamorousLightTheme new.
+
+	self assert: aLightTheme menu menuCornerRadius equals: 10.
+	self assert: aDarkTheme menu menuCornerRadius equals: 10.
+	self assert: aLightTheme menu itemCornerRadius equals: 6.
+	self assert: aDarkTheme menu itemCornerRadius equals: 6.
+	self assert: aLightTheme menu containerShadowWidth equals: 0.
+	self assert: aDarkTheme menu containerShadowWidth equals: 0.
+	self assert: aLightTheme menu menuShadowWidth equals: 8.
+	self assert: aDarkTheme menu menuShadowWidth equals: 8.
+
+	"Vanilla Glamorous keeps its existing ownership model."
+	self assert: aVanillaTheme menu menuCornerRadius equals: BrMenuConstants cornerRadius.
+	self assert: aVanillaTheme menu containerShadowWidth equals: 2.
+	self assert: aVanillaTheme menu menuShadowWidth equals: 0.
+	^ aDarkTheme
+]

@@ -51,3 +51,8 @@ CgtLightTheme class >> surfacesThemeClass [
 CgtLightTheme class >> typographyThemeClass [
 	^ CgtLightTypographyTheme
 ]
+
+{ #category : #'class defaults' }
+CgtLightTheme class >> menuThemeClass [
+	^ CgtLightMenuTheme
+]
