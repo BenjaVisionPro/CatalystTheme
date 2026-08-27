@@ -2,7 +2,12 @@ Extension { #name : #BrMenuTextLabelElement }
 
 { #category : #'*BVC-Theme-GT' }
 BrMenuTextLabelElement >> applyThemeToShortcut [
-	shortcutElement border: BlBorder empty.
+	shortcutElement border:
+		(BlBorder
+			paint:
+				(self theme typography tertiaryForeground
+					blocResolveColorForTheme: self theme)
+			width: 0.5).
 	shortcutLabel aptitude
 		fontSize: self theme typography supportingFontSize;
 		foreground:
