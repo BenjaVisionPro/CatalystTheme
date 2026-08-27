@@ -36,6 +36,12 @@ CgtAbstractTheme class >> editorThemeClass [
 	self subclassResponsibility
 ]
 
+
+{ #category : #'class defaults' }
+CgtAbstractTheme class >> foundationThemeClass [
+	self subclassResponsibility
+]
+
 { #category : #'class defaults' }
 CgtAbstractTheme class >> headerThemeClass [
 	self subclassResponsibility
@@ -75,7 +81,7 @@ CgtAbstractTheme >> initializeSubthemes [
 	header initializeThemeable.
 	label := BrGlamorousLabelTheme theme: self.
 	label initializeThemeable.
-	foundation := CgtFoundationTheme theme: self.
+	foundation := self class foundationThemeClass theme: self.
 	foundation initializeThemeable.
 	typography := CgtTypographyTheme theme: self
 ]

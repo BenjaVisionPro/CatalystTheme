@@ -25,6 +25,11 @@ CgtLightTheme class >> editorThemeClass [
 ]
 
 { #category : #'class defaults' }
+CgtLightTheme class >> foundationThemeClass [
+	^ CgtFoundationLightTheme
+]
+
+{ #category : #'class defaults' }
 CgtLightTheme class >> headerThemeClass [
 	^ BrGlamorousHeaderLightTheme
 ]

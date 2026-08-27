@@ -4,10 +4,33 @@ Class {
 	#instVars : [
 		'highlightColor',
 		'textHighlightColor',
-		'inactiveTextHighlightColor'
+		'inactiveTextHighlightColor',
+		'primaryForeground',
+		'secondaryForeground',
+		'tertiaryForeground',
+		'quaternaryForeground',
+		'disabledForeground',
+		'formBackground',
+		'cardBackground',
+		'separatorColor'
 	],
 	#category : #'BVC-Theme-GT'
 }
+
+{ #category : #accessing }
+CgtFoundationTheme >> cardBackground [
+	^ cardBackground
+]
+
+{ #category : #accessing }
+CgtFoundationTheme >> disabledForeground [
+	^ disabledForeground
+]
+
+{ #category : #accessing }
+CgtFoundationTheme >> formBackground [
+	^ formBackground
+]
 
 { #category : #accessing }
 CgtFoundationTheme >> highlightColor [
@@ -26,7 +49,33 @@ CgtFoundationTheme >> initializeThemeable [
 
 	inactiveTextHighlightColor := self
 		color: [ :aTheme | self inactiveColorFor: aTheme themeState textHighlightColor ]
-		source: [ :aTheme | aTheme foundation inactiveTextHighlightColor ]
+		source: [ :aTheme | aTheme foundation inactiveTextHighlightColor ].
+
+	primaryForeground := self
+		color: [ :aTheme | aTheme foundation constantAt: #primaryForeground ]
+		source: [ :aTheme | aTheme foundation primaryForeground ].
+	secondaryForeground := self
+		color: [ :aTheme | aTheme foundation constantAt: #secondaryForeground ]
+		source: [ :aTheme | aTheme foundation secondaryForeground ].
+	tertiaryForeground := self
+		color: [ :aTheme | aTheme foundation constantAt: #tertiaryForeground ]
+		source: [ :aTheme | aTheme foundation tertiaryForeground ].
+	quaternaryForeground := self
+		color: [ :aTheme | aTheme foundation constantAt: #quaternaryForeground ]
+		source: [ :aTheme | aTheme foundation quaternaryForeground ].
+	disabledForeground := self
+		color: [ :aTheme | aTheme foundation constantAt: #disabledForeground ]
+		source: [ :aTheme | aTheme foundation disabledForeground ].
+
+	formBackground := self
+		color: [ :aTheme | aTheme foundation constantAt: #formBackground ]
+		source: [ :aTheme | aTheme foundation formBackground ].
+	cardBackground := self
+		color: [ :aTheme | aTheme foundation constantAt: #cardBackground ]
+		source: [ :aTheme | aTheme foundation cardBackground ].
+	separatorColor := self
+		color: [ :aTheme | aTheme foundation constantAt: #separatorColor ]
+		source: [ :aTheme | aTheme foundation separatorColor ]
 ]
 
 { #category : #private }
@@ -54,6 +103,31 @@ CgtFoundationTheme >> inactiveTextHighlightColor [
 { #category : #accessing }
 CgtFoundationTheme >> lightDirection [
 	^ self theme themeState lightDirection
+]
+
+{ #category : #accessing }
+CgtFoundationTheme >> primaryForeground [
+	^ primaryForeground
+]
+
+{ #category : #accessing }
+CgtFoundationTheme >> quaternaryForeground [
+	^ quaternaryForeground
+]
+
+{ #category : #accessing }
+CgtFoundationTheme >> secondaryForeground [
+	^ secondaryForeground
+]
+
+{ #category : #accessing }
+CgtFoundationTheme >> separatorColor [
+	^ separatorColor
+]
+
+{ #category : #accessing }
+CgtFoundationTheme >> tertiaryForeground [
+	^ tertiaryForeground
 ]
 
 { #category : #accessing }

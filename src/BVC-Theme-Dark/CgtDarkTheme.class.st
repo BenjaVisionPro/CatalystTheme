@@ -25,6 +25,11 @@ CgtDarkTheme class >> editorThemeClass [
 ]
 
 { #category : #'class defaults' }
+CgtDarkTheme class >> foundationThemeClass [
+	^ CgtFoundationDarkTheme
+]
+
+{ #category : #'class defaults' }
 CgtDarkTheme class >> headerThemeClass [
 	^ BrGlamorousHeaderDarkTheme
 ]
