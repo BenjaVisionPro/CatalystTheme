@@ -33,7 +33,7 @@ CgtAbstractTheme class >> interactionThemeClass [ ^ CgtGlamorousInteractionTheme
 { #category : #'class defaults' }
 CgtAbstractTheme class >> itemThemeClass [ ^ CgtItemTheme ]
 { #category : #'class defaults' }
-CgtAbstractTheme class >> menuThemeClass [ ^ CgtGlamorousMenuTheme ]
+CgtAbstractTheme class >> menuThemeClass [ ^ CgtMenuTheme ]
 { #category : #'class defaults' }
 CgtAbstractTheme class >> surfacesThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }

@@ -103,25 +103,34 @@ CgtThemeShowcaseExamples class >> realDropdownMenu [
 ]
 
 { #category : #examples }
-CgtThemeShowcaseExamples class >> menuThemeStructure [
-	| aLightTheme aDarkTheme aVanillaTheme |
+CgtThemeShowcaseExamples class >> menuThemeChrome [
+	| aLightTheme aDarkTheme aVanillaTheme resolve |
 	aLightTheme := CgtLightTheme new.
 	aDarkTheme := CgtDarkTheme new.
 	aVanillaTheme := BrGlamorousLightTheme new.
+	resolve := [ :aColor :aTheme | aColor blocResolveColorForTheme: aTheme ].
 
-	self assert: aLightTheme menu menuCornerRadius equals: 10.
-	self assert: aDarkTheme menu menuCornerRadius equals: 10.
-	self assert: aLightTheme menu itemCornerRadius equals: 6.
-	self assert: aDarkTheme menu itemCornerRadius equals: 6.
-	self assert: aLightTheme menu containerShadowWidth equals: 0.
-	self assert: aDarkTheme menu containerShadowWidth equals: 0.
-	self assert: aLightTheme menu menuShadowWidth equals: 8.
-	self assert: aDarkTheme menu menuShadowWidth equals: 8.
+	self assert: aLightTheme menu cornerRadius equals: 12.
+	self assert: aDarkTheme menu cornerRadius equals: 12.
+	self
+		assert: (resolve value: aLightTheme menu background value: aLightTheme)
+		equals: (resolve value: aLightTheme surfaces baseBackground value: aLightTheme).
+	self
+		assert: (resolve value: aDarkTheme menu background value: aDarkTheme)
+		equals: (resolve value: aDarkTheme surfaces baseBackground value: aDarkTheme).
+	self
+		assert: (resolve value: aLightTheme menu borderColor value: aLightTheme)
+		equals: (resolve value: aLightTheme interaction pressedBackgroundTint value: aLightTheme).
+	self
+		assert: (resolve value: aDarkTheme menu borderColor value: aDarkTheme)
+		equals: (resolve value: aDarkTheme interaction pressedBackgroundTint value: aDarkTheme).
+	self assert: aLightTheme menu shadowWidth equals: 2.
+	self assert: aDarkTheme menu shadowWidth equals: 2.
 
-	"Vanilla Glamorous keeps its existing ownership model."
-	self assert: aVanillaTheme menu menuCornerRadius equals: BrMenuConstants cornerRadius.
-	self assert: aVanillaTheme menu containerShadowWidth equals: 2.
-	self assert: aVanillaTheme menu menuShadowWidth equals: 0.
+	"The Glamorous projection reproduces the stock BrPopoverContainerAptitude values."
+	self assert: aVanillaTheme menu cornerRadius equals: BrMenuConstants cornerRadius.
+	self assert: aVanillaTheme menu borderColor equals: Color veryLightGray.
+	self assert: aVanillaTheme menu shadowWidth equals: 2.
 	^ aDarkTheme
 ]
 

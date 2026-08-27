@@ -52,7 +52,3 @@ CgtDarkTheme class >> typographyThemeClass [
 	^ CgtDarkTypographyTheme
 ]
 
-{ #category : #'class defaults' }
-CgtDarkTheme class >> menuThemeClass [
-	^ CgtDarkMenuTheme
-]
