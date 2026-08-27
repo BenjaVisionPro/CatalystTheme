@@ -14,6 +14,12 @@ CgtDarkTheme class >> colorsClass [
 	^ BrGlamorousDarkThemeColors
 ]
 
+
+{ #category : #'class defaults' }
+CgtDarkTheme class >> controlsThemeClass [
+	^ CgtDarkControlsTheme
+]
+
 { #category : #'class defaults' }
 CgtDarkTheme class >> defaultThemeClass [
 	^ BrGlamorousDefaultDarkTheme
@@ -28,6 +34,12 @@ CgtDarkTheme class >> editorThemeClass [
 { #category : #'class defaults' }
 CgtDarkTheme class >> headerThemeClass [
 	^ BrGlamorousHeaderDarkTheme
+]
+
+
+{ #category : #'class defaults' }
+CgtDarkTheme class >> interactionThemeClass [
+	^ CgtDarkInteractionTheme
 ]
 
 { #category : #'class defaults' }

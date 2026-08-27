@@ -8,11 +8,11 @@ Class {
 CgtDarkTypographyTheme >> initializeConstants [
 	super initializeConstants.
 	self
-		constantAt: #primaryForeground put: self theme colors primaryTextColor;
-		constantAt: #secondaryForeground put: self theme colors secondaryTextColor;
-		constantAt: #tertiaryForeground put: self theme colors tertiaryTextColor;
-		constantAt: #quaternaryForeground put: self theme colors disabledTextColor;
-		constantAt: #disabledForeground put: self theme colors disabledTextColor;
-		constantAt: #titleForeground put: self theme colors primaryTextColor;
-		constantAt: #metadataForeground put: self theme colors secondaryTextColor
+		constantAt: #primaryForeground put: Color white;
+		constantAt: #secondaryForeground put: (Color white alpha: 0.8);
+		constantAt: #tertiaryForeground put: (Color white alpha: 0.55);
+		constantAt: #quaternaryForeground put: (Color white alpha: 0.35);
+		constantAt: #disabledForeground put: (Color white alpha: 0.22);
+		constantAt: #titleForeground put: (Color white alpha: 0.92);
+		constantAt: #metadataForeground put: (Color white alpha: 0.45)
 ]

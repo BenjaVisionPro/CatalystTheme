@@ -1,0 +1,26 @@
+Class {
+	#name : #CgtThemeShowcaseExamples,
+	#superclass : #Object,
+	#category : #'BVC-Theme-GT'
+}
+
+{ #category : #examples }
+CgtThemeShowcaseExamples class >> lightAndDark [
+	| aRow |
+	aRow := BrHorizontalPane new
+		hMatchParent;
+		vFitContent;
+		cellSpacing: 16;
+		padding: (BlInsets all: 16);
+		yourself.
+	aRow
+		addChild: (CgtThemeShowcaseElement new
+			theme: CgtLightTheme new;
+			constraintsDo: [ :c | c horizontal matchParent ];
+			build);
+		addChild: (CgtThemeShowcaseElement new
+			theme: CgtDarkTheme new;
+			constraintsDo: [ :c | c horizontal matchParent ];
+			build).
+	^ aRow
+]

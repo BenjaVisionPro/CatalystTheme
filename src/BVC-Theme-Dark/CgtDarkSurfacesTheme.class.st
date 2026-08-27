@@ -7,9 +7,8 @@ Class {
 { #category : #initialization }
 CgtDarkSurfacesTheme >> initializeConstants [
 	super initializeConstants.
-	"Provisional until the Catalyst Dark visual reference is migrated."
 	self
 		constantAt: #baseBackground put: self theme colors contentBackgroundColor;
-		constantAt: #cardTint put: (Color white alpha: 0.04);
-		constantAt: #separatorTint put: (Color white alpha: 0.08)
+		constantAt: #cardTint put: (Color white alpha: 7.0 / 255.0);
+		constantAt: #separatorTint put: (Color white alpha: 19.0 / 248.0)
 ]
