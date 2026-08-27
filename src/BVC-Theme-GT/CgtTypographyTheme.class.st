@@ -33,19 +33,19 @@ CgtTypographyTheme >> initialize [
 CgtTypographyTheme >> initializeThemeable [
 	primaryForeground := self
 		color: [ :aTheme | aTheme typography constantAt: #primaryForeground ]
-		source: [ :aTheme | (aTheme respondsTo: #typography) ifTrue: [ aTheme typography primaryForeground ] ifFalse: [ aTheme colors primaryTextColor ] ].
+		source: [ :aTheme | aTheme typography primaryForeground ].
 	secondaryForeground := self
 		color: [ :aTheme | aTheme typography constantAt: #secondaryForeground ]
-		source: [ :aTheme | (aTheme respondsTo: #typography) ifTrue: [ aTheme typography secondaryForeground ] ifFalse: [ aTheme colors secondaryTextColor ] ].
+		source: [ :aTheme | aTheme typography secondaryForeground ].
 	tertiaryForeground := self
 		color: [ :aTheme | aTheme typography constantAt: #tertiaryForeground ]
-		source: [ :aTheme | (aTheme respondsTo: #typography) ifTrue: [ aTheme typography tertiaryForeground ] ifFalse: [ aTheme colors tertiaryTextColor ] ].
+		source: [ :aTheme | aTheme typography tertiaryForeground ].
 	quaternaryForeground := self
 		color: [ :aTheme | aTheme typography constantAt: #quaternaryForeground ]
-		source: [ :aTheme | (aTheme respondsTo: #typography) ifTrue: [ aTheme typography quaternaryForeground ] ifFalse: [ aTheme colors disabledTextColor ] ].
+		source: [ :aTheme | aTheme typography quaternaryForeground ].
 	disabledForeground := self
 		color: [ :aTheme | aTheme typography constantAt: #disabledForeground ]
-		source: [ :aTheme | (aTheme respondsTo: #typography) ifTrue: [ aTheme typography disabledForeground ] ifFalse: [ aTheme colors disabledTextColor ] ]
+		source: [ :aTheme | aTheme typography disabledForeground ]
 ]
 
 { #category : #accessing }

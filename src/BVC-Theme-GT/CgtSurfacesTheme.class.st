@@ -19,13 +19,13 @@ CgtSurfacesTheme >> formBackground [ ^ formBackground ]
 CgtSurfacesTheme >> initializeThemeable [
 	formBackground := self
 		color: [ :aTheme | aTheme surfaces constantAt: #formBackground ]
-		source: [ :aTheme | (aTheme respondsTo: #surfaces) ifTrue: [ aTheme surfaces formBackground ] ifFalse: [ aTheme colors contentBackgroundColor ] ].
+		source: [ :aTheme | aTheme surfaces formBackground ].
 	cardBackground := self
 		color: [ :aTheme | aTheme surfaces constantAt: #cardBackground ]
-		source: [ :aTheme | (aTheme respondsTo: #surfaces) ifTrue: [ aTheme surfaces cardBackground ] ifFalse: [ aTheme colors contentBackgroundColor ] ].
+		source: [ :aTheme | aTheme surfaces cardBackground ].
 	separatorColor := self
 		color: [ :aTheme | aTheme surfaces constantAt: #separatorColor ]
-		source: [ :aTheme | (aTheme respondsTo: #surfaces) ifTrue: [ aTheme surfaces separatorColor ] ifFalse: [ aTheme colors tertiaryTextColor ] ]
+		source: [ :aTheme | aTheme surfaces separatorColor ]
 ]
 
 { #category : #accessing }

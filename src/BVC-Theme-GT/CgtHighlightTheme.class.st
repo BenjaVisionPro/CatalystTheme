@@ -34,22 +34,13 @@ CgtHighlightTheme >> inactiveTextColor [ ^ inactiveTextColor ]
 CgtHighlightTheme >> initializeThemeable [
 	color := self
 		color: [ :aTheme | aTheme themeState highlightColor ]
-		source: [ :aTheme |
-			(aTheme respondsTo: #highlight)
-				ifTrue: [ aTheme highlight color ]
-				ifFalse: [ self theme themeState highlightColor ] ].
+		source: [ :aTheme | aTheme highlight color ].
 	textColor := self
 		color: [ :aTheme | aTheme themeState textHighlightColor ]
-		source: [ :aTheme |
-			(aTheme respondsTo: #highlight)
-				ifTrue: [ aTheme highlight textColor ]
-				ifFalse: [ self theme themeState textHighlightColor ] ].
+		source: [ :aTheme | aTheme highlight textColor ].
 	inactiveTextColor := self
 		color: [ :aTheme | self inactiveColorFor: aTheme themeState textHighlightColor ]
-		source: [ :aTheme |
-			(aTheme respondsTo: #highlight)
-				ifTrue: [ aTheme highlight inactiveTextColor ]
-				ifFalse: [ self inactiveColorFor: self theme themeState textHighlightColor ] ]
+		source: [ :aTheme | aTheme highlight inactiveTextColor ]
 ]
 
 { #category : #accessing }
