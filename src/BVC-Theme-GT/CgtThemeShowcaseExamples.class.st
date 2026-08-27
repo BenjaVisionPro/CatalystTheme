@@ -153,3 +153,14 @@ CgtThemeShowcaseExamples class >> popoverUsesAnchorTheme [
 	self assert: aMenuContainer theme identicalTo: aTheme.
 	^ aMenuContainer
 ]
+
+{ #category : #examples }
+CgtThemeShowcaseExamples class >> menuClippingFollowsThemeChrome [
+	| aCatalystTheme aGlamorousTheme |
+	aCatalystTheme := CgtDarkTheme new.
+	aGlamorousTheme := BrGlamorousDarkTheme new.
+
+	self assert: aCatalystTheme menu clipChildren.
+	self deny: aGlamorousTheme menu clipChildren.
+	^ aCatalystTheme
+]

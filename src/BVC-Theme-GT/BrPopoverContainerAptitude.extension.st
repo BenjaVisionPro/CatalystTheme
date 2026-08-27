@@ -16,6 +16,7 @@ BrPopoverContainerAptitude >> applyMenuTheme [
 						blocResolveColorForTheme: self theme)
 					width: 1);
 			outskirts: BlOutskirts outside;
+			clipChildren: aMenuTheme clipChildren;
 			background:
 				(aMenuTheme background
 					blocResolveColorForTheme: self theme);

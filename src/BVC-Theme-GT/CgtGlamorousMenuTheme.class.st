@@ -15,6 +15,11 @@ CgtGlamorousMenuTheme >> borderColor [
 ]
 
 { #category : #accessing }
+CgtGlamorousMenuTheme >> clipChildren [
+	^ false
+]
+
+{ #category : #accessing }
 CgtGlamorousMenuTheme >> cornerRadius [
 	^ BrMenuConstants cornerRadius
 ]

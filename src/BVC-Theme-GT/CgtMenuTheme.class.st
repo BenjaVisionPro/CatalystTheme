@@ -20,6 +20,11 @@ CgtMenuTheme >> borderColor [
 ]
 
 { #category : #accessing }
+CgtMenuTheme >> clipChildren [
+	^ true
+]
+
+{ #category : #accessing }
 CgtMenuTheme >> cornerRadius [
 	^ 12
 ]
