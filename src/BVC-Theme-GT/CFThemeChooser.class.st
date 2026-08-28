@@ -5,8 +5,7 @@ Class {
 		'announcer',
 		'choices',
 		'selectedTheme',
-		'themeConfiguration',
-		'worldElement'
+		'themeConfiguration'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -61,7 +60,6 @@ CFThemeChooser >> selectedTheme: aChoice [
 	selectedTheme := aChoice.
 	themeConfiguration := aChoice configuration.
 	BlTheme default: aChoice theme.
-	worldElement ifNotNil: [ worldElement theme: aChoice theme ].
 	self announcer announce: CFThemeChooserChanged new
 ]
 
@@ -115,10 +113,6 @@ CFThemeChooser >> themeConfiguration: aModel [
 	themeConfiguration := aModel
 ]
 
-{ #category : #accessing }
-CFThemeChooser >> worldElement: anElement [
-	worldElement := anElement
-]
 
 { #category : #'magritte descriptions' }
 CFThemeChooser >> themeConfigurationDescription [
