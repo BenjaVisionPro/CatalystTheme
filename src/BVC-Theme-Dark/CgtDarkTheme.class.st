@@ -57,3 +57,13 @@ CgtDarkTheme class >> typographyThemeClass [
 CgtDarkTheme class >> canBeDefault [
 	^ true
 ]
+
+{ #category : #'theme appearance' }
+CgtDarkTheme >> toggledAppearanceTheme [
+	^ CgtLightTheme state: self themeState
+]
+
+{ #category : #'theme appearance' }
+CgtDarkTheme >> themeAppearanceIconName [
+	^ #moon
+]

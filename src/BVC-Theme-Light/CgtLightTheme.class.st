@@ -57,3 +57,13 @@ CgtLightTheme class >> typographyThemeClass [
 CgtLightTheme class >> canBeDefault [
 	^ true
 ]
+
+{ #category : #'theme appearance' }
+CgtLightTheme >> toggledAppearanceTheme [
+	^ CgtDarkTheme state: self themeState
+]
+
+{ #category : #'theme appearance' }
+CgtLightTheme >> themeAppearanceIconName [
+	^ #sunBright
+]

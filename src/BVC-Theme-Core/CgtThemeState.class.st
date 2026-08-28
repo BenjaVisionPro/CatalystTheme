@@ -79,6 +79,7 @@ CgtThemeState >> highlightColorDescription [
 	^ MASingleOptionDescription new
 		accessor: #highlightColor;
 		label: 'Highlight';
+		group: 'Colours';
 		priority: 10;
 		options: CgtPalette highlightColours;
 		autoAccept: true;
@@ -136,7 +137,8 @@ CgtThemeState >> lightDirectionDegreesDescription [
 	^ MANumberDescription new
 		accessor: #lightDirectionDegrees;
 		label: 'Angle';
-		priority: 40;
+		group: 'Lighting';
+		priority: 30;
 		min: 0;
 		max: 360;
 		autoAccept: true;
@@ -163,6 +165,7 @@ CgtThemeState >> textHighlightColorDescription [
 	^ MASingleOptionDescription new
 		accessor: #textHighlightColor;
 		label: 'Text highlight';
+		group: 'Colours';
 		priority: 20;
 		options: ({ nil } , CgtPalette textHighlightColours);
 		autoAccept: true;
@@ -199,7 +202,9 @@ CgtThemeState >> useTimeOfDayDescription [
 	^ MABooleanDescription new
 		accessor: #useTimeOfDay;
 		label: 'Time of day';
-		priority: 30;
+		comment: 'Automatically derives the light direction from the current local time.';
+		group: 'Lighting';
+		priority: 40;
 		autoAccept: true;
 		yourself
 ]

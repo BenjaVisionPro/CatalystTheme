@@ -11,23 +11,49 @@ GtWorldElement >> gtWorldThemeActionFor: anAction [
 
 { #category : #'*BVC-Theme-GT' }
 GtWorldElement >> newThemeButton [
-	| aThemeDropdown |
+	| aContainer aToggleButton aDropdownButton updateToggleIcon applyTheme |
 
-	aThemeDropdown := BrButton new
+	applyTheme := [ :aTheme |
+		BlTheme default: aTheme.
+		BlSpace allOpenSpacesDo: [ :aSpace | aSpace theme: aTheme ] ].
+
+	aToggleButton := BrButton new
+		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
+		label: 'Toggle light / dark theme';
+		action: [
+			applyTheme value: BlTheme default toggledAppearanceTheme ];
+		yourself.
+
+	updateToggleIcon := [
+		aToggleButton icon: ([
+			(FontAwesomeIcons
+				icon: BlTheme default themeAppearanceIconName
+				styleName: #light)
+				size: 16 @ 16 ] asStencil) ].
+	updateToggleIcon value.
+	aToggleButton when: BlElementThemeChanged do: [ updateToggleIcon value ].
+
+	aDropdownButton := BrButton new
 		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude
 			+ ((BrGlamorousWithExplicitDropdownAptitude
 				handle: [ BrButton new
 					aptitude: BrGlamorousButtonWithIconAptitude
 						- BrGlamorousButtonWithLabelTooltipAptitude2
 						- BrGlamorousButtonExteriorAptitude;
-					icon: ([ (FontAwesomeIcons icon: #anglesUpDown styleName: #light) size: 16 @ 16 ] asStencil);
+					icon: BrGlamorousVectorIcons downwards;
 					label: 'Theme';
 					yourself ]
 				content: [ CFThemeChooser new asElement ])
 				withGainFocusOnShow);
-		icon: ([ (FontAwesomeIcons icon: #anglesUpDown styleName: #light) size: 16 @ 16 ] asStencil);
+		icon: BrGlamorousVectorIcons downwards;
 		label: 'Theme';
 		yourself.
 
-	^ aThemeDropdown
+	aContainer := BrHorizontalPane new
+		fitContent;
+		cellSpacing: 0;
+		addChildren: { aToggleButton. aDropdownButton };
+		yourself.
+
+	^ aContainer
 ]

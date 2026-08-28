@@ -30,6 +30,19 @@ CFThemeChooser >> initialize [
 	themeConfiguration := selectedTheme themeState
 ]
 
+
+{ #category : #'magritte actions' }
+CFThemeChooser >> magritteAcceptAction [
+	<magritteActionDescription>
+	^ nil
+]
+
+{ #category : #'magritte actions' }
+CFThemeChooser >> magritteCancelAction [
+	<magritteActionDescription>
+	^ nil
+]
+
 { #category : #accessing }
 CFThemeChooser >> selectedTheme [
 	^ selectedTheme
@@ -48,13 +61,21 @@ CFThemeChooser >> selectedTheme: aTheme [
 { #category : #'magritte descriptions' }
 CFThemeChooser >> selectedThemeDescription [
 	<magritteDescription>
+	| theThemeClasses theThemes |
+	theThemeClasses := BlTheme allSubclasses
+		select: [ :aThemeClass | aThemeClass canBeDefault ].
+	(theThemeClasses includes: selectedTheme class) ifFalse: [
+		theThemeClasses := { selectedTheme class } , theThemeClasses ].
+	theThemes := theThemeClasses collect: [ :aThemeClass |
+		aThemeClass = selectedTheme class
+			ifTrue: [ selectedTheme ]
+			ifFalse: [ aThemeClass new ] ].
+
 	^ MASingleOptionDescription new
 		accessor: #selectedTheme;
 		label: 'Theme';
 		priority: 10;
-		options: (BlTheme allSubclasses
-			select: [ :aThemeClass | aThemeClass canBeDefault ]
-			thenCollect: [ :aThemeClass | aThemeClass new ]);
+		options: theThemes;
 		autoAccept: true;
 		fieldConfigure: [ :field |
 			field bePopup
@@ -78,8 +99,10 @@ CFThemeChooser >> themeConfigurationDescription [
 	<magritteDescription>
 	^ MAToOneRelationDescription new
 		accessor: #themeConfiguration;
-		label: 'Configuration';
+		label: '';
 		priority: 20;
+		classes: { CgtThemeState };
+		beReadOnly;
 		fieldConfigure: [ :field | field beEmbeddedForms ];
 		updateOn: CFThemeChooserChanged from: [ self announcer ];
 		yourself

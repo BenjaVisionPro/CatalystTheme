@@ -27,7 +27,7 @@ BrGlamorousTheme >> surfaces [
 
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> themeState [
-	^ CgtThemeState default
+	^ nil
 ]
 
 { #category : #'*BVC-Theme-GT' }
