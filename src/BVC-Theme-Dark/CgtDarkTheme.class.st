@@ -52,3 +52,8 @@ CgtDarkTheme class >> typographyThemeClass [
 	^ CgtDarkTypographyTheme
 ]
 
+
+{ #category : #'class defaults' }
+CgtDarkTheme class >> canBeDefault [
+	^ true
+]
