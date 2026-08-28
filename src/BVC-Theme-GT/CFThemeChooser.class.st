@@ -3,6 +3,7 @@ Class {
 	#superclass : #CFObject,
 	#instVars : [
 		'announcer',
+		'choices',
 		'selectedTheme',
 		'themeConfiguration',
 		'worldElement'
@@ -25,10 +26,15 @@ CFThemeChooser >> descriptionContainerDetail: aDescription [
 
 { #category : #initialization }
 CFThemeChooser >> initialize [
+	| currentTheme |
 	super initialize.
 	announcer := Announcer new.
-	selectedTheme := BlTheme default.
-	themeConfiguration := selectedTheme themeState
+	currentTheme := BlTheme default.
+	choices := self themeChoicesFor: currentTheme.
+	selectedTheme := choices
+		detect: [ :aChoice | aChoice theme == currentTheme ]
+		ifNone: [ choices first ].
+	themeConfiguration := selectedTheme configuration
 ]
 
 
@@ -50,39 +56,53 @@ CFThemeChooser >> selectedTheme [
 ]
 
 { #category : #accessing }
-CFThemeChooser >> selectedTheme: aTheme [
-	selectedTheme == aTheme ifTrue: [ ^ self ].
-	selectedTheme := aTheme.
-	themeConfiguration := aTheme themeState.
-	BlTheme default: aTheme.
-	worldElement ifNotNil: [ worldElement theme: aTheme ].
+CFThemeChooser >> selectedTheme: aChoice [
+	selectedTheme == aChoice ifTrue: [ ^ self ].
+	selectedTheme := aChoice.
+	themeConfiguration := aChoice configuration.
+	BlTheme default: aChoice theme.
+	worldElement ifNotNil: [ worldElement theme: aChoice theme ].
 	self announcer announce: CFThemeChooserChanged new
 ]
 
 { #category : #'magritte descriptions' }
 CFThemeChooser >> selectedThemeDescription [
 	<magritteDescription>
-	| theThemeClasses theThemes |
-	theThemeClasses := BlTheme allSubclasses
-		select: [ :aThemeClass | aThemeClass canBeDefault ].
-	(theThemeClasses includes: selectedTheme class) ifFalse: [
-		theThemeClasses := { selectedTheme class } , theThemeClasses ].
-	theThemes := theThemeClasses collect: [ :aThemeClass |
-		aThemeClass = selectedTheme class
-			ifTrue: [ selectedTheme ]
-			ifFalse: [ aThemeClass new ] ].
-
 	^ MASingleOptionDescription new
 		accessor: #selectedTheme;
 		label: 'Theme';
 		priority: 10;
-		options: theThemes;
+		options: choices;
 		autoAccept: true;
 		fieldConfigure: [ :field |
 			field bePopup
-				displayBlock: [ :aTheme | aTheme class name ] ];
+				displayBlock: [ :aChoice | aChoice label ] ];
 		beRequired;
 		yourself
+]
+
+{ #category : #private }
+CFThemeChooser >> themeChoicesFor: currentTheme [
+	| defaultChoices catalystChoices |
+	defaultChoices := (BlTheme allSubclasses
+		select: [ :aThemeClass | aThemeClass canBeDefault ])
+		collect: [ :aThemeClass |
+			CFThemeChoice
+				theme: (aThemeClass = currentTheme class
+					ifTrue: [ currentTheme ]
+					ifFalse: [ aThemeClass new ])
+				configuration: nil ].
+
+	catalystChoices := CgtAbstractTheme subclasses collect: [ :aThemeClass |
+		| aTheme |
+		aTheme := aThemeClass = currentTheme class
+			ifTrue: [ currentTheme ]
+			ifFalse: [ aThemeClass new ].
+		CFThemeChoice
+			theme: aTheme
+			configuration: aTheme themeState ].
+
+	^ defaultChoices , catalystChoices
 ]
 
 { #category : #accessing }

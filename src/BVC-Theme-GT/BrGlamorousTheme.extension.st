@@ -25,10 +25,6 @@ BrGlamorousTheme >> surfaces [
 	^ CgtGlamorousSurfacesTheme theme: self
 ]
 
-{ #category : #'*BVC-Theme-GT' }
-BrGlamorousTheme >> themeState [
-	^ nil
-]
 
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> typography [
