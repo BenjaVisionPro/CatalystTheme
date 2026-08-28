@@ -11,49 +11,38 @@ GtWorldElement >> gtWorldThemeActionFor: anAction [
 
 { #category : #'*BVC-Theme-GT' }
 GtWorldElement >> newThemeButton [
-	| aContainer aToggleButton aDropdownButton updateToggleIcon applyTheme |
+	| aThemeButton updateIcon applyTheme |
 
 	applyTheme := [ :aTheme |
 		BlTheme default: aTheme.
 		BlSpace allOpenSpacesDo: [ :aSpace | aSpace theme: aTheme ] ].
 
-	aToggleButton := BrButton new
-		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
-		label: 'Toggle light / dark theme';
-		action: [
-			applyTheme value: BlTheme default toggledAppearanceTheme ];
-		yourself.
-
-	updateToggleIcon := [
-		aToggleButton icon: ([
-			(FontAwesomeIcons
-				icon: BlTheme default themeAppearanceIconName
-				styleName: #light)
-				size: 16 @ 16 ] asStencil) ].
-	updateToggleIcon value.
-	aToggleButton when: BlElementThemeChanged do: [ updateToggleIcon value ].
-
-	aDropdownButton := BrButton new
+	aThemeButton := BrButton new
 		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude
 			+ ((BrGlamorousWithExplicitDropdownAptitude
 				handle: [ BrButton new
 					aptitude: BrGlamorousButtonWithIconAptitude
 						- BrGlamorousButtonWithLabelTooltipAptitude2
-						- BrGlamorousButtonExteriorAptitude;
+						- BrGlamorousButtonExteriorAptitude
+						+ BrGlamorousButtonIconDropdownAptitude new;
 					icon: BrGlamorousVectorIcons downwards;
-					label: 'Theme';
+					label: 'Choose theme';
 					yourself ]
 				content: [ CFThemeChooser new asElement ])
 				withGainFocusOnShow);
-		icon: BrGlamorousVectorIcons downwards;
-		label: 'Theme';
+		label: 'Toggle light / dark theme';
+		action: [
+			applyTheme value: BlTheme default toggledAppearanceTheme ];
 		yourself.
 
-	aContainer := BrHorizontalPane new
-		fitContent;
-		cellSpacing: 0;
-		addChildren: { aToggleButton. aDropdownButton };
-		yourself.
+	updateIcon := [
+		aThemeButton icon: ([
+			(FontAwesomeIcons
+				icon: BlTheme default themeAppearanceIconName
+				styleName: #light)
+				size: 16 @ 16 ] asStencil) ].
+	updateIcon value.
+	aThemeButton when: BlElementThemeChanged do: [ updateIcon value ].
 
-	^ aContainer
+	^ aThemeButton
 ]
