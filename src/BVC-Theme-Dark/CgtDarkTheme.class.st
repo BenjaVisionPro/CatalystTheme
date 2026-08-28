@@ -53,10 +53,6 @@ CgtDarkTheme class >> typographyThemeClass [
 ]
 
 
-{ #category : #'class defaults' }
-CgtDarkTheme class >> canBeDefault [
-	^ true
-]
 
 { #category : #'theme appearance' }
 CgtDarkTheme >> toggledAppearanceTheme [

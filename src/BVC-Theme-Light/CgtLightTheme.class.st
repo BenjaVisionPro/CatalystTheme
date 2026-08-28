@@ -53,10 +53,6 @@ CgtLightTheme class >> typographyThemeClass [
 ]
 
 
-{ #category : #'class defaults' }
-CgtLightTheme class >> canBeDefault [
-	^ true
-]
 
 { #category : #'theme appearance' }
 CgtLightTheme >> toggledAppearanceTheme [
