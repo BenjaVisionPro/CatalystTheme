@@ -11,29 +11,49 @@ GtWorldElement >> gtWorldThemeActionFor: anAction [
 
 { #category : #'*BVC-Theme-GT' }
 GtWorldElement >> newThemeButton [
-	| aThemeButton updateIcon applyTheme |
+	| aThemeButton aDropdownAptitude popupTask popupDelay openChooser updateIcon applyTheme |
+
+	popupDelay := 250 milliSeconds.
+	openChooser := false.
 
 	applyTheme := [ :aTheme |
 		BlTheme default: aTheme.
 		BlSpace allOpenSpacesDo: [ :aSpace | aSpace theme: aTheme ] ].
 
+	aDropdownAptitude := BrGlamorousWithExplicitDropdownAptitude new
+		content: [ CFThemeChooser new asElement ];
+		doNotShowOnClick;
+		withGainFocusOnShow;
+		yourself.
+
 	aThemeButton := BrButton new
-		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude
-			+ ((BrGlamorousWithExplicitDropdownAptitude
-				handle: [ BrButton new
-					aptitude: BrGlamorousButtonWithIconAptitude
-						- BrGlamorousButtonWithLabelTooltipAptitude2
-						- BrGlamorousButtonExteriorAptitude
-						+ BrGlamorousButtonIconDropdownAptitude new;
-					icon: BrGlamorousVectorIcons downwards;
-					label: 'Choose theme';
-					yourself ]
-				content: [ CFThemeChooser new asElement ])
-				withGainFocusOnShow);
+		aptitude: BrGlamorousButtonWithIconAptitude
+			- BrGlamorousButtonExteriorAptitude
+			+ aDropdownAptitude;
 		label: 'Toggle light / dark theme';
 		action: [
-			applyTheme value: BlTheme default toggledAppearanceTheme ];
+			openChooser
+				ifTrue: [
+					openChooser := false.
+					aDropdownAptitude show ]
+				ifFalse: [
+					applyTheme value: BlTheme default toggledAppearanceTheme ] ];
 		yourself.
+
+	popupTask := BlDelayedTaskAction new
+		delay: popupDelay;
+		element: aThemeButton;
+		action: [ openChooser := true ];
+		yourself.
+
+	aThemeButton
+		when: BlMouseDownEvent
+		do: [
+			openChooser := false.
+			popupTask startOrRestart ].
+	aThemeButton
+		when: BlMouseUpEvent
+		do: [ popupTask stop ].
 
 	updateIcon := [
 		aThemeButton icon: ([
