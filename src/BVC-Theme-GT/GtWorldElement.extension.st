@@ -36,7 +36,10 @@ GtWorldElement >> newThemeButton [
 				ifNil: [ Duration zero ]
 				ifNotNil: [ aClickEvent timestamp - mouseDownTimestamp ].
 			aPressDuration >= popupDelay
-				ifTrue: [ aDropdownAptitude show ]
+				ifTrue: [
+					aThemeButton dispatchEvent: (BrDropdownShowWish new
+						anchor: aThemeButton;
+						yourself) ]
 				ifFalse: [
 					| aTheme |
 					aTheme := BlTheme default toggledAppearanceTheme.
