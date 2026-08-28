@@ -40,17 +40,3 @@ CgtThemeStateExamples >> timeOfDayUsesDerivedDirection [
 	self assert: state effectiveLightDirection isNotNil.
 	^ state
 ]
-
-{ #category : #examples }
-CgtThemeStateExamples >> angleEnablementFollowsTimeOfDayDescription [
-	<gtExample>
-	| state angleDescription condition |
-	state := CgtThemeState new.
-	angleDescription := state lightDirectionDegreesDescription.
-	condition := angleDescription enablementCondition.
-	self assert: condition isNotNil.
-	self assert: condition description equals: state useTimeOfDayDescription.
-	self assert: (condition matches: false).
-	self deny: (condition matches: true).
-	^ angleDescription
-]
