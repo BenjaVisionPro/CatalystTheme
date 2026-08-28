@@ -13,7 +13,7 @@ BaselineOfCatalystTheme >> baseline: spec [
 			baseline: 'CatalystFoundation'
 			with: [
 				spec
-					loads: #('BVC-Foundation-Core' 'BVC-Foundation-Magritte-Core');
+					loads: #('BVC-Foundation-Core' 'BVC-Foundation-Magritte-Core' 'BVC-Foundation-Magritte-Detail');
 					repository: 'github://BenjaVisionPro/CatalystFoundation:main/src' ].
 		spec
 			package: 'BVC-Theme-Core' with: [ spec requires: #('CatalystFoundation') ];

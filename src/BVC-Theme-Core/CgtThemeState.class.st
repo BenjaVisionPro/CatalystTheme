@@ -76,11 +76,18 @@ CgtThemeState >> highlightColor: aColor [
 { #category : #'magritte descriptions' }
 CgtThemeState >> highlightColorDescription [
 	<magritteDescription>
-	^ MAColorDescription new
+	^ MASingleOptionDescription new
 		accessor: #highlightColor;
 		label: 'Highlight';
 		priority: 10;
+		options: CgtPalette highlightColours;
 		autoAccept: true;
+		fieldConfigure: [ :field |
+			field beColourPicker
+				colourBlock: [ :aColour | aColour ];
+				labelBlock: [ :aColour |
+					CgtPalette highlightNameFor: aColour ] ];
+		beRequired;
 		yourself
 ]
 
@@ -153,11 +160,24 @@ CgtThemeState >> textHighlightColor: aColor [
 { #category : #'magritte descriptions' }
 CgtThemeState >> textHighlightColorDescription [
 	<magritteDescription>
-	^ MAColorDescription new
+	^ MASingleOptionDescription new
 		accessor: #textHighlightColor;
 		label: 'Text highlight';
 		priority: 20;
+		options: ({ nil } , CgtPalette textHighlightColours);
 		autoAccept: true;
+		fieldConfigure: [ :field |
+			field bePopup
+				displayBlock: [ :aColour |
+					CgtPalette textHighlightNameFor: aColour ] ];
+		blocOptionIconStencil: [ :aColour |
+			aColour
+				ifNil: [
+					CFMaDetailColourSwatchElement automaticSize: 14 @ 14 ]
+				ifNotNil: [
+					CFMaDetailColourSwatchElement
+						colour: aColour
+						size: 14 @ 14 ] ];
 		yourself
 ]
 

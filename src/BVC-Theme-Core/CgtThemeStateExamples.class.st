@@ -40,3 +40,20 @@ CgtThemeStateExamples >> timeOfDayUsesDerivedDirection [
 	self assert: state effectiveLightDirection isNotNil.
 	^ state
 ]
+
+
+{ #category : #examples }
+CgtThemeStateExamples >> themeColourDescriptionsUseFoundationPickers [
+	<gtExample>
+	| state highlightDescription textHighlightDescription |
+	state := CgtThemeState new.
+	highlightDescription := state highlightColorDescription.
+	textHighlightDescription := state textHighlightColorDescription.
+	self assert: highlightDescription class equals: MASingleOptionDescription.
+	self assert: highlightDescription options equals: CgtPalette highlightColours.
+	self assert: highlightDescription isRequired.
+	self assert: textHighlightDescription class equals: MASingleOptionDescription.
+	self assert: textHighlightDescription options equals: ({ nil } , CgtPalette textHighlightColours).
+	self assert: (CgtPalette textHighlightNameFor: nil) equals: 'Automatic'.
+	^ state
+]
