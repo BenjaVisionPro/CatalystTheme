@@ -11,9 +11,10 @@ GtWorldElement >> gtWorldThemeActionFor: anAction [
 
 { #category : #'*BVC-Theme-GT' }
 GtWorldElement >> newThemeButton [
-	| aThemeButton aDropdownAptitude mouseDownTimestamp popupDelay updateIcon |
+	| aThemeButton aDropdownAptitude mouseDownTimestamp popupDelay longPress updateIcon |
 
 	popupDelay := 250 milliSeconds.
+	longPress := false.
 
 	aDropdownAptitude := BrGlamorousWithExplicitDropdownAptitude new
 		withoutHandle;
@@ -30,16 +31,9 @@ GtWorldElement >> newThemeButton [
 			- BrGlamorousButtonExteriorAptitude
 			+ aDropdownAptitude;
 		label: 'Toggle light / dark theme';
-		action: [ :aButton :aButtonModel :aClickEvent |
-			| aPressDuration |
-			aPressDuration := mouseDownTimestamp
-				ifNil: [ Duration zero ]
-				ifNotNil: [ aClickEvent timestamp - mouseDownTimestamp ].
-			aPressDuration >= popupDelay
-				ifTrue: [
-					aThemeButton dispatchEvent: (BrDropdownShowWish new
-						anchor: aThemeButton;
-						yourself) ]
+		action: [
+			longPress
+				ifTrue: [ longPress := false ]
 				ifFalse: [
 					| aTheme |
 					aTheme := BlTheme default toggledAppearanceTheme.
@@ -49,7 +43,17 @@ GtWorldElement >> newThemeButton [
 
 	aThemeButton
 		when: BlMouseDownEvent
-		do: [ :anEvent | mouseDownTimestamp := anEvent timestamp ].
+		do: [ :anEvent |
+			mouseDownTimestamp := anEvent timestamp.
+			longPress := false ].
+
+	aThemeButton
+		when: BlMouseUpEvent
+		do: [ :anEvent |
+			mouseDownTimestamp ifNotNil: [
+				(anEvent timestamp - mouseDownTimestamp) >= popupDelay ifTrue: [
+					longPress := true.
+					aDropdownAptitude showDueTo: anEvent ] ] ].
 
 	updateIcon := [
 		aThemeButton icon: ([
