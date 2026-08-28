@@ -10,7 +10,13 @@ BaselineOfCatalystTheme >> baseline: spec [
 	<baseline>
 	spec for: #common do: [
 		spec
-			package: 'BVC-Theme-Core';
+			baseline: 'CatalystFoundation'
+			with: [
+				spec
+					loads: #('BVC-Foundation-Core' 'BVC-Foundation-Magritte-Core');
+					repository: 'github://BenjaVisionPro/CatalystFoundation:main/src' ].
+		spec
+			package: 'BVC-Theme-Core' with: [ spec requires: #('CatalystFoundation') ];
 			package: 'BVC-Theme-GT' with: [ spec requires: #('BVC-Theme-Core') ];
 			package: 'BVC-Theme-Light' with: [ spec requires: #('BVC-Theme-GT') ];
 			package: 'BVC-Theme-Dark' with: [ spec requires: #('BVC-Theme-GT') ] ]

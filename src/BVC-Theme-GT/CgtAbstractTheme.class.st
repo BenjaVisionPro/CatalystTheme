@@ -6,7 +6,6 @@ Class {
 		'highlight',
 		'surfaces',
 		'typography',
-		'lighting',
 		'interaction',
 		'controls',
 		'menu'
@@ -62,7 +61,6 @@ CgtAbstractTheme >> initializeSubthemes [
 	highlight := CgtHighlightTheme theme: self. highlight initializeThemeable.
 	surfaces := self class surfacesThemeClass theme: self. surfaces initializeThemeable.
 	typography := self class typographyThemeClass theme: self. typography initializeThemeable.
-	lighting := CgtLightingTheme theme: self.
 	interaction := self class interactionThemeClass theme: self. interaction initializeThemeable.
 	controls := self class controlsThemeClass theme: self. controls initializeThemeable.
 	menu := self class menuThemeClass theme: self. menu initializeThemeable.
@@ -78,9 +76,6 @@ CgtAbstractTheme >> initializeSubthemes [
 
 { #category : #accessing }
 CgtAbstractTheme >> interaction [ ^ interaction ]
-
-{ #category : #accessing }
-CgtAbstractTheme >> lighting [ ^ lighting ]
 
 
 { #category : #accessing }

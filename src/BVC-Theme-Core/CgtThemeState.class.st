@@ -1,11 +1,12 @@
 Class {
 	#name : #CgtThemeState,
-	#superclass : #Object,
+	#superclass : #CFObject,
 	#instVars : [
 		'announcer',
 		'highlightColor',
 		'textHighlightColor',
-		'lightDirection'
+		'lightDirection',
+		'useTimeOfDay'
 	],
 	#classVars : [
 		'Default'
@@ -18,14 +19,14 @@ CgtThemeState class >> default [
 	^ Default ifNil: [ Default := self new ]
 ]
 
-{ #category : #'class initialization' }
-CgtThemeState class >> resetDefault [
-	Default := nil
-]
-
 { #category : #defaults }
 CgtThemeState class >> defaultHighlightColor [
 	^ CgtPalette highlightBlue
+]
+
+{ #category : #defaults }
+CgtThemeState class >> defaultLightDirection [
+	^ CFLightDirection forCurrentTimeOfDay
 ]
 
 { #category : #defaults }
@@ -34,13 +35,13 @@ CgtThemeState class >> defaultTextHighlightColor [
 ]
 
 { #category : #defaults }
-CgtThemeState class >> defaultLightDirection [
-	| now secondsInDay phase angle |
-	now := DateAndTime now.
-	secondsInDay := (now hour * 3600) + (now minute * 60) + now second.
-	phase := secondsInDay / 86400.0.
-	angle := (Float pi / 2.0) + (phase * 2.0 * Float pi).
-	^ (angle cos @ angle sin) asBlocVector normalized
+CgtThemeState class >> defaultUseTimeOfDay [
+	^ true
+]
+
+{ #category : #'class initialization' }
+CgtThemeState class >> resetDefault [
+	Default := nil
 ]
 
 { #category : #accessing }
@@ -51,6 +52,13 @@ CgtThemeState >> announcer [
 { #category : #private }
 CgtThemeState >> announceChanged [
 	self announcer announce: (CgtThemeStateChanged new state: self)
+]
+
+{ #category : #accessing }
+CgtThemeState >> effectiveLightDirection [
+	^ self useTimeOfDay
+		ifTrue: [ CFLightDirection forCurrentTimeOfDay ]
+		ifFalse: [ self lightDirection ]
 ]
 
 { #category : #accessing }
@@ -65,13 +73,30 @@ CgtThemeState >> highlightColor: aColor [
 	self announceChanged
 ]
 
+{ #category : #'magritte descriptions' }
+CgtThemeState >> highlightColorDescription [
+	<magritteDescription>
+	^ MAColorDescription new
+		accessor: #highlightColor;
+		label: 'Highlight';
+		priority: 10;
+		autoAccept: true;
+		yourself
+]
+
+{ #category : #'magritte descriptions' }
+CgtThemeState >> iconDescription [
+	^ nil
+]
+
 { #category : #initialization }
 CgtThemeState >> initialize [
 	super initialize.
 	announcer := Announcer new.
 	highlightColor := self class defaultHighlightColor.
 	textHighlightColor := self class defaultTextHighlightColor.
-	lightDirection := self class defaultLightDirection
+	lightDirection := self class defaultLightDirection.
+	useTimeOfDay := self class defaultUseTimeOfDay
 ]
 
 { #category : #accessing }
@@ -89,6 +114,30 @@ CgtThemeState >> lightDirection: aPointOrVector [
 ]
 
 { #category : #accessing }
+CgtThemeState >> lightDirectionDegrees [
+	^ self lightDirection degrees
+]
+
+{ #category : #accessing }
+CgtThemeState >> lightDirectionDegrees: aNumber [
+	self lightDirection: (CFLightDirection fromDegrees: aNumber)
+]
+
+{ #category : #'magritte descriptions' }
+CgtThemeState >> lightDirectionDegreesDescription [
+	<magritteDescription>
+	^ MANumberDescription new
+		accessor: #lightDirectionDegrees;
+		label: 'Angle';
+		priority: 40;
+		min: 0;
+		max: 360;
+		autoAccept: true;
+		fieldConfigure: [ :field | field beSlider ];
+		yourself
+]
+
+{ #category : #accessing }
 CgtThemeState >> textHighlightColor [
 	^ textHighlightColor
 ]
@@ -98,4 +147,38 @@ CgtThemeState >> textHighlightColor: aColor [
 	textHighlightColor = aColor ifTrue: [ ^ self ].
 	textHighlightColor := aColor.
 	self announceChanged
+]
+
+{ #category : #'magritte descriptions' }
+CgtThemeState >> textHighlightColorDescription [
+	<magritteDescription>
+	^ MAColorDescription new
+		accessor: #textHighlightColor;
+		label: 'Text highlight';
+		priority: 20;
+		autoAccept: true;
+		yourself
+]
+
+{ #category : #accessing }
+CgtThemeState >> useTimeOfDay [
+	^ useTimeOfDay
+]
+
+{ #category : #accessing }
+CgtThemeState >> useTimeOfDay: aBoolean [
+	useTimeOfDay = aBoolean ifTrue: [ ^ self ].
+	useTimeOfDay := aBoolean.
+	self announceChanged
+]
+
+{ #category : #'magritte descriptions' }
+CgtThemeState >> useTimeOfDayDescription [
+	<magritteDescription>
+	^ MABooleanDescription new
+		accessor: #useTimeOfDay;
+		label: 'Time of day';
+		priority: 30;
+		autoAccept: true;
+		yourself
 ]

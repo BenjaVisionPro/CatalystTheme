@@ -21,11 +21,6 @@ BrGlamorousTheme >> interaction [
 ]
 
 { #category : #'*BVC-Theme-GT' }
-BrGlamorousTheme >> lighting [
-	^ CgtLightingTheme theme: self
-]
-
-{ #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> surfaces [
 	^ CgtGlamorousSurfacesTheme theme: self
 ]
