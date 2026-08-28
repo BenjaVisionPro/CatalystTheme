@@ -133,6 +133,7 @@ CgtThemeState >> lightDirectionDegreesDescription [
 		min: 0;
 		max: 360;
 		autoAccept: true;
+		enabledBlock: [ :aState | aState useTimeOfDay not ];
 		fieldConfigure: [ :field | field beSlider ];
 		yourself
 ]
