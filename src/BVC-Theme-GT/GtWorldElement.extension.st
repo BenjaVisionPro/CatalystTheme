@@ -16,14 +16,6 @@ GtWorldElement >> newThemeButton [
 			- BrGlamorousButtonExteriorAptitude
 			+ (BrGlamorousWithExplicitDropdownAptitude new
 				withGainFocusOnShow;
-				handle: [
-					BrButton new
-						aptitude: BrGlamorousButtonWithIconAptitude
-							- BrGlamorousButtonWithLabelTooltipAptitude2
-							- BrGlamorousButtonExteriorAptitude;
-						icon: BrGlamorousVectorIcons downwards;
-						label: 'Choose theme';
-						yourself ];
 				content: [
 					CFThemeChooser new
 						worldElement: self;
