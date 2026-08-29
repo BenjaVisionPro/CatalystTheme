@@ -3,10 +3,12 @@ Class {
 	#superclass : #BlSubTheme,
 	#instVars : [
 		'sliderTrackTint',
+		'sliderActiveTrackTint',
 		'sliderThumbBackground',
 		'sliderThumbBorderTint',
 		'sliderTickTint',
 		'switchInactiveTrackTint',
+		'switchActiveTrackTint',
 		'switchThumbBackground',
 		'inactiveIconForeground',
 		'controlIndicatorForeground',
@@ -21,6 +23,9 @@ CgtControlsSubTheme >> initializeThemeable [
 	sliderTrackTint := self
 		color: [ :aTheme | aTheme controls constantAt: #sliderTrackTint ]
 		source: [ :aTheme | aTheme controls sliderTrackTint ].
+	sliderActiveTrackTint := self
+		color: [ :aTheme | aTheme appearanceState themeColour ]
+		source: [ :aTheme | aTheme controls sliderActiveTrackTint ].
 	sliderThumbBackground := self
 		color: [ :aTheme | aTheme controls constantAt: #sliderThumbBackground ]
 		source: [ :aTheme | aTheme controls sliderThumbBackground ].
@@ -33,6 +38,9 @@ CgtControlsSubTheme >> initializeThemeable [
 	switchInactiveTrackTint := self
 		color: [ :aTheme | aTheme controls constantAt: #switchInactiveTrackTint ]
 		source: [ :aTheme | aTheme controls switchInactiveTrackTint ].
+	switchActiveTrackTint := self
+		color: [ :aTheme | aTheme appearanceState themeColour ]
+		source: [ :aTheme | aTheme controls switchActiveTrackTint ].
 	switchThumbBackground := self
 		color: [ :aTheme | aTheme controls constantAt: #switchThumbBackground ]
 		source: [ :aTheme | aTheme controls switchThumbBackground ].
@@ -59,7 +67,11 @@ CgtControlsSubTheme >> sliderTickTint [ ^ sliderTickTint ]
 { #category : #accessing }
 CgtControlsSubTheme >> sliderTrackTint [ ^ sliderTrackTint ]
 { #category : #accessing }
+CgtControlsSubTheme >> sliderActiveTrackTint [ ^ sliderActiveTrackTint ]
+{ #category : #accessing }
 CgtControlsSubTheme >> switchInactiveTrackTint [ ^ switchInactiveTrackTint ]
+{ #category : #accessing }
+CgtControlsSubTheme >> switchActiveTrackTint [ ^ switchActiveTrackTint ]
 { #category : #accessing }
 CgtControlsSubTheme >> switchThumbBackground [ ^ switchThumbBackground ]
 

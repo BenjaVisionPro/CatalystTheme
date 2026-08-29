@@ -21,3 +21,8 @@ CgtDetailLightEditorSubTheme >> initializeThemeable [
 		color: [ :aTheme | aTheme appearanceState themeColour alpha: 0.3 ]
 		source: [ :aTheme | aTheme editor focusedBorderColor ]
 ]
+
+{ #category : #accessing }
+CgtDetailLightEditorSubTheme >> textSelectionColor [
+	^ self theme appearanceState textSelectionColour
+]

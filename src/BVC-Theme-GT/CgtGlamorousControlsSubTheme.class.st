@@ -19,6 +19,8 @@ CgtGlamorousControlsSubTheme >> contrastTintColor [
 { #category : #accessing }
 CgtGlamorousControlsSubTheme >> sliderTrackTint [ ^ self contrastTintColor alpha: 0.14 ]
 { #category : #accessing }
+CgtGlamorousControlsSubTheme >> sliderActiveTrackTint [ ^ self theme item selectedColor ]
+{ #category : #accessing }
 CgtGlamorousControlsSubTheme >> sliderThumbBackground [ ^ self theme default contentBackground ]
 { #category : #accessing }
 CgtGlamorousControlsSubTheme >> sliderThumbBorderTint [ ^ self contrastTintColor alpha: 0.16 ]
@@ -26,6 +28,8 @@ CgtGlamorousControlsSubTheme >> sliderThumbBorderTint [ ^ self contrastTintColor
 CgtGlamorousControlsSubTheme >> sliderTickTint [ ^ self contrastTintColor alpha: 0.22 ]
 { #category : #accessing }
 CgtGlamorousControlsSubTheme >> switchInactiveTrackTint [ ^ self contrastTintColor alpha: 35.0 / 255.0 ]
+{ #category : #accessing }
+CgtGlamorousControlsSubTheme >> switchActiveTrackTint [ ^ self theme item selectedColor ]
 { #category : #accessing }
 CgtGlamorousControlsSubTheme >> switchThumbBackground [ ^ self theme default contentBackground ]
 
