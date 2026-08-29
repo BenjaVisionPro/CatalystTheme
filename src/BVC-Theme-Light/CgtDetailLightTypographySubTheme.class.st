@@ -14,6 +14,5 @@ CgtDetailLightTypographySubTheme >> initializeConstants [
 		constantAt: #quaternaryForeground put: (Color black alpha: 0.35);
 		constantAt: #disabledForeground put: (Color black alpha: 0.22);
 		constantAt: #titleForeground put: (Color black alpha: 0.92);
-		constantAt: #selectedTextForeground put: (Color black alpha: 0.92);
 		constantAt: #metadataForeground put: (Color black alpha: 0.45)
 ]

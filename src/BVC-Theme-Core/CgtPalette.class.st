@@ -41,21 +41,21 @@ CgtPalette class >> themeNameFor: aColour [
 ]
 
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionBlue [ ^ Color r: 186 g: 213 b: 251 range: 255 ]
+CgtPalette class >> textSelectionBlue [ ^ self themeBlue alpha: 0.3 ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionPurple [ ^ Color r: 218 g: 197 b: 222 range: 255 ]
+CgtPalette class >> textSelectionPurple [ ^ self themePurple alpha: 0.3 ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionPink [ ^ Color r: 245 g: 204 b: 225 range: 255 ]
+CgtPalette class >> textSelectionPink [ ^ self themePink alpha: 0.3 ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionRed [ ^ Color r: 237 g: 197 b: 198 range: 255 ]
+CgtPalette class >> textSelectionRed [ ^ self themeRed alpha: 0.3 ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionOrange [ ^ Color r: 248 g: 219 b: 191 range: 255 ]
+CgtPalette class >> textSelectionOrange [ ^ self themeOrange alpha: 0.3 ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionYellow [ ^ Color r: 252 g: 238 b: 196 range: 255 ]
+CgtPalette class >> textSelectionYellow [ ^ self themeYellow alpha: 0.3 ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionGreen [ ^ Color r: 213 g: 233 b: 203 range: 255 ]
+CgtPalette class >> textSelectionGreen [ ^ self themeGreen alpha: 0.3 ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionGraphite [ ^ Color r: 223 g: 223 b: 224 range: 255 ]
+CgtPalette class >> textSelectionGraphite [ ^ self themeGrey alpha: 0.3 ]
 
 { #category : #'appearance - text selection palette' }
 CgtPalette class >> textSelectionColours [
