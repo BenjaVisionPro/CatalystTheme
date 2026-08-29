@@ -55,5 +55,11 @@ CgtAppearanceStateExamples >> themeColourDescriptionsUseFoundationPickers [
 	self assert: textSelectionDescription class equals: MASingleOptionDescription.
 	self assert: textSelectionDescription options equals: ({ nil } , CgtPalette textSelectionColours).
 	self assert: (CgtPalette textSelectionNameFor: nil) equals: 'Automatic'.
+	self assert: state textSelectionColour isNil.
+	self assert: state effectiveTextSelectionColour equals: CgtPalette textSelectionBlue.
+	state themeColour: CgtPalette themePurple.
+	self assert: state effectiveTextSelectionColour equals: CgtPalette textSelectionPurple.
+	state textSelectionColour: CgtPalette textSelectionGreen.
+	self assert: state effectiveTextSelectionColour equals: CgtPalette textSelectionGreen.
 	^ state
 ]

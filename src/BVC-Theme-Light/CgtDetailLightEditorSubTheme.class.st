@@ -24,5 +24,5 @@ CgtDetailLightEditorSubTheme >> initializeThemeable [
 
 { #category : #accessing }
 CgtDetailLightEditorSubTheme >> textSelectionColor [
-	^ self theme appearanceState textSelectionColour
+	^ self theme appearanceState effectiveTextSelectionColour
 ]

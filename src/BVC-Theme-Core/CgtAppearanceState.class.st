@@ -31,7 +31,7 @@ CgtAppearanceState class >> defaultLightDirection [
 
 { #category : #defaults }
 CgtAppearanceState class >> defaultTextSelectionColour [
-	^ CgtPalette textSelectionBlue
+	^ nil
 ]
 
 { #category : #defaults }
@@ -145,6 +145,14 @@ CgtAppearanceState >> lightDirectionDegreesDescription [
 		enabledBlock: [ :aState | aState useTimeOfDay not ];
 		fieldConfigure: [ :field | field beSlider ];
 		yourself
+]
+
+
+
+{ #category : #accessing }
+CgtAppearanceState >> effectiveTextSelectionColour [
+	^ self textSelectionColour
+		ifNil: [ CgtPalette automaticTextSelectionColourForThemeColour: self themeColour ]
 ]
 
 { #category : #accessing }
