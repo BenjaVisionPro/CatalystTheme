@@ -141,7 +141,23 @@ BrTextEditorParagraphElement >> drawSelectedTextOnSpartaCanvas: aCanvas at: anOr
 
 { #category : #'*BVC-Theme-GT' }
 BrTextEditorParagraphElement >> paintSelectionOn: aCompositorPainter offset: anOffset [
+	| aSelectedTextForeground |
 	selection isEmpty ifTrue: [ ^ self ].
+
+	aSelectedTextForeground := self defaultSelectedTextColor blocResolveColorForTheme: self theme.
+	Transcript
+		cr;
+		show: '--- BrTextEditorParagraphElement selected-text trace ---'; cr;
+		show: 'paragraph theme: '; show: self theme printString; cr;
+		show: 'theme class: '; show: self theme class name; cr;
+		show: 'editor subtheme: '; show: self theme editor class name; cr;
+		show: 'typography subtheme: '; show: self theme typography class name; cr;
+		show: 'editor selectedTextForeground: '; show: self theme editor selectedTextForeground printString; cr;
+		show: 'typography selectedTextForeground: '; show: self theme typography selectedTextForeground printString; cr;
+		show: 'resolved selected text colour: '; show: aSelectedTextForeground printString; cr;
+		show: 'selection: '; show: selection printString; cr;
+		show: 'paint offset: '; show: anOffset printString; cr;
+		show: '--- end selected-text trace ---'; cr.
 
 	aCompositorPainter canvas transform
 		by: [ :t | t translateBy: anOffset ]
