@@ -20,10 +20,10 @@ CFThemeChooserButton class >> forTab: aTab [
 CFThemeChooserButton >> initialize [
 	super initialize.
 
-	dropdownAptitude := BrGlamorousWithExplicitDropdownAptitude new
-		withGainFocusOnShow;
-		content: [ self newThemeChooserElement ];
-		yourself.
+	dropdownAptitude := BrGlamorousWithExplicitDropdownAptitude
+		handle: [ self newDropdownHandleElement ]
+		content: [ self newThemeChooserElement ].
+	dropdownAptitude withGainFocusOnShow.
 
 	self
 		aptitude: BrGlamorousButtonWithIconAptitude
@@ -33,6 +33,21 @@ CFThemeChooserButton >> initialize [
 		icon: ([
 			(FontAwesomeIcons icon: #window styleName: #light)
 				size: 16 @ 16 ] asStencil)
+]
+
+
+{ #category : #private }
+CFThemeChooserButton >> newDropdownHandleElement [
+	^ BrButton new
+		fitContent;
+		aptitude: BrGlamorousButtonWithIconAptitude
+			- BrGlamorousButtonWithLabelTooltipAptitude2
+			- BrGlamorousButtonExteriorAptitude;
+		label: 'Choose Foundation theme';
+		icon: ([
+			(FontAwesomeIcons icon: #window styleName: #light)
+				size: 16 @ 16 ] asStencil);
+		yourself
 ]
 
 { #category : #private }
