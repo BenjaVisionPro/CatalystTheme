@@ -82,14 +82,14 @@ CFThemeChooser >> selectedThemeDescription [
 
 { #category : #private }
 CFThemeChooser >> themeChoicesFor: currentTheme [
-	^ CgtAbstractTheme subclasses collect: [ :aThemeClass |
+	^ CgtTheme subclasses collect: [ :aThemeClass |
 		| aTheme |
 		aTheme := aThemeClass = currentTheme class
 			ifTrue: [ currentTheme ]
-			ifFalse: [ aThemeClass state: currentTheme themeState ].
+			ifFalse: [ aThemeClass appearanceState: currentTheme appearanceState ].
 		CFThemeChoice
 			theme: aTheme
-			configuration: aTheme themeState ]
+			configuration: aTheme appearanceState ]
 ]
 
 { #category : #accessing }
@@ -126,7 +126,7 @@ CFThemeChooser >> themeConfigurationDescription [
 		accessor: #themeConfiguration;
 		label: '';
 		priority: 20;
-		classes: { CgtThemeState };
+		classes: { CgtAppearanceState };
 		beReadOnly;
 		fieldConfigure: [ :field | field beEmbeddedForms ];
 		updateOn: CFThemeChooserChanged from: [ self announcer ];

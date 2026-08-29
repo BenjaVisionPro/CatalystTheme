@@ -20,13 +20,11 @@ BrMenuItemAptitude >> initialize [
 				when: BlElementState hovered & BlElementState selected
 					style: [ :aStyle |
 						aStyle background:
-							(self theme highlight color
-								blocResolveColorForTheme: self theme) ];
+							self theme item selectedColor ];
 				when: BlElementState hovered not & BlElementState selected
 					style: [ :aStyle |
 						aStyle background:
-							(self theme highlight color
-								blocResolveColorForTheme: self theme) ];
+							self theme item hoveredColor ];
 				pressed: [ :aStyle |
 					aStyle background: self theme item pressedColor ]).
 	self applyMenuGeometry

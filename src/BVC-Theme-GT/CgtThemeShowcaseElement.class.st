@@ -18,7 +18,6 @@ CgtThemeShowcaseElement >> build [
 		addChild: self buildTypographySection;
 		addChild: self buildSurfaceSection;
 		addChild: self buildInteractionSection;
-		addChild: self buildHighlightSection;
 		addChild: self buildBrickSection.
 	^ self
 ]
@@ -94,17 +93,6 @@ CgtThemeShowcaseElement >> buildBrickSection [
 		addChild: (self swatchNamed: 'Menu hovered' color: self theme item hoveredColor);
 		addChild: (self swatchNamed: 'Menu selected' color: self theme item selectedColor);
 		addChild: (self swatchNamed: 'Menu pressed' color: self theme item pressedColor).
-	^ aSection
-]
-
-{ #category : #'building - sections' }
-CgtThemeShowcaseElement >> buildHighlightSection [
-	| aSection |
-	aSection := self newSectionNamed: 'Highlight'.
-	aSection
-		addChild: (self swatchNamed: 'Highlight' color: self theme highlight color);
-		addChild: (self swatchNamed: 'Text highlight' color: self theme highlight textColor);
-		addChild: (self swatchNamed: 'Inactive text highlight' color: self theme highlight inactiveTextColor).
 	^ aSection
 ]
 

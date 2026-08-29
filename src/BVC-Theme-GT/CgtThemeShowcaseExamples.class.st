@@ -15,11 +15,11 @@ CgtThemeShowcaseExamples class >> lightAndDark [
 		yourself.
 	aRow
 		addChild: (CgtThemeShowcaseElement new
-			theme: CgtLightTheme new;
+			theme: CgtDetailLightTheme new;
 			constraintsDo: [ :c | c horizontal matchParent ];
 			build);
 		addChild: (CgtThemeShowcaseElement new
-			theme: CgtDarkTheme new;
+			theme: CgtDetailDarkTheme new;
 			constraintsDo: [ :c | c horizontal matchParent ];
 			build).
 	^ BrScrollPane new
@@ -32,7 +32,7 @@ CgtThemeShowcaseExamples class >> lightAndDark [
 { #category : #examples }
 CgtThemeShowcaseExamples class >> buttonExteriorResolvesThemeablePaints [
 	| aTheme anAptitude |
-	aTheme := CgtLightTheme new.
+	aTheme := CgtDetailLightTheme new.
 	anAptitude := BrGlamorousButtonExteriorAptitude new.
 	anAptitude theme: aTheme.
 	self assert: anAptitude backgroundPaint class equals: Color.
@@ -43,34 +43,15 @@ CgtThemeShowcaseExamples class >> buttonExteriorResolvesThemeablePaints [
 { #category : #examples }
 CgtThemeShowcaseExamples class >> standardControlPaintValuesAreConcrete [
 	| aTheme |
-	aTheme := CgtDarkTheme new.
+	aTheme := CgtDetailDarkTheme new.
 	self assert: aTheme item defaultColor class equals: Color.
 	self assert: aTheme item hoveredColor class equals: Color.
 	self assert: aTheme item selectedColor class equals: Color.
 	self assert: aTheme item pressedColor class equals: Color.
 	self assert:
-		(aTheme highlight color blocResolveColorForTheme: aTheme) class
+		(aTheme appearanceState themeColour blocResolveColorForTheme: aTheme) class
 		equals: Color.
 	^ aTheme
-]
-
-{ #category : #examples }
-CgtThemeShowcaseExamples class >> toggleSemanticForegrounds [
-	| aLightTheme aDarkTheme resolve |
-	aLightTheme := CgtLightTheme new.
-	aDarkTheme := CgtDarkTheme new.
-	resolve := [ :aColor :aTheme | aColor blocResolveColorForTheme: aTheme ].
-
-	self
-		assert: (resolve value: aLightTheme label defaultTextForeground value: aLightTheme)
-		equals: (resolve value: aLightTheme typography primaryForeground value: aLightTheme).
-	self
-		assert: (resolve value: aDarkTheme label defaultTextForeground value: aDarkTheme)
-		equals: (resolve value: aDarkTheme typography primaryForeground value: aDarkTheme).
-	self
-		assert: (resolve value: aDarkTheme highlight foregroundColor value: aDarkTheme)
-		equals: Color white.
-	^ aDarkTheme
 ]
 
 { #category : #examples }
@@ -95,7 +76,7 @@ CgtThemeShowcaseExamples class >> realDropdownMenu [
 				withoutHandle;
 				menu: aMenuItems;
 				yourself);
-		theme: CgtDarkTheme new;
+		theme: CgtDetailDarkTheme new;
 		yourself.
 
 	self assert: aMenuItems items size equals: 2.
@@ -105,8 +86,8 @@ CgtThemeShowcaseExamples class >> realDropdownMenu [
 { #category : #examples }
 CgtThemeShowcaseExamples class >> menuThemeChrome [
 	| aLightTheme aDarkTheme aVanillaTheme resolve |
-	aLightTheme := CgtLightTheme new.
-	aDarkTheme := CgtDarkTheme new.
+	aLightTheme := CgtDetailLightTheme new.
+	aDarkTheme := CgtDetailDarkTheme new.
 	aVanillaTheme := BrGlamorousLightTheme new.
 	resolve := [ :aColor :aTheme | aColor blocResolveColorForTheme: aTheme ].
 
@@ -137,7 +118,7 @@ CgtThemeShowcaseExamples class >> menuThemeChrome [
 { #category : #examples }
 CgtThemeShowcaseExamples class >> popoverUsesAnchorTheme [
 	| aTheme anAnchor anAptitude anEvent aMenuContainer |
-	aTheme := CgtDarkTheme new.
+	aTheme := CgtDetailDarkTheme new.
 	anAnchor := BrButton new
 		theme: aTheme;
 		yourself.
@@ -157,7 +138,7 @@ CgtThemeShowcaseExamples class >> popoverUsesAnchorTheme [
 { #category : #examples }
 CgtThemeShowcaseExamples class >> menuInsetMatchesDetailReference [
 	| aTheme |
-	aTheme := CgtDarkTheme new.
+	aTheme := CgtDetailDarkTheme new.
 	self assert: aTheme menu cornerRadius equals: 12.
 	self assert: aTheme menu contentInset equals: 5.
 	self assert: aTheme menu itemCornerRadius equals: 7.
@@ -168,7 +149,7 @@ CgtThemeShowcaseExamples class >> menuInsetMatchesDetailReference [
 CgtThemeShowcaseExamples class >> menuInsetIsAppliedToSimpleList [
 	| aMenuElement aList |
 	aMenuElement := BrMenuItemsListElement new
-		theme: CgtDarkTheme new;
+		theme: CgtDetailDarkTheme new;
 		yourself.
 	aList := aMenuElement childWithId: #'menu--list'.
 	self assert: aList padding equals: (BlInsets all: 5).
@@ -179,7 +160,7 @@ CgtThemeShowcaseExamples class >> menuInsetIsAppliedToSimpleList [
 { #category : #examples }
 CgtThemeShowcaseExamples class >> menuItemGeometryFollowsInheritedTheme [
 	| aTheme anItem anAptitude |
-	aTheme := CgtDarkTheme new.
+	aTheme := CgtDetailDarkTheme new.
 	anItem := BrMenuActionItemElement new.
 	anAptitude := BrMenuItemAptitude new.
 	anItem addAptitude: anAptitude.
@@ -192,21 +173,21 @@ CgtThemeShowcaseExamples class >> menuItemGeometryFollowsInheritedTheme [
 ]
 
 { #category : #examples }
-CgtThemeShowcaseExamples class >> menuSelectionUsesExactHighlight [
+CgtThemeShowcaseExamples class >> menuSelectionUsesExactThemeColour [
 	| aTheme |
-	aTheme := CgtDarkTheme new.
+	aTheme := CgtDetailDarkTheme new.
 	self
 		assert:
-			(aTheme highlight color
+			(aTheme appearanceState themeColour
 				blocResolveColorForTheme: aTheme)
-		equals: aTheme themeState highlightColor.
+		equals: aTheme appearanceState themeColour.
 	^ aTheme
 ]
 
 { #category : #examples }
 CgtThemeShowcaseExamples class >> menuShortcutUsesSupportingTypography [
 	| aTheme |
-	aTheme := CgtDarkTheme new.
+	aTheme := CgtDetailDarkTheme new.
 	self
 		assert:
 			(aTheme typography tertiaryForeground

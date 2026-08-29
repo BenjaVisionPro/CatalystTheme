@@ -3,35 +3,26 @@ Extension { #name : #BrGlamorousTheme }
 
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> controls [
-	^ CgtGlamorousControlsTheme theme: self
+	^ CgtGlamorousControlsSubTheme theme: self
 ]
-
-{ #category : #'*BVC-Theme-GT' }
-BrGlamorousTheme >> highlight [
-	| aHighlightTheme |
-	aHighlightTheme := CgtHighlightTheme theme: self.
-	aHighlightTheme initializeThemeable.
-	^ aHighlightTheme
-]
-
 
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> interaction [
-	^ CgtGlamorousInteractionTheme theme: self
+	^ CgtGlamorousInteractionSubTheme theme: self
 ]
 
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> surfaces [
-	^ CgtGlamorousSurfacesTheme theme: self
+	^ CgtGlamorousSurfacesSubTheme theme: self
 ]
 
 
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> typography [
-	^ CgtGlamorousTypographyTheme theme: self
+	^ CgtGlamorousTypographySubTheme theme: self
 ]
 
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> menu [
-	^ CgtGlamorousMenuTheme theme: self
+	^ CgtGlamorousMenuSubTheme theme: self
 ]
