@@ -130,10 +130,25 @@ BrTextEditorParagraphElement >> drawSelectedTextOnSpartaCanvas: aCanvas at: anOr
 	selection isEmpty ifTrue: [ ^ self ].
 
 	paragraph valueDo: [ :aParagraph |
-		| aSelectedParagraph aSelectionPath |
+		| aSelectedParagraph aSelectionPath textChildren |
+		textChildren := self children select: [ :each | self canAddTextToParagraph: each ].
 		aSelectedParagraph := self buildParagraphForSelectedTextColor: self defaultSelectedTextColor.
 		aSelectedParagraph layoutWithWidth: aParagraph maxWidth.
 		aSelectionPath := self selectionPathFor: aParagraph onSpartaCanvas: aCanvas.
+
+		Transcript
+			show: 'selected repaint text children: '; show: textChildren size printString; cr;
+			show: 'selected repaint source chars: '; show: (textChildren sum: [ :each | each text size ]) printString; cr;
+			show: 'source paragraph maxWidth/height/longestLine: ';
+				show: aParagraph maxWidth printString; show: ' / ';
+				show: aParagraph height printString; show: ' / ';
+				show: aParagraph longestLine printString; cr;
+			show: 'selected paragraph maxWidth/height/longestLine: ';
+				show: aSelectedParagraph maxWidth printString; show: ' / ';
+				show: aSelectedParagraph height printString; show: ' / ';
+				show: aSelectedParagraph longestLine printString; cr;
+			show: 'selected repaint origin: '; show: anOrigin printString; cr.
+
 		aCanvas clip
 			by: aSelectionPath
 			during: [ aSelectedParagraph paintOn: aCanvas at: anOrigin ] ]
