@@ -117,7 +117,7 @@ BrTextEditorParagraphElement >> drawChildrenOnSpartaCanvas: aCanvas [
 				ifNone: [ self requestLayout ].
 
 			self drawSelectionOnSpartaCanvas: aCanvas.
-			self drawSelectedTextOnSpartaCanvas: aCanvas.
+			self drawSelectedTextOnSpartaCanvas: aCanvas at: self padding topLeft.
 
 			self children sortedByElevation
 				do: [ :anElement |
@@ -126,7 +126,7 @@ BrTextEditorParagraphElement >> drawChildrenOnSpartaCanvas: aCanvas [
 ]
 
 { #category : #'*BVC-Theme-GT' }
-BrTextEditorParagraphElement >> drawSelectedTextOnSpartaCanvas: aCanvas [
+BrTextEditorParagraphElement >> drawSelectedTextOnSpartaCanvas: aCanvas at: anOrigin [
 	selection isEmpty ifTrue: [ ^ self ].
 
 	paragraph valueDo: [ :aParagraph |
@@ -136,7 +136,7 @@ BrTextEditorParagraphElement >> drawSelectedTextOnSpartaCanvas: aCanvas [
 		aSelectionPath := self selectionPathFor: aParagraph onSpartaCanvas: aCanvas.
 		aCanvas clip
 			by: aSelectionPath
-			during: [ aSelectedParagraph paintOn: aCanvas at: self padding topLeft ] ]
+			during: [ aSelectedParagraph paintOn: aCanvas at: anOrigin ] ]
 ]
 
 { #category : #'*BVC-Theme-GT' }
@@ -147,7 +147,9 @@ BrTextEditorParagraphElement >> paintSelectionOn: aCompositorPainter offset: anO
 		by: [ :t | t translateBy: anOffset ]
 		during: [
 			self drawSelectionOnSpartaCanvas: aCompositorPainter canvas.
-			self drawSelectedTextOnSpartaCanvas: aCompositorPainter canvas ]
+			self
+				drawSelectedTextOnSpartaCanvas: aCompositorPainter canvas
+				at: 0 @ 0 ]
 ]
 
 { #category : #'*BVC-Theme-GT' }
