@@ -149,9 +149,9 @@ BrTextEditorParagraphElement >> drawSelectedTextOnSpartaCanvas: aCanvas at: anOr
 				show: aSelectedParagraph longestLine printString; cr;
 			show: 'selected repaint origin: '; show: anOrigin printString; cr.
 
-		aCanvas clip
-			by: aSelectionPath
-			during: [ aSelectedParagraph paintOn: aCanvas at: anOrigin ] ]
+		"DIAGNOSTIC: deliberately paint the whole rebuilt paragraph without the selection clip.
+		If this becomes dark, the repaint works and selection clipping is the remaining fault."
+		aSelectedParagraph paintOn: aCanvas at: anOrigin ]
 ]
 
 { #category : #'*BVC-Theme-GT' }
