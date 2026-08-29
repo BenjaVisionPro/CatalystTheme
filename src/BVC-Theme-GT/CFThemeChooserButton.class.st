@@ -21,7 +21,6 @@ CFThemeChooserButton >> initialize [
 	super initialize.
 
 	dropdownAptitude := BrGlamorousWithExplicitDropdownAptitude new
-		withoutHandle;
 		withGainFocusOnShow;
 		content: [ self newThemeChooserElement ];
 		yourself.
