@@ -5,10 +5,18 @@ Class {
 		'announcer',
 		'choices',
 		'selectedTheme',
-		'themeConfiguration'
+		'themeConfiguration',
+		'themeElement'
 	],
 	#category : #'BVC-Theme-GT'
 }
+
+{ #category : #'instance creation' }
+CFThemeChooser class >> forElement: anElement [
+	^ self new
+		themeElement: anElement;
+		yourself
+]
 
 { #category : #accessing }
 CFThemeChooser >> announcer [
@@ -25,17 +33,10 @@ CFThemeChooser >> descriptionContainerDetail: aDescription [
 
 { #category : #initialization }
 CFThemeChooser >> initialize [
-	| currentTheme |
 	super initialize.
 	announcer := Announcer new.
-	currentTheme := BlTheme default.
-	choices := self themeChoicesFor: currentTheme.
-	selectedTheme := choices
-		detect: [ :aChoice | aChoice theme == currentTheme ]
-		ifNone: [ choices first ].
-	themeConfiguration := selectedTheme configuration
+	choices := #()
 ]
-
 
 { #category : #'magritte actions' }
 CFThemeChooser >> magritteAcceptAction [
@@ -59,7 +60,7 @@ CFThemeChooser >> selectedTheme: aChoice [
 	selectedTheme == aChoice ifTrue: [ ^ self ].
 	selectedTheme := aChoice.
 	themeConfiguration := aChoice configuration.
-	BlTheme default: aChoice theme.
+	themeElement theme: aChoice theme.
 	self announcer announce: CFThemeChooserChanged new
 ]
 
@@ -81,26 +82,14 @@ CFThemeChooser >> selectedThemeDescription [
 
 { #category : #private }
 CFThemeChooser >> themeChoicesFor: currentTheme [
-	| defaultChoices catalystChoices |
-	defaultChoices := (BlTheme allSubclasses
-		select: [ :aThemeClass | aThemeClass canBeDefault ])
-		collect: [ :aThemeClass |
-			CFThemeChoice
-				theme: (aThemeClass = currentTheme class
-					ifTrue: [ currentTheme ]
-					ifFalse: [ aThemeClass new ])
-				configuration: nil ].
-
-	catalystChoices := CgtAbstractTheme subclasses collect: [ :aThemeClass |
+	^ CgtAbstractTheme subclasses collect: [ :aThemeClass |
 		| aTheme |
 		aTheme := aThemeClass = currentTheme class
 			ifTrue: [ currentTheme ]
-			ifFalse: [ aThemeClass new ].
+			ifFalse: [ aThemeClass state: currentTheme themeState ].
 		CFThemeChoice
 			theme: aTheme
-			configuration: aTheme themeState ].
-
-	^ defaultChoices , catalystChoices
+			configuration: aTheme themeState ]
 ]
 
 { #category : #accessing }
@@ -113,6 +102,22 @@ CFThemeChooser >> themeConfiguration: aModel [
 	themeConfiguration := aModel
 ]
 
+{ #category : #accessing }
+CFThemeChooser >> themeElement [
+	^ themeElement
+]
+
+{ #category : #accessing }
+CFThemeChooser >> themeElement: anElement [
+	| currentTheme |
+	themeElement := anElement.
+	currentTheme := anElement theme.
+	choices := self themeChoicesFor: currentTheme.
+	selectedTheme := choices
+		detect: [ :aChoice | aChoice theme == currentTheme ]
+		ifNone: [ choices first ].
+	themeConfiguration := selectedTheme configuration
+]
 
 { #category : #'magritte descriptions' }
 CFThemeChooser >> themeConfigurationDescription [
