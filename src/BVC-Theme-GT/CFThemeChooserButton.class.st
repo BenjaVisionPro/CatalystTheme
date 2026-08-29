@@ -4,9 +4,7 @@ Class {
 	#instVars : [
 		'dropdownAptitude',
 		'themeElement',
-		'tab',
-		'mouseDownTimestamp',
-		'longPress'
+		'tab'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -21,11 +19,9 @@ CFThemeChooserButton class >> forTab: aTab [
 { #category : #initialization }
 CFThemeChooserButton >> initialize [
 	super initialize.
-	longPress := false.
 
 	dropdownAptitude := BrGlamorousWithExplicitDropdownAptitude new
 		withoutHandle;
-		withoutMouseEventHandler;
 		withGainFocusOnShow;
 		content: [ self newThemeChooserElement ];
 		yourself.
@@ -34,52 +30,21 @@ CFThemeChooserButton >> initialize [
 		aptitude: BrGlamorousButtonWithIconAptitude
 			- BrGlamorousButtonExteriorAptitude
 			+ dropdownAptitude;
-		label: 'Toggle light / dark Foundation theme';
+		label: 'Choose Foundation theme';
 		icon: ([
-			(FontAwesomeIcons icon: #sunBright styleName: #light)
-				size: 16 @ 16 ] asStencil);
-		action: [ self onActivated ].
-
-	self
-		when: BlMouseDownEvent
-		do: [ :anEvent |
-			mouseDownTimestamp := anEvent timestamp.
-			longPress := false ].
-
-	self
-		when: BlMouseUpEvent
-		do: [ :anEvent |
-			mouseDownTimestamp ifNotNil: [
-				(anEvent timestamp - mouseDownTimestamp) >= 250 milliSeconds ifTrue: [
-					longPress := true.
-					dropdownAptitude showDueTo: anEvent ] ] ]
+			(FontAwesomeIcons icon: #window styleName: #light)
+				size: 16 @ 16 ] asStencil)
 ]
 
 { #category : #private }
 CFThemeChooserButton >> newThemeChooserElement [
-	| aChooser |
-	aChooser := CFThemeChooser forElement: self themeElement.
-	aChooser announcer weak
-		when: CFThemeChooserChanged
-		send: #updateIcon
-		to: self.
-	^ aChooser asElement
-]
-
-{ #category : #private }
-CFThemeChooserButton >> onActivated [
-	longPress
-		ifTrue: [ longPress := false ]
-		ifFalse: [
-			self themeElement theme: self themeElement theme toggledAppearanceTheme.
-			self updateIcon ]
+	^ (CFThemeChooser forElement: self themeElement) asElement
 ]
 
 { #category : #'hooks - children' }
 CFThemeChooserButton >> onAddedToSceneGraph [
 	super onAddedToSceneGraph.
-	self themeElement.
-	self updateIcon
+	self themeElement
 ]
 
 { #category : #accessing }
@@ -95,18 +60,6 @@ CFThemeChooserButton >> tab: aTab [
 { #category : #accessing }
 CFThemeChooserButton >> themeElement [
 	themeElement ifNil: [
-		themeElement := tab viewContentElement scrolledElement.
-		themeElement
-			when: BlElementThemeChanged
-			do: [ self updateIcon ] ].
+		themeElement := tab viewContentElement scrolledElement ].
 	^ themeElement
-]
-
-{ #category : #private }
-CFThemeChooserButton >> updateIcon [
-	self icon: ([
-		(FontAwesomeIcons
-			icon: self themeElement theme themeAppearanceIconName
-			styleName: #light)
-			size: 16 @ 16 ] asStencil)
 ]
