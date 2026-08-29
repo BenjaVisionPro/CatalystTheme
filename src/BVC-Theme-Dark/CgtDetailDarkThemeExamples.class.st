@@ -71,6 +71,7 @@ CgtDetailDarkThemeExamples class >> brickControlThemeValues [
 	self assert: aTheme button defaultBorderColor equals: Color transparent.
 	self assert: (resolve value: aTheme editor defaultBackground) equals: (resolve value: aTheme interaction controlBackgroundTint).
 	self assert: (resolve value: aTheme editor defaultTextForeground) equals: (resolve value: aTheme typography primaryForeground).
+	self assert: (resolve value: aTheme editor selectedTextForeground) equals: Color black.
 	self assert: aTheme editor borderColor equals: Color transparent.
 	self assert: (resolve value: aTheme editor focusedBorderColor) equals: (resolve value: aTheme interaction focusedBorderColor).
 	^ aTheme

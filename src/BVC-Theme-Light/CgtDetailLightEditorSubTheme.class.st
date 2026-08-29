@@ -26,3 +26,8 @@ CgtDetailLightEditorSubTheme >> initializeThemeable [
 CgtDetailLightEditorSubTheme >> textSelectionColor [
 	^ self theme appearanceState effectiveTextSelectionColour
 ]
+
+{ #category : #accessing }
+CgtDetailLightEditorSubTheme >> selectedTextForeground [
+	^ Color black
+]

@@ -1,0 +1,171 @@
+Extension { #name : #BrTextEditorParagraphElement }
+
+{ #category : #'*BVC-Theme-GT' }
+BrTextEditorParagraphElement >> addText: aBlText toBuilder: aParagraphBuilder selectedTextColor: aTextColor [
+	| anIterator |
+	anIterator := aBlText iterator.
+	[ anIterator hasNext ]
+		whileTrue: [ | eachSpan |
+			eachSpan := anIterator nextSpan.
+
+			eachSpan attributes
+				ifNotEmpty: [ :theAttributes |
+					| aFontAndStyleBuilder |
+					aFontAndStyleBuilder := BlTextFontAndStyleBuilder new.
+					theAttributes
+						do: [ :eachAttribute | eachAttribute applyOnFontAndStyleBuilder: aFontAndStyleBuilder theme: self theme ].
+
+					SkiaParagraphTextStyle
+						newDuring: [ :aTextStyle |
+							aFontAndStyleBuilder hasCustomFontStyle
+								ifTrue: [ | aFontWeight aFontStretch aFontSlant |
+									aFontWeight := aFontAndStyleBuilder hasCustomFontWeight
+										ifTrue: [ aFontAndStyleBuilder fontWeight ]
+										ifFalse: [ BlFontWeight normal ].
+									aFontStretch := aFontAndStyleBuilder hasCustomFontStretch
+										ifTrue: [ aFontAndStyleBuilder fontStretch ]
+										ifFalse: [ BlFontStretch normal ].
+									aFontSlant := aFontAndStyleBuilder hasCustomFontSlant
+										ifTrue: [ aFontAndStyleBuilder fontSlant ]
+										ifFalse: [ BlFontSlant normal ].
+
+									SkiaFontStyle
+										weight: aFontWeight value
+										width: (self class fontStretchToSkia: aFontStretch)
+										slant: (self class fontSlantToSkia: aFontSlant)
+										during: [ :aSkiaFontStyle | aTextStyle fontStyle: aSkiaFontStyle ] ].
+
+							aFontAndStyleBuilder hasCustomFontSize
+								ifTrue: [ aTextStyle fontSize: aFontAndStyleBuilder resolvedFontSize value asFloat ]
+								ifFalse: [ aTextStyle fontSize: self defaultFontSize ].
+
+							aFontAndStyleBuilder hasCustomFamilyName
+								ifTrue: [ aTextStyle fontFamily: aFontAndStyleBuilder resolvedFontFamilyName ].
+
+							aTextStyle color: (aTextColor blocResolveColorForTheme: self theme).
+
+							aFontAndStyleBuilder hasCustomDecoration
+								ifTrue: [ SkiaTextDecoration
+										newDuring: [ :aSkiaDecoration |
+											aFontAndStyleBuilder decoration applyOnSkiaDecoration: aSkiaDecoration.
+											aTextStyle decoration: aSkiaDecoration ] ].
+
+							aParagraphBuilder
+								pushStyle: aTextStyle;
+								addString: eachSpan asString;
+								popStyle ] ]
+				ifEmpty: [
+					SkiaParagraphTextStyle
+						newDuring: [ :aTextStyle |
+							aTextStyle color: (aTextColor blocResolveColorForTheme: self theme).
+							aParagraphBuilder
+								pushStyle: aTextStyle;
+								addString: eachSpan asString;
+								popStyle ] ] ]
+]
+
+{ #category : #'*BVC-Theme-GT' }
+BrTextEditorParagraphElement >> buildParagraphForSelectedTextColor: aTextColor [
+	| aBuilder |
+	aBuilder := SkiaParagraphBuilder
+		style: (SkiaParagraphStyle new
+			textStyle: (SkiaParagraphTextStyle new
+				color: (aTextColor blocResolveColorForTheme: self theme);
+				fontSize: self defaultFontSize))
+		fontCollection: SkiaFontCollection default
+		tabSize: BrEditorElement editorTabSize.
+
+	self childrenDo: [ :eachElement |
+		eachElement visibility isGone ifFalse: [
+			(self canAddTextToParagraph: eachElement)
+				ifTrue: [ self addText: eachElement text toBuilder: aBuilder selectedTextColor: aTextColor ]
+				ifFalse: [
+					(eachElement userData at: #brickEditorOverlay ifAbsent: [ false ])
+						ifTrue: [
+							aBuilder
+								addPlaceholder: (SkiaParagraphPlaceholderStyle new
+									alignTop;
+									extent: 0 @ eachElement measuredExtent y)
+								charLength: 0 ]
+						ifFalse: [
+							(eachElement isKindOf: BrCursorElement) ifFalse: [
+								| placeholder |
+								placeholder := SkiaParagraphPlaceholderStyle new.
+								eachElement supportsBaseline
+									ifTrue: [ placeholder baselineOffset: eachElement baselineOffset ]
+									ifFalse: [ placeholder perform: eachElement placeholderAlignment ].
+								placeholder extent: eachElement measuredExtent.
+								aBuilder
+									addPlaceholder: placeholder
+									charLength: (eachElement userData at: #brickEditorCharLength ifAbsent: [ 0 ]) ] ] ] ] ].
+	^ aBuilder build
+]
+
+{ #category : #'*BVC-Theme-GT' }
+BrTextEditorParagraphElement >> defaultSelectedTextColor [
+	^ self theme editor selectedTextForeground
+]
+
+{ #category : #'*BVC-Theme-GT' }
+BrTextEditorParagraphElement >> drawChildrenOnSpartaCanvas: aCanvas [
+	aCanvas clip
+		when: [ self clipChildren ]
+		by: [ self geometry pathOnSpartaCanvas: aCanvas of: self ]
+		during: [
+			paragraph
+				valueDo: [ :aParagraph | aParagraph paintOn: aCanvas at: self padding topLeft ]
+				ifNone: [ self requestLayout ].
+
+			self drawSelectionOnSpartaCanvas: aCanvas.
+			self drawSelectedTextOnSpartaCanvas: aCanvas.
+
+			self children sortedByElevation
+				do: [ :anElement |
+					(self canAddTextToParagraph: anElement)
+						ifFalse: [ anElement fullDrawOnSpartaCanvas: aCanvas ] ] ]
+]
+
+{ #category : #'*BVC-Theme-GT' }
+BrTextEditorParagraphElement >> drawSelectedTextOnSpartaCanvas: aCanvas [
+	selection isEmpty ifTrue: [ ^ self ].
+
+	paragraph valueDo: [ :aParagraph |
+		| aSelectedParagraph aSelectionPath |
+		aSelectedParagraph := self buildParagraphForSelectedTextColor: self defaultSelectedTextColor.
+		aSelectedParagraph layoutWithWidth: aParagraph maxWidth.
+		aSelectionPath := self selectionPathFor: aParagraph onSpartaCanvas: aCanvas.
+		aCanvas clip
+			by: aSelectionPath
+			during: [ aSelectedParagraph paintOn: aCanvas at: self padding topLeft ] ]
+]
+
+{ #category : #'*BVC-Theme-GT' }
+BrTextEditorParagraphElement >> paintSelectionOn: aCompositorPainter offset: anOffset [
+	selection isEmpty ifTrue: [ ^ self ].
+
+	aCompositorPainter canvas transform
+		by: [ :t | t translateBy: anOffset ]
+		during: [
+			self drawSelectionOnSpartaCanvas: aCompositorPainter canvas.
+			self drawSelectedTextOnSpartaCanvas: aCompositorPainter canvas ]
+]
+
+{ #category : #'*BVC-Theme-GT' }
+BrTextEditorParagraphElement >> selectionPathFor: aParagraph onSpartaCanvas: aCanvas [
+	| aPathBuilder |
+	aPathBuilder := aCanvas path.
+	selection do: [ :eachMonotoneSelection |
+		(aParagraph
+			rectanglesForChars: (eachMonotoneSelection from to: eachMonotoneSelection to)
+			width: SkiaParagraphRectWidthStyle Max
+			height: SkiaParagraphRectHeightStyle Max)
+			do: [ :eachRectangle |
+				aPathBuilder
+					moveTo: eachRectangle topLeft;
+					lineTo: eachRectangle topRight;
+					lineTo: eachRectangle bottomRight;
+					lineTo: eachRectangle bottomLeft;
+					lineTo: eachRectangle topLeft;
+					close ] ].
+	^ aPathBuilder build
+]
