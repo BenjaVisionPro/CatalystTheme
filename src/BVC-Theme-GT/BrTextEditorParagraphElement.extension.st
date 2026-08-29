@@ -153,7 +153,6 @@ BrTextEditorParagraphElement >> paintSelectionOn: aCompositorPainter offset: anO
 		show: 'editor subtheme: '; show: self theme editor class name; cr;
 		show: 'typography subtheme: '; show: self theme typography class name; cr;
 		show: 'editor selectedTextForeground: '; show: self theme editor selectedTextForeground printString; cr;
-		show: 'typography selectedTextForeground: '; show: self theme typography selectedTextForeground printString; cr;
 		show: 'resolved selected text colour: '; show: aSelectedTextForeground printString; cr;
 		show: 'selection: '; show: selection printString; cr;
 		show: 'paint offset: '; show: anOffset printString; cr;
