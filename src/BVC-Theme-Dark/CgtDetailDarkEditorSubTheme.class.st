@@ -29,5 +29,5 @@ CgtDetailDarkEditorSubTheme >> textSelectionColor [
 
 { #category : #accessing }
 CgtDetailDarkEditorSubTheme >> selectedTextForeground [
-	^ self theme typography titleForeground
+	^ self theme typography selectedTextForeground
 ]

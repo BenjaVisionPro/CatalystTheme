@@ -13,6 +13,7 @@ Class {
 		'titleFontSize',
 		'metadataFontSize',
 		'titleForeground',
+		'selectedTextForeground',
 		'metadataForeground'
 	],
 	#category : #'BVC-Theme-GT'
@@ -55,6 +56,9 @@ CgtTypographySubTheme >> initializeThemeable [
 	titleForeground := self
 		color: [ :aTheme | aTheme typography constantAt: #titleForeground ]
 		source: [ :aTheme | aTheme typography titleForeground ].
+	selectedTextForeground := self
+		color: [ :aTheme | aTheme typography constantAt: #selectedTextForeground ]
+		source: [ :aTheme | aTheme typography selectedTextForeground ].
 	metadataForeground := self
 		color: [ :aTheme | aTheme typography constantAt: #metadataForeground ]
 		source: [ :aTheme | aTheme typography metadataForeground ]
@@ -77,5 +81,7 @@ CgtTypographySubTheme >> titleFontSize [ ^ titleFontSize ]
 CgtTypographySubTheme >> metadataFontSize [ ^ metadataFontSize ]
 { #category : #accessing }
 CgtTypographySubTheme >> titleForeground [ ^ titleForeground ]
+{ #category : #accessing }
+CgtTypographySubTheme >> selectedTextForeground [ ^ selectedTextForeground ]
 { #category : #accessing }
 CgtTypographySubTheme >> metadataForeground [ ^ metadataForeground ]
