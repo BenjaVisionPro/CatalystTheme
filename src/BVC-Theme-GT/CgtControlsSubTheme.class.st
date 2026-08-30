@@ -13,6 +13,7 @@ Class {
 		'inactiveIconForeground',
 		'controlIndicatorForeground',
 		'tagBackgroundTint',
+		'tagHoveredBackgroundTint',
 		'tagEditorBackground'
 	],
 	#category : #'BVC-Theme-GT'
@@ -53,6 +54,9 @@ CgtControlsSubTheme >> initializeThemeable [
 	tagBackgroundTint := self
 		color: [ :aTheme | aTheme controls constantAt: #tagBackgroundTint ]
 		source: [ :aTheme | aTheme controls tagBackgroundTint ].
+	tagHoveredBackgroundTint := self
+		color: [ :aTheme | aTheme controls constantAt: #tagHoveredBackgroundTint ]
+		source: [ :aTheme | aTheme controls tagHoveredBackgroundTint ].
 	tagEditorBackground := self
 		color: [ :aTheme | aTheme controls constantAt: #tagEditorBackground ]
 		source: [ :aTheme | aTheme controls tagEditorBackground ]
@@ -81,5 +85,7 @@ CgtControlsSubTheme >> inactiveIconForeground [ ^ inactiveIconForeground ]
 CgtControlsSubTheme >> controlIndicatorForeground [ ^ controlIndicatorForeground ]
 { #category : #accessing }
 CgtControlsSubTheme >> tagBackgroundTint [ ^ tagBackgroundTint ]
+{ #category : #accessing }
+CgtControlsSubTheme >> tagHoveredBackgroundTint [ ^ tagHoveredBackgroundTint ]
 { #category : #accessing }
 CgtControlsSubTheme >> tagEditorBackground [ ^ tagEditorBackground ]

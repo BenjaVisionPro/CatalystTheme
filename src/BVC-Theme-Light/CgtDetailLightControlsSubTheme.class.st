@@ -17,5 +17,6 @@ CgtDetailLightControlsSubTheme >> initializeConstants [
 		constantAt: #inactiveIconForeground put: (Color black alpha: 0.68);
 		constantAt: #controlIndicatorForeground put: (Color black alpha: 0.72);
 		constantAt: #tagBackgroundTint put: (Color black alpha: 0.06);
+		constantAt: #tagHoveredBackgroundTint put: (Color black alpha: 0.12);
 		constantAt: #tagEditorBackground put: (Color white alpha: 0.9)
 ]

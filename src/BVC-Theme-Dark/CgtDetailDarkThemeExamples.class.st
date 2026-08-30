@@ -47,6 +47,7 @@ CgtDetailDarkThemeExamples class >> detailDarkReferenceValues [
 	self assert: aTheme controls inactiveIconForeground equals: (Color white alpha: 0.68).
 	self assert: aTheme controls controlIndicatorForeground equals: (Color white alpha: 0.72).
 	self assert: aTheme controls tagBackgroundTint equals: (Color white alpha: 0.06).
+	self assert: aTheme controls tagHoveredBackgroundTint equals: (Color white alpha: 0.12).
 	self assert: aTheme controls tagEditorBackground equals: (Color black alpha: 0.10).
 	^ aTheme
 ]
