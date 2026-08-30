@@ -7,7 +7,8 @@ Class {
 		'typography',
 		'interaction',
 		'controls',
-		'menu'
+		'menu',
+		'tooltip'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -35,6 +36,8 @@ CgtTheme class >> menuThemeClass [ ^ CgtMenuSubTheme ]
 { #category : #'class defaults' }
 CgtTheme class >> surfacesThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
+CgtTheme class >> tooltipThemeClass [ ^ CgtTooltipSubTheme ]
+{ #category : #'class defaults' }
 CgtTheme class >> typographyThemeClass [ self subclassResponsibility ]
 
 { #category : #accessing }
@@ -60,6 +63,7 @@ CgtTheme >> initializeSubthemes [
 	interaction := self class interactionThemeClass theme: self. interaction initializeThemeable.
 	controls := self class controlsThemeClass theme: self. controls initializeThemeable.
 	menu := self class menuThemeClass theme: self. menu initializeThemeable.
+	tooltip := self class tooltipThemeClass theme: self. tooltip initializeThemeable.
 
 	link := BrGlamorousLinkTheme new.
 	status := BrGlamorousStatusTheme new.
@@ -84,7 +88,8 @@ CgtTheme >> onThemeModified [
 	typography ifNotNil: [ typography initializeThemeable ].
 	interaction ifNotNil: [ interaction initializeThemeable ].
 	controls ifNotNil: [ controls initializeThemeable ].
-	menu ifNotNil: [ menu initializeThemeable ]
+	menu ifNotNil: [ menu initializeThemeable ].
+	tooltip ifNotNil: [ tooltip initializeThemeable ]
 ]
 
 { #category : #'theme lifecycle' }
@@ -97,6 +102,9 @@ CgtTheme >> onAppearanceStateChanged: anAnnouncement [
 CgtTheme >> subscribeToAppearanceState [
 	appearanceState announcer weak when: CgtAppearanceStateChanged send: #onAppearanceStateChanged: to: self
 ]
+
+{ #category : #accessing }
+CgtTheme >> tooltip [ ^ tooltip ]
 
 { #category : #accessing }
 CgtTheme >> surfaces [ ^ surfaces ]

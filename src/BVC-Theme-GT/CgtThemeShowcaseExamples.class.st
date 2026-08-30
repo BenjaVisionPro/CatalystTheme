@@ -107,6 +107,12 @@ CgtThemeShowcaseExamples class >> menuThemeChrome [
 		equals: (resolve value: aDarkTheme interaction pressedBackgroundTint value: aDarkTheme).
 	self assert: aLightTheme menu shadowWidth equals: 2.
 	self assert: aDarkTheme menu shadowWidth equals: 2.
+	self
+		assert: (resolve value: aLightTheme tooltip borderColor value: aLightTheme)
+		equals: (resolve value: aLightTheme interaction pressedBackgroundTint value: aLightTheme).
+	self
+		assert: (resolve value: aDarkTheme tooltip borderColor value: aDarkTheme)
+		equals: (resolve value: aDarkTheme interaction pressedBackgroundTint value: aDarkTheme).
 
 	"The Glamorous projection reproduces the stock BrPopoverContainerAptitude values."
 	self assert: aVanillaTheme menu cornerRadius equals: BrMenuConstants cornerRadius.
