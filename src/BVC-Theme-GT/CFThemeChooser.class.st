@@ -11,6 +11,11 @@ Class {
 	#category : #'BVC-Theme-GT'
 }
 
+{ #category : #defaults }
+CFThemeChooser class >> defaultIcon [
+	^ #window
+]
+
 { #category : #'instance creation' }
 CFThemeChooser class >> forElement: anElement [
 	^ self new
