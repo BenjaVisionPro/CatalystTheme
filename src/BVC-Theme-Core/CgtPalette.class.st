@@ -44,7 +44,7 @@ CgtPalette class >> themeNameFor: aColour [
 CgtPalette class >> textSelectionColourFor: aThemeColour [
 	| lightened whiteWash |
 	lightened := aThemeColour lighter.
-	whiteWash := 0.12.
+	whiteWash := 0.20.
 	^ (Color
 		r: (lightened red * (1 - whiteWash)) + whiteWash
 		g: (lightened green * (1 - whiteWash)) + whiteWash
