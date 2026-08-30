@@ -41,21 +41,26 @@ CgtPalette class >> themeNameFor: aColour [
 ]
 
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionBlue [ ^ self themeBlue alpha: 0.3 ]
+CgtPalette class >> textSelectionColourFor: aThemeColour [
+	^ aThemeColour lighter alpha: 0.3
+]
+
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionPurple [ ^ self themePurple alpha: 0.3 ]
+CgtPalette class >> textSelectionBlue [ ^ self textSelectionColourFor: self themeBlue ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionPink [ ^ self themePink alpha: 0.3 ]
+CgtPalette class >> textSelectionPurple [ ^ self textSelectionColourFor: self themePurple ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionRed [ ^ self themeRed alpha: 0.3 ]
+CgtPalette class >> textSelectionPink [ ^ self textSelectionColourFor: self themePink ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionOrange [ ^ self themeOrange alpha: 0.3 ]
+CgtPalette class >> textSelectionRed [ ^ self textSelectionColourFor: self themeRed ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionYellow [ ^ self themeYellow alpha: 0.3 ]
+CgtPalette class >> textSelectionOrange [ ^ self textSelectionColourFor: self themeOrange ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionGreen [ ^ self themeGreen alpha: 0.3 ]
+CgtPalette class >> textSelectionYellow [ ^ self textSelectionColourFor: self themeYellow ]
 { #category : #'appearance - text selection palette' }
-CgtPalette class >> textSelectionGraphite [ ^ self themeGrey alpha: 0.3 ]
+CgtPalette class >> textSelectionGreen [ ^ self textSelectionColourFor: self themeGreen ]
+{ #category : #'appearance - text selection palette' }
+CgtPalette class >> textSelectionGraphite [ ^ self textSelectionColourFor: self themeGrey ]
 
 { #category : #'appearance - text selection palette' }
 CgtPalette class >> textSelectionColours [
