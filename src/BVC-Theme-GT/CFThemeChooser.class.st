@@ -67,11 +67,7 @@ CFThemeChooser >> announcer [
 CFThemeChooser >> descriptionContainerDetail: aDescription [
 	<magritteContainer>
 	^ aDescription
-		blocPresentationStencil: [ :aMemento |
-			CFMaDetailPresentation new
-				group: 'Colours' configure: [ :aGroup | aGroup hideLabel ];
-				group: 'Lighting' configure: [ :aGroup | aGroup hideLabel ];
-				yourself ];
+		blocPresentationStencil: [ :aMemento | CFMaDetailPresentation new ];
 		yourself
 ]
 
@@ -172,7 +168,13 @@ CFThemeChooser >> themeConfigurationDescription [
 		priority: 20;
 		classes: { CgtAppearanceState };
 		beReadOnly;
-		fieldConfigure: [ :field | field beEmbeddedForms hideRelationRow ];
+		fieldConfigure: [ :field |
+			field beEmbeddedForm
+				hideRelationRow;
+				configurePresentation: [ :aPresentation |
+					aPresentation
+						group: 'Colours' configure: [ :aGroup | aGroup hideLabel ];
+						group: 'Lighting' configure: [ :aGroup | aGroup hideLabel ] ] ];
 		updateOn: CFThemeChooserChanged from: [ self announcer ];
 		yourself
 ]
