@@ -67,7 +67,11 @@ CFThemeChooser >> announcer [
 CFThemeChooser >> descriptionContainerDetail: aDescription [
 	<magritteContainer>
 	^ aDescription
-		blocPresentationStencil: [ :aMemento | CFMaDetailPresentation new ];
+		blocPresentationStencil: [ :aMemento |
+			CFMaDetailPresentation new
+				group: 'Colours' configure: [ :aGroup | aGroup hideLabel ];
+				group: 'Lighting' configure: [ :aGroup | aGroup hideLabel ];
+				yourself ];
 		yourself
 ]
 
