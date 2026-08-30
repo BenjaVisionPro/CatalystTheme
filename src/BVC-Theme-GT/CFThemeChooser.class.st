@@ -128,7 +128,7 @@ CFThemeChooser >> themeConfigurationDescription [
 		priority: 20;
 		classes: { CgtAppearanceState };
 		beReadOnly;
-		fieldConfigure: [ :field | field beEmbeddedForms ];
+		fieldConfigure: [ :field | field beEmbeddedForms hideRelationRow ];
 		updateOn: CFThemeChooserChanged from: [ self announcer ];
 		yourself
 ]
