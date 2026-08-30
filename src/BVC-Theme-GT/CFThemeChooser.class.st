@@ -16,6 +16,41 @@ CFThemeChooser class >> defaultIcon [
 	^ #window
 ]
 
+
+{ #category : #accessing }
+CFThemeChooser >> label [
+	^ 'Theme Chooser'
+]
+
+{ #category : #'magritte descriptions' }
+CFThemeChooser >> labelDescription [
+	<magritteDescription>
+	^ MAStringDescription new
+		accessor: #label;
+		label: 'Label';
+		priority: 6;
+		beReadOnly;
+		cfCategory: #identity;
+		yourself
+]
+
+{ #category : #accessing }
+CFThemeChooser >> comment [
+	^ 'Choose Foundation theme.'
+]
+
+{ #category : #'magritte descriptions' }
+CFThemeChooser >> commentDescription [
+	<magritteDescription>
+	^ MAStringDescription new
+		accessor: #comment;
+		label: 'Comment';
+		priority: 7;
+		beReadOnly;
+		cfCategory: #identity;
+		yourself
+]
+
 { #category : #'instance creation' }
 CFThemeChooser class >> forElement: anElement [
 	^ self new
