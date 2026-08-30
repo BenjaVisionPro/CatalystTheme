@@ -26,3 +26,8 @@ BrGlamorousTheme >> typography [
 BrGlamorousTheme >> menu [
 	^ CgtGlamorousMenuSubTheme theme: self
 ]
+
+{ #category : #'*BVC-Theme-GT' }
+BrGlamorousTheme >> tooltip [
+	^ CgtTooltipSubTheme theme: self
+]
