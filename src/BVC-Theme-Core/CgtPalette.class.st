@@ -42,7 +42,14 @@ CgtPalette class >> themeNameFor: aColour [
 
 { #category : #'appearance - text selection palette' }
 CgtPalette class >> textSelectionColourFor: aThemeColour [
-	^ aThemeColour lighter alpha: 0.3
+	| lightened whiteWash |
+	lightened := aThemeColour lighter.
+	whiteWash := 0.12.
+	^ (Color
+		r: (lightened red * (1 - whiteWash)) + whiteWash
+		g: (lightened green * (1 - whiteWash)) + whiteWash
+		b: (lightened blue * (1 - whiteWash)) + whiteWash)
+		alpha: 0.3
 ]
 
 { #category : #'appearance - text selection palette' }
