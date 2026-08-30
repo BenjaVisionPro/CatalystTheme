@@ -187,7 +187,7 @@ CgtAppearanceState >> textSelectionColourDescription [
 					CFMaDetailColourSwatchElement automaticSize: 14 @ 14 ]
 				ifNotNil: [
 					CFMaDetailColourSwatchElement
-						colour: aColour
+						colour: (aColour alpha: 1.0)
 						size: 14 @ 14 ] ];
 		yourself
 ]
