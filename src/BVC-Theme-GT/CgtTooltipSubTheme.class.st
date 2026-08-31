@@ -19,12 +19,12 @@ CgtTooltipSubTheme >> cornerRadius [
 
 { #category : #accessing }
 CgtTooltipSubTheme >> foreground [
-	^ self theme typography primaryForeground
+	^ self theme typography tertiaryForeground
 ]
 
 { #category : #accessing }
 CgtTooltipSubTheme >> fontSize [
-	^ self theme typography bodyFontSize
+	^ self theme typography supportingFontSize
 ]
 
 { #category : #initialization }
