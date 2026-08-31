@@ -6,7 +6,8 @@ Class {
 		'choices',
 		'selectedTheme',
 		'themeConfiguration',
-		'themeElement'
+		'themeElement',
+		'chooserElement'
 	],
 	#category : #'BVC-Theme-GT'
 }
