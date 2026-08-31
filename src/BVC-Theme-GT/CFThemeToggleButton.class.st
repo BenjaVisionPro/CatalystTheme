@@ -56,15 +56,29 @@ CFThemeToggleButton >> themeElement [
 
 { #category : #private }
 CFThemeToggleButton >> toggleTheme [
-	self themeElement theme: self themeElement theme toggledAppearanceTheme.
+	self themeElement theme: (self alternateThemeFor: self themeElement theme).
 	self updateIcon
+]
+
+{ #category : #private }
+CFThemeToggleButton >> alternateThemeFor: aTheme [
+	aTheme class = BrGlamorousLightTheme ifTrue: [ ^ BrGlamorousDarkTheme new ].
+	aTheme class = BrGlamorousDarkTheme ifTrue: [ ^ BrGlamorousLightTheme new ].
+	^ aTheme toggledAppearanceTheme
+]
+
+{ #category : #private }
+CFThemeToggleButton >> appearanceIconNameFor: aTheme [
+	aTheme class = BrGlamorousLightTheme ifTrue: [ ^ #sunBright ].
+	aTheme class = BrGlamorousDarkTheme ifTrue: [ ^ #moon ].
+	^ aTheme themeAppearanceIconName
 ]
 
 { #category : #private }
 CFThemeToggleButton >> updateIcon [
 	self icon: ([
 		(FontAwesomeIcons
-			icon: self themeElement theme themeAppearanceIconName
+			icon: (self appearanceIconNameFor: self themeElement theme)
 			styleName: #light)
 			size: 16 @ 16 ] asStencil)
 ]

@@ -122,14 +122,34 @@ CFThemeChooser >> selectedThemeDescription [
 
 { #category : #private }
 CFThemeChooser >> themeChoicesFor: currentTheme [
-	^ CgtTheme subclasses collect: [ :aThemeClass |
+	| catalystThemeClasses anAppearanceState catalystChoices gtChoices |
+	catalystThemeClasses := CgtTheme subclasses.
+	anAppearanceState := (catalystThemeClasses includes: currentTheme class)
+		ifTrue: [ currentTheme appearanceState ]
+		ifFalse: [ CgtAppearanceState new ].
+
+	catalystChoices := catalystThemeClasses collect: [ :aThemeClass |
 		| aTheme |
 		aTheme := aThemeClass = currentTheme class
 			ifTrue: [ currentTheme ]
-			ifFalse: [ aThemeClass appearanceState: currentTheme appearanceState ].
+			ifFalse: [ aThemeClass appearanceState: anAppearanceState ].
 		CFThemeChoice
 			theme: aTheme
-			configuration: aTheme appearanceState ]
+			configuration: anAppearanceState ].
+
+	gtChoices := {
+		CFThemeChoice
+			theme: (currentTheme class = BrGlamorousLightTheme
+				ifTrue: [ currentTheme ]
+				ifFalse: [ BrGlamorousLightTheme new ])
+			configuration: nil.
+		CFThemeChoice
+			theme: (currentTheme class = BrGlamorousDarkTheme
+				ifTrue: [ currentTheme ]
+				ifFalse: [ BrGlamorousDarkTheme new ])
+			configuration: nil }.
+
+	^ catalystChoices , gtChoices
 ]
 
 { #category : #accessing }
