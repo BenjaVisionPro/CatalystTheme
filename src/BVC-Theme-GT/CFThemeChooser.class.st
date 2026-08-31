@@ -101,6 +101,7 @@ CFThemeChooser >> selectedTheme: aChoice [
 	selectedTheme := aChoice.
 	themeConfiguration := aChoice configuration.
 	themeElement theme: aChoice theme.
+	chooserElement ifNotNil: [ chooserElement theme: aChoice theme ].
 	self announcer announce: CFThemeChooserChanged new
 ]
 
@@ -150,6 +151,12 @@ CFThemeChooser >> themeChoicesFor: currentTheme [
 			configuration: nil }.
 
 	^ catalystChoices , gtChoices
+]
+
+
+{ #category : #'private - presentation' }
+CFThemeChooser >> chooserElement: anElement [
+	chooserElement := anElement
 ]
 
 { #category : #accessing }

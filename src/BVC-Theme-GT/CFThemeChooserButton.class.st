@@ -52,7 +52,12 @@ CFThemeChooserButton >> newDropdownHandleElement [
 
 { #category : #private }
 CFThemeChooserButton >> newThemeChooserElement [
-	^ (CFThemeChooser forElement: self themeElement) asElement
+	| aChooser anElement |
+	aChooser := CFThemeChooser forElement: self themeElement.
+	anElement := aChooser asElement.
+	aChooser chooserElement: anElement.
+	anElement theme: aChooser selectedTheme theme.
+	^ anElement
 ]
 
 { #category : #'hooks - children' }
