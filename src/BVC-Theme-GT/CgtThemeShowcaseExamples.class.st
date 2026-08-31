@@ -211,3 +211,18 @@ CgtThemeShowcaseExamples class >> menuShortcutUsesSupportingTypography [
 		equals: (Color white alpha: 0.55).
 	^ aTheme
 ]
+
+{ #category : #examples }
+CgtThemeShowcaseExamples >> stockGlamorousThemesProvideTooltipSemantics [
+	| themes |
+	themes := {
+		BrGlamorousLightTheme new.
+		BrGlamorousDarkTheme new }.
+
+	themes do: [ :aTheme |
+		self assert: aTheme tooltip borderColor isNotNil.
+		self assert: aTheme tooltip borderColor equals: aTheme interaction pressedBackgroundTint.
+		self assert: aTheme tooltip cornerRadius equals: aTheme menu cornerRadius.
+		self assert: aTheme tooltip foreground equals: aTheme typography tertiaryForeground.
+		self assert: aTheme tooltip fontSize equals: aTheme typography supportingFontSize ]
+]
