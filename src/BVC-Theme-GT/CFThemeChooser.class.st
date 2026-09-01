@@ -66,6 +66,11 @@ CFThemeChooser >> announcer [
 CFThemeChooser >> descriptionContainerDetail: aDescription [
 	<magritteContainer>
 	^ aDescription
+		compactIdentityReference: (MAContainer new
+			add: self iconDescription;
+			add: self labelDescription;
+			add: self commentDescription;
+			yourself);
 		blocPresentationStencil: [ :aMemento | CFMaDetailPresentation new ];
 		yourself
 ]
