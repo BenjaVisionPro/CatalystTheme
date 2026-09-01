@@ -71,6 +71,14 @@ CFThemeChooser >> descriptionContainerDetail: aDescription [
 ]
 
 { #category : #'magritte descriptions' }
+CFThemeChooser >> descriptionContainerCompactIdentity: aDescription [
+	<magritteContainer>
+	^ aDescription
+		compactIdentityReference: self compactIdentityReference;
+		yourself
+]
+
+{ #category : #'magritte descriptions' }
 CFThemeChooser >> compactIdentityReference [
 	^ self iconDescription, self labelDescription, self commentDescription
 ]
