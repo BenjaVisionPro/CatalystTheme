@@ -31,7 +31,6 @@ CFThemeChooser >> labelDescription [
 		label: 'Label';
 		priority: 6;
 		beReadOnly;
-		cfCategory: #identity;
 		yourself
 ]
 
@@ -48,7 +47,6 @@ CFThemeChooser >> commentDescription [
 		label: 'Comment';
 		priority: 7;
 		beReadOnly;
-		cfCategory: #identity;
 		yourself
 ]
 
