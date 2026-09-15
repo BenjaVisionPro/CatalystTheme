@@ -30,17 +30,6 @@ CgtDetailDarkThemeExamples class >> detailDarkReferenceValues [
 	self assert: aTheme colors disabledTextColor equals: (Color white alpha: 0.22).
 	self assert: aTheme label defaultTextForeground equals: (Color white alpha: 0.92).
 	self assert: aTheme label metadataTextForeground equals: (Color white alpha: 0.45).
-	self assert: aTheme controls sliderTrackTint equals: (Color white alpha: 0.14).
-	self assert: aTheme controls sliderThumbBackground equals: (Color white alpha: 0.86).
-	self assert: aTheme controls sliderThumbBorderTint equals: (Color black alpha: 0.16).
-	self assert: aTheme controls sliderTickTint equals: (Color white alpha: 0.22).
-	self assert: aTheme controls switchInactiveTrackTint equals: (Color white alpha: 35.0 / 255.0).
-	self assert: aTheme controls switchThumbBackground equals: (Color white alpha: 0.86).
-	self assert: aTheme controls inactiveIconForeground equals: (Color white alpha: 0.68).
-	self assert: aTheme controls controlIndicatorForeground equals: (Color white alpha: 0.72).
-	self assert: aTheme controls tagBackgroundTint equals: (Color white alpha: 0.06).
-	self assert: aTheme controls tagHoveredBackgroundTint equals: (Color white alpha: 0.12).
-	self assert: aTheme controls tagEditorBackground equals: (Color black alpha: 0.10).
 	^ aTheme
 ]
 

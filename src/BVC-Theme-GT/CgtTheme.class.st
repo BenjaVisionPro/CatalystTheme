@@ -4,8 +4,10 @@ Class {
 	#instVars : [
 		'appearanceState',
 		'typography',
+		'slider',
+		'switch',
+		'tag',
 		'toggleGroup',
-		'controls',
 		'menu',
 		'tooltip'
 	],
@@ -17,8 +19,6 @@ CgtTheme class >> appearanceState: anAppearanceState [ ^ self new appearanceStat
 { #category : #'class defaults' }
 CgtTheme class >> buttonThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
-CgtTheme class >> controlsThemeClass [ ^ CgtGlamorousControlsSubTheme ]
-{ #category : #'class defaults' }
 CgtTheme class >> colorsClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
 CgtTheme class >> defaultThemeClass [ self subclassResponsibility ]
@@ -26,6 +26,12 @@ CgtTheme class >> defaultThemeClass [ self subclassResponsibility ]
 CgtTheme class >> editorThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
 CgtTheme class >> headerThemeClass [ self subclassResponsibility ]
+{ #category : #'class defaults' }
+CgtTheme class >> sliderThemeClass [ self subclassResponsibility ]
+{ #category : #'class defaults' }
+CgtTheme class >> switchThemeClass [ self subclassResponsibility ]
+{ #category : #'class defaults' }
+CgtTheme class >> tagThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
 CgtTheme class >> toggleGroupThemeClass [ ^ CgtToggleGroupSubTheme ]
 { #category : #'class defaults' }
@@ -36,10 +42,6 @@ CgtTheme class >> menuThemeClass [ ^ CgtMenuSubTheme ]
 CgtTheme class >> tooltipThemeClass [ ^ CgtTooltipSubTheme ]
 { #category : #'class defaults' }
 CgtTheme class >> typographyThemeClass [ self subclassResponsibility ]
-
-{ #category : #accessing }
-CgtTheme >> controls [ ^ controls ]
-
 
 { #category : #initialization }
 CgtTheme >> initialize [
@@ -56,8 +58,10 @@ CgtTheme >> initializeSubthemes [
 
 	"Initialize Catalyst semantic providers before GT subthemes that consume them."
 	typography := self class typographyThemeClass theme: self. typography initializeThemeable.
+	slider := self class sliderThemeClass theme: self. slider initializeThemeable.
+	switch := self class switchThemeClass theme: self. switch initializeThemeable.
+	tag := self class tagThemeClass theme: self. tag initializeThemeable.
 	toggleGroup := self class toggleGroupThemeClass theme: self. toggleGroup initializeThemeable.
-	controls := self class controlsThemeClass theme: self. controls initializeThemeable.
 	menu := self class menuThemeClass theme: self. menu initializeThemeable.
 	tooltip := self class tooltipThemeClass theme: self. tooltip initializeThemeable.
 
@@ -71,8 +75,13 @@ CgtTheme >> initializeSubthemes [
 ]
 
 { #category : #accessing }
+CgtTheme >> slider [ ^ slider ]
+{ #category : #accessing }
+CgtTheme >> switch [ ^ switch ]
+{ #category : #accessing }
+CgtTheme >> tag [ ^ tag ]
+{ #category : #accessing }
 CgtTheme >> toggleGroup [ ^ toggleGroup ]
-
 
 { #category : #accessing }
 CgtTheme >> menu [ ^ menu ]
@@ -81,8 +90,10 @@ CgtTheme >> menu [ ^ menu ]
 CgtTheme >> onThemeModified [
 	super onThemeModified.
 	typography ifNotNil: [ typography initializeThemeable ].
+	slider ifNotNil: [ slider initializeThemeable ].
+	switch ifNotNil: [ switch initializeThemeable ].
+	tag ifNotNil: [ tag initializeThemeable ].
 	toggleGroup ifNotNil: [ toggleGroup initializeThemeable ].
-	controls ifNotNil: [ controls initializeThemeable ].
 	menu ifNotNil: [ menu initializeThemeable ].
 	tooltip ifNotNil: [ tooltip initializeThemeable ]
 ]

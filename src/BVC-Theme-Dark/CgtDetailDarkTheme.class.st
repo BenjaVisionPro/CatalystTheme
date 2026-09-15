@@ -16,11 +16,6 @@ CgtDetailDarkTheme class >> colorsClass [
 
 
 { #category : #'class defaults' }
-CgtDetailDarkTheme class >> controlsThemeClass [
-	^ CgtDetailDarkControlsSubTheme
-]
-
-{ #category : #'class defaults' }
 CgtDetailDarkTheme class >> defaultThemeClass [
 	^ BrGlamorousDefaultDarkTheme
 ]
@@ -38,6 +33,14 @@ CgtDetailDarkTheme class >> headerThemeClass [
 
 
 
+{ #category : #'class defaults' }
+CgtDetailDarkTheme class >> sliderThemeClass [ ^ CgtDetailDarkSliderSubTheme ]
+
+{ #category : #'class defaults' }
+CgtDetailDarkTheme class >> switchThemeClass [ ^ CgtDetailDarkSwitchSubTheme ]
+
+{ #category : #'class defaults' }
+CgtDetailDarkTheme class >> tagThemeClass [ ^ CgtDetailDarkTagSubTheme ]
 
 { #category : #'class defaults' }
 CgtDetailDarkTheme class >> typographyThemeClass [

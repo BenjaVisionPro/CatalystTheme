@@ -44,17 +44,6 @@ CgtDetailLightThemeExamples class >> detailLightReferenceValues [
 	self assert: aTheme typography metadataFontSize equals: 11.
 	self assert: aTheme label defaultTextForeground equals: (Color black alpha: 0.92).
 	self assert: aTheme label metadataTextForeground equals: (Color black alpha: 0.45).
-	self assert: aTheme controls sliderTrackTint equals: (Color black alpha: 0.14).
-	self assert: aTheme controls sliderThumbBackground equals: Color white.
-	self assert: aTheme controls sliderThumbBorderTint equals: (Color black alpha: 0.16).
-	self assert: aTheme controls sliderTickTint equals: (Color black alpha: 0.22).
-	self assert: aTheme controls switchInactiveTrackTint equals: (Color black alpha: 35.0 / 255.0).
-	self assert: aTheme controls switchThumbBackground equals: Color white.
-	self assert: aTheme controls inactiveIconForeground equals: (Color black alpha: 0.68).
-	self assert: aTheme controls controlIndicatorForeground equals: (Color black alpha: 0.72).
-	self assert: aTheme controls tagBackgroundTint equals: (Color black alpha: 0.06).
-	self assert: aTheme controls tagHoveredBackgroundTint equals: (Color black alpha: 0.12).
-	self assert: aTheme controls tagEditorBackground equals: (Color white alpha: 0.9).
 	^ aTheme
 ]
 

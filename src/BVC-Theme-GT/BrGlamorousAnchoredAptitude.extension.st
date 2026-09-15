@@ -4,7 +4,7 @@ Extension { #name : #BrGlamorousAnchoredAptitude }
 BrGlamorousAnchoredAptitude >> initialize [
 	super initialize.
 	background := self theme default contentBackground.
-	border := self theme button defaultBorderColor asBlBorder.
+	border := (BlBorder paint: self theme button defaultBorderColor width: 1).
 	cornerRadius := 4.
 
 	self
