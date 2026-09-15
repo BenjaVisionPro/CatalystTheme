@@ -9,6 +9,13 @@ Class {
 }
 
 { #category : #'instance creation' }
+CFThemeToggleButton class >> forElement: anElement [
+	^ self new
+		themeElement: anElement;
+		yourself
+]
+
+{ #category : #'instance creation' }
 CFThemeToggleButton class >> forTab: aTab [
 	^ self new
 		tab: aTab;
@@ -45,12 +52,17 @@ CFThemeToggleButton >> tab: aTab [
 ]
 
 { #category : #accessing }
+CFThemeToggleButton >> themeElement: anElement [
+	themeElement := anElement.
+	themeElement
+		when: BlElementThemeChanged
+		do: [ self updateIcon ]
+]
+
+{ #category : #accessing }
 CFThemeToggleButton >> themeElement [
 	themeElement ifNil: [
-		themeElement := tab viewContentElement.
-		themeElement
-			when: BlElementThemeChanged
-			do: [ self updateIcon ] ].
+		self themeElement: tab viewContentElement ].
 	^ themeElement
 ]
 

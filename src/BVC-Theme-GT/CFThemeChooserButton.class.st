@@ -10,6 +10,13 @@ Class {
 }
 
 { #category : #'instance creation' }
+CFThemeChooserButton class >> forElement: anElement [
+	^ self new
+		themeElement: anElement;
+		yourself
+]
+
+{ #category : #'instance creation' }
 CFThemeChooserButton class >> forTab: aTab [
 	^ self new
 		tab: aTab;
@@ -74,6 +81,11 @@ CFThemeChooserButton >> tab [
 { #category : #accessing }
 CFThemeChooserButton >> tab: aTab [
 	tab := aTab
+]
+
+{ #category : #accessing }
+CFThemeChooserButton >> themeElement: anElement [
+	themeElement := anElement
 ]
 
 { #category : #accessing }
