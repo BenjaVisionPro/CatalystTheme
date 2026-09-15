@@ -16,8 +16,7 @@ BrGlamorousSimpleContextMenuContent >> initialize [
 							f background: Color transparent ];
 						hovered: [ :f |
 							f background:
-								(self theme interaction hoveredBackgroundTint
-									blocResolveColorForTheme: self theme) ];
+								self theme menu itemHoveredBackground ];
 						yourself);
 				layout: BlLinearLayout horizontal;
 				constraintsDo: [ :c |

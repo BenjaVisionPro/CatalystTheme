@@ -16,7 +16,6 @@ CgtThemeShowcaseElement >> build [
 
 	self
 		addChild: self buildTypographySection;
-		addChild: self buildInteractionSection;
 		addChild: self buildBrickSection.
 	^ self
 ]
@@ -94,21 +93,6 @@ CgtThemeShowcaseElement >> buildBrickSection [
 		addChild: (self swatchNamed: 'Menu pressed' color: self theme item pressedColor).
 	^ aSection
 ]
-
-{ #category : #'building - sections' }
-CgtThemeShowcaseElement >> buildInteractionSection [
-	| aSection |
-	aSection := self newSectionNamed: 'Interaction'.
-	aSection
-		addChild: (self swatchNamed: 'Subtle' color: self theme interaction subtleBackgroundTint);
-		addChild: (self swatchNamed: 'Control' color: self theme interaction controlBackgroundTint);
-		addChild: (self swatchNamed: 'Popup' color: self theme interaction popupBackgroundTint);
-		addChild: (self swatchNamed: 'Hovered' color: self theme interaction hoveredBackgroundTint);
-		addChild: (self swatchNamed: 'Pressed' color: self theme interaction pressedBackgroundTint);
-		addChild: (self swatchNamed: 'Focus' color: self theme interaction focusedBorderColor).
-	^ aSection
-]
-
 
 { #category : #'building - sections' }
 CgtThemeShowcaseElement >> buildTypographySection [

@@ -101,18 +101,18 @@ CgtThemeShowcaseExamples class >> menuThemeChrome [
 		equals: (resolve value: aDarkTheme default contentBackground value: aDarkTheme).
 	self
 		assert: (resolve value: aLightTheme menu borderColor value: aLightTheme)
-		equals: (resolve value: aLightTheme interaction pressedBackgroundTint value: aLightTheme).
+		equals: (resolve value: aLightTheme menu borderColor value: aLightTheme).
 	self
 		assert: (resolve value: aDarkTheme menu borderColor value: aDarkTheme)
-		equals: (resolve value: aDarkTheme interaction pressedBackgroundTint value: aDarkTheme).
+		equals: (resolve value: aDarkTheme menu borderColor value: aDarkTheme).
 	self assert: aLightTheme menu shadowWidth equals: 2.
 	self assert: aDarkTheme menu shadowWidth equals: 2.
 	self
 		assert: (resolve value: aLightTheme tooltip borderColor value: aLightTheme)
-		equals: (resolve value: aLightTheme interaction pressedBackgroundTint value: aLightTheme).
+		equals: (resolve value: aLightTheme menu borderColor value: aLightTheme).
 	self
 		assert: (resolve value: aDarkTheme tooltip borderColor value: aDarkTheme)
-		equals: (resolve value: aDarkTheme interaction pressedBackgroundTint value: aDarkTheme).
+		equals: (resolve value: aDarkTheme menu borderColor value: aDarkTheme).
 	self assert: aLightTheme tooltip cornerRadius equals: aLightTheme menu cornerRadius.
 	self assert: aDarkTheme tooltip cornerRadius equals: aDarkTheme menu cornerRadius.
 	self assert: aLightTheme tooltip fontSize equals: aLightTheme typography bodyFontSize.

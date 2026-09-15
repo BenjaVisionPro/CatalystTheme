@@ -24,6 +24,12 @@ CgtGlamorousMenuSubTheme >> contentInset [
 	^ 0
 ]
 
+
+{ #category : #accessing }
+CgtGlamorousMenuSubTheme >> itemHoveredBackground [
+	^ self theme item hoveredColor
+]
+
 { #category : #accessing }
 CgtGlamorousMenuSubTheme >> itemCornerRadius [
 	^ 0

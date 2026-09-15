@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'background',
 		'borderColor',
-		'shadowColor'
+		'shadowColor',
+		'itemHoveredBackground'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -43,6 +44,9 @@ CgtMenuSubTheme >> initializeThemeable [
 		color: [ :aTheme |
 			self contrastTintColorFor: aTheme alpha: 0.16 ]
 		source: [ :aTheme | aTheme menu borderColor ].
+	itemHoveredBackground := self
+		color: [ :aTheme | self contrastTintColorFor: aTheme alpha: 0.12 ]
+		source: [ :aTheme | aTheme menu itemHoveredBackground ].
 	shadowColor := self
 		color: [ :aTheme | Color black alpha: 0.3 ]
 		source: [ :aTheme | aTheme menu shadowColor ]
@@ -57,6 +61,12 @@ CgtMenuSubTheme >> contrastTintColorFor: aTheme alpha: anAlpha [
 		+ (aBackground green * 0.7152)
 		+ (aBackground blue * 0.0722).
 	^ (aLuminance < 0.5 ifTrue: [ Color white ] ifFalse: [ Color black ]) alpha: anAlpha
+]
+
+
+{ #category : #accessing }
+CgtMenuSubTheme >> itemHoveredBackground [
+	^ itemHoveredBackground
 ]
 
 { #category : #accessing }
