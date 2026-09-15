@@ -221,7 +221,7 @@ CgtThemeShowcaseExamples >> stockGlamorousThemesProvideTooltipSemantics [
 
 	themes do: [ :aTheme |
 		self assert: aTheme tooltip borderColor isNotNil.
-		self assert: aTheme tooltip borderColor equals: aTheme interaction pressedBackgroundTint.
+		self assert: aTheme tooltip borderColor equals: aTheme menu borderColor.
 		self assert: aTheme tooltip cornerRadius equals: aTheme menu cornerRadius.
 		self assert: aTheme tooltip foreground equals: aTheme colors tertiaryTextColor.
 		self assert: aTheme tooltip fontSize equals: aTheme typography supportingFontSize ]

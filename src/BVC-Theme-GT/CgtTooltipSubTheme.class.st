@@ -6,7 +6,7 @@ Class {
 
 { #category : #accessing }
 CgtTooltipSubTheme >> borderColor [
-	^ self theme interaction pressedBackgroundTint
+	^ self theme menu borderColor
 ]
 
 { #category : #accessing }

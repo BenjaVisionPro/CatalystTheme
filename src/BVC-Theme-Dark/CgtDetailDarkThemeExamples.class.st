@@ -63,14 +63,14 @@ CgtDetailDarkThemeExamples class >> brickControlThemeValues [
 	| aTheme resolve |
 	aTheme := self theme.
 	resolve := [ :aColor | aColor blocResolveColorForTheme: aTheme ].
-	self assert: (resolve value: aTheme button defaultBackground) equals: (resolve value: aTheme interaction controlBackgroundTint).
+	self assert: (resolve value: aTheme button defaultBackground) equals: (Color white alpha: 0.08).
 	self assert: (resolve value: aTheme button defaultTextForeground) equals: (resolve value: aTheme label defaultTextForeground).
-	self assert: (resolve value: aTheme button disabledBackgroundColor) equals: (resolve value: aTheme interaction subtleBackgroundTint).
+	self assert: (resolve value: aTheme button disabledBackgroundColor) equals: (Color white alpha: 0.06).
 	self assert: (resolve value: aTheme button disabledTextColor) equals: (resolve value: aTheme colors disabledTextColor).
 	self assert: aTheme button defaultBorderColor equals: Color transparent.
-	self assert: (resolve value: aTheme editor defaultBackground) equals: (resolve value: aTheme interaction controlBackgroundTint).
+	self assert: (resolve value: aTheme editor defaultBackground) equals: (Color white alpha: 0.08).
 	self assert: (resolve value: aTheme editor defaultTextForeground) equals: (resolve value: aTheme label defaultTextForeground).
 	self assert: aTheme editor borderColor equals: Color transparent.
-	self assert: (resolve value: aTheme editor focusedBorderColor) equals: (resolve value: aTheme interaction focusedBorderColor).
+	self assert: (resolve value: aTheme editor focusedBorderColor) equals: (CgtPalette themeBlue alpha: 0.3).
 	^ aTheme
 ]

@@ -41,12 +41,22 @@ CgtMenuSubTheme >> initializeThemeable [
 		source: [ :aTheme | aTheme menu background ].
 	borderColor := self
 		color: [ :aTheme |
-			aTheme interaction pressedBackgroundTint
-				blocResolveColorForTheme: aTheme ]
+			self contrastTintColorFor: aTheme alpha: 0.16 ]
 		source: [ :aTheme | aTheme menu borderColor ].
 	shadowColor := self
 		color: [ :aTheme | Color black alpha: 0.3 ]
 		source: [ :aTheme | aTheme menu shadowColor ]
+]
+
+
+{ #category : #private }
+CgtMenuSubTheme >> contrastTintColorFor: aTheme alpha: anAlpha [
+	| aBackground aLuminance |
+	aBackground := aTheme default contentBackground blocResolveColorForTheme: aTheme.
+	aLuminance := (aBackground red * 0.2126)
+		+ (aBackground green * 0.7152)
+		+ (aBackground blue * 0.0722).
+	^ (aLuminance < 0.5 ifTrue: [ Color white ] ifFalse: [ Color black ]) alpha: anAlpha
 ]
 
 { #category : #accessing }

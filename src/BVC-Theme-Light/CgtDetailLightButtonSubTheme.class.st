@@ -9,10 +9,10 @@ CgtDetailLightButtonSubTheme >> initializeThemeable [
 	super initializeThemeable.
 
 	defaultBackground := self
-		color: [ :aTheme | aTheme interaction controlBackgroundTint ]
+		color: [ :aTheme | Color black alpha: 0.08 ]
 		source: [ :aTheme | aTheme button defaultBackground ].
 	disabledBackgroundColor := self
-		color: [ :aTheme | aTheme interaction subtleBackgroundTint ]
+		color: [ :aTheme | Color black alpha: 0.06 ]
 		source: [ :aTheme | aTheme button disabledBackgroundColor ].
 	defaultTextForeground := self
 		color: [ :aTheme | Color black ]
@@ -30,9 +30,9 @@ CgtDetailLightButtonSubTheme >> initializeThemeable [
 	defaultBorderColor := Color transparent.
 	disabledBorderColor := Color transparent.
 	hoveredBorderColor := self
-		color: [ :aTheme | aTheme interaction hoveredBackgroundTint ]
+		color: [ :aTheme | Color black alpha: 0.12 ]
 		source: [ :aTheme | aTheme button hoveredBorderColor ].
 	pressedBorderColor := self
-		color: [ :aTheme | aTheme interaction pressedBackgroundTint ]
+		color: [ :aTheme | Color black alpha: 0.16 ]
 		source: [ :aTheme | aTheme button pressedBorderColor ]
 ]

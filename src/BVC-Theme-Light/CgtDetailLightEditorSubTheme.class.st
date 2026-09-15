@@ -6,7 +6,7 @@ Class {
 
 { #category : #accessing }
 CgtDetailLightEditorSubTheme >> defaultBackground [
-	^ self theme interaction controlBackgroundTint
+	^ Color black alpha: 0.08
 ]
 
 { #category : #initialization }
