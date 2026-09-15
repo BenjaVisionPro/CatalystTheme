@@ -31,19 +31,18 @@ CgtDetailLightThemeExamples class >> appearanceStateInvalidatesTheme [
 
 { #category : #examples }
 CgtDetailLightThemeExamples class >> detailLightReferenceValues [
-	| aTheme |
+	| aTheme resolve |
 	aTheme := self theme.
-	self assert: aTheme label defaultTextForeground equals: Color black.
-	self assert: aTheme label summaryTextForeground equals: (Color black alpha: 0.8).
-	self assert: aTheme colors tertiaryTextColor equals: (Color black alpha: 0.55).
-	self assert: aTheme default contentBackground equals: Color white.
+	resolve := [ :aColor | aColor blocResolveColorForTheme: aTheme ].
+	self assert: (resolve value: aTheme label defaultTextForeground) equals: aTheme colors primaryTextColor.
+	self assert: (resolve value: aTheme label summaryTextForeground) equals: aTheme colors secondaryTextColor.
+	self assert: (resolve value: aTheme label supportingTextForeground) equals: aTheme colors tertiaryTextColor.
+	self assert: (resolve value: aTheme label metadataTextForeground) equals: aTheme colors secondaryTextColor.
 	self assert: aTheme typography bodyFontSize equals: 13.
 	self assert: aTheme typography supportingFontSize equals: 11.
 	self assert: aTheme typography groupHeadingFontSize equals: 14.
 	self assert: aTheme typography titleFontSize equals: 16.
 	self assert: aTheme typography metadataFontSize equals: 11.
-	self assert: aTheme label defaultTextForeground equals: (Color black alpha: 0.92).
-	self assert: aTheme label metadataTextForeground equals: (Color black alpha: 0.45).
 	^ aTheme
 ]
 

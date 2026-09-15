@@ -10,7 +10,10 @@ Class {
 		'toggleGroup',
 		'menu',
 		'tooltip',
-		'tabSwitcher'
+		'tabSwitcher',
+		'select',
+		'separator',
+		'groupCard'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -68,6 +71,9 @@ CgtTheme >> initializeSubthemes [
 	menu := self class menuThemeClass theme: self. menu initializeThemeable.
 	tooltip := self class tooltipThemeClass theme: self. tooltip initializeThemeable.
 	tabSwitcher := self class tabSwitcherThemeClass theme: self. tabSwitcher initializeThemeable.
+	select := CgtSelectSubTheme theme: self. select initializeThemeable.
+	separator := CgtSeparatorSubTheme theme: self. separator initializeThemeable.
+	groupCard := CgtGroupCardSubTheme theme: self. groupCard initializeThemeable.
 
 	link := BrGlamorousLinkTheme new.
 	status := BrGlamorousStatusTheme new.
@@ -100,7 +106,10 @@ CgtTheme >> onThemeModified [
 	toggleGroup ifNotNil: [ toggleGroup initializeThemeable ].
 	menu ifNotNil: [ menu initializeThemeable ].
 	tooltip ifNotNil: [ tooltip initializeThemeable ].
-	tabSwitcher ifNotNil: [ tabSwitcher initializeThemeable ]
+	tabSwitcher ifNotNil: [ tabSwitcher initializeThemeable ].
+	select ifNotNil: [ select initializeThemeable ].
+	separator ifNotNil: [ separator initializeThemeable ].
+	groupCard ifNotNil: [ groupCard initializeThemeable ]
 ]
 
 { #category : #'theme lifecycle' }
@@ -131,3 +140,11 @@ CgtTheme >> appearanceState: anAppearanceState [
 ]
 { #category : #accessing }
 CgtTheme >> typography [ ^ typography ]
+
+
+{ #category : #accessing }
+CgtTheme >> select [ ^ select ]
+{ #category : #accessing }
+CgtTheme >> separator [ ^ separator ]
+{ #category : #accessing }
+CgtTheme >> groupCard [ ^ groupCard ]

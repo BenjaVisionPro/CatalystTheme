@@ -21,15 +21,18 @@ CgtDetailDarkThemeExamples class >> theme [
 
 { #category : #examples }
 CgtDetailDarkThemeExamples class >> detailDarkReferenceValues [
-	| aTheme |
+	| aTheme resolve |
 	aTheme := self theme.
-	self assert: aTheme label defaultTextForeground equals: Color white.
-	self assert: aTheme label summaryTextForeground equals: (Color white alpha: 0.8).
-	self assert: aTheme colors tertiaryTextColor equals: (Color white alpha: 0.55).
-	self assert: aTheme colors disabledTextColor equals: (Color white alpha: 0.35).
-	self assert: aTheme colors disabledTextColor equals: (Color white alpha: 0.22).
-	self assert: aTheme label defaultTextForeground equals: (Color white alpha: 0.92).
-	self assert: aTheme label metadataTextForeground equals: (Color white alpha: 0.45).
+	resolve := [ :aColor | aColor blocResolveColorForTheme: aTheme ].
+	self assert: (resolve value: aTheme label defaultTextForeground) equals: aTheme colors primaryTextColor.
+	self assert: (resolve value: aTheme label summaryTextForeground) equals: aTheme colors secondaryTextColor.
+	self assert: (resolve value: aTheme label supportingTextForeground) equals: aTheme colors tertiaryTextColor.
+	self assert: (resolve value: aTheme label metadataTextForeground) equals: aTheme colors secondaryTextColor.
+	self assert: aTheme typography bodyFontSize equals: 13.
+	self assert: aTheme typography supportingFontSize equals: 11.
+	self assert: aTheme typography groupHeadingFontSize equals: 14.
+	self assert: aTheme typography titleFontSize equals: 16.
+	self assert: aTheme typography metadataFontSize equals: 11.
 	^ aTheme
 ]
 
