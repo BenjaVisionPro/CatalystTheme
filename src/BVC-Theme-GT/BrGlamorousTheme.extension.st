@@ -37,8 +37,8 @@ BrGlamorousTheme >> tabSwitcher [ ^ CgtGlamorousTabSwitcherSubTheme theme: self 
 
 
 { #category : #'*BVC-Theme-GT' }
-BrGlamorousTheme >> select [ ^ CgtSelectSubTheme theme: self ]
+BrGlamorousTheme >> select [ ^ CgtGlamorousSelectSubTheme theme: self ]
 { #category : #'*BVC-Theme-GT' }
-BrGlamorousTheme >> separator [ ^ CgtSeparatorSubTheme theme: self ]
+BrGlamorousTheme >> separator [ ^ CgtGlamorousSeparatorSubTheme theme: self ]
 { #category : #'*BVC-Theme-GT' }
-BrGlamorousTheme >> groupCard [ ^ CgtGroupCardSubTheme theme: self ]
+BrGlamorousTheme >> groupCard [ ^ CgtGlamorousGroupCardSubTheme theme: self ]
