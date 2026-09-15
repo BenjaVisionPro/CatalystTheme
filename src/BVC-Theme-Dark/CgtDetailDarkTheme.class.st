@@ -43,6 +43,9 @@ CgtDetailDarkTheme class >> switchThemeClass [ ^ CgtDetailDarkSwitchSubTheme ]
 CgtDetailDarkTheme class >> tagThemeClass [ ^ CgtDetailDarkTagSubTheme ]
 
 { #category : #'class defaults' }
+CgtDetailDarkTheme class >> tabSwitcherThemeClass [ ^ CgtDetailDarkTabSwitcherSubTheme ]
+
+{ #category : #'class defaults' }
 CgtDetailDarkTheme class >> typographyThemeClass [
 	^ CgtDetailDarkTypographySubTheme
 ]

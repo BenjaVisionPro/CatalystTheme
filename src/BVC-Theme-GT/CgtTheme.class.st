@@ -9,7 +9,8 @@ Class {
 		'tag',
 		'toggleGroup',
 		'menu',
-		'tooltip'
+		'tooltip',
+		'tabSwitcher'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -32,6 +33,8 @@ CgtTheme class >> sliderThemeClass [ self subclassResponsibility ]
 CgtTheme class >> switchThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
 CgtTheme class >> tagThemeClass [ self subclassResponsibility ]
+{ #category : #'class defaults' }
+CgtTheme class >> tabSwitcherThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
 CgtTheme class >> toggleGroupThemeClass [ ^ CgtToggleGroupSubTheme ]
 { #category : #'class defaults' }
@@ -64,6 +67,7 @@ CgtTheme >> initializeSubthemes [
 	toggleGroup := self class toggleGroupThemeClass theme: self. toggleGroup initializeThemeable.
 	menu := self class menuThemeClass theme: self. menu initializeThemeable.
 	tooltip := self class tooltipThemeClass theme: self. tooltip initializeThemeable.
+	tabSwitcher := self class tabSwitcherThemeClass theme: self. tabSwitcher initializeThemeable.
 
 	link := BrGlamorousLinkTheme new.
 	status := BrGlamorousStatusTheme new.
@@ -95,7 +99,8 @@ CgtTheme >> onThemeModified [
 	tag ifNotNil: [ tag initializeThemeable ].
 	toggleGroup ifNotNil: [ toggleGroup initializeThemeable ].
 	menu ifNotNil: [ menu initializeThemeable ].
-	tooltip ifNotNil: [ tooltip initializeThemeable ]
+	tooltip ifNotNil: [ tooltip initializeThemeable ].
+	tabSwitcher ifNotNil: [ tabSwitcher initializeThemeable ]
 ]
 
 { #category : #'theme lifecycle' }
@@ -111,6 +116,9 @@ CgtTheme >> subscribeToAppearanceState [
 
 { #category : #accessing }
 CgtTheme >> tooltip [ ^ tooltip ]
+
+{ #category : #accessing }
+CgtTheme >> tabSwitcher [ ^ tabSwitcher ]
 
 { #category : #accessing }
 CgtTheme >> appearanceState [ ^ appearanceState ]

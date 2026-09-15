@@ -43,6 +43,9 @@ CgtDetailLightTheme class >> switchThemeClass [ ^ CgtDetailLightSwitchSubTheme ]
 CgtDetailLightTheme class >> tagThemeClass [ ^ CgtDetailLightTagSubTheme ]
 
 { #category : #'class defaults' }
+CgtDetailLightTheme class >> tabSwitcherThemeClass [ ^ CgtDetailLightTabSwitcherSubTheme ]
+
+{ #category : #'class defaults' }
 CgtDetailLightTheme class >> typographyThemeClass [
 	^ CgtDetailLightTypographySubTheme
 ]

@@ -31,3 +31,6 @@ BrGlamorousTheme >> switch [ ^ CgtGlamorousSwitchSubTheme theme: self ]
 
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> tag [ ^ CgtGlamorousTagSubTheme theme: self ]
+
+{ #category : #'*BVC-Theme-GT' }
+BrGlamorousTheme >> tabSwitcher [ ^ CgtGlamorousTabSwitcherSubTheme theme: self ]
