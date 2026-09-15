@@ -3,7 +3,6 @@ Class {
 	#superclass : #BrGlamorousTheme,
 	#instVars : [
 		'appearanceState',
-		'surfaces',
 		'typography',
 		'interaction',
 		'controls',
@@ -34,8 +33,6 @@ CgtTheme class >> itemThemeClass [ ^ CgtItemSubTheme ]
 { #category : #'class defaults' }
 CgtTheme class >> menuThemeClass [ ^ CgtMenuSubTheme ]
 { #category : #'class defaults' }
-CgtTheme class >> surfacesThemeClass [ self subclassResponsibility ]
-{ #category : #'class defaults' }
 CgtTheme class >> tooltipThemeClass [ ^ CgtTooltipSubTheme ]
 { #category : #'class defaults' }
 CgtTheme class >> typographyThemeClass [ self subclassResponsibility ]
@@ -58,7 +55,6 @@ CgtTheme >> initializeSubthemes [
 	default := self class defaultThemeClass theme: self. default initializeThemeable.
 
 	"Initialize Catalyst semantic providers before GT subthemes that consume them."
-	surfaces := self class surfacesThemeClass theme: self. surfaces initializeThemeable.
 	typography := self class typographyThemeClass theme: self. typography initializeThemeable.
 	interaction := self class interactionThemeClass theme: self. interaction initializeThemeable.
 	controls := self class controlsThemeClass theme: self. controls initializeThemeable.
@@ -84,7 +80,6 @@ CgtTheme >> menu [ ^ menu ]
 { #category : #'theme lifecycle' }
 CgtTheme >> onThemeModified [
 	super onThemeModified.
-	surfaces ifNotNil: [ surfaces initializeThemeable ].
 	typography ifNotNil: [ typography initializeThemeable ].
 	interaction ifNotNil: [ interaction initializeThemeable ].
 	controls ifNotNil: [ controls initializeThemeable ].
@@ -106,8 +101,6 @@ CgtTheme >> subscribeToAppearanceState [
 { #category : #accessing }
 CgtTheme >> tooltip [ ^ tooltip ]
 
-{ #category : #accessing }
-CgtTheme >> surfaces [ ^ surfaces ]
 { #category : #accessing }
 CgtTheme >> appearanceState [ ^ appearanceState ]
 { #category : #accessing }

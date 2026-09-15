@@ -42,10 +42,6 @@ CgtDetailDarkTheme class >> interactionThemeClass [
 	^ CgtDetailDarkInteractionSubTheme
 ]
 
-{ #category : #'class defaults' }
-CgtDetailDarkTheme class >> surfacesThemeClass [
-	^ CgtDetailDarkSurfacesSubTheme
-]
 
 { #category : #'class defaults' }
 CgtDetailDarkTheme class >> typographyThemeClass [

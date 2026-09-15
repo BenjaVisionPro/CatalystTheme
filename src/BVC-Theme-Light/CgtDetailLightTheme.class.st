@@ -42,10 +42,6 @@ CgtDetailLightTheme class >> interactionThemeClass [
 	^ CgtDetailLightInteractionSubTheme
 ]
 
-{ #category : #'class defaults' }
-CgtDetailLightTheme class >> surfacesThemeClass [
-	^ CgtDetailLightSurfacesSubTheme
-]
 
 { #category : #'class defaults' }
 CgtDetailLightTheme class >> typographyThemeClass [

@@ -30,8 +30,6 @@ CgtDetailDarkThemeExamples class >> detailDarkReferenceValues [
 	self assert: aTheme typography disabledForeground equals: (Color white alpha: 0.22).
 	self assert: aTheme typography titleForeground equals: (Color white alpha: 0.92).
 	self assert: aTheme typography metadataForeground equals: (Color white alpha: 0.45).
-	self assert: aTheme surfaces cardTint equals: (Color white alpha: 7.0 / 255.0).
-	self assert: aTheme surfaces separatorTint equals: (Color white alpha: 19.0 / 248.0).
 	self assert: aTheme interaction subtleBackgroundTint equals: (Color white alpha: 0.06).
 	self assert: aTheme interaction controlBackgroundTint equals: (Color white alpha: 0.08).
 	self assert: aTheme interaction popupBackgroundTint equals: (Color white alpha: 0.10).

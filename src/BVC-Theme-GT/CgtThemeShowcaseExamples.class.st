@@ -95,10 +95,10 @@ CgtThemeShowcaseExamples class >> menuThemeChrome [
 	self assert: aDarkTheme menu cornerRadius equals: 12.
 	self
 		assert: (resolve value: aLightTheme menu background value: aLightTheme)
-		equals: (resolve value: aLightTheme surfaces baseBackground value: aLightTheme).
+		equals: (resolve value: aLightTheme default contentBackground value: aLightTheme).
 	self
 		assert: (resolve value: aDarkTheme menu background value: aDarkTheme)
-		equals: (resolve value: aDarkTheme surfaces baseBackground value: aDarkTheme).
+		equals: (resolve value: aDarkTheme default contentBackground value: aDarkTheme).
 	self
 		assert: (resolve value: aLightTheme menu borderColor value: aLightTheme)
 		equals: (resolve value: aLightTheme interaction pressedBackgroundTint value: aLightTheme).

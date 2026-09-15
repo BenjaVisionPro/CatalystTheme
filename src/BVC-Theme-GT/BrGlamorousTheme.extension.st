@@ -11,10 +11,6 @@ BrGlamorousTheme >> interaction [
 	^ CgtGlamorousInteractionSubTheme theme: self
 ]
 
-{ #category : #'*BVC-Theme-GT' }
-BrGlamorousTheme >> surfaces [
-	^ CgtGlamorousSurfacesSubTheme theme: self
-]
 
 
 { #category : #'*BVC-Theme-GT' }

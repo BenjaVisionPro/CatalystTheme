@@ -37,9 +37,7 @@ CgtMenuSubTheme >> itemCornerRadius [
 { #category : #initialization }
 CgtMenuSubTheme >> initializeThemeable [
 	background := self
-		color: [ :aTheme |
-			aTheme surfaces baseBackground
-				blocResolveColorForTheme: aTheme ]
+		color: [ :aTheme | aTheme default contentBackground ]
 		source: [ :aTheme | aTheme menu background ].
 	borderColor := self
 		color: [ :aTheme |

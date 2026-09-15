@@ -12,11 +12,10 @@ CgtThemeShowcaseElement >> build [
 		vFitContent;
 		cellSpacing: 16;
 		padding: (BlInsets all: 20);
-		background: (self resolvedColor: self theme surfaces baseBackground).
+		background: (self resolvedColor: self theme default contentBackground).
 
 	self
 		addChild: self buildTypographySection;
-		addChild: self buildSurfaceSection;
 		addChild: self buildInteractionSection;
 		addChild: self buildBrickSection.
 	^ self
@@ -110,33 +109,6 @@ CgtThemeShowcaseElement >> buildInteractionSection [
 	^ aSection
 ]
 
-{ #category : #'building - sections' }
-CgtThemeShowcaseElement >> buildSurfaceSection [
-	| aSection aBase aCard aSeparator |
-	aSection := self newSectionNamed: 'Surfaces'.
-	aBase := BrVerticalPane new
-		hMatchParent;
-		vFitContent;
-		padding: (BlInsets all: 12);
-		cellSpacing: 8;
-		background: (self resolvedColor: self theme surfaces baseBackground);
-		yourself.
-	aSection addChild: aBase.
-	aCard := BlElement new
-		constraintsDo: [ :c | c horizontal matchParent ];
-		height: 44;
-		geometry: (BlRoundedRectangleGeometry cornerRadius: 6);
-		background: (self resolvedColor: self theme surfaces cardTint);
-		yourself.
-	aBase addChild: aCard.
-	aSeparator := BlElement new
-		constraintsDo: [ :c | c horizontal matchParent ];
-		height: 1;
-		background: (self resolvedColor: self theme surfaces separatorTint);
-		yourself.
-	aBase addChild: aSeparator.
-	^ aSection
-]
 
 { #category : #'building - sections' }
 CgtThemeShowcaseElement >> buildTypographySection [
