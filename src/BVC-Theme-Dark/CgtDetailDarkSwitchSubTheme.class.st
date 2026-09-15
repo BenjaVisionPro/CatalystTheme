@@ -2,5 +2,5 @@ Class { #name : #CgtDetailDarkSwitchSubTheme, #superclass : #CgtSwitchSubTheme, 
 { #category : #initialization }
 CgtDetailDarkSwitchSubTheme >> initializeConstants [
 	super initializeConstants.
-	self constantAt: #inactiveTrackBackground put: (Color white alpha: 35.0 / 255.0); constantAt: #thumbBackground put: Color white alpha: 0.86
+	self constantAt: #inactiveTrackBackground put: (Color white alpha: 35.0 / 255.0); constantAt: #thumbBackground put: (Color white alpha: 0.86)
 ]
