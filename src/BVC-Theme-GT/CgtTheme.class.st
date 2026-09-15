@@ -62,7 +62,15 @@ CgtTheme >> initializeSubthemes [
 	colors := self class colorsClass theme: self.
 	default := self class defaultThemeClass theme: self. default initializeThemeable.
 
-	"Initialize Catalyst semantic providers before GT subthemes that consume them."
+	"Initialize the foundational GT semantic providers before Catalyst providers that reference them."
+	link := BrGlamorousLinkTheme new.
+	status := BrGlamorousStatusTheme new.
+	item := self class itemThemeClass theme: self.
+	label := BrGlamorousLabelTheme theme: self. label initializeThemeable.
+	editor := self class editorThemeClass theme: self. editor initializeThemeable.
+	button := self class buttonThemeClass theme: self. button initializeThemeable.
+	header := self class headerThemeClass theme: self. header initializeThemeable.
+
 	typography := self class typographyThemeClass theme: self. typography initializeThemeable.
 	slider := self class sliderThemeClass theme: self. slider initializeThemeable.
 	switch := self class switchThemeClass theme: self. switch initializeThemeable.
@@ -73,15 +81,7 @@ CgtTheme >> initializeSubthemes [
 	tabSwitcher := self class tabSwitcherThemeClass theme: self. tabSwitcher initializeThemeable.
 	select := CgtSelectSubTheme theme: self. select initializeThemeable.
 	separator := CgtSeparatorSubTheme theme: self. separator initializeThemeable.
-	groupCard := CgtGroupCardSubTheme theme: self. groupCard initializeThemeable.
-
-	link := BrGlamorousLinkTheme new.
-	status := BrGlamorousStatusTheme new.
-	editor := self class editorThemeClass theme: self. editor initializeThemeable.
-	button := self class buttonThemeClass theme: self. button initializeThemeable.
-	item := self class itemThemeClass theme: self.
-	header := self class headerThemeClass theme: self. header initializeThemeable.
-	label := BrGlamorousLabelTheme theme: self. label initializeThemeable
+	groupCard := CgtGroupCardSubTheme theme: self. groupCard initializeThemeable
 ]
 
 { #category : #accessing }
