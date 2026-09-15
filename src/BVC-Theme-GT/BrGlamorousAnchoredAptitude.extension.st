@@ -3,12 +3,8 @@ Extension { #name : #BrGlamorousAnchoredAptitude }
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousAnchoredAptitude >> initialize [
 	super initialize.
-	background := self theme interaction popupBackgroundTint
-		blocResolveColorForTheme: self theme.
-	border := (BlBorder
-		paint: (self theme interaction controlBackgroundTint
-			blocResolveColorForTheme: self theme)
-		width: 1).
+	background := self theme default contentBackground.
+	border := self theme button defaultBorderColor asBlBorder.
 	cornerRadius := 4.
 
 	self

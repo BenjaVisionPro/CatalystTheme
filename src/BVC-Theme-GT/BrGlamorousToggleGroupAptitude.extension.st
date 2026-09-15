@@ -1,15 +1,6 @@
 Extension { #name : #BrGlamorousToggleGroupAptitude }
 
 { #category : #'*BVC-Theme-GT' }
-BrGlamorousToggleGroupAptitude >> applyThemeBorder [
-	self widget border:
-		(BlBorder
-			paint: (self theme interaction hoveredBackgroundTint
-				blocResolveColorForTheme: self theme)
-			width: 1)
-]
-
-{ #category : #'*BVC-Theme-GT' }
 BrGlamorousToggleGroupAptitude >> initialize [
 	super initialize.
 	self
@@ -17,18 +8,8 @@ BrGlamorousToggleGroupAptitude >> initialize [
 		with: [ BlLinearLayout horizontal cellSpacing: 0 ].
 	self
 		addChangeProperty: #(widget geometry)
-		with: [ BlRoundedRectangleGeometry cornerRadius: 3 ].
+		with: [ BlRoundedRectangleGeometry cornerRadius: self theme toggleGroup cornerRadius ].
 	self
 		addChangeProperty: #(widget border)
-		with: [
-			BlBorder
-				paint: (self theme interaction hoveredBackgroundTint
-					blocResolveColorForTheme: self theme)
-				width: 1 ]
-]
-
-{ #category : #'*BVC-Theme-GT' }
-BrGlamorousToggleGroupAptitude >> initializeListeners [
-	super initializeListeners.
-	self when: BlElementThemeChanged do: [ self applyThemeBorder ]
+		with: [ BlBorder paint: self theme toggleGroup borderColor width: 1 ]
 ]

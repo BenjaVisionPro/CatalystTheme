@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'appearanceState',
 		'typography',
-		'interaction',
+		'toggleGroup',
 		'controls',
 		'menu',
 		'tooltip'
@@ -27,7 +27,7 @@ CgtTheme class >> editorThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
 CgtTheme class >> headerThemeClass [ self subclassResponsibility ]
 { #category : #'class defaults' }
-CgtTheme class >> interactionThemeClass [ ^ CgtGlamorousInteractionSubTheme ]
+CgtTheme class >> toggleGroupThemeClass [ ^ CgtToggleGroupSubTheme ]
 { #category : #'class defaults' }
 CgtTheme class >> itemThemeClass [ ^ CgtItemSubTheme ]
 { #category : #'class defaults' }
@@ -56,7 +56,7 @@ CgtTheme >> initializeSubthemes [
 
 	"Initialize Catalyst semantic providers before GT subthemes that consume them."
 	typography := self class typographyThemeClass theme: self. typography initializeThemeable.
-	interaction := self class interactionThemeClass theme: self. interaction initializeThemeable.
+	toggleGroup := self class toggleGroupThemeClass theme: self. toggleGroup initializeThemeable.
 	controls := self class controlsThemeClass theme: self. controls initializeThemeable.
 	menu := self class menuThemeClass theme: self. menu initializeThemeable.
 	tooltip := self class tooltipThemeClass theme: self. tooltip initializeThemeable.
@@ -71,7 +71,7 @@ CgtTheme >> initializeSubthemes [
 ]
 
 { #category : #accessing }
-CgtTheme >> interaction [ ^ interaction ]
+CgtTheme >> toggleGroup [ ^ toggleGroup ]
 
 
 { #category : #accessing }
@@ -81,7 +81,7 @@ CgtTheme >> menu [ ^ menu ]
 CgtTheme >> onThemeModified [
 	super onThemeModified.
 	typography ifNotNil: [ typography initializeThemeable ].
-	interaction ifNotNil: [ interaction initializeThemeable ].
+	toggleGroup ifNotNil: [ toggleGroup initializeThemeable ].
 	controls ifNotNil: [ controls initializeThemeable ].
 	menu ifNotNil: [ menu initializeThemeable ].
 	tooltip ifNotNil: [ tooltip initializeThemeable ]

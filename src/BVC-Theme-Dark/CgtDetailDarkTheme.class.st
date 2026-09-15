@@ -37,10 +37,6 @@ CgtDetailDarkTheme class >> headerThemeClass [
 ]
 
 
-{ #category : #'class defaults' }
-CgtDetailDarkTheme class >> interactionThemeClass [
-	^ CgtDetailDarkInteractionSubTheme
-]
 
 
 { #category : #'class defaults' }

@@ -30,12 +30,6 @@ CgtDetailDarkThemeExamples class >> detailDarkReferenceValues [
 	self assert: aTheme colors disabledTextColor equals: (Color white alpha: 0.22).
 	self assert: aTheme label defaultTextForeground equals: (Color white alpha: 0.92).
 	self assert: aTheme label metadataTextForeground equals: (Color white alpha: 0.45).
-	self assert: aTheme interaction subtleBackgroundTint equals: (Color white alpha: 0.06).
-	self assert: aTheme interaction controlBackgroundTint equals: (Color white alpha: 0.08).
-	self assert: aTheme interaction popupBackgroundTint equals: (Color white alpha: 0.10).
-	self assert: aTheme interaction hoveredBackgroundTint equals: (Color white alpha: 0.12).
-	self assert: aTheme interaction pressedBackgroundTint equals: (Color white alpha: 0.16).
-	self assert: aTheme interaction focusedBorderColor equals: (CgtPalette themeBlue alpha: 0.3).
 	self assert: aTheme controls sliderTrackTint equals: (Color white alpha: 0.14).
 	self assert: aTheme controls sliderThumbBackground equals: (Color white alpha: 0.86).
 	self assert: aTheme controls sliderThumbBorderTint equals: (Color black alpha: 0.16).

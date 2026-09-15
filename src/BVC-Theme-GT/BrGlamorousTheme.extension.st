@@ -7,8 +7,8 @@ BrGlamorousTheme >> controls [
 ]
 
 { #category : #'*BVC-Theme-GT' }
-BrGlamorousTheme >> interaction [
-	^ CgtGlamorousInteractionSubTheme theme: self
+BrGlamorousTheme >> toggleGroup [
+	^ CgtGlamorousToggleGroupSubTheme theme: self
 ]
 
 
