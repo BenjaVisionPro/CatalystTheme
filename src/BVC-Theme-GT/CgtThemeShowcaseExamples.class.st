@@ -119,10 +119,10 @@ CgtThemeShowcaseExamples class >> menuThemeChrome [
 	self assert: aDarkTheme tooltip fontSize equals: aDarkTheme typography bodyFontSize.
 	self
 		assert: (resolve value: aLightTheme tooltip foreground value: aLightTheme)
-		equals: (resolve value: aLightTheme typography primaryForeground value: aLightTheme).
+		equals: (resolve value: aLightTheme label defaultTextForeground value: aLightTheme).
 	self
 		assert: (resolve value: aDarkTheme tooltip foreground value: aDarkTheme)
-		equals: (resolve value: aDarkTheme typography primaryForeground value: aDarkTheme).
+		equals: (resolve value: aDarkTheme label defaultTextForeground value: aDarkTheme).
 
 	"The Glamorous projection reproduces the stock BrPopoverContainerAptitude values."
 	self assert: aVanillaTheme menu cornerRadius equals: BrMenuConstants cornerRadius.
@@ -206,7 +206,7 @@ CgtThemeShowcaseExamples class >> menuShortcutUsesSupportingTypography [
 	aTheme := CgtDetailDarkTheme new.
 	self
 		assert:
-			(aTheme typography tertiaryForeground
+			(aTheme colors tertiaryTextColor
 				blocResolveColorForTheme: aTheme)
 		equals: (Color white alpha: 0.55).
 	^ aTheme
@@ -223,6 +223,6 @@ CgtThemeShowcaseExamples >> stockGlamorousThemesProvideTooltipSemantics [
 		self assert: aTheme tooltip borderColor isNotNil.
 		self assert: aTheme tooltip borderColor equals: aTheme interaction pressedBackgroundTint.
 		self assert: aTheme tooltip cornerRadius equals: aTheme menu cornerRadius.
-		self assert: aTheme tooltip foreground equals: aTheme typography tertiaryForeground.
+		self assert: aTheme tooltip foreground equals: aTheme colors tertiaryTextColor.
 		self assert: aTheme tooltip fontSize equals: aTheme typography supportingFontSize ]
 ]

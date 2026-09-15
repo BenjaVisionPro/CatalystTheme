@@ -16,7 +16,7 @@ CgtTooltipSubTheme >> cornerRadius [
 
 { #category : #accessing }
 CgtTooltipSubTheme >> foreground [
-	^ self theme typography tertiaryForeground
+	^ self theme colors tertiaryTextColor
 ]
 
 { #category : #accessing }

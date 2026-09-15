@@ -14,7 +14,7 @@ CgtDetailLightEditorSubTheme >> initializeThemeable [
 	super initializeThemeable.
 
 	defaultTextForeground := self
-		color: [ :aTheme | aTheme typography primaryForeground ]
+		color: [ :aTheme | Color black ]
 		source: [ :aTheme | aTheme editor defaultTextForeground ].
 	borderColor := Color transparent.
 	focusedBorderColor := self

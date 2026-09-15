@@ -33,17 +33,17 @@ CgtDetailLightThemeExamples class >> appearanceStateInvalidatesTheme [
 CgtDetailLightThemeExamples class >> detailLightReferenceValues [
 	| aTheme |
 	aTheme := self theme.
-	self assert: aTheme typography primaryForeground equals: Color black.
-	self assert: aTheme typography secondaryForeground equals: (Color black alpha: 0.8).
-	self assert: aTheme typography tertiaryForeground equals: (Color black alpha: 0.55).
+	self assert: aTheme label defaultTextForeground equals: Color black.
+	self assert: aTheme label summaryTextForeground equals: (Color black alpha: 0.8).
+	self assert: aTheme colors tertiaryTextColor equals: (Color black alpha: 0.55).
 	self assert: aTheme default contentBackground equals: Color white.
 	self assert: aTheme typography bodyFontSize equals: 13.
 	self assert: aTheme typography supportingFontSize equals: 11.
 	self assert: aTheme typography groupHeadingFontSize equals: 14.
 	self assert: aTheme typography titleFontSize equals: 16.
 	self assert: aTheme typography metadataFontSize equals: 11.
-	self assert: aTheme typography titleForeground equals: (Color black alpha: 0.92).
-	self assert: aTheme typography metadataForeground equals: (Color black alpha: 0.45).
+	self assert: aTheme label defaultTextForeground equals: (Color black alpha: 0.92).
+	self assert: aTheme label metadataTextForeground equals: (Color black alpha: 0.45).
 	self assert: aTheme interaction subtleBackgroundTint equals: (Color black alpha: 0.06).
 	self assert: aTheme interaction controlBackgroundTint equals: (Color black alpha: 0.08).
 	self assert: aTheme interaction popupBackgroundTint equals: (Color black alpha: 0.10).
@@ -94,12 +94,12 @@ CgtDetailLightThemeExamples class >> brickControlThemeValues [
 	aTheme := self theme.
 	resolve := [ :aColor | aColor blocResolveColorForTheme: aTheme ].
 	self assert: (resolve value: aTheme button defaultBackground) equals: (resolve value: aTheme interaction controlBackgroundTint).
-	self assert: (resolve value: aTheme button defaultTextForeground) equals: (resolve value: aTheme typography primaryForeground).
+	self assert: (resolve value: aTheme button defaultTextForeground) equals: (resolve value: aTheme label defaultTextForeground).
 	self assert: (resolve value: aTheme button disabledBackgroundColor) equals: (resolve value: aTheme interaction subtleBackgroundTint).
-	self assert: (resolve value: aTheme button disabledTextColor) equals: (resolve value: aTheme typography disabledForeground).
+	self assert: (resolve value: aTheme button disabledTextColor) equals: (resolve value: aTheme colors disabledTextColor).
 	self assert: aTheme button defaultBorderColor equals: Color transparent.
 	self assert: (resolve value: aTheme editor defaultBackground) equals: (resolve value: aTheme interaction controlBackgroundTint).
-	self assert: (resolve value: aTheme editor defaultTextForeground) equals: (resolve value: aTheme typography primaryForeground).
+	self assert: (resolve value: aTheme editor defaultTextForeground) equals: (resolve value: aTheme label defaultTextForeground).
 	self assert: aTheme editor borderColor equals: Color transparent.
 	self assert: (resolve value: aTheme editor focusedBorderColor) equals: (resolve value: aTheme interaction focusedBorderColor).
 	^ aTheme

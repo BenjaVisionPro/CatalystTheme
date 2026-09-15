@@ -115,12 +115,12 @@ CgtThemeShowcaseElement >> buildTypographySection [
 	| aSection |
 	aSection := self newSectionNamed: 'Typography'.
 	aSection
-		addChild: (self typographySample: 'Title' size: self theme typography titleFontSize color: self theme typography titleForeground);
-		addChild: (self typographySample: 'Group heading' size: self theme typography groupHeadingFontSize color: self theme typography primaryForeground);
-		addChild: (self typographySample: 'Body' size: self theme typography bodyFontSize color: self theme typography primaryForeground);
-		addChild: (self typographySample: 'Secondary' size: self theme typography bodyFontSize color: self theme typography secondaryForeground);
-		addChild: (self typographySample: 'Supporting' size: self theme typography supportingFontSize color: self theme typography tertiaryForeground);
-		addChild: (self typographySample: 'Metadata' size: self theme typography metadataFontSize color: self theme typography metadataForeground).
+		addChild: (self typographySample: 'Title' size: self theme typography titleFontSize color: self theme label defaultTextForeground);
+		addChild: (self typographySample: 'Group heading' size: self theme typography groupHeadingFontSize color: self theme label defaultTextForeground);
+		addChild: (self typographySample: 'Body' size: self theme typography bodyFontSize color: self theme label defaultTextForeground);
+		addChild: (self typographySample: 'Summary' size: self theme typography bodyFontSize color: self theme label summaryTextForeground);
+		addChild: (self typographySample: 'Supporting' size: self theme typography supportingFontSize color: self theme label summaryTextForeground);
+		addChild: (self typographySample: 'Metadata' size: self theme typography metadataFontSize color: self theme label metadataTextForeground).
 	^ aSection
 ]
 
@@ -135,7 +135,7 @@ CgtThemeShowcaseElement >> newSectionNamed: aString [
 	aLabel := BrLabel new
 		text: aString;
 		aptitude: (BrGlamorousLabelAptitude new
-			foreground: (self resolvedColor: self theme typography primaryForeground);
+			foreground: (self resolvedColor: self theme label defaultTextForeground);
 			fontSize: self theme typography groupHeadingFontSize;
 			bold);
 		fitContent;
@@ -165,7 +165,7 @@ CgtThemeShowcaseElement >> swatchNamed: aString color: aThemeableColor [
 	aLabel := BrLabel new
 		text: aString;
 		aptitude: (BrGlamorousLabelAptitude new
-			foreground: (self resolvedColor: self theme typography secondaryForeground);
+			foreground: (self resolvedColor: self theme label summaryTextForeground);
 			fontSize: self theme typography bodyFontSize);
 		fitContent;
 		yourself.
