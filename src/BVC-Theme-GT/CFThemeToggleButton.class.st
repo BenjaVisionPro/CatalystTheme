@@ -47,7 +47,7 @@ CFThemeToggleButton >> tab: aTab [
 { #category : #accessing }
 CFThemeToggleButton >> themeElement [
 	themeElement ifNil: [
-		themeElement := tab viewContentElement scrolledElement.
+		themeElement := tab viewContentElement.
 		themeElement
 			when: BlElementThemeChanged
 			do: [ self updateIcon ] ].

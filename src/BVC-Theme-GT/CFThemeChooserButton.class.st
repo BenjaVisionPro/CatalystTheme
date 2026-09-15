@@ -79,6 +79,6 @@ CFThemeChooserButton >> tab: aTab [
 { #category : #accessing }
 CFThemeChooserButton >> themeElement [
 	themeElement ifNil: [
-		themeElement := tab viewContentElement scrolledElement ].
+		themeElement := tab viewContentElement ].
 	^ themeElement
 ]
