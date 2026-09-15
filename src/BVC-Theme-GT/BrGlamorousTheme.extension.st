@@ -42,3 +42,9 @@ BrGlamorousTheme >> select [ ^ CgtGlamorousSelectSubTheme theme: self ]
 BrGlamorousTheme >> separator [ ^ CgtGlamorousSeparatorSubTheme theme: self ]
 { #category : #'*BVC-Theme-GT' }
 BrGlamorousTheme >> groupCard [ ^ CgtGlamorousGroupCardSubTheme theme: self ]
+
+{ #category : #'*BVC-Theme-GT' }
+BrGlamorousTheme >> palette [ ^ CgtGlamorousPaletteSubTheme theme: self ]
+
+{ #category : #'*BVC-Theme-GT' }
+BrGlamorousTheme >> diagram [ ^ CgtGlamorousDiagramSubTheme theme: self ]

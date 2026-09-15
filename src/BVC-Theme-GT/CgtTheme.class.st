@@ -13,7 +13,9 @@ Class {
 		'tabSwitcher',
 		'select',
 		'separator',
-		'groupCard'
+		'groupCard',
+		'palette',
+		'diagram'
 	],
 	#category : #'BVC-Theme-GT'
 }
@@ -81,7 +83,9 @@ CgtTheme >> initializeSubthemes [
 	tabSwitcher := self class tabSwitcherThemeClass theme: self. tabSwitcher initializeThemeable.
 	select := CgtSelectSubTheme theme: self. select initializeThemeable.
 	separator := CgtSeparatorSubTheme theme: self. separator initializeThemeable.
-	groupCard := CgtGroupCardSubTheme theme: self. groupCard initializeThemeable
+	groupCard := CgtGroupCardSubTheme theme: self. groupCard initializeThemeable.
+	palette := CgtPaletteSubTheme theme: self. palette initializeThemeable.
+	diagram := CgtDiagramSubTheme theme: self. diagram initializeThemeable
 ]
 
 { #category : #accessing }
@@ -109,7 +113,9 @@ CgtTheme >> onThemeModified [
 	tabSwitcher ifNotNil: [ tabSwitcher initializeThemeable ].
 	select ifNotNil: [ select initializeThemeable ].
 	separator ifNotNil: [ separator initializeThemeable ].
-	groupCard ifNotNil: [ groupCard initializeThemeable ]
+	groupCard ifNotNil: [ groupCard initializeThemeable ].
+	palette ifNotNil: [ palette initializeThemeable ].
+	diagram ifNotNil: [ diagram initializeThemeable ]
 ]
 
 { #category : #'theme lifecycle' }
@@ -148,3 +154,8 @@ CgtTheme >> select [ ^ select ]
 CgtTheme >> separator [ ^ separator ]
 { #category : #accessing }
 CgtTheme >> groupCard [ ^ groupCard ]
+
+{ #category : #accessing }
+CgtTheme >> palette [ ^ palette ]
+{ #category : #accessing }
+CgtTheme >> diagram [ ^ diagram ]
