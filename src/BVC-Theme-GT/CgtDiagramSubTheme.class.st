@@ -48,3 +48,11 @@ CgtDiagramSubTheme >> handleBackground [ ^ handleBackground ]
 CgtDiagramSubTheme >> startEventColor [ ^ startEventColor ]
 { #category : #accessing }
 CgtDiagramSubTheme >> endEventColor [ ^ endEventColor ]
+
+{ #category : #'class initialization' }
+CgtDiagramSubTheme class >> initialize [
+	"Tonel can reshape this class while live CgtTheme instances still retain their existing
+	diagram subtheme. Rebuild those existing subthemes after a load so newly introduced
+	semantic properties are populated just as they are for newly-created themes."
+	self allInstancesDo: [ :aDiagramTheme | aDiagramTheme initializeThemeable ]
+]
