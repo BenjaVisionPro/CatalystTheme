@@ -16,3 +16,16 @@ CgtGlamorousDiagramSubTheme >> shapeBackground [ ^ theme groupCard background ]
 CgtGlamorousDiagramSubTheme >> shapeBorderColor [ ^ theme label defaultTextForeground ]
 { #category : #accessing }
 CgtGlamorousDiagramSubTheme >> poolBorderColor [ ^ theme label defaultTextForeground ]
+
+{ #category : #accessing }
+CgtGlamorousDiagramSubTheme >> iconForeground [ ^ theme label defaultTextForeground ]
+{ #category : #accessing }
+CgtGlamorousDiagramSubTheme >> paletteBorderColor [ ^ theme label defaultTextForeground ]
+{ #category : #accessing }
+CgtGlamorousDiagramSubTheme >> popupBackground [ ^ theme default contentBackground ]
+{ #category : #accessing }
+CgtGlamorousDiagramSubTheme >> handleBackground [ ^ theme default contentBackground ]
+{ #category : #accessing }
+CgtGlamorousDiagramSubTheme >> startEventColor [ ^ Color r: 0.03 g: 0.38 b: 0.08 ]
+{ #category : #accessing }
+CgtGlamorousDiagramSubTheme >> endEventColor [ ^ Color r: 0.48 g: 0.025 b: 0.025 ]
