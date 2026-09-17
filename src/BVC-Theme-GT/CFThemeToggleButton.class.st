@@ -88,9 +88,12 @@ CFThemeToggleButton >> appearanceIconNameFor: aTheme [
 
 { #category : #private }
 CFThemeToggleButton >> updateIcon [
+	| targetTheme |
+	targetTheme := self themeElement theme.
 	self icon: ([
 		(FontAwesomeIcons
-			icon: (self appearanceIconNameFor: self themeElement theme)
+			icon: (self appearanceIconNameFor: targetTheme)
 			styleName: #light)
+			color: targetTheme button defaultTextForeground;
 			size: 16 @ 16 ] asStencil)
 ]

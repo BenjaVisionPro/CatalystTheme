@@ -44,6 +44,21 @@ CFThemeChooserButton >> initialize [
 
 
 { #category : #private }
+CFThemeChooserButton >> iconColor [
+	| targetTheme |
+	targetTheme := self themeElement theme.
+	^ targetTheme button defaultTextForeground
+]
+
+{ #category : #private }
+CFThemeChooserButton >> updateIcon [
+	self icon: ([
+		(FontAwesomeIcons icon: #window styleName: #light)
+			color: self iconColor;
+			size: 16 @ 16 ] asStencil)
+]
+
+{ #category : #private }
 CFThemeChooserButton >> newDropdownHandleElement [
 	^ BrButton new
 		fitContent;
@@ -53,6 +68,7 @@ CFThemeChooserButton >> newDropdownHandleElement [
 		label: 'Choose Foundation theme';
 		icon: ([
 			(FontAwesomeIcons icon: #window styleName: #light)
+				color: self iconColor;
 				size: 16 @ 16 ] asStencil);
 		yourself
 ]
@@ -70,7 +86,8 @@ CFThemeChooserButton >> newThemeChooserElement [
 { #category : #'hooks - children' }
 CFThemeChooserButton >> onAddedToSceneGraph [
 	super onAddedToSceneGraph.
-	self themeElement
+	self themeElement.
+	self updateIcon
 ]
 
 { #category : #accessing }
@@ -85,12 +102,15 @@ CFThemeChooserButton >> tab: aTab [
 
 { #category : #accessing }
 CFThemeChooserButton >> themeElement: anElement [
-	themeElement := anElement
+	themeElement := anElement.
+	themeElement
+		when: BlElementThemeChanged
+		do: [ self updateIcon ]
 ]
 
 { #category : #accessing }
 CFThemeChooserButton >> themeElement [
 	themeElement ifNil: [
-		themeElement := tab viewContentElement ].
+		self themeElement: tab viewContentElement ].
 	^ themeElement
 ]
