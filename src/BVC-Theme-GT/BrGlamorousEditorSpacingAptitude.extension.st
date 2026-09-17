@@ -16,9 +16,5 @@ BrGlamorousEditorSpacingAptitude >> initializeListeners [
 	super initializeListeners.
 
 	self when: BlFocusOutEvent do: [ :anEvent | self blurEvent: anEvent ].
-	self when: BlFocusInEvent do: [ :anEvent | self focusEvent: anEvent ].
-	self when: BlElementThemeChanged do: [
-		self widgetContent
-			background: self theme editor defaultBackground;
-			border: (BlBorder paint: self theme editor borderColor width: 1) ]
+	self when: BlFocusInEvent do: [ :anEvent | self focusEvent: anEvent ]
 ]
